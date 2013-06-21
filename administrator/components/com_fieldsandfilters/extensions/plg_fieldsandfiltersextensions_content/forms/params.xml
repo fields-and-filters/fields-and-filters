@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pluginExtension>
+	<layout
+		title="PLG_FAF_ES_CT_FORM_TITLE"
+		option="PLG_FAF_ES_CT_FORM_OPTION"
+	>
+		<message>
+			<![CDATA[PLG_FAF_ES_CT_FORM_DESC]]>
+		</message>
+	</layout>
+	<group type="contents" title="PLG_FIELDSANDFILTERS_FORM_GROUP_CONTENTS_TITLE">
+		<message>
+			<![CDATA[PLG_FIELDSANDFILTERS_FORM_GROUP_CONTENTS_DESC]]>
+		</message>
+	</group>
+
+	<!-- Add fields to the properties variables for the plugin extension. -->
+	<fields name="properties">
+		<fieldset name="properties">
+			<field
+				name="location"
+				type="list"
+				label="PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_LBL"
+				description="PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_DESC"
+			>
+				<option value="onContentAfterTitle">PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_AFTER_TITLE</option>
+				<option value="onContentBeforeDisplay">PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_BEFORE_CONTENT</option>
+				<option value="onContentAfterDisplay">PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_AFTER_CONTENT</option>
+			</field>
+		</fieldset>
+	</fields>
+	
+	<!-- Add fields to the parameters object for the plugin extension. -->
+	<!-- 
+	<fields name="params">
+		<fieldset name="extension">
+			<field name="test" type="list"
+				label="TEST_LBL"
+				description="TEST_DESC"
+			>
+				<option value="">TEST_OPTION</option>
+				<option value="0">TEST_OPTION_0</option>
+				<option value="1">TEST_OPTION_1</option>
+			</field>
+		</fieldset>
+	</fields>
+	-->
+</pluginExtension>

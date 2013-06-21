@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset>
+		<field
+			name="element_id"
+			type="hidden"
+			default="0"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_ELEMENT_ELEMENT_ID"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_ELEMENT_ELEMENT_ID"
+			filter="intval"
+		/>
+		<field
+			name="extension_type_id"
+			type="hidden"
+			default="0"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_ELEMENT_EXTENSION_TYPE_ID"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_ELEMENT_EXTENSION_TYPE_ID"
+			filter="intval"
+		/>
+		<field
+			name="item_id"
+			type="hidden"
+			default="0"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_ELEMENT_ITEM_ID"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_ELEMENT_ITEM_ID"
+			filter="intval"
+		/>
+		<field
+		       name="state"
+		       type="hidden"
+		       label="JSTATUS"
+		       description="JFIELD_PUBLISHED_DESC"
+		       default="0"
+		       filter="intval"
+		/>
+	</fieldset>
+	
+	<fields name="fields">
+	</fields>
+</form>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset addfieldpath="/administrator/components/com_fieldsandfilters/models/fields">
+		<field
+			name="field_id"
+			type="text"
+			default="0"
+			class="readonly"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_FIELD_ID"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_FIELD_ID"
+			readonly="true"
+			filter="intval"
+		/>
+		<field
+			name="field_name"
+			type="text"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_FIELD_NAME"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_FIELD_NAME"
+			required="true"
+			class="inputbox"
+			filter="safehtml"
+			size="40"
+		/>
+		<field
+			name="field_alias"
+			type="text"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_FIELD_ALIAS"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_FIELD_ALIAS"
+			class="inputbox"
+			filter="safehtml"
+			size="40"
+		/>
+		<field
+			name="field_type"
+			type="fieldsandfiltersPluginTypes"
+			size="40"
+			class="inputbox input-medium"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_FIELD_TYPE"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_FIELD_TYPE"
+			required="true"
+			filter="safehtml"
+		/>
+		<field
+			name="extension_type_id"
+			type="fieldsandfiltersPluginExtensions"
+			size="40"
+			class="inputbox input-medium"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_EXTENSION_TYPE_ID"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_EXTENSION_TYPE_ID"
+			required="true"
+			filter="intval"
+		/>
+		<field
+			name="mode"
+			type="hidden"
+			class="inputbox"
+			default="data.text"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_MODE"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_MODE"
+			filter="intval"
+		/>
+		<field
+			name="description"
+			type="editor"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_DESCRIPTION"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_DESCRIPTION"
+			class="inputbox"
+			filter="JComponentHelper::filterText"
+			buttons="true"
+			hide="readmore,pagebreak"
+		/>
+		<field
+			name="required"
+			type="radio"
+			size="1"
+			class="btn-group"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_REQUIRED"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_REQUIRED"
+			default="0"
+			filter="intval"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		
+		<!--< field
+			name="access"
+			type="accesslevel"
+			size="1"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_ACCESS"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_ACCESS"
+			default="1"
+			class="inputbox"
+			filter="intval"
+		/> -->
+		<field
+			name="access"
+			type="hidden"
+			default="1"
+			filter="intval"
+		/>
+		
+		<!-- <field
+			name="language"
+			type="contentlanguage"
+			size="1"
+			class="inputbox"
+			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_LANGUAGE"
+			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_LANGUAGE"
+			default="*"
+			filter="safehtml"
+		>
+			<option value="*">JALL</option>
+		</field> -->
+		<field
+			name="language"
+			type="hidden"
+			default="*"
+			filter="safehtml"
+		/>
+		
+		<field
+		       name="state"
+		       type="radio"
+		       label="JSTATUS"
+		       description="JFIELD_PUBLISHED_DESC"
+		       class="btn-group"
+		       default="1"
+		       filter="intval"
+		>
+			<option value="1">JPUBLISHED</option>
+			<option value="0">JUNPUBLISHED</option>
+			<option value="-1">COM_FIELDSANDFILTERS_HTML_ONLYADMIN</option>
+		</field>
+	</fieldset>
+	<fields name="params">
+		<fields name="base">
+			<fieldset name="base">
+				<field
+					name="base_site_spacer"
+					type="spacer"
+					class="text"
+					label="JSITE"
+				/>
+				
+				<field
+					name="show_name"
+					type="radio"
+					class="btn-group"
+					default="1"
+					filter="intval"
+					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_BASE_SITE_SHOW_NAME"
+					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_BASE_SITE_SHOW_NAME"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				
+				<field
+					name="class"
+					type="text"
+					size="30"
+					class="inputbox"
+					default=""
+					filter="safehtml"
+					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_BASE_CLASS"
+					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_BASE_CLASS"
+				/>
+				
+				<field
+					name="site_enabled_description"
+					type="radio"
+					class="btn-group"
+					default="0"
+					filter="intval"
+					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_BASE_SITE_ENABLED_DESCRIPTION"
+					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_BASE_SITE_ENABLED_DESCRIPTION"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				
+				<field
+					name="site_description_type"
+					type="list"
+					class="inputbox"
+					size="1"
+					default="description"
+					filter="string"
+					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_BASE_SITE_DESCRIPTION_TYPE"
+					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_BASE_SITE_DESCRIPTION_TYPE"
+					
+				>
+					<option value="description">COM_FIELDSANDFILTERS_FORM_DESCRIPTION_TYPE_DESCRIPTION</option>
+					<option value="tip">COM_FIELDSANDFILTERS_FORM_DESCRIPTION_TYPE_TIP</option>
+				</field>
+				
+				<field
+					name="site_description_position"
+					type="list"
+					class="inputbox"
+					size="1"
+					default="description"
+					filter="string"
+					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_BASE_SITE_DESCRIPTION_POSITION"
+					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_BASE_SITE_DESCRIPTION_POSITION"
+				>
+					<option value="before">COM_FIELDSANDFILTERS_FORM_DESCRIPTION_POSITION_BEFORE</option>
+					<option value="after">COM_FIELDSANDFILTERS_FORM_DESCRIPTION_POSITION_AFTER</option>
+				</field>
+				
+				<field
+					name="base_administration_spacer"
+					type="spacer"
+					class="text"
+					label="JADMINISTRATION"
+				/>
+				
+				<field
+					name="admin_enabled_description"
+					type="radio"
+					class="btn-group"
+					default="0"
+					filter="intval"
+					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_BASE_ADMIN_ENABLED_DESCRIPTION"
+					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_BASE_ADMIN_ENABLED_DESCRIPTION"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				
+				<field
+					name="admin_description_type"
+					type="list"
+					size="1"
+					class="inputbox"
+					default="description"
+					filter="string"
+					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_BASE_ADMIN_DESCRIPTION_TYPE"
+					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_BASE_ADMIN_DESCRIPTION_TYPE"
+				>
+					<option value="description">COM_FIELDSANDFILTERS_FORM_DESCRIPTION_TYPE_DESCRIPTION</option>
+					<option value="tip">COM_FIELDSANDFILTERS_FORM_DESCRIPTION_TYPE_TIP</option>
+				</field>
+			</fieldset>
+		</fields>
+		<fields name="type">
+		</fields>
+		<fields name="extension">
+			<fieldset name="extension">
+				<field
+					name="location"
+					type="list"
+					size="1"
+					class="inputbox"
+					default="1"
+					filter="safehtml"
+					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_LOCATION"
+					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_EXTENSIONS_LOCATION"
+				>
+					<option value="onBeforeRender">COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_TYPE_OPTION_ONLY_SYNTAX</option>
+				</field>
+			</fieldset>
+		</fields>
+	</fields>
+	<fields name="properties"></fields>
+</form>
