@@ -17,7 +17,7 @@ JFormHelper::loadFieldClass( 'checkboxes' );
  * @package   fieldsandfilters
  * @subpackage Form
  * @see     JFormFieldFields for a select list of fields.
- * @since    11.1
+ * @since       1.0.0
  */
 class JFormFieldFieldsandfiltersCheckboxes extends JFormFieldCheckboxes
 {
@@ -25,7 +25,7 @@ class JFormFieldFieldsandfiltersCheckboxes extends JFormFieldCheckboxes
 	 * The form field type.
 	 *
 	 * @var		string
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	protected $type = 'FieldsandfiltersCheckboxes';
 	
@@ -34,7 +34,7 @@ class JFormFieldFieldsandfiltersCheckboxes extends JFormFieldCheckboxes
 	 *
 	 * @return string The field input markup.
 	 *
-	 * @since  11.1
+	 * @since       1.0.0
 	 */
 	protected function getInput()
 	{

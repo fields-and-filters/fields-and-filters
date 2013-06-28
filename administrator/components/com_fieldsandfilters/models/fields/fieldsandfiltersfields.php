@@ -19,7 +19,7 @@ JHtml::addIncludePath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/h
  * @package     fieldsandfilters
  * @subpackage  Form
  * @see         JFormFieldFields for a select list of fields.
- * @since       11.1
+ * @since       1.0.0
  */
 class JFormFieldFieldsandfiltersFields extends JFormFieldList
 {
@@ -27,7 +27,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	 * The form field type.
 	 *
 	 * @var		string
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	protected $type = 'FieldsandfiltersFields';
 	
@@ -37,7 +37,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	 *
 	 * @return  string  The field input markup.
 	 *
-	 * @since   1.0.0
+	 * @since       1.0.0
 	 */
 	protected function getInput()
 	{
@@ -112,7 +112,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	 *
 	 * @return  array  The field option objects.
 	 *
-	 * @since   1.0.0
+	 * @since       1.0.0
 	 */
 	protected function getOptions()
 	{

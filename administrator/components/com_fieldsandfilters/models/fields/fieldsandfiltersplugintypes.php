@@ -9,7 +9,10 @@
 
 defined('JPATH_BASE') or die;
 
-JFormHelper::loadFieldClass('list');
+JFormHelper::loadFieldClass( 'list' );
+
+// Load the Factory Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
  * Form Field class for the Joomla Platform.
@@ -17,7 +20,8 @@ JFormHelper::loadFieldClass('list');
  * @package     fieldsandfilters
  * @subpackage  Form
  * @see         JFormFieldPluginsType for a select list of type plugins.
- * @since       11.1
+ * 
+ * @since       1.1.0
  */
 class JFormFieldFieldsandfiltersPluginTypes extends JFormFieldList
 {
@@ -25,7 +29,7 @@ class JFormFieldFieldsandfiltersPluginTypes extends JFormFieldList
 	 * The form field type.
 	 *
 	 * @var		string
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	protected $type = 'FieldsandfiltersPluginTypes';
 	
@@ -34,29 +38,21 @@ class JFormFieldFieldsandfiltersPluginTypes extends JFormFieldList
 	 * Method to get the field input markup.
 	 *
 	 * @return	string	The field input markup.
-	 * @since	2.5
+	 * @since       1.1.0
 	 */
 	protected function getInput()
 	{
 		// Initialise variables
 		$value		= '';
 		$html 		= array();
-		
+		$size		= ( $v = $this->element['size'] ) ? ' size="' . $v . '"' : '';
+		$class		= ( $v = $this->element['class'] ) ? ' class="' . $v . '"' : 'class="inputbox"';
 		$recordId	= (int) $this->form->getValue( 'field_id', 0 );
 		
-		$size		= ( $v = $this->element['size']) ? ' size="' . $v . '"' : '';
-		$class		= ( $v = $this->element['class']) ? ' class="' . $v . '"' : 'class="inputbox"';
-		
-		// Load PluginTypes Helper
-		JLoader::import( 'helpers.fieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		// Load Extensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		if( $pluginType = FieldsandfiltersPluginTypesHelper::getInstance()->getTypes( true )->get( $this->value ) )
+		if( $pluginType = FieldsandfiltersFactory::getPluginTypes()->getTypes( true )->get( $this->value ) )
 		{
-			// load plugin language
-			FieldsandfiltersExtensionsHelper::loadLanguage( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
+			// Load Extensions Helper
+			FieldsandfiltersFactory::getExtensions()->loadLanguage( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
 			
 			if( isset( $pluginType->group['title'] ) && isset( $pluginType->title ) )
 			{
