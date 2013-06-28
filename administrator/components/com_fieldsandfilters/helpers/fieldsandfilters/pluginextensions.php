@@ -10,43 +10,37 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Load the Array Helper
-JLoader::import( 'helpers.fieldsandfilters.cachehelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+// Load the BufferCore Helper
+JLoader::import( 'fieldsandfilters.buffer.core', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
  * FieldsandfiltersPluginExtensionsHelper
  *
  * @package     com_fieldsandfilters
- * @since       1.0.0
+ * @since       1.1.0
  */
 
-class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersCacheHelper
+class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersBufferCoreHelper
 {
-        protected $_not 		= array();
-        protected $_group 		= null;
 	protected $_plugins_folder 	= 'fieldsandfiltersExtensions';
         protected $_extension_default   = 'allextensions';
         
+	/**
+	 * @since       1.1.0
+	**/
 	public function getExtensions( $withXML = false )
 	{
                 if( !property_exists( $this->_data, $this->_plugins_folder ) )
                 {
-			
                         $data           = $this->_getData( $this->_plugins_folder );
                         $elements       = $data->elements;
                         
                         $data->set( 'xml', (boolean) $withXML );
                         
-                        $pluginsExtensions = $this->_db->setQuery( $this->__getQuery() )->loadObjectList();
-                        
+                        $pluginsExtensions = $this->_db->setQuery( $this->_getQuery() )->loadObjectList();
+			
 			if( !empty( $pluginsExtensions ) )
 			{
-				if( $data->xml )
-				{
-					// Load the XML Helper
-					JLoader::import( 'helpers.fieldsandfilters.xmlhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				}
-				
 				while( $pluginExtension = array_shift( $pluginsExtensions ) )
 				{
 					if( $pluginExtension->name == $this->_extension_default )
@@ -61,7 +55,7 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersCacheHelper
 					
 					if( $data->xml )
 					{
-						FieldsandfiltersXMLHelper::getOptionsFromXML( $elements->get( $pluginExtension->name ), $this->_config );
+						FieldsandfiltersFactory::getXML()->getPluginOptionsFromXML( $elements->get( $pluginExtension->name ), $this->config );
 					}  
 				}
 			}
@@ -72,30 +66,49 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersCacheHelper
                         
                         $data->set( 'xml', (boolean) $withXML );
                         
-			if( $data->xml )
-			{
-				// Load the XML Helper
-				JLoader::import( 'helpers.fieldsandfilters.xmlhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-			}
-			
 			$elements = get_object_vars( $data->elements );
                         
                         while( $element = array_shift( $elements ) )
                         {
-                                FieldsandfiltersXMLHelper::getOptionsFromXML( $element, $this->_config );
+                                FieldsandfiltersFactory::getXML()->getPluginOptionsFromXML( $element, $this->config );
                         }
                 }
                 
                 return $this->_getData( $this->_plugins_folder )->elements;
 	}
 	
+	/**
+	 * @since       1.1.0
+	**/
+        public function getExtensionsByID( $ids, $withXML = false )
+        {
+                $this->vars->elementName = 'extension_type_id';
+                
+                return $this->_getExtensionsBy( $ids, $withXML );     
+        }
+        
+	/**
+	 * @since       1.1.0
+	**/
+        public function getExtensionsByName( $names, $withXML = false )
+        {
+                $this->vars->elementName = 'name';
+                $this->config->def( 'elementsString', true );
+                
+                return $this->_getExtensionsBy( $names, $withXML );   
+        }
+	
+	/**
+	 * @since       1.1.0
+	**/
 	public function getExtensionsGroup()
         {
-                if( is_null( $this->_group ) )
+		static $group;
+		
+                if( is_null( $group ) )
                 {
-                        $plugins        = get_object_vars( $this->getExtensions( true ) );
-                        
-                        $this->_group 	= new JRegistry;
+			$group 		= new JRegistry;
+                        $plugins	= get_object_vars( $this->getExtensions( true ) );
                         
                         while( $plugin = array_shift( $plugins ) )
                         {
@@ -104,24 +117,17 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersCacheHelper
                                         continue;
                                 }
                                 
-                                $this->_group->set( ( $plugin->group['type'] . '.' . $plugin->name ), $plugin );
+                                $group->set( ( $plugin->group['type'] . '.' . $plugin->name ), $plugin );
                         }
                 }
                 
-                return $this->_group; 
-        }
-        
-        public function getExtensionsPivot( $pivot, $withXML = false )
-        {
-		return $this->_getCachePivot( $pivot, $withXML, null, null, 'getExtensions' );
+                return $group; 
         }
 	
-	public function getExtensionsColumn( $column, $withXML = false )
-	{
-		return $this->_getCacheColumn( $column, $withXML, null, null, 'getExtensions' );
-	}
-	
-	protected function __getQuery()
+	/**
+	 * @since       1.0.0
+	**/
+	protected function _getQuery()
 	{
 		// Get db and query
 		$query = $this->_db->getQuery( true );
@@ -148,48 +154,15 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersCacheHelper
                         
 		return $query;
 	}
-        
-        public function getExtensionsByID( $ids, $withXML = false )
-        {
-                $this->_vars->elementName               = 'extension_type_id';
-                $this->_config['elementsString']        = false;
-                
-                return $this->_getExtensionsBy( $ids, $withXML );     
-        }
 	
-	public function getExtensionsByIDPivot( $pivot, $ids, $withXML = false )
-        {
-		return $this->_getCachePivot( $pivot, $ids, $withXML, null, 'getExtensionsByID' );
-        }
-	
-	public function getExtensionsByIDColumn( $column, $ids, $withXML = false )
-	{
-		return $this->_getCacheColumn( $column, $ids, $withXML, null, 'getExtensionsByID' );
-	}
-        
-        public function getExtensionsByName( $names, $withXML = false )
-        {
-                $this->_vars->elementName               = 'name';
-                $this->_config['elementsString']        = true;
-                
-                return $this->_getExtensionsBy( $names, $withXML );   
-        }
-	
-	public function getExtensionsByNamePivot( $pivot, $names, $withXML = false )
-        {
-		return $this->_getCachePivot( $pivot, $names, $withXML, null, 'getExtensionsByName' );
-        }
-	
-	public function getExtensionsByNameColumn( $column, $names, $withXML = false )
-	{
-		return $this->_getCacheColumn( $column, $names, $withXML, null, 'getExtensionsByName' );
-	}
-        
-        protected function _getExtensionsBy( $elements, $withXML = false )
+	/**
+	 * @since       1.1.0
+	**/
+	protected function _getExtensionsBy( $elements, $withXML = false )
         {
                 $elements = array_unique( (array) $elements );
                 
-                if( !$this->_config['elementsString'] )
+                if( !$this->config->def( 'elementsString' ) )
                 {
                         JArrayHelper::toInteger( $elements );
                 }
@@ -200,13 +173,27 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersCacheHelper
                         
                         while( $extension = array_shift( $extensions ) )
                         {
-                                if( in_array( $extension->{$this->_vars->elementName}, $elements ) )
+                                if( in_array( $extension->{$this->vars->elementName}, $elements ) )
                                 {
-                                        $this->_cache->set( $extension->name, $extension );
+                                        $this->buffer->set( $extension->name, $extension );
                                 }
                         }
                 }
                 
-                return $this->_returnCache( true ); 
+                return $this->_returnBuffer( true ); 
         }
+	
+	
+	/** __call method generator methods:
+	 * getExtensionsPivot( $pivot, $withXML = false )
+	 * getExtensionsColumn( $column, $withXML = false )
+	 *
+	 * getExtensionsByIDPivot( $pivot, $ids, $withXML = false )
+	 * getExtensionsByIDColumn( $column, $ids, $withXML = false )
+	 *
+	 * getExtensionsByNamePivot( $pivot, $names, $withXML = false )
+	 * getExtensionsByNameColumn( $column, $names, $withXML = false )
+	 *
+	 * @since       1.1.0
+	**/
 }

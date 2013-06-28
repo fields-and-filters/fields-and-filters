@@ -10,8 +10,8 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Load the Array Helper
-JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+// Load the Factory Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
  * FieldsandfiltersCacheHelper.
@@ -369,7 +369,7 @@ abstract class FieldsandfiltersCacheHelper
 				
                                 // Get not Elements and set new elements
 				$_not = $data->get( $notType, array() );
-				FieldsandfiltersArrayHelper::setArrays( $_not, $this->_states, $elements );
+				FieldsandfiltersFactory::getArray()->setArrays( $_not, $this->_states, $elements );
 				$data->set( $notType, $_not );
                                 
                                 next( $this->_types );
@@ -401,7 +401,7 @@ abstract class FieldsandfiltersCacheHelper
                         if( !empty( $dataNot ) )
                         {
                                 // unset elements from form cahce date
-                                $data->set( $not, FieldsandfiltersArrayHelper::unsetKyes( $notCache, $states ) );
+                                $data->set( $not, FieldsandfiltersFactory::getArray()->unsetKyes( $notCache, $states ) );
                         }
                         
                         next( $this->_not );
@@ -529,7 +529,7 @@ abstract class FieldsandfiltersCacheHelper
                 }
                 
 		$_notElements 	= $data->get( $this->_not[$notName], array() );
-		$_notElements 	= FieldsandfiltersArrayHelper::fromArray( $_notElements, $_states );
+		$_notElements 	= FieldsandfiltersFactory::getArray()->fromArray( $_notElements, $_states );
 		
                 // before search elements
                 $this->{$this->_checkMethod( 'beforeSearchElements', '__beforeSearchElements' )}( $data );
@@ -878,7 +878,7 @@ abstract class FieldsandfiltersCacheHelper
         protected function __addValue( &$value ){}
         
         protected function _getCachePivot( $pivot, $types, $els = null, $states = null, $getCacheElements = null )
-        {
+        {                
                 $methodArgs = func_get_args();
                 unset( $methodArgs[0] );
                 
@@ -900,7 +900,7 @@ abstract class FieldsandfiltersCacheHelper
                 {
                         $cache = (array) get_object_vars( $this->_pivots[$hash]->elements );
                         
-                        $this->_pivots[$hash]->elements = new JObject( JArrayHelper::pivot( FieldsandfiltersArrayHelper::flatten( $cache ), $pivot ) );
+                        $this->_pivots[$hash]->elements = new JObject( JArrayHelper::pivot( FieldsandfiltersFactory::getArray()->flatten( $cache ), $pivot ) );
                         $this->_pivots[$hash]->_pivot =  $pivot;
                 }
                 
@@ -917,7 +917,7 @@ abstract class FieldsandfiltersCacheHelper
                         
                         $cache = $this->$getCacheElements( $types, $els, $states );
                         
-                        $this->_columns[$hash] = FieldsandfiltersArrayHelper::getColumn( $cache, $column );
+                        $this->_columns[$hash] = FieldsandfiltersFactory::getArray()->getColumn( $cache, $column );
                         
                         unset( $cache );
                 }
@@ -925,5 +925,64 @@ abstract class FieldsandfiltersCacheHelper
                 return $this->_columns[$hash];  
         }
         
+        protected $__call = array();
         
+        public function __call( $name, $arguments = array() )
+        {
+                if( !array_key_exists( $name, $this->__call  ) )
+                {
+                        $this->__call[$name] = preg_split( '/(?=Pivot$)|(?=Column$)/x', $name );
+                }
+                
+                $parts = $this->__call[$name];
+                if( isset( $parts[1] ) )
+                {
+                        $arguments = array_pad( $arguments, 4, null );
+                        
+                        $this->_beforeCall( $parts[1], $name, $arguments );
+                        
+                        $arguments[4] = $parts[0];
+                          
+                        $method = '_getCache' . $parts[1];
+                        
+                        return call_user_func_array( array( $this, $method ), $arguments );
+                }
+        }
+        
+        public function __call_OLD( $name, $arguments = array() )
+        {
+                if( substr( $name, 0, 3 ) == 'get' )
+		{
+                        
+                        if( substr( $name, -5 ) == 'Pivot' )
+                        {
+                                $type                   = 'Pivot';
+                                $method                 = '_getCachePivot';
+                                $getCacheElements       = substr( $name, 0, -5 );
+                        }
+                        else if( substr( $name, -6 ) == 'Column' )
+                        {
+                                $type                   = 'Column';
+                                $method                 = '_getCacheColumn';
+                                $getCacheElements       = substr( $name, 0, -6 );
+                        }
+                        
+                        if( isset( $type, $method, $getCacheElements ) )
+                        {
+                                $arguments = array_pad( $arguments, 4, null );
+                                
+                                $this->_beforeCall( $type, $name, $arguments );
+                                
+                                $arguments = array_slice( $arguments, 0, 4 );
+                                
+                                array_push( $arguments, $getCacheElements );
+                                
+                                return call_user_func_array( array( $this, $method ), $arguments );
+                        }
+                }
+        }
+        
+        // abstract protected function _beforeCall( $type, $method, $arguments );
+        protected function _beforeCall( $type, $method, &$arguments ){}
+  
 }

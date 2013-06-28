@@ -10,8 +10,8 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Load the Array Helper
-JLoader::import( 'helpers.fieldsandfilters.cachehelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+// Load the BufferCore Helper
+JLoader::import( 'fieldsandfilters.buffer.core', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
  * FieldsandfiltersPluginTypesHelper
@@ -19,16 +19,14 @@ JLoader::import( 'helpers.fieldsandfilters.cachehelper', JPATH_ADMINISTRATOR . '
  * @package     com_fieldsandfilters
  * @since       1.0.0
  */
-class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersCacheHelper
+class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
 {
-        protected $_not 		= array();
-        protected $_group 		= null;
 	protected $_plugins_folder 	= 'fieldsandfiltersTypes';
 	
 	/**
 	 * Constructor
 	 * 
-	 * @since   1.00
+	 * @since       1.0.0
 	 */
 	public function __construct( $debug = null )
 	{
@@ -52,6 +50,9 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersCacheHelper
 		);
 	}
         
+	/**
+	 * @since       1.1.0
+	**/
 	public function getTypes( $withXML = false )
 	{
                 if( !property_exists( $this->_data, $this->_plugins_folder ) )
@@ -61,23 +62,17 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersCacheHelper
                         
                         $data->set( 'xml', (boolean) $withXML );
                         
-                        $pluginsTypes = $this->_db->setQuery( $this->__getQuery() )->loadObjectList();
+                        $pluginsTypes = $this->_db->setQuery( $this->_getQuery() )->loadObjectList();
 			
 			if( !empty( $pluginsTypes ) )
 			{
-				if( $data->xml )
-				{
-					// Load the XML Helper
-					JLoader::import( 'helpers.fieldsandfilters.xmlhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				}
-				
 				while( $pluginType = array_shift( $pluginsTypes ) )
 				{
-				      $elements->set( $pluginType->name, $pluginType );
+					$elements->set( $pluginType->name, $pluginType );
 					
 					if( $data->xml )
 					{
-						FieldsandfiltersXMLHelper::getOptionsFromXML( $elements->get( $pluginType->name ), $this->_config );
+						FieldsandfiltersFactory::getXML()->getPluginOptionsFromXML( $elements->get( $pluginType->name ), $this->config );
 					}  
 				}
 			}
@@ -87,79 +82,21 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersCacheHelper
                         $data = $this->_getData( $this->_plugins_folder );
                         
                         $data->set( 'xml', (boolean) $withXML );
-			
-			if( $data->xml )
-			{
-				// Load the XML Helper
-				JLoader::import( 'helpers.fieldsandfilters.xmlhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-			}
                         
                         $elements = get_object_vars( $data->elements );
                         
                         while( $element = array_shift( $elements ) )
-                        {
-                                
-                                FieldsandfiltersXMLHelper::getOptionsFromXML( $element, $this->_config );
+                        { 
+                                FieldsandfiltersFactory::getXML()->getPluginOptionsFromXML( $element, $this->config );
                         }
                 }
 		
                 return $this->_getData( $this->_plugins_folder )->elements;
 	}
 	
-	public function getTypesGroup()
-        {
-                if( is_null( $this->_group ) )
-                {
-                        $plugins        = get_object_vars( $this->getTypes( true ) );
-                        
-                        $this->_group 	= new JRegistry;
-                        
-                        while( $plugin = array_shift( $plugins ) )
-                        {
-                                if( empty( $plugin->group['type'] ) || empty( $plugin->name ) )
-                                {
-                                        continue;
-                                }
-                                
-                                $this->_group->set( ( $plugin->group['type'] . '.' . $plugin->name ), $plugin );
-                        }
-                }
-                
-                return $this->_group; 
-        }
-	
-	public function getTypesPivot( $pivot, $withXML = false )
-        {
-		return $this->_getCachePivot( $pivot, $withXML, null, null, 'getTypes' );
-        }
-	
-	public function getTypesColumn( $column, $withXML = false )
-	{
-		return $this->_getCacheColumn( $column, $withXML, null, null, 'getTypes' );
-	}
-	
-	protected function __getQuery()
-	{
-		// Get db and query
-		$query = $this->_db->getQuery( true );
-			
-		$query->select( array(
-                                        $this->_db->quoteName( 'folder', 'type' ),
-                                        $this->_db->quoteName( 'element', 'name' ),
-					$this->_db->quoteName( 'params' )
-                        ) )
-			->from( $this->_db->quoteName( '#__extensions' ) )                        
-			->where( array(
-                               $this->_db->quoteName( 'type' ) . ' = ' . $this->_db->quote( 'plugin' ),                       // Extension mast by a plugin
-                               $this->_db->quoteName( 'folder' ) . ' = ' . $this->_db->quote( $this->_plugins_folder ),       // Extension where plugin folder
-                               $this->_db->quoteName( 'enabled' ) . ' = 1'                                                    // Extension where enabled
-                        ) );
-		
-		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
-                        
-		return $query;
-	}
-	
+	/**
+	 * @since       1.1.0
+	**/
 	public function getTypesByName( $names, $withXML = false )
 	{
 		$names = array_unique( (array) $names );
@@ -172,34 +109,49 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersCacheHelper
                         {
                                 if( in_array( $type->name, $names ) )
                                 {
-                                        $this->_cache->set( $type->name, $type );
+                                        $this->buffer->set( $type->name, $type );
                                 }
                         }
                 }
                 
-                return $this->_returnCache( true ); 
+                return $this->_returnBuffer( true ); 
 	}
 	
-	public function getTypesByNamePivot( $pivot, $names, $withXML = false )
+	/**
+	 * @since       1.1.0
+	**/
+	public function getTypesGroup()
         {
-		return $this->_getCachePivot( $pivot, $names, $withXML, null, 'getTypesByName' );
+		static $group;
+		
+                if( is_null( $group ) )
+                {
+			$group 	= new JRegistry;
+                        $plugins        = get_object_vars( $this->getTypes( true ) );
+			
+                        while( $plugin = array_shift( $plugins ) )
+                        {
+                                if( empty( $plugin->group['type'] ) || empty( $plugin->name ) )
+                                {
+                                        continue;
+                                }
+                                
+                                $group->set( ( $plugin->group['type'] . '.' . $plugin->name ), $plugin );
+                        }
+                }
+                
+                return $group; 
         }
-	
-	public function getTypesByNameColumn( $column, $names, $withXML = false )
-	{
-		return $this->_getCacheColumn( $column, $names, $withXML, null, 'getTypesByName' );
-	}
 	
 	/**
 	 * Get a mode type value.
 	 *
-	 * @param   string  $type     Type name ( filters/fields )
 	 * @param   string  $path     Mode path ( e.g. values.single )
 	 * @param   mixed   $default  Optional default value, returned if the internal value is null.
 	 *
 	 * @return  mixed  Value of entry or null
 	 *
-	 * @since   2.5
+	 * @since       1.0.0
 	 */
 	public function getMode( $path = null, $default = null )
 	{
@@ -222,13 +174,13 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersCacheHelper
 	/**
 	 * Get a mode type values.
 	 *
-	 * @param   string  $type     		Type name ( filters/fields )
 	 * @param   string  $paths     		Array mode paths ( e.g. array( values.single, values.multi )
 	 * @param   mixed   $default  		Optional default value, returned if the internal value is null.
+	 * @param   mixed   $pathKey  		Keys of array is the name of modes
 	 *
 	 * @return  mixed  Value of entry or null
 	 *
-	 * @since   2.5
+	 * @since       1.0.0
 	 */
 	public function getModes( $paths, $default = array(), $pathKey = false )
 	{
@@ -254,4 +206,39 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersCacheHelper
 		
 		return ( !empty( $modes ) ? $modes : $default );
 	}
+	
+	/**
+	 * @since       1.0.0
+	**/
+	protected function _getQuery()
+	{
+		// Get db and query
+		$query = $this->_db->getQuery( true );
+			
+		$query->select( array(
+                                        $this->_db->quoteName( 'folder', 'type' ),
+                                        $this->_db->quoteName( 'element', 'name' ),
+					$this->_db->quoteName( 'params' )
+                        ) )
+			->from( $this->_db->quoteName( '#__extensions' ) )                        
+			->where( array(
+                               $this->_db->quoteName( 'type' ) . ' = ' . $this->_db->quote( 'plugin' ),                       // Extension mast by a plugin
+                               $this->_db->quoteName( 'folder' ) . ' = ' . $this->_db->quote( $this->_plugins_folder ),       // Extension where plugin folder
+                               $this->_db->quoteName( 'enabled' ) . ' = 1'                                                    // Extension where enabled
+                        ) );
+		
+		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
+                        
+		return $query;
+	}
+	
+	/** __call method generator methods:
+	 * getTypesPivot( $pivot, $withXML = false )
+	 * getTypesColumn( $column, $withXML = false )
+	 *
+	 * getTypesByNamePivot( $pivot, $names, $withXML = false )
+	 * getTypesByNameColumn( $column, $names, $withXML = false )
+	 *
+	 * @since       1.1.0
+	**/
 }

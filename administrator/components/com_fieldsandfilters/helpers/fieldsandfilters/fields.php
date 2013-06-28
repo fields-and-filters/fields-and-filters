@@ -10,96 +10,217 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Load the Array Helper
-JLoader::import( 'helpers.fieldsandfilters.cachehelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-
-// Load pluginTypes Helper
-JLoader::import( 'helpers.fieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+// Load the BufferValues Helper
+JLoader::import( 'fieldsandfilters.buffer.values', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
  * FieldsandfiltersFieldsHelper
  *
  * @package     com_fieldsandfilters
- * @since       1.0.0
+ * @since       1.1.0
  */
-class FieldsandfiltersFieldsHelper extends FieldsandfiltersCacheHelper
+class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 {
 	/**
          * An array of names that don't exists
          * 
 	 * @var    array 
-	 * @since  1.00
+	 * @since  1.10
 	 */
 	protected $_not = array( '__modes', 'fields' => '__notFields' );
 	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
 	protected $_extension_locatnion_default = 'onBeforeRender';
 	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
 	protected $_valuesModes = array();
 	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	public function getFields( $types, $states = null, $values = null, $without = true )
+	{
+		$this->method = __FUNCTION__;
+		
+		$this->_setConfigFields( $values, $without );
+		
+		return $this->_getBuffer( $types, null, $states );
+	}
+	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	public function getFieldsByID( $types, $ids, $states = null , $values = null, $without = true )
+	{
+		$this->method = __FUNCTION__;
+		
+		$this->_setConfigFields( $values, $without );
+		
+		$this->config->def( 'notName', 'fields' );
+		
+		return $this->_getBuffer( $types, $ids, $states );
+	}
+	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	public function getFieldsByModeID( $types, $ids, $states = null, $values = null, $without = true )
+	{
+		$this->method = __FUNCTION__;
+		
+		$this->_setConfigFields( $values, $without );
+		
+		return $this->_getBuffer( $types, $ids, $states );
+	}
+	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
 	public function __construct( $debug = false )
 	{
 		parent::__construct( $debug );
 		
-		$this->_valuesModes = FieldsandfilterspluginTypesHelper::getInstance()->getMode( 'values' );
-	}
-/**
- * Get Fields item method
- **/
-	public function getFields( $types, $states = null, $values = null, $without = true )
-	{
-		$this->_setConfigFields( $values, $without );
-		
-		return parent::_getCache( $types, null, $states );
+		$this->_valuesModes = FieldsandfiltersFactory::getPluginTypes()->getMode( 'values' );
 	}
 	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
 	protected function _setConfigFields( $values = false, $without = true )
-	{
-		$this->_config['typeName'] = 'extension_type_id';
-		$this->_config['elementName'] = 'field_id';
-		
+	{		
 		if( !$without )
 		{
-			$this->_config['elemntsWithoutValues'] = $without;
+			$this->config->def( 'elemntsWithoutValues', $without );
 		}
 		
 		if( $values )
 		{
-			$this->_config['valuesName'] 		= 'values';
-			$this->_config['getCacheValues'] 	= '_getCacheValues';
-			$this->_config['getQueryValues'] 	= '_getQueryFieldValues';
-			$this->_config['addValue']		= '_addFieldValue';
+			$this->config->def( 'getValues', 'values' );
 		}
 	}
 	
-	public function getFieldsPivot( $pivot, $types, $states = null, $values = null, $without = true )
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	protected function _prepareVars()
 	{
-		$this->_setConfigFields( $values, $without );
+		$this->vars->typeName 		= 'extension_type_id';
+		$this->vars->elementName 	= 'field_id';
 		
-		return $this->_getCachePivot( $pivot, $types, null, $states, '_getCache' );
+		if( $this->method == 'getFieldsByID' )
+		{
+			// We take elements from cache, when they aren't in the cache, we add they to query variables
+			$this->vars->fieldsID = array();
+		}
+		else if( $this->method == 'getFieldsByModeID' )
+		{
+			$this->vars->modes = array();
+		}
+		
+		return parent::_prepareVars();
 	}
 	
-	public function getFieldsColumn( $column, $types, $states = null )
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	protected function _beforeQuery( $type )
 	{
-		$this->_setConfigFields();
-		
-		return $this->_getCacheColumn( $column, $types, null, $states, '_getCache' );
+		switch( $this->method )
+		{
+			case 'getFieldsByID':
+				parent::_beforeQueryElements( $type );
+			break;
+			case 'getFieldsByModeID':
+				// Get extension type id from cache
+				$data  = $this->_getData( $type );
+				
+				// The difference states between argument states and cache states
+				$dataStates	= $data->get( '__states', array() );
+				$_states        = array_diff( $this->states, $dataStates );
+				
+				// The diffrence modes between argument modes and cache modes
+				$dataModes	= $data->get( '__modes', array() );
+				$_modes		= array_diff( $this->elements, $dataModes );
+				
+				if( !empty( $_modes ) && !empty( $_states ) )
+				{
+					// Add difference states to query varible
+					$this->vars->states += $_states;
+					
+					// Add difference modes to query varible
+					$this->vars->modes += $_modes;
+					
+					// When the get modes of the need, then add modes to the cache extenion type, because we don't need them next time
+					$data->set( '__modes', array_merge( $dataModes, $_modes ) );
+					
+					// Get elements id from cache, because we don't need get that id's second time from database 
+					$this->vars->notElements = array_merge( $this->vars->notElements, array_keys( get_object_vars( $data->get( 'elements', new stdClass ) ) ) );
+					
+					// Add extension type id to query varible
+					array_push( $this->vars->types, $type );
+				}
+			break;
+			default:
+				parent::_beforeQuery( $type );
+			break;
+		}
 	}
 	
-	protected function __getQuery()
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	protected function _testQueryVars()
+	{
+		if( $this->method == 'getFieldsByID' )
+		{
+			return ( !empty( $this->vars->types ) && !empty( $this->elements ) );
+		}
+		
+		return parent::_testQueryVars();
+	}
+	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	protected function _getQuery()
 	{
 		// Get db and query
 		$query = $this->_db->getQuery( true );
 			
 		$query->select( '*' )
 			->from( $this->_db->quoteName( '#__fieldsandfilters_fields' ) )
-			->where( $this->_db->quoteName( 'state' ) . ' IN (' . implode( ',', $this->_vars->states ) . ')' )		// Fiels where states
-			->where( $this->_db->quoteName( 'extension_type_id' ) . ' IN(' . implode( ',', $this->_vars->types ) . ')' ); 	// Fields where extensions type id
+			->where( $this->_db->quoteName( 'state' ) . ' IN (' . implode( ',', $this->vars->states ) . ')' )		// Fiels where states
+			->where( $this->_db->quoteName( 'extension_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' ); 	// Fields where extensions type id
+		
+		if( $this->method == 'getFieldsByID' )
+		{
+			$query->where( $this->_db->quoteName( 'field_id' ) . ' IN (' . implode( ',', $this->elements ) . ')' );
+		}
+		else if( $this->method == 'getFieldsByModeID' )
+		{
+			$query->where( $this->_db->quoteName( 'mode' ) . ' IN (' . implode( ',', $this->vars->modes ) . ')' );
+		}
 		
 		// We no need same elements id
-		if( !empty( $this->_vars->notElements ) )
+		if( !empty( $this->vars->notElements ) )
 		{
-			JArrayHelper::toInteger( $this->_vars->notElements  );
-			$query->where( $this->_db->quoteName( 'field_id' ) . ' NOT IN (' . implode( ',', $this->_vars->notElements  ) . ')' );
+			JArrayHelper::toInteger( $this->vars->notElements  );
+			$query->where( $this->_db->quoteName( 'field_id' ) . ' NOT IN (' . implode( ',', $this->vars->notElements  ) . ')' );
 		}
 		
 		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
@@ -107,24 +228,88 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersCacheHelper
 		return $query;
 	}
 	
-	protected function __setData( &$_field )
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	protected function _setData( &$_field )
         {
 		$this->_getData( $_field->extension_type_id )->elements->set( $_field->field_id, $_field );
-		
 		$_field->params = new JRegistry( $_field->params );
-		
 		$_field->location = $_field->params->get( 'extension.location', $this->_extension_locatnion_default );
 		
-		$this->_cache->{$_field->field_id} = $_field;
+		
+		if( ( $byID = $this->method == 'getFieldsByID' ) || $this->method == 'getFieldsByModeID' )
+		{
+			$this->buffer->set( $_field->field_id, $_field );
+		}
+		
+		if( $byID )
+		{
+			array_push( $this->vars->fieldsID, $_field->field_id );
+		}
         }
 	
-	protected function _getQueryFieldValues()
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	protected function _afterQuery()
+	{
+		switch( $this->method )
+		{
+			case 'getFieldsByID':
+				if( $this->_testQueryVars() )
+				{
+					$this->_setNot( array_diff( $this->elements, $this->vars->fieldsID ), 'fields' );
+				}
+			break;
+			case 'getFieldsByModeID':
+				// Get elements from cahce
+				while( !empty( $this->types ) )
+				{
+					$_elements = get_object_vars( $this->_getData( array_shift( $this->types ) )->get( 'elements', new JObject ) ) ;
+					
+					// Add only those elements are suitable states
+					while( $_element = current( $_elements ) )
+					{
+						if( in_array( $_element->mode, $this->elements ) && in_array( $_element->state, $this->states ) )
+						{
+							$this->buffer->set( $_element->{$this->vars->elementName}, $_element );
+						}
+						
+						next( $_elements );
+					}
+				}
+			break;
+			default:
+				parent::_afterQuery();
+			break;
+		}
+	}
+	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	protected function _prepareVarsValues()
+	{
+		$this->vars->valuesName = 'values';
+		
+		return parent::_prepareVarsValues();
+	}
+	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	protected function _getQueryValues()
 	{
 		$query = $this->_db->getQuery( true );
 		
 		$query->select( '*' )
 			->from( $this->_db->quoteName( '#__fieldsandfilters_field_values' ) )
-			->where( $this->_db->quoteName( 'field_id' ) . ' IN (' . implode( ',', $this->_vars->values->elements ) . ')' )
+			->where( $this->_db->quoteName( 'field_id' ) . ' IN (' . implode( ',', $this->vars->values->elements ) . ')' )
 			->where( $this->_db->quoteName( 'state' ) . ' = 1' );
 			
 		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
@@ -132,34 +317,42 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersCacheHelper
 		return $query;
 	}
 	
-	protected function __searchValuesElement( &$element )
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	protected function _searchValuesElement( &$element )
         {
-                $elementName    = $this->_vars->elementName;
-                $_vars          = $this->_vars->values;
+                $elementName    = $this->vars->elementName;
+                $_vars          = $this->vars->values;
                 // if element don't have filter_connection, add to arrry
-                if( in_array( $element->mode, $this->_valuesModes ) && !isset( $element->{$this->_vars->valuesName} ) )
+                if( in_array( $element->mode, $this->_valuesModes ) && !isset( $element->{$this->vars->valuesName} ) )
                 {
                         array_push( $_vars->elements, $element->$elementName );
                 }
                 // if we need only elements with filter_connections isn't empty
-                elseif( !$this->_config['elemntsWithoutValues'] && isset( $element->{$this->_vars->valuesName} ) )
+                elseif( !$this->config->get( 'elemntsWithoutValues', true ) && isset( $element->{$this->vars->valuesName} ) )
                 {
-                        $_values = get_object_vars( $element->{$this->_vars->valuesName} );
+                        $_values = get_object_vars( $element->{$this->vars->valuesName} );
                         
                         if( empty( $_values ) )
                         {
-                                unset( $this->_cache->{$element->$elementName} );
+                                unset( $this->buffer->{$element->$elementName} );
                         }
                         
                         unset( $_values );
                 }
         }
 	
-	protected function _addFieldValue( &$_value )
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	protected function _addValue( &$_value )
 	{
-		$element = $this->_cache->get( $_value->{$this->_vars->elementName} );
+		$element = $this->buffer->get( $_value->{$this->vars->elementName} );
 		
-		$valuesName = $this->_vars->valuesName;
+		$valuesName = $this->vars->valuesName;
 		
 		if( !( isset( $element->$valuesName ) && $element->$valuesName instanceof JObject ) )
 		{
@@ -173,216 +366,33 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersCacheHelper
 			$element->$valuesName->set( $_value->field_value_id, $_value );
 		}
 	}
-	
-/**
- * @end Get Fields method
- **/
 
-/**
- * Get Fields by ID method
- **/
-	
-	public function getFieldsByID( $types, $ids, $states = null , $values = null, $without = true )
-	{
-		$this->_config['notName'] 		= 'fields';
-		$this->_config['beforeQuery'] 		= '__beforeQueryElements';
-		$this->_config['preparationVars'] 	= '_preparationVarsByID';
-		$this->_config['testQueryVars'] 	= '_testQueryVarsByID';
-		$this->_config['getQuery'] 		= '_getQueryByID';
-		$this->_config['setData'] 		= '_setDataByID';
-		$this->_config['afterQuery'] 		= '_afterQueryByID';
-		
-		$this->_setConfigFields( $values, $without );
-		
-		return parent::_getCache( $types, $ids, $states );
-	}
-	
-	public function getFieldsByIDPivot( $pivot, $types, $ids, $states = null, $values = null, $without = true )
-	{
-		$this->_setConfigFields( $values, $without );
-		
-		return $this->_getCachePivot( $pivot, $types, $ids, $states, 'getFieldsByID' );
-	}
-	
-	public function getFieldsByIDColumn( $column, $types, $ids, $states = null )
-	{
-		$this->_setConfigFields();
-		
-		return $this->_getCacheColumn( $column, $types, $ids, $states, 'getFieldsByID' );
-	}
-	
-	protected function _preparationVarsByID()
-        {
-                // We take elements from cache, when they aren't in the cache, we add they to query variables
-		$this->_vars->fieldsID = array();
-		
-		return parent::__preparationVars();
-        }
-	
-	protected function _testQueryVarsByID()
-        {
-                return ( !empty( $this->_vars->types ) && !empty( $this->_elements ) );
-        }
-	
-	protected function _getQueryByID()
-	{
-		// Get db and query
-		$query = $this->_db->getQuery( true );
-			
-		$query->select( '*' )
-			->from( $this->_db->quoteName( '#__fieldsandfilters_fields' ) )
-			->where( $this->_db->quoteName( 'state' ) . ' IN (' . implode( ',', $this->_vars->states ) . ')' )			// Elements where states
-			->where( $this->_db->quoteName( 'extension_type_id' ) . ' IN(' . implode( ',', $this->_vars->types ) . ')' )		// Elements where extensions type id
-			->where( $this->_db->quoteName( 'field_id' ) . ' IN (' . implode( ',', $this->_elements ) . ')' );			// Elements where elements id
-		
-		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
-		
-		return $query;
-	}
-
-	protected function _setDataByID( &$_field )
-        {
-                $this->__setData( $_field );
-		
-		array_push( $this->_vars->fieldsID, $_field->field_id );
-        }
-	
-	protected function _afterQueryByID()
-        {		
-		if( $this->_testQueryVarsByID() )
+	/** __call method generator methods:
+	 * getFieldsPivot( $pivot, $types, $states = null, $values = null, $without = true )
+	 * getFieldsColumn( $column, $types, $states = null )
+	 *
+	 * getFieldsByIDPivot( $pivot, $types, $ids, $states = null, $values = null, $without = true )
+	 * getFieldsByIDColumn( $column, $types, $ids, $states = null )
+	 *
+	 * getFieldsByModeIDPivot( $pivot, $types, $ids, $states = null, $values = null, $without = true )
+	 * getFieldsByModeIDColumn( $column, $types, $ids, $states = null )
+	 *
+	 * @since       1.1.0
+	**/
+	protected function _beforeCall( $type, $method, $name, &$arguments )
+	{		
+		if( $type == 'Pivot' )
 		{
-			$this->_setNot( array_diff( $this->_elements, $this->_vars->fieldsID ), 'fields' );
-		}
-        }
-	
-/**
- * @end Get Fields by ID method
- **/
-
-
-/**
- * Get Fields by Mode ID method
- **/
-	
-	public function getFieldsByModeID( $types, $ids, $states = null, $values = null, $without = true )
-	{
-		$this->_config['beforeQuery'] 		= '_beforeQueryByModeID';
-		$this->_config['preparationVars'] 	= '_preparationVarsByModeID';
-		$this->_config['getQuery'] 		= '_getQueryByModeID';
-		$this->_config['setData'] 		= '_setDataByModeID';
-		$this->_config['afterQuery'] 		= '_afterQueryModeID';
-		
-		$this->_setConfigFields( $values, $without );
-		
-		return parent::_getCache( $types, $ids, $states );
-	}
-	
-	
-	public function getFieldsByModeIDPivot( $pivot, $types, $ids, $states = null, $values = null, $without = true )
-	{
-		$this->_setConfigFields( $values, $without );
-		
-		return $this->_getCachePivot( $pivot, $types, $ids, $states, 'getFieldsByModeID' );
-	}
-	
-	public function getFieldsByModeIDColumn( $column, $types, $ids, $states = null )
-	{
-		$this->_setConfigFields();
-		
-		return $this->_getCacheColumn( $column, $types, $ids, $states, 'getFieldsByModeID' );
-	}
-	
-	protected function _preparationVarsByModeID()
-        {
-                $this->_vars->modes = array();
-		
-		// We take elements from cache, when they aren't in the cache, we add they to query variables
-		return parent::__preparationVars();
-        }
-	
-	protected function _beforeQueryByModeID( $type )
-        {
-                // Get extension type id from cache
-                $data  = $this->_getData( $type );
-                
-                // The difference states between argument states and cache states
-                $dataStates	= $data->get( '__states', array() );
-                $_states        = array_diff( $this->_states, $dataStates );
-		
-		// The diffrence modes between argument modes and cache modes
-		$dataModes	= $data->get( '__modes', array() );
-		$_modes		= array_diff( $this->_elements, $dataModes );
-		
-		if( !empty( $_modes ) && !empty( $_states ) )
-                {
-			// Add difference states to query varible
-			$this->_vars->states += $_states;
-			
-			// Add difference modes to query varible
-			$this->_vars->modes += $_modes;
-			
-			// When the get modes of the need, then add modes to the cache extenion type, because we don't need them next time
-			$data->set( '__modes', array_merge( $dataModes, $_modes ) );
-			
-			// Get elements id from cache, because we don't need get that id's second time from database 
-			$this->_vars->notElements = array_merge( $this->_vars->notElements, array_keys( get_object_vars( $data->get( 'elements', new stdClass ) ) ) );
-			
-			// Add extension type id to query varible
-			array_push( $this->_vars->types, $type );
-                }
-        }
-	
-	protected function _getQueryByModeID()
-	{
-		// Get db and query
-		$query = $this->_db->getQuery( true );
-			
-		$query->select( '*' )
-			->from( $this->_db->quoteName( '#__fieldsandfilters_fields' ) )
-			->where( $this->_db->quoteName( 'state' ) . ' IN (' . implode( ',', $this->_vars->states ) . ')' )			// Fields where states
-			->where( $this->_db->quoteName( 'extension_type_id' ) . ' IN(' . implode( ',', $this->_vars->types ) . ')' )		// Fields where extensions type id
-			->where( $this->_db->quoteName( 'mode' ) . ' IN (' . implode( ',', $this->_vars->modes ) . ')' );				// Fields where mode id
-		
-		// We no need same elements id
-		if( !empty( $this->_vars->notElements ) )
-		{
-			JArrayHelper::toInteger( $this->_vars->notElements  );
-			$query->where( $this->_db->quoteName( 'field_id' ) . ' NOT IN (' . implode( ',', $this->_vars->notElements  ) . ')' );
+			$values 	= isset( $arguments[4] ) ? $arguments[4] : null;
+			$without 	= isset( $arguments[5] ) ? $arguments[5] : true;
+			$this->_setConfigFields( $values, $without );	
 		}
 		
-		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
-		
-		return $query;
-	}
-
-	protected function _setDataByModeID( &$_field )
-        {
-                $this->_getData( $_field->extension_type_id )->elements->set( $_field->field_id, $_field );
-		
-		$_field->params = new JRegistry( $_field->params );
-		
-		$_field->location = $_field->params->get( 'extension.location', $this->_extension_locatnion_default );
-		
-		$this->_cache->{$_field->field_id} = $_field;
-        }
-	
-	protected function _afterQueryModeID()
-        {
-                // Get elements from cahce
-		while( !empty( $this->_types ) )
+		if( $method == 'getFields' )
 		{
-			$_elements = get_object_vars( $this->_getData( array_shift( $this->_types ) )->get( 'elements', new JObject ) ) ;
-                        
-			// Add only those elements are suitable states
-			while( $_element = current( $_elements ) )
-			{
-				if( in_array( $_element->mode, $this->_elements ) && in_array( $_element->state, $this->_states ) )
-				{
-					$this->_cache->set( $_element->{$this->_vars->elementName}, $_element );
-				}
-				
-				next( $_elements );
-			}
+			$arguments[3] = isset( $arguments[2] ) ? $arguments[2] : null;
+			$arguments[2] = null;
 		}
-        }
+	}
+	
 }
