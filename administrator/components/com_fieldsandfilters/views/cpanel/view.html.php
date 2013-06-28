@@ -10,20 +10,18 @@
 // No direct access
 defined('_JEXEC') or die;
 
-jimport('joomla.application.module.helper');
-
 /**
  * HTML View class for the Cpanel component
- *
- * @static
- * @package		Joomla.Administrator
- * @subpackage	com_cpanel
- * @since 1.0
  */
 class FieldsandfiltersViewCpanel extends JViewLegacy
 {
 	protected $buttons = array();
 	
+	/**
+	 * Display the view
+	 * 
+	 * @since	1.0.0
+	 */
 	public function display($tpl = null)
 	{
 		$option = JFactory::getApplication()->input->get( 'option' );
@@ -76,12 +74,12 @@ class FieldsandfiltersViewCpanel extends JViewLegacy
 	
 	/**
 	 * Add the page title and toolbar.
+	 *
+	 * @since	1.1.0
 	 */
 	protected function addToolbar()
 	{
-		JLoader::import( 'helpers.fieldsandfilters', JPATH_COMPONENT_ADMINISTRATOR );
-		
-		$canDo	= FieldsandfiltersHelper::getActions();
+		$canDo = FieldsandfiltersFactory::getHelper()->getActions();
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS' ), 'fieldsandfilters.png' );
 		

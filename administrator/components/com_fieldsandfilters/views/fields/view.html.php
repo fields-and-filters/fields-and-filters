@@ -21,6 +21,8 @@ class FieldsandfiltersViewFields extends JViewLegacy
 
 	/**
 	 * Display the view
+	 * 
+	 * @since	1.1.0
 	 */
 	public function display( $tpl = null )
 	{
@@ -34,7 +36,7 @@ class FieldsandfiltersViewFields extends JViewLegacy
 			throw new Exception( implode( "\n", $errors ) );
 		}
 		
-		FieldsandfiltersHelper::addSubmenu( JFactory::getApplication()->input->getCmd( 'view', '' ) );
+		FieldsandfiltersFactory::getHelper()->addSubmenu( JFactory::getApplication()->input->getCmd( 'view', '' ) );
 		
 		$this->addToolbar();
 		$this->sidebar = JHtmlSidebar::render();
@@ -45,14 +47,13 @@ class FieldsandfiltersViewFields extends JViewLegacy
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since	1.6
+	 * @since	1.1.0
 	 */
 	protected function addToolbar()
 	{
-		JLoader::import( 'helpers.fieldsandfilters', JPATH_COMPONENT_ADMINISTRATOR );
 		JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html' );
 		
-		$canDo	= FieldsandfiltersHelper::getActions();
+		$canDo = FieldsandfiltersFactory::getHelper()->getActions();
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_FIELDS' ), 'fields.png' );
 		
@@ -123,7 +124,7 @@ class FieldsandfiltersViewFields extends JViewLegacy
 	 *
 	 * @return  array  Array containing the field name to sort by as the key and display text as value
 	 *
-	 * @since   3.0
+	 * @since   1.0.0
 	 */
 	protected function getSortFields()
 	{

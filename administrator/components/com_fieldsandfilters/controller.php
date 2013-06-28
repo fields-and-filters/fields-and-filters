@@ -25,7 +25,7 @@ class FieldsandfiltersController extends JControllerLegacy
 	public function display( $cachable = false, $urlparams = false )
 	{
 		// Load the Fieldsandfilters Helper
-		JLoader::import( 'helpers.fieldsandfilters', JPATH_COMPONENT_ADMINISTRATOR );
+		JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 		
 		$jinput = JFactory::getApplication()->input;
 		

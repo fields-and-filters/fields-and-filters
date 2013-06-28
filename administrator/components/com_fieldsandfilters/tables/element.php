@@ -21,6 +21,8 @@ class FieldsandfiltersTableElement extends JTable
 	 * Constructor
 	 *
 	 * @param JDatabase A database connector object
+	 *
+	 * @since	1.0.0
 	 */
 	public function __construct( &$db )
 	{
@@ -33,7 +35,8 @@ class FieldsandfiltersTableElement extends JTable
 	 * @param	array		Named array
 	 * @return	null|string	null is operation was satisfactory, otherwise returns an error
 	 * @see		JTable:bind
-	 * @since	1.5
+	 * 
+	 * @since	1.0.0
 	 */
 	public function bind( $array, $ignore = '' )
 	{
@@ -52,7 +55,7 @@ class FieldsandfiltersTableElement extends JTable
 	 * @return  boolean  True if the instance is sane and able to be stored in the database.
 	 *
 	 * @link    http://docs.joomla.org/JTable/check
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function check()
 	{
@@ -72,7 +75,7 @@ class FieldsandfiltersTableElement extends JTable
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function store( $updateNulls = false )
 	{
@@ -81,6 +84,9 @@ class FieldsandfiltersTableElement extends JTable
 		return parent::store( $updateNulls );
 	}
 	
+	/**
+	 * @since	1.0.0
+	 **/
 	public function getElementID( $extensionID, $itemID )
 	{
 		if( !is_numeric( $extensionID ) || !$extensionID || !is_numeric( $itemID ) || !$itemID )
@@ -108,6 +114,9 @@ class FieldsandfiltersTableElement extends JTable
 		return $elementID;
 	}
 	
+	/**
+	 * @since	1.0.0
+	 **/
 	protected function _testPrimaryKey( $object )
 	{
 		$keyName 	= $this->_tbl_key;
@@ -125,6 +134,9 @@ class FieldsandfiltersTableElement extends JTable
 		return $pk;
 	}
 	
+	/**
+	 * @since	1.0.0
+	 **/
 	public function insertData( $object )
 	{
 		$pk = $this->_testPrimaryKey( $object );
@@ -167,6 +179,9 @@ class FieldsandfiltersTableElement extends JTable
 		return true;
 	}
 	
+	/**
+	 * @since	1.0.0
+	 **/
 	public function updateData( $object )
 	{
 		$pk = $this->_testPrimaryKey( $object );
@@ -201,6 +216,9 @@ class FieldsandfiltersTableElement extends JTable
 		return true;
 	}
 	
+	/**
+	 * @since	1.0.0
+	 **/
 	public function deleteData( $object = null )
 	{
 		$pk = $this->_testPrimaryKey( $object );
@@ -251,6 +269,9 @@ class FieldsandfiltersTableElement extends JTable
 		return true;
 	}
 	
+	/**
+	 * @since	1.0.0
+	 **/
 	public function insertConnections( $object )
 	{
 		$pk = $this->_testPrimaryKey( $object );
@@ -317,6 +338,9 @@ class FieldsandfiltersTableElement extends JTable
 		return true;
 	}
 	
+	/**
+	 * @since	1.0.0
+	 **/
 	public function deleteConnections( $object = null )
 	{
 		$pk = $this->_testPrimaryKey( $object );
@@ -398,8 +422,8 @@ class FieldsandfiltersTableElement extends JTable
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   11.1
-	 */
+	 * @since	1.0.0
+	 **/
 	public function publish( $pks = null, $state = 1, $userId = 0 )
 	{
 		$k = $this->_tbl_key;

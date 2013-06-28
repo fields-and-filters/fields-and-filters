@@ -10,9 +10,14 @@
 // no direct access
 defined('_JEXEC') or die;
 
+// Load the Factory Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
+
 /**
  * @package		fieldsandfilters.administrator
  * @subpackage		com_fieldsandfilters
+ *
+ * @since       1.1.0
  */
 abstract class JHtmlFieldsandfilters
 {
@@ -24,7 +29,7 @@ abstract class JHtmlFieldsandfilters
 	 *
 	 * @return  void
 	 *
-	 * @since   3.0
+	 * @since       1.0.0
 	 */
 	public static function dropdownRequired( $checkboxId, $prefix = '' )
 	{
@@ -41,7 +46,7 @@ abstract class JHtmlFieldsandfilters
 	 *
 	 * @return  void
 	 *
-	 * @since   3.0
+	 * @since       1.0.0
 	 */
 	public static function dropdownUnrequired( $checkboxId, $prefix = '' )
 	{
@@ -58,7 +63,7 @@ abstract class JHtmlFieldsandfilters
 	 *
 	 * @return  void
 	 *
-	 * @since   3.0
+	 * @since       1.0.0
 	 */
 	public static function dropdownOnlyAdmin( $checkboxId, $prefix = '' )
 	{
@@ -70,10 +75,12 @@ abstract class JHtmlFieldsandfilters
 	/**
 	 * @param   int $value	The state value
 	 * @param   int $i
+	 *
+	 * @since       1.0.0
 	 */
 	public static function required( $value = 0, $i, $prefix = '', $enabled = true, $checkbox = 'cb' )
 	{
-		JHtml::_('bootstrap.tooltip');
+		JHtml::_( 'bootstrap.tooltip' );
 		
 		// Array of image, task, title, action
 		$states = array(
@@ -120,7 +127,7 @@ abstract class JHtmlFieldsandfilters
 	 *
 	 * @return  string  The HTML code for the select tag
 	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public static function publishedOptions( $config = array() )
 	{
@@ -128,7 +135,7 @@ abstract class JHtmlFieldsandfilters
 		$options = array();
 		if( !array_key_exists( 'published', $config ) || $config['published'] )
 		{
-			$options[] = JHtml::_('select.option', '1', 'JPUBLISHED');
+			$options[] = JHtml::_( 'select.option', '1', 'JPUBLISHED' );
 		}
 		if( !array_key_exists( 'unpublished', $config ) || $config['unpublished'] )
 		{
@@ -146,20 +153,17 @@ abstract class JHtmlFieldsandfilters
 	 * Method to get the available options plugin item type. value & text
 	 * 
 	 * @return	array	array associate value and text
-	 * @since	1.00
+	 * @since       1.1.0
 	 */
 	public static function pluginTypesOptions( $excluded = array() )
 	{
 		$options 	= array();
 		
-		// Load PluginTypes Helper
-		JLoader::import( 'helpers.fieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		// Load Extensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		if( $pluginTypes = get_object_vars( FieldsandfiltersPluginTypesHelper::getInstance()->getTypes( true ) ) )
+		if( $pluginTypes = get_object_vars( FieldsandfiltersFactory::getPluginTypes()->getTypes( true ) ) )
 		{
+			// Load Extensions Helper
+			$extensionsHelper = FieldsandfiltersFactory::getExtensions();
+			
 			while( $pluginType = array_shift( $pluginTypes ) )
 			{
 				if( !in_array( $pluginType->name, $excluded ) )
@@ -179,26 +183,23 @@ abstract class JHtmlFieldsandfilters
 	 * Method to get the available options plugin item type. value & text
 	 * 
 	 * @return	array	array associate value and text
-	 * @since	1.00
+	 * @since       1.1.0
 	 */
 	public static function pluginExtensionsOptions( $excluded = array() )
 	{
 		$options 	= array();
 		
-		// Load pluginExtensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		// Load Extensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		if( $pluginExtensions = get_object_vars( FieldsandfiltersPluginExtensionsHelper::getInstance()->getExtensions( true ) ) )
+		if( $pluginExtensions = get_object_vars( FieldsandfiltersFactory::getPluginExtensions()->getExtensions( true ) ) )
 		{
+			// Load Extensions Helper
+			$extensionsHelper = FieldsandfiltersFactory::getExtensions();
+			
 			while( $pluginExtension = array_shift( $pluginExtensions ) )
 			{
 				if( !in_array( $pluginExtension->name, $excluded ) )
 				{
 					// load plugin language
-					FieldsandfiltersExtensionsHelper::loadLanguage( 'plg_' . $pluginExtension->type . '_' . $pluginExtension->name, JPATH_ADMINISTRATOR );
+					$extensionsHelper->loadLanguage( 'plg_' . $pluginExtension->type . '_' . $pluginExtension->name, JPATH_ADMINISTRATOR );
 					
 					$options[] = JHtml::_( 'select.option', $pluginExtension->extension_type_id, JText::_( $pluginExtension->title ) );
 				}
@@ -212,27 +213,24 @@ abstract class JHtmlFieldsandfilters
 	 * Method to get the available options fields item. value & text
 	 * 
 	 * @return	array	array associate value and text
-	 * @since	1.00
+	 * @since       1.1.0
 	 */
 	public static function fieldsOptions( $modes = 'values', $state = 1 )
 	{
 		$options 	= array();
 		
 		// Load PluginTypes Helper
-		JLoader::import( 'helpers.fieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		$pluginTypesHelper = FieldsandfiltersPluginTypesHelper::getInstance();
+		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
 		
 		// Load pluginExtensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		$extenionsID = FieldsandfiltersPluginExtensionsHelper::getInstance()->getExtensionsColumn( 'extension_type_id' );
+		$extenionsID = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsColumn( 'extension_type_id' );
 		
 		// Load Fields Helper
-		JLoader::import( 'helpers.fieldsandfilters.fields', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		$fieldsHelper = FieldsandfiltersFieldsHelper::getInstance();
+		$fieldsHelper = FieldsandfiltersFactory::getFields();
 		
 		if( is_array( $modes ) )
 		{
-			$modes =  FieldsandfiltersArrayHelper::flatten( $pluginTypesHelper->getModes( $modes ) );
+			$modes =  FieldsandfiltersFactory::getArray()->flatten( $pluginTypesHelper->getModes( $modes ) );
 		}
 		elseif( is_string( $modes ) )
 		{
@@ -263,19 +261,14 @@ abstract class JHtmlFieldsandfilters
 	 * Method to get the available options field values item. value & text
 	 * 
 	 * @return	array	array associate value and text
-	 * @since	1.00
+	 * @since       1.1.0
 	 */
 	public static function fieldValuesOptions( $fieldID, $state = 1 )
 	{
 		$options 	= array();
 		
-		// Load pluginExtensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		$extenionsID = FieldsandfiltersPluginExtensionsHelper::getInstance()->getExtensionsColumn( 'extension_type_id' );
-		
-		// Load Fields Helper
-		JLoader::import( 'helpers.fieldsandfilters.fields', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );		
-		$field = FieldsandfiltersFieldsHelper::getInstance()->getFieldsByID( $extenionsID, $fieldID, $state, true );
+		$extenionsID 	= FieldsandfiltersFactory::getPluginExtensions()->getExtensionsColumn( 'extension_type_id' );
+		$field 		= FieldsandfiltersFactory::getFields()->getFieldsByID( $extenionsID, $fieldID, $state, true );
 		
 		if( ( $field = $field->get( $fieldID ) ) && ( $values = $field->values->getProperties( true ) ) )
 		{
@@ -295,14 +288,14 @@ abstract class JHtmlFieldsandfilters
 	 *
 	 * @return  string
 	 *
-	 * @since   2.5
+	 * @since       1.1.0
 	 */
 	public static function buttons( $buttons )
 	{
 		$html = array();
 		foreach( $buttons as $button )
 		{
-			$html[] = JHtml::_( 'fieldsandfilters.button', $button );
+			$html[] =  slef::button( $button );
 		}
 		return implode( $html );
 	}
@@ -314,7 +307,7 @@ abstract class JHtmlFieldsandfilters
 	 *
 	 * @return  string
 	 *
-	 * @since   2.5
+	 * @since       1.0.0
 	 */
 	public static function button( $button )
 	{

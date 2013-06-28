@@ -14,9 +14,7 @@ defined( '_JEXEC' ) or die;
 JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html'  );
 
 // Load PluginExtensions Helper
-JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-
-$pluginExtensionsHelper = FieldsandfiltersPluginExtensionsHelper::getInstance();
+$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
 
 JHtml::_( 'bootstrap.tooltip' );
 JHtml::_( 'dropdown.init' );

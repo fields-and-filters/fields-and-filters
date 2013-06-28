@@ -9,14 +9,14 @@
 
 defined('_JEXEC') or die;
 
-// Load Extensions Helper
-JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-
-$document 	= JFactory::getDocument();
-$app		= JFactory::getApplication();
+$document 		= JFactory::getDocument();
+$app			= JFactory::getApplication();
 // Checking if loaded via index.php or component.php
-$recordId	= $app->input->get( 'recordId', 0, 'int' );
-$tmpl 		= $app->input->get( 'tmpl', '', 'cmd' );
+$recordId		= $app->input->get( 'recordId', 0, 'int' );
+$tmpl 			= $app->input->get( 'tmpl', '', 'cmd' );
+
+// Load Extensions Helper
+$extensionsHelper 	= FieldsandfiltersFactory::getExtensions();
 
 // Import CSS
 JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
@@ -53,7 +53,7 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 	<?php foreach( $this->_plugins->toObject() AS $nameGroup => $pluginTypes ) : ?>
 		<?php
 			$pluginType = current( $pluginTypes );
-			FieldsandfiltersExtensionsHelper::loadLanguage( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
+			$extensionsHelper->loadLanguage( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
 			$group = (array) $pluginType->group;
 			echo JHtml::_( 'bootstrap.addSlide', 'pluginTypes', JText::_( JArrayHelper::getValue( $group, 'title', 'COM_FIELDSANDFILTERS_PLUGINSTYPES_OTHERS' ) ), 'type' . $nameGroup );
 		?>
@@ -61,7 +61,7 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 		<?php foreach( $pluginTypes AS &$type ): ?>
 			<?php
 				if( $pluginType != $type ):
-					FieldsandfiltersExtensionsHelper::loadLanguage( 'plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR );
+					$extensionsHelper->loadLanguage( 'plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR );
 				endif;
 			?>
 			<li>

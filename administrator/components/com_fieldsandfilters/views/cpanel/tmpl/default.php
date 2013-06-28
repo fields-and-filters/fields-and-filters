@@ -12,6 +12,61 @@ defined( '_JEXEC' ) or die;
 
 JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html'  );
 
+
+
+
+
+$profiler = new JProfiler();
+$profiler->mark( 'joomla' );
+
+FieldsandfiltersFactory::getFields();
+
+$profiler->mark( 'factory' );
+
+// $values = FieldsandfiltersFactory::getFields()->getFieldsPivot( 'field_id', array( 1,2 ) )->getProperties();
+
+/** Mozemy dorobic sortowanie w __call **/
+// $values = JArrayHelper::sortObjects( $values, 'ordering' );
+
+
+// $values = FieldsandfiltersFactory::getElements()->getElementID( array( 2 ), 1 );
+
+//$plugins = JPluginHelper::getPlugin( 'fieldsandfiltersTypes' );
+//
+//foreach( $plugins AS $plugin )
+//{
+
+
+
+
+$profiler->mark('old');
+
+echo '<pre>';
+print_r($plugins);
+echo '</pre>';
+
+
+//echo '<pre>';
+//print_r($plugins);
+//echo '</pre>';
+//
+//$plugins = JPluginHelper::getPlugin( 'fieldsandfiltersTypes' );
+//
+//
+//
+//echo '<pre>';
+//print_r($plugins);
+//echo '</pre>';
+
+
+$profiler->mark( 'joomla' );
+
+
+echo '<pre>';
+print_r($profiler->getBuffer());
+echo '</pre>';
+
+
 // Import CSS
 JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
 ?>
@@ -40,9 +95,9 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 	<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 		<input type="hidden" name="cmd" value="_s-xclick" />
 		<input type="hidden" name="hosted_button_id" value="4H27YCMTRWZV8" />
-		<!--<a href="#" id="btnchangelog" class="btn btn-info">CHANGELOG</a>-->
+			<?php /* <a href="#" id="btnchangelog" class="btn btn-info">CHANGELOG</a>- */ ?>
 		<input type="submit" class="btn btn-inverse" value="Donate via PayPal" />
-		<!--<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">-->
+			<?php /* <input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online."> */ ?>
 		<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
 	</form>
 </div>

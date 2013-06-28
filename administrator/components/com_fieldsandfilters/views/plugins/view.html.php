@@ -20,22 +20,20 @@ class FieldsandfiltersViewPlugins extends JViewLegacy
 	
 	/**
 	 * Display the view
+	 * 
+	 * @since	1.1.0
 	 */
 	public function display( $tpl = null )
 	{
 		switch( $this->getLayout() )
 		{
 			case 'types':
-				// Load PluginTypes Helper
-				JLoader::import( 'helpers.fieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				
-				$this->_plugins = FieldsandfiltersPluginTypesHelper::getInstance()->getTypesGroup();
+				// Load PluginTypes Helper - getTypesGroup
+				$this->_plugins = FieldsandfiltersFactory::getPluginTypes()->getTypesGroup();
 			break;
 			case 'extensions':
-				// Load PluginExtensions Helper
-				JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				
-				$this->_plugins = FieldsandfiltersPluginExtensionsHelper::getInstance()->getExtensionsGroup();
+				// Load PluginExtensions Helper - 
+				$this->_plugins = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsGroup();
 				
 			break;
 		}
@@ -52,6 +50,8 @@ class FieldsandfiltersViewPlugins extends JViewLegacy
 	
 	/**
 	 * Add the page title and toolbar.
+	 *
+	 * @since	1.0.0
 	 */
 	protected function addToolbar()
 	{

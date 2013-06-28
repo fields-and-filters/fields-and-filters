@@ -9,14 +9,14 @@
 
 defined('_JEXEC') or die;
 
-// Load Extensions Helper
-JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-
-$document 	= JFactory::getDocument();
-$app		= JFactory::getApplication();
+$document 		= JFactory::getDocument();
+$app			= JFactory::getApplication();
 // Checking if loaded via index.php or component.php
-$recordId	= $app->input->get( 'recordId', 0, 'int' );
-$tmpl 		= $app->input->get( 'tmpl', '', 'cmd' );
+$recordId		= $app->input->get( 'recordId', 0, 'int' );
+$tmpl 			= $app->input->get( 'tmpl', '', 'cmd' );
+
+// Load Extensions Helper
+$extensionsHelper 	= FieldsandfiltersFactory::getExtensions();
 
 // Import CSS
 JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
@@ -52,7 +52,7 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 <?php foreach( $this->_plugins->toObject() AS $nameGroup => $pluginExtensions ) : ?>
 	<ul class="nav nav-tabs nav-stacked">
 	<?php foreach( $pluginExtensions AS &$extension ): ?>
-		<?php FieldsandfiltersExtensionsHelper::loadLanguage( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR ); ?>
+		<?php $extensionsHelper->loadLanguage( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR ); ?>
 		<li>
 			<a class="choose_type" href="#" title="<?php echo $this->escape( $extension->description ); ?>"
 				onclick="javascript:setType('<?php echo base64_encode( json_encode( array( 'id' => $recordId, 'title' => $extension->title, 'type' => $extension->type, 'name' => $extension->name, 'extension_type_id' => $extension->extension_type_id ) ) ); ?>')">

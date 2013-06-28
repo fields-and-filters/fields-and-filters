@@ -21,6 +21,8 @@ class FieldsandfiltersViewElement extends JViewLegacy
 
 	/**
 	 * Display the view
+	 * 
+	 * @since	1.0.0
 	 */
 	public function display( $tpl = null )
 	{
@@ -40,6 +42,8 @@ class FieldsandfiltersViewElement extends JViewLegacy
 	
 	/**
 	 * Add the page title and toolbar.
+	 *
+	 * @since	1.1.0
 	 */
 	protected function addToolbar()
 	{
@@ -47,7 +51,7 @@ class FieldsandfiltersViewElement extends JViewLegacy
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_ELEMENT' ), 'element.png' );
 		
-		$canDo = FieldsandfiltersHelper::getActions();
+		$canDo = FieldsandfiltersFactory::getHelper()->getActions();
 		
 		// If not checked out, can save the item.
 		if( $canDo->get('core.edit') || $canDo->get('core.create' ) )

@@ -19,6 +19,8 @@ class FieldsandfiltersTableField extends JTable {
 	 * Constructor
 	 *
 	 * @param JDatabase A database connector object
+	 *
+	 * @since	1.0.0
 	 */
 	public function __construct( &$db )
 	{
@@ -36,7 +38,7 @@ class FieldsandfiltersTableField extends JTable {
 	 * @return  boolean  True on success.
 	 *
 	 * @link    http://docs.joomla.org/JTable/bind
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function bind( $array, $ignore = '' )
 	{
@@ -80,7 +82,10 @@ class FieldsandfiltersTableField extends JTable {
     
 	/**
 	 * This function convert an array of JAccessRule objects into an rules array.
+	 * 
 	 * @param type $jaccessrules an arrao of JAccessRule objects.
+	 * 
+	 * @since	1.0.0
 	 */
 	private function JAccessRulestoArray($jaccessrules){
 		$rules = array();
@@ -103,16 +108,10 @@ class FieldsandfiltersTableField extends JTable {
 	 * @return  boolean  True if the instance is sane and able to be stored in the database.
 	 *
 	 * @link    http://docs.joomla.org/JTable/check
-	 * @since   11.1
+	 * @since	1.1.0
 	 */
 	public function check()
 	{
-		// Load PluginTypes Helper
-		JLoader::import( 'helpers.fieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		// Load pluginExtensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
 		//If there is an ordering column and this is a new row then get the next ordering value
 		if( $this->field_id == 0 )
 		{
@@ -132,7 +131,7 @@ class FieldsandfiltersTableField extends JTable {
 			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_TYPE' ) );
 			return false;
 		}
-		elseif( !FieldsandfiltersPluginTypesHelper::getInstance()->getTypes()->get( $this->field_type ) )
+		elseif( !FieldsandfiltersFactory::getPluginTypes()->getTypes()->get( $this->field_type ) )
 		{
 			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_TYPE_NOT_EXISTS', $this->field_type ) );
 			return false;
@@ -144,14 +143,14 @@ class FieldsandfiltersTableField extends JTable {
 			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_EXTENSION_TYPE_ID' ) );
 			return false;
 		}
-		elseif( !FieldsandfiltersPluginExtensionsHelper::getInstance()->getExtensionsPivot( 'extension_type_id' )->get( $this->extension_type_id ) )
+		elseif( !FieldsandfiltersFactory::getPluginExtensions()->getExtensionsPivot( 'extension_type_id' )->get( $this->extension_type_id ) )
 		{
 			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_EXTENSION_TYPE_ID_NOT_EXISTS', $this->extension_type_id ) );
 			return false;
 		}
 		
 		// Check mode field
-		if( in_array( $this->mode, (array) FieldsandfilterspluginTypesHelper::getInstance()->getMode( 'values' ) ) )
+		if( in_array( $this->mode, (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'values' ) ) )
 		{
 			// Check for a field alias
 			if( trim( $this->field_alias ) == '' )
@@ -181,15 +180,12 @@ class FieldsandfiltersTableField extends JTable {
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   11.1
+	 * @since	1.1.0
 	 */
 	public function store( $updateNulls = false )
 	{
-		// Load PluginTypes Helper
-		JLoader::import( 'helpers.fieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
 		// Check mode field
-		if( in_array( $this->mode, (array) FieldsandfilterspluginTypesHelper::getInstance()->getMode( 'values' ) ) )
+		if( in_array( $this->mode, (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'values' ) ) )
 		{
 			// Verify that the alias is unique
 			$table = JTable::getInstance( 'Field', 'FieldsandfiltersTable' );
@@ -215,7 +211,7 @@ class FieldsandfiltersTableField extends JTable {
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function publish( $pks = null, $state = 1, $userId = 0 )
 	{
@@ -285,7 +281,7 @@ class FieldsandfiltersTableField extends JTable {
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function required( $pks = null, $state = 1, $userId = 0 )
 	{

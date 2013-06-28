@@ -19,6 +19,8 @@ class FieldsandfiltersTablefieldvalue extends JTable
 	 * Constructor
 	 *
 	 * @param JDatabase A database connector object
+	 *
+	 * @since	1.0.0
 	 */
 	public function __construct( &$db )
 	{
@@ -27,6 +29,8 @@ class FieldsandfiltersTablefieldvalue extends JTable
 	
 	/**
 	 * Overloaded check function
+	 *
+	 * @since	1.0.0
 	 */
 	public function check()
 	{
@@ -66,7 +70,7 @@ class FieldsandfiltersTablefieldvalue extends JTable
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function store( $updateNulls = false )
 	{
@@ -82,6 +86,9 @@ class FieldsandfiltersTablefieldvalue extends JTable
 		return parent::store( $updateNulls );
 	}
 	
+	/**
+	 * @since	1.0.0
+	 **/
 	public function deleteByFieldID( $fieldID )
 	{
 		$query 	= $this->_db->getQuery( true );
@@ -119,7 +126,7 @@ class FieldsandfiltersTablefieldvalue extends JTable
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function publish( $pks = null, $state = 1, $userId = 0 )
 	{
