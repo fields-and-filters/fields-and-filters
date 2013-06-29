@@ -72,7 +72,7 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
 					
 					if( $data->xml )
 					{
-						FieldsandfiltersFactory::getXML()->getPluginOptionsFromXML( $elements->get( $pluginType->name ), $this->config );
+						FieldsandfiltersFactory::getXML()->getPluginOptionsFromsXML( $elements->get( $pluginType->name ), array() );
 					}  
 				}
 			}
@@ -87,7 +87,7 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
                         
                         while( $element = array_shift( $elements ) )
                         { 
-                                FieldsandfiltersFactory::getXML()->getPluginOptionsFromXML( $element, $this->config );
+                                FieldsandfiltersFactory::getXML()->getPluginOptionsFromsXML( $element, array() );
                         }
                 }
 		
@@ -126,17 +126,19 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
 		
                 if( is_null( $group ) )
                 {
-			$group 	= new JRegistry;
+			$group 		= new JRegistry;
                         $plugins        = get_object_vars( $this->getTypes( true ) );
 			
                         while( $plugin = array_shift( $plugins ) )
                         {
-                                if( empty( $plugin->group['type'] ) || empty( $plugin->name ) )
-                                {
-                                        continue;
-                                }
-                                
-                                $group->set( ( $plugin->group['type'] . '.' . $plugin->name ), $plugin );
+				if( isset( $plugin->forms ) )
+				{
+					$forms = $plugin->forms->getProperties();
+					while( $form = array_shift( $forms ) )
+					{
+						$group->set( ( $form->group->name . '.' . $plugin->name ), $plugin );
+					}
+				}
                         }
                 }
                 
@@ -176,17 +178,21 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
 	 *
 	 * @param   string  $paths     		Array mode paths ( e.g. array( values.single, values.multi )
 	 * @param   mixed   $default  		Optional default value, returned if the internal value is null.
-	 * @param   mixed   $pathKey  		Keys of array is the name of modes
+	 * @param   boolean   $pathKey  	Keys of array is the name of modes
+	 * @param   boolean   $flatten  	Flatten array
 	 *
 	 * @return  mixed  Value of entry or null
 	 *
-	 * @since       1.0.0
+	 * @since       1.1.0
 	 */
-	public function getModes( $paths, $default = array(), $pathKey = false )
+	public function getModes( $paths = null, $default = array(), $flatten = false, $pathKey = false )
 	{
 		$modes = array();
-		
-		if( is_array( $paths ) )
+		if( is_null( $paths ) )
+		{
+			$modes = $this->_getData( 'modes' )->elements->getProperties();
+		}
+		else if( is_array( $paths ) )
 		{
 			while( $path = array_shift( $paths ) )
 			{
@@ -203,8 +209,24 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
 				}
 			}
 		}
+		else if( is_string( $paths ) )
+		{
+			$modes = (array) $this->getMode( $paths );
+		}
 		
-		return ( !empty( $modes ) ? $modes : $default );
+		if( !empty( $modes ) )
+		{
+			if( $flatten )
+			{
+				$modes = FieldsandfiltersFactory::getArray()->flatten( $modes );
+			}
+		}
+		else
+		{
+			$modes = $default;
+		}
+		
+		return $modes;
 	}
 	
 	/**

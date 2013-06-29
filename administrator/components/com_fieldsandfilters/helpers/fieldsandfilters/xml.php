@@ -147,76 +147,71 @@ class FieldsandfiltersXMLHelper
 	 * @return	boolean		return true if succes.
 	 * @since	1.0.0
 	 */
-	public static function getPluginOptionsFromXML( $element, $config = null )
+	public static function getPluginOptionsFromsXML( $element, $config = array() )
 	{
-		jimport( 'joomla.filesystem.file' );
-                
-                $fileName = isset( $config->fileName ) ? $config->fileName : 'params';
-                
+		jimport( 'joomla.filesystem.folder' );
+		
 		// Get the params file path plugin.
-		if( property_exists( $element, 'file_path' ) )
+		if( property_exists( $element, 'forms_dir' ) )
 		{
-			$filePath = $element->file_path;
+			$formsDir = $element->forms_dir;
 		}
 		else
 		{
-			$filePath = JPATH_PLUGINS . '/' . $element->type . '/' . $element->name . '/forms/' . $fileName . '.xml';
+			$formsDir = JPATH_PLUGINS . '/' . $element->type . '/' . $element->name . '/forms';
 		}
 		
-                $filePath = JPath::clean( $filePath );  
+                $formsDir = JPath::clean( $formsDir );  
                 
-		if( !is_file( $filePath ) )
+		if( !( is_dir($formsDir) && ( $formsPath = JFolder::files( $formsDir, '^[^_]*\.xml$', false, true ) ) ) )
 		{
 			return;
 		}
-                
-		$element->title		= ucfirst( $element->name );
-		$element->description	= '';
-		$element->xml		= array( 'params' => $filePath );
-		$element->group		= array( 'type' => 'others', 'title' => 'COM_FIELDSANDFILTERS_PLUGINSTYPES_OTHERS', 'description' => 'COM_FIELDSANDFILTERS_PLUGINSTYPES_OTHERS_DESC' );
-                
-		// Attempt to load the xml file.
-		if( $xml = simplexml_load_file( $filePath ) )
+		$element->forms = new JObject;		
+		while( $formPath = array_shift( $formsPath ) )
 		{
-			// Look for the first view node off of the root node.
-			if ( $layout = $xml->xpath( 'layout[1] ') )
+			$form = new JObject;
+			
+			// Attempt to load the xml file.
+			if( $xml = simplexml_load_file( $formPath ) )
 			{
-				$layout = $layout[0];
-				
-				// Get group if params have it
-				if( $group = $xml->xpath( 'group[1]' ) )
+				// Look for the first view node off of the root node.
+				if ( $layout = $xml->xpath( 'layout[1] ') )
 				{
-					$group = $group[0];
-					if( !( empty( $group['type'] ) && empty( $group['title'] ) ) )
+					$layout = $layout[0];
+					
+					// Get group if params have it
+					if( $group = $xml->xpath( 'group[1]' ) )
 					{
-						$element->group['type'] = trim( (string) $group['type'] );
-						
-						$element->group['title'] = trim( (string) $group['title'] );
-						
-						$element->group['description'] = ( !empty( $group->message[0] ) ? trim( (string) $group->message[0] ) : '' );
+						$group = $group[0];
+						if( !empty( $group['title'] ) )
+						{
+							$form->group 			= new stdClass;
+							$form->group->title		= trim( (string) $group['title'] );
+							$form->group->description	= !empty( $group->message[0] ) ? trim( (string) $group->message[0] ) : '';
+						}
 					}
-				}
-		
-				// If the view is hidden from the menu, discard it and move on to the next view.
-				if( !empty( $layout['hidden'] ) && $layout['hidden'] == 'true' )
-				{
-					unset( $xml );
-					return null;
-				}
-
-				// Populate the title and description if they exist.
-				if( !empty( $layout['title'] ) )
-				{
-					$element->title = trim( (string) $layout['title'] );
-				}
-
-				if( !empty( $layout->message[0] ) )
-				{
-					$element->description = trim( (string) $layout->message[0] );
+					
+					// If the view is hidden from the menu, discard it and move on to the next view.
+					if( !isset( $form->group ) || ( !empty( $layout['hidden'] ) && $layout['hidden'] == 'true' ) )
+					{
+						unset( $xml, $form );
+						continue;
+					}
+					
+					// Populate the title and description if they exist.
+					$form->title 		= !empty( $layout['title'] ) ? trim( (string) $layout['title'] ) : ucfirst( $element->name );
+					$form->description 	= !empty( $layout->message[0] ) ? trim( (string) $layout->message[0] ) : '';
 				}
 			}
-		}
-                
+			
+			$form->path = $formPath;
+			$groupName = $form->group->name = basename( $formPath, '.xml' );
+			
+			$element->forms->set( $groupName, $form );
+			
+                }
+		
                 return true;
 	}
 }

@@ -46,7 +46,7 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersBufferCoreH
 					if( $pluginExtension->name == $this->_extension_default )
 					{
 						$pluginExtension->type             = 'com_fieldsandfilters';
-						$pluginExtension->file_path        = JPATH_ADMINISTRATOR . '/components/' . $pluginExtension->type . '/models/forms/' . $pluginExtension->name . '.xml';
+						$pluginExtension->forms_dir        = JPATH_ADMINISTRATOR . '/components/' . $pluginExtension->type . '/models/forms/allextensions';
 						$pluginExtension->params           = '{}';
 					}
 					
@@ -55,7 +55,7 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersBufferCoreH
 					
 					if( $data->xml )
 					{
-						FieldsandfiltersFactory::getXML()->getPluginOptionsFromXML( $elements->get( $pluginExtension->name ), $this->config );
+						FieldsandfiltersFactory::getXML()->getPluginOptionsFromsXML( $elements->get( $pluginExtension->name ), array() );
 					}  
 				}
 			}
@@ -70,7 +70,7 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersBufferCoreH
                         
                         while( $element = array_shift( $elements ) )
                         {
-                                FieldsandfiltersFactory::getXML()->getPluginOptionsFromXML( $element, $this->config );
+                                FieldsandfiltersFactory::getXML()->getPluginOptionsFromXML( $element, array() );
                         }
                 }
                 
@@ -112,13 +112,15 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersBufferCoreH
                         
                         while( $plugin = array_shift( $plugins ) )
                         {
-                                if( empty( $plugin->group['type'] ) || empty( $plugin->name ) )
-                                {
-                                        continue;
-                                }
-                                
-                                $group->set( ( $plugin->group['type'] . '.' . $plugin->name ), $plugin );
-                        }
+				if( isset( $plugin->forms ) )
+				{
+					$forms = $plugin->forms->getProperties();
+					while( $form = array_shift( $forms ) )
+					{
+						$group->set( ( $form->group->name . '.' . $plugin->name ), $plugin );
+					}
+				}
+			}
                 }
                 
                 return $group; 
