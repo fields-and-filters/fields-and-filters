@@ -147,7 +147,7 @@ class FieldsandfiltersXMLHelper
 	 * @return	boolean		return true if succes.
 	 * @since	1.0.0
 	 */
-	public static function getPluginOptionsFromsXML( $element, $config = array() )
+	public static function getPluginOptionsForms( $element, $config = array() )
 	{
 		jimport( 'joomla.filesystem.folder' );
 		

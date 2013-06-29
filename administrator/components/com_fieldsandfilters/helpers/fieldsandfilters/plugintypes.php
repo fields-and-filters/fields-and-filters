@@ -72,7 +72,7 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
 					
 					if( $data->xml )
 					{
-						FieldsandfiltersFactory::getXML()->getPluginOptionsFromsXML( $elements->get( $pluginType->name ), array() );
+						FieldsandfiltersFactory::getXML()->getPluginOptionsForms( $elements->get( $pluginType->name ), array() );
 					}  
 				}
 			}
@@ -87,7 +87,7 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
                         
                         while( $element = array_shift( $elements ) )
                         { 
-                                FieldsandfiltersFactory::getXML()->getPluginOptionsFromsXML( $element, array() );
+                                FieldsandfiltersFactory::getXML()->getPluginOptionsForms( $element, array() );
                         }
                 }
 		

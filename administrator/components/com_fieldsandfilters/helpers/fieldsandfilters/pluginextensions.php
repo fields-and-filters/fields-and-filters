@@ -55,7 +55,7 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersBufferCoreH
 					
 					if( $data->xml )
 					{
-						FieldsandfiltersFactory::getXML()->getPluginOptionsFromsXML( $elements->get( $pluginExtension->name ), array() );
+						FieldsandfiltersFactory::getXML()->getPluginOptionsForms( $elements->get( $pluginExtension->name ), array() );
 					}  
 				}
 			}
@@ -70,7 +70,7 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersBufferCoreH
                         
                         while( $element = array_shift( $elements ) )
                         {
-                                FieldsandfiltersFactory::getXML()->getPluginOptionsFromXML( $element, array() );
+                                FieldsandfiltersFactory::getXML()->getPluginOptionsForms( $element, array() );
                         }
                 }
                 
