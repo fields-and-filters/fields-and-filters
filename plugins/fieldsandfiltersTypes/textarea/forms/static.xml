@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pluginType>
+	<layout
+		title="PLG_FAF_ES_TA_FORM_TITLE"
+		option="PLG_FAF_ES_TA_FORM_OPTION"
+	>
+		<message>
+			<![CDATA[PLG_FAF_ES_TA_FORM_DESC]]>
+		</message>
+	</layout>
+	<group type="fields" title="PLG_FIELDSANDFILTERS_FORM_GROUP_FIELDS_TITLE">
+		<message>
+			<![CDATA[PLG_FIELDSANDFILTERS_FORM_GROUP_FIELDS_DESC]]>
+		</message>
+	</group>
+
+	<!-- Add fields to the properties variables for the plugin type. -->
+	<fields name="properties">
+		<fieldset name="properties">
+			<field
+				name="mode"
+				type="hidden"
+				value="static.text"
+			/>
+		</fieldset>
+	</fields>
+	
+	<!-- Add fields to the parameters object for the plugin type. -->
+	<fields name="params">
+		<fieldset name="type">
+			<field
+				name="rows"
+				type="text"
+				class="inputbox"
+				label="PLG_FAF_TS_TA_FORM_DISPLAY_ROWS_LBL"
+				description="PLG_FAF_TS_TA_FORM_DISPLAY_ROWS_DESC"
+				default="0"
+				filter="intval"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field
+				name="cols"
+				type="text"
+				class="inputbox"
+				label="PLG_FAF_TS_TA_FORM_DISPLAY_COLS_LBL"
+				description="PLG_FAF_TS_TA_FORM_DISPLAY_COLS_DESC"
+				default="0"
+				filter="intval"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field
+				name="display_editor"
+				type="radio"
+				class="btn-group"
+				label="PLG_FAF_TS_TA_FORM_DISPLAY_EDITOR_LBL"
+				description="PLG_FAF_TS_TA_FORM_DISPLAY_EDITOR_DESC"
+				default="0"
+				filter="intval"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field
+				name="editor"
+				type="plugins"
+				folder="editors"
+				default=""
+				label="PLG_FAF_TS_TA_FORM_EDITOR_LBL"
+				description="PLG_FAF_TS_TA_FORM_EDITOR_DESC"
+				filter="cmd"
+			>
+				<option value="">JDEFAULT</option>
+			</field>
+		</fieldset>
+	</fields>
+</pluginType>
