@@ -506,10 +506,11 @@ class FieldsandfiltersModelelement extends JModelAdmin
 				$connections 	= $tableFields->get( 'connections', new JObject );
 				
 				// Load PluginTypes Helper
-				JLoader::import( 'helpers.fieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+				JLoader::import( 'helpers.fSieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
 				$pluginTypesHelper 	= FieldsandfiltersPluginTypesHelper::getInstance();
-				$valuesModes 		= $pluginTypesHelper->getMode( 'values', array() );
-				$dataModes		= $pluginTypesHelper->getMode( 'data', array() );
+				$valuesModes 		= $pluginTypesHelper->getMode( 'values', array() ); // [TODO] zmienic na filter
+				$dataModes		= $pluginTypesHelper->getMode( 'data', array() ); // [TODO] pamietac o static lub zrobic w metodzie getMode mozliwosc odseparowania
+													 // lub usunac i tylko sprawdzac czy jest filterem
 				
 				// Load Array Helper
 				JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );

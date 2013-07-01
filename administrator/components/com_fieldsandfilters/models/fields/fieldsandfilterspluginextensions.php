@@ -20,7 +20,6 @@ JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/
  * @package     fieldsandfilters
  * @subpackage  Form
  * @see         JFormFieldPluginsType for a select list of type plugins.
- * 
  * @since       1.1.0
  */
 class JFormFieldFieldsandfiltersPluginExtensions extends JFormFieldList
@@ -47,19 +46,29 @@ class JFormFieldFieldsandfiltersPluginExtensions extends JFormFieldList
 		$size		= ( $v = $this->element['size'] ) ? ' size="' . $v . '"' : '';
 		$class		= ( $v = $this->element['class'] ) ? ' class="' . $v . '"' : 'class="inputbox"';
 		$recordId	= (int) $this->form->getValue( 'field_id', 0 );
+		$typeExtension	= 'extension';
 		
 		if( $pluginExtension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsPivot( 'extension_type_id', true )->get( $this->value ) )
 		{
 			// Load Extensions Helper
 			FieldsandfiltersFactory::getExtensions()->loadLanguage( 'plg_' . $pluginExtension->type . '_' . $pluginExtension->name, JPATH_ADMINISTRATOR );
 			
-			if( isset( $pluginExtension->group['title'] ) && isset( $pluginExtension->title ) )
+			$extensionForm = $pluginExtension->forms->get( $typeExtension, new JObject );
+			
+			/*
+			if( isset( $extensionForm->group->title ) )
 			{
-				$value = JText::_( $pluginExtension->group['title'] ) . ' - ' . JText::_( $pluginExtension->title );
+				$value = JText::_( $extensionForm->title ) . ' [' . JText::_( $extensionForm->group->title ) . ']';
 			}
-			elseif( isset( $pluginExtension->title ) )
+			elseif( isset( $extensionForm->title ) )
 			{
-				$value = JText::_( $pluginExtension->title );
+				$value = JText::_( $extensionForm->title );
+			}
+			*/
+			
+			if( isset( $extensionForm->title ) )
+			{
+				$value = JText::_( $extensionForm->title );
 			}
 		}
 		

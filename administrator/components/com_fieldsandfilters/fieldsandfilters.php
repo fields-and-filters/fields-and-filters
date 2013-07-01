@@ -17,6 +17,9 @@ if( !JFactory::getUser()->authorise( 'core.manage', 'com_fieldsandfilters' ) )
 	throw new Exception( JText::_( 'JERROR_ALERTNOAUTHOR' ) );
 }
 
+// Load the Fieldsandfilters Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
+
 // Include dependancies
 jimport( 'joomla.application.component.controller' );
 

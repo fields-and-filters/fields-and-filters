@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 
 /**
  * field Table class
+ * @since       1.1.0
  */
 class FieldsandfiltersTableField extends JTable {
 
@@ -19,8 +20,7 @@ class FieldsandfiltersTableField extends JTable {
 	 * Constructor
 	 *
 	 * @param JDatabase A database connector object
-	 *
-	 * @since	1.0.0
+	 * @since       1.0.0
 	 */
 	public function __construct( &$db )
 	{
@@ -38,7 +38,7 @@ class FieldsandfiltersTableField extends JTable {
 	 * @return  boolean  True on success.
 	 *
 	 * @link    http://docs.joomla.org/JTable/bind
-	 * @since	1.0.0
+	 * @since       1.0.0
 	 */
 	public function bind( $array, $ignore = '' )
 	{
@@ -84,7 +84,6 @@ class FieldsandfiltersTableField extends JTable {
 	 * This function convert an array of JAccessRule objects into an rules array.
 	 * 
 	 * @param type $jaccessrules an arrao of JAccessRule objects.
-	 * 
 	 * @since	1.0.0
 	 */
 	private function JAccessRulestoArray($jaccessrules){
@@ -112,10 +111,19 @@ class FieldsandfiltersTableField extends JTable {
 	 */
 	public function check()
 	{
+		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
+		
 		//If there is an ordering column and this is a new row then get the next ordering value
 		if( $this->field_id == 0 )
 		{
 			$this->ordering = self::getNextOrder();
+		}
+		
+		// Check for exist mode field
+		if( !in_array( $this->mode, (array) $pluginTypesHelper->getModes( null, array(), true ) ) )
+		{
+			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_MODE' ) );
+			return false;
 		}
 		
 		// Check for a field name.
@@ -131,7 +139,7 @@ class FieldsandfiltersTableField extends JTable {
 			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_TYPE' ) );
 			return false;
 		}
-		elseif( !FieldsandfiltersFactory::getPluginTypes()->getTypes()->get( $this->field_type ) )
+		elseif( !$pluginTypesHelper->getTypes()->get( $this->field_type ) )
 		{
 			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_TYPE_NOT_EXISTS', $this->field_type ) );
 			return false;
@@ -150,7 +158,7 @@ class FieldsandfiltersTableField extends JTable {
 		}
 		
 		// Check mode field
-		if( in_array( $this->mode, (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'values' ) ) )
+		if( in_array( $this->mode, (array) $pluginTypesHelper->getMode( 'filter' ) ) )
 		{
 			// Check for a field alias
 			if( trim( $this->field_alias ) == '' )
@@ -179,13 +187,12 @@ class FieldsandfiltersTableField extends JTable {
 	 * @param   boolean  $updateNulls  True to update fields even if they are null.
 	 *
 	 * @return  boolean  True on success.
-	 *
 	 * @since	1.1.0
 	 */
 	public function store( $updateNulls = false )
 	{
 		// Check mode field
-		if( in_array( $this->mode, (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'values' ) ) )
+		if( in_array( $this->mode, (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'filter' ) ) )
 		{
 			// Verify that the alias is unique
 			$table = JTable::getInstance( 'Field', 'FieldsandfiltersTable' );
@@ -210,7 +217,6 @@ class FieldsandfiltersTableField extends JTable {
 	 * @param   integer  $userId  The user id of the user performing the operation.
 	 *
 	 * @return  boolean  True on success.
-	 *
 	 * @since	1.0.0
 	 */
 	public function publish( $pks = null, $state = 1, $userId = 0 )
@@ -280,7 +286,6 @@ class FieldsandfiltersTableField extends JTable {
 	 * @param   integer  $userId  The user id of the user performing the operation.
 	 *
 	 * @return  boolean  True on success.
-	 *
 	 * @since	1.0.0
 	 */
 	public function required( $pks = null, $state = 1, $userId = 0 )

@@ -90,7 +90,7 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 	{
 		parent::__construct( $debug );
 		
-		$this->_valuesModes = FieldsandfiltersFactory::getPluginTypes()->getMode( 'values' );
+		$this->_valuesModes = (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'filter' );
 	}
 	
 	/**

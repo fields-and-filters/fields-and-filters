@@ -66,7 +66,7 @@ class FieldsandfiltersViewFields extends JViewLegacy
 		);
 		
 		JHtmlSidebar::addFilter(
-			JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE' ),
+			JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
 			'filter_extension_type_id',
 			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), true )
 		);

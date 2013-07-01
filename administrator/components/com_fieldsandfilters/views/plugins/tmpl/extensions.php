@@ -52,20 +52,23 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 <?php foreach( $this->_plugins->toObject() AS $nameGroup => $pluginExtensions ) : ?>
 	<ul class="nav nav-tabs nav-stacked">
 	<?php foreach( $pluginExtensions AS &$extension ): ?>
-		<?php $extensionsHelper->loadLanguage( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR ); ?>
+		<?php
+			$extensionsHelper->loadLanguage( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR );
+			$form = $extension->forms->get( $nameGroup );
+		?>
 		<li>
-			<a class="choose_type" href="#" title="<?php echo $this->escape( $extension->description ); ?>"
-				onclick="javascript:setType('<?php echo base64_encode( json_encode( array( 'id' => $recordId, 'title' => $extension->title, 'type' => $extension->type, 'name' => $extension->name, 'extension_type_id' => $extension->extension_type_id ) ) ); ?>')">
+			<a class="choose_type" href="#" title="<?php echo $this->escape( $form->description ); ?>"
+				onclick="javascript:setType('<?php echo base64_encode( json_encode( array( 'id' => $recordId, 'extension' => $nameGroup, 'type' => $extension->type, 'name' => $extension->name, 'extension_type_id' => $extension->extension_type_id ) ) ); ?>')">
 				<?php if ($document->direction != 'rtl') : ?>
-					<?php echo $this->escape( JText::_( $extension->title ) );?>
+					<?php echo $this->escape( JText::_( $form->title ) );?>
 					<small class="muted">
-						<?php echo $this->escape( JText::_(  $extension->description ) ); ?>
+						<?php echo $this->escape( JText::_(  $form->description ) ); ?>
 					</small>
 				<?php else : ?>
 					<small class="muted">
-						<?php echo $this->escape( JText::_(  $extension->description ) ); ?>
+						<?php echo $this->escape( JText::_(  $form->description ) ); ?>
 					</small>
-					<?php echo $this->escape( JText::_( $extension->title ) );?>
+					<?php echo $this->escape( JText::_( $form->title ) );?>
 				<?php endif?>
 			</a>
 		</li>

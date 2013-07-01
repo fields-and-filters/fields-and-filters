@@ -17,6 +17,7 @@ if( version_compare( JVERSION, 3.0, '<' ) )
 
 /**
  * Field controller class.
+ * @since       1.1.0
  */
 class FieldsandfiltersControllerField extends JControllerForm
 {
@@ -34,8 +35,7 @@ class FieldsandfiltersControllerField extends JControllerForm
 	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
 	 *
 	 * @return  boolean  True if successful, false otherwise.
-	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function save( $key = 'field_id', $urlVar = 'id' )
 	{
@@ -50,8 +50,7 @@ class FieldsandfiltersControllerField extends JControllerForm
 	 * (sometimes required to avoid router collisions).
 	 *
 	 * @return  boolean  True if access level check and checkout passes, false otherwise.
-	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function edit( $key = 'field_id', $urlVar = 'id' )
 	{
@@ -64,8 +63,7 @@ class FieldsandfiltersControllerField extends JControllerForm
 	 * @param   string  $urlVar  The name of the URL variable if different from the primary key
 	 *
 	 * @return  void
-	 *
-	 * @since   1.6
+	 * @since       1.1.0
 	 */
 	function setType( $urlVar = 'id' )
 	{
@@ -80,10 +78,11 @@ class FieldsandfiltersControllerField extends JControllerForm
 		// Get the type.
 		$type = new JRegistry( base64_decode( $data['temp_type'] ) );
                 
-		if( ( $name = $type->get( 'name' ) ) && $type->get( 'type' ) == 'fieldsandfiltersTypes' && $recordId  == $type->get( 'id', 0 ) )
+		if( ( $name = $type->get( 'name' ) ) && ( $typeMode = $type->get( 'mode' ) ) && $type->get( 'type' ) == 'fieldsandfiltersTypes' && $recordId  == $type->get( 'id', 0 ) )
 		{
-			$data['field_type'] = $name;
-                        
+			$data['field_type'] 	= $name;
+                        $data['type_mode'] 	= $typeMode;
+			
 			//Save the data in the session.
 			$app->setUserState( 'com_fieldsandfilters.edit.field.data', $data );
 			
@@ -101,8 +100,7 @@ class FieldsandfiltersControllerField extends JControllerForm
 	 * @param   string  $urlVar  The name of the URL variable if different from the primary key
 	 *
 	 * @return  void
-	 *
-	 * @since   1.6
+	 * @since       1.1.0
 	 */        
         function setExtension( $urlVar = 'id' )
 	{
@@ -118,9 +116,10 @@ class FieldsandfiltersControllerField extends JControllerForm
 		// Get the type.
                 $extension = new JRegistry( base64_decode( $data['temp_extension'] ) );
 		
-                if( ( $extensionTypeId = $extension->get( 'extension_type_id' ) ) && in_array( $extension->get( 'type' ), $types ) && $recordId  == $extension->get( 'id', 0 ) )
+                if( ( $extensionTypeId = $extension->get( 'extension_type_id' ) ) && ( $typeExtension = $extension->get( 'extension' ) ) && in_array( $extension->get( 'type' ), $types ) && $recordId  == $extension->get( 'id', 0 ) )
 		{
-			$data['extension_type_id'] = $extensionTypeId;
+			$data['extension_type_id'] 	= $extensionTypeId;
+			$data['type_extension'] 	= $typeExtension;
 			
 			//Save the data in the session.
 			$app->setUserState( 'com_fieldsandfilters.edit.field.data', $data );

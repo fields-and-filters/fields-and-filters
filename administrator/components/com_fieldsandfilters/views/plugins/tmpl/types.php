@@ -54,8 +54,8 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 		<?php
 			$pluginType = current( $pluginTypes );
 			$extensionsHelper->loadLanguage( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
-			$group = (array) $pluginType->group;
-			echo JHtml::_( 'bootstrap.addSlide', 'pluginTypes', JText::_( JArrayHelper::getValue( $group, 'title', 'COM_FIELDSANDFILTERS_PLUGINSTYPES_OTHERS' ) ), 'type' . $nameGroup );
+			$group = $pluginType->forms->get( $nameGroup )->group;
+			echo JHtml::_( 'bootstrap.addSlide', 'pluginTypes', JText::_( $group->title ), 'type' . $nameGroup );
 		?>
 		<ul class="nav nav-tabs nav-stacked">
 		<?php foreach( $pluginTypes AS &$type ): ?>
@@ -63,20 +63,22 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 				if( $pluginType != $type ):
 					$extensionsHelper->loadLanguage( 'plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR );
 				endif;
+				
+				$form = $type->forms->get( $nameGroup );
 			?>
 			<li>
 				<a class="choose_type" href="#" title="<?php echo $this->escape( $type->description ); ?>"
-					onclick="javascript:setType('<?php echo base64_encode( json_encode( array( 'id' => $recordId, 'title' => $type->title, 'type' => $type->type, 'name' => $type->name ) ) ); ?>')">
+					onclick="javascript:setType('<?php echo base64_encode( json_encode( array( 'id' => $recordId, 'mode' => $nameGroup, 'type' => $type->type, 'name' => $type->name ) ) ); ?>')">
 					<?php if ($document->direction != 'rtl') : ?>
-						<?php echo $this->escape( JText::_( $type->title ) );?>
+						<?php echo $this->escape( JText::_( $form->title ) );?>
 						<small class="muted">
-							<?php echo $this->escape( JText::_( $type->description ) ); ?>
+							<?php echo $this->escape( JText::_( $form->description ) ); ?>
 						</small>
 					<?php else : ?>
 						<small class="muted">
-							<?php echo $this->escape( JText::_( $type->description ) ); ?>
+							<?php echo $this->escape( JText::_( $form->description ) ); ?>
 						</small>
-						<?php echo $this->escape( JText::_( $type->title ) );?>
+						<?php echo $this->escape( JText::_( $form->title ) );?>
 					<?php endif?>
 				</a>
 			</li>

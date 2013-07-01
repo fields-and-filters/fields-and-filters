@@ -159,7 +159,7 @@ abstract class JHtmlFieldsandfilters
 	{
 		$options 	= array();
 		
-		if( $pluginTypes = get_object_vars( FieldsandfiltersFactory::getPluginTypes()->getTypes( true ) ) )
+		if( $pluginTypes = get_object_vars( FieldsandfiltersFactory::getPluginTypes()->getTypes() ) )
 		{
 			// Load Extensions Helper
 			$extensionsHelper = FieldsandfiltersFactory::getExtensions();
@@ -169,9 +169,10 @@ abstract class JHtmlFieldsandfilters
 				if( !in_array( $pluginType->name, $excluded ) )
 				{
 					// load plugin language
-					FieldsandfiltersExtensionsHelper::loadLanguage( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
+					$extension = 'plg_' . $pluginType->type . '_' . $pluginType->name;
+					$extensionsHelper->loadLanguage( $extension, JPATH_ADMINISTRATOR );
 					
-					$options[] = JHtml::_( 'select.option', $pluginType->name, JText::_( $pluginType->title ) );
+					$options[] = JHtml::_( 'select.option', $pluginType->name, JText::_( strtoupper( $extension ) ) );
 				}
 			}
 		}
@@ -189,7 +190,7 @@ abstract class JHtmlFieldsandfilters
 	{
 		$options 	= array();
 		
-		if( $pluginExtensions = get_object_vars( FieldsandfiltersFactory::getPluginExtensions()->getExtensions( true ) ) )
+		if( $pluginExtensions = get_object_vars( FieldsandfiltersFactory::getPluginExtensions()->getExtensions() ) )
 		{
 			// Load Extensions Helper
 			$extensionsHelper = FieldsandfiltersFactory::getExtensions();
@@ -199,9 +200,17 @@ abstract class JHtmlFieldsandfilters
 				if( !in_array( $pluginExtension->name, $excluded ) )
 				{
 					// load plugin language
-					$extensionsHelper->loadLanguage( 'plg_' . $pluginExtension->type . '_' . $pluginExtension->name, JPATH_ADMINISTRATOR );
+					if( $pluginExtension->name != 'allextensions' )
+					{
+						$extension = 'plg_' . $pluginExtension->type . '_' . $pluginExtension->name;
+						$extensionsHelper->loadLanguage( $extension, JPATH_ADMINISTRATOR );
+					}
+					else
+					{
+						$extension = $pluginExtension->type . '_' . $pluginExtension->name;
+					}
 					
-					$options[] = JHtml::_( 'select.option', $pluginExtension->extension_type_id, JText::_( $pluginExtension->title ) );
+					$options[] = JHtml::_( 'select.option', $pluginExtension->extension_type_id, JText::_( strtoupper( $extension ) ) );
 				}
 			}
 		}
@@ -215,27 +224,18 @@ abstract class JHtmlFieldsandfilters
 	 * @return	array	array associate value and text
 	 * @since       1.1.0
 	 */
-	public static function fieldsOptions( $modes = 'values', $state = 1 )
+	public static function fieldsOptions( $modes = 'filter', $state = 1 )
 	{
 		$options 	= array();
-		
-		// Load PluginTypes Helper
-		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
 		
 		// Load pluginExtensions Helper
 		$extenionsID = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsColumn( 'extension_type_id' );
 		
+		// Load PluginTypes Helper
+		$modes =  FieldsandfiltersFactory::getPluginTypes()->getModes( $modes, array(), true );
+		
 		// Load Fields Helper
 		$fieldsHelper = FieldsandfiltersFactory::getFields();
-		
-		if( is_array( $modes ) )
-		{
-			$modes =  FieldsandfiltersFactory::getArray()->flatten( $pluginTypesHelper->getModes( $modes ) );
-		}
-		elseif( is_string( $modes ) )
-		{
-			$modes = $pluginTypesHelper->getMode( $modes );
-		}
 		
 		if( !empty( $modes ) )
 		{
@@ -295,7 +295,7 @@ abstract class JHtmlFieldsandfilters
 		$html = array();
 		foreach( $buttons as $button )
 		{
-			$html[] =  slef::button( $button );
+			$html[] =  self::button( $button );
 		}
 		return implode( $html );
 	}

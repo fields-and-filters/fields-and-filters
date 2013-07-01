@@ -17,6 +17,7 @@ if( version_compare( JVERSION, 3.0, '<' ) )
 
 /**
  * Fields list controller class.
+ * @since       1.0.0
  */
 class FieldsandfiltersControllerFields extends JControllerAdmin
 {
@@ -26,7 +27,7 @@ class FieldsandfiltersControllerFields extends JControllerAdmin
 	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
 	 * @see     JController
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function __construct( $config = array() )
 	{
@@ -43,7 +44,7 @@ class FieldsandfiltersControllerFields extends JControllerAdmin
 	
 	/**
 	 * Proxy for getModel.
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	public function getModel( $name = 'field', $prefix = 'FieldsandfiltersModel', $config = array() )
 	{
@@ -55,8 +56,7 @@ class FieldsandfiltersControllerFields extends JControllerAdmin
 	 * Method to publish a list of items
 	 *
 	 * @return  void
-	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function publish()
 	{
@@ -115,8 +115,7 @@ class FieldsandfiltersControllerFields extends JControllerAdmin
 	 * Method to required a list of items
 	 *
 	 * @return  void
-	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function required()
 	{
@@ -171,8 +170,7 @@ class FieldsandfiltersControllerFields extends JControllerAdmin
 	 * Method to save the submitted ordering values for records via AJAX.
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
+	 * @since       1.0.0
 	 */
 	public function saveOrderAjax()
 	{

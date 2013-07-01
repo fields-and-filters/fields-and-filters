@@ -7,22 +7,19 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-
 // no direct access
 defined( '_JEXEC' ) or die;
 
 // Load Extensions Helper
-JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 
 // Load PluginTypes Helper
-JLoader::import( 'helpers.fieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+$pluginTypesHelper 	= FieldsandfiltersFactory::getPluginTypes();
+$valuesMode		= (array) $pluginTypesHelper->getMode( 'filter' );
 
-$pluginTypesHelper = FieldsandfiltersPluginTypesHelper::getInstance();
 
 // Load PluginExtensions Helper
-JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-
-$pluginExtensionsHelper = FieldsandfiltersPluginExtensionsHelper::getInstance();
+$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
 
 JHtml::_( 'bootstrap.tooltip' );
 JHtml::_( 'behavior.multiselect' );
@@ -152,8 +149,6 @@ $sortFields 	= $this->getSortFields();
 				$canEdit	= $user->authorise( 'core.edit',		'com_fieldsandfilters' );
 				$canCheckin	= $user->authorise( 'core.manage',		'com_fieldsandfilters' );
 				$canChange	= $user->authorise( 'core.edit.state',		'com_fieldsandfilters' );
-				
-				$valuesMode	= $pluginTypesHelper->getMode( 'values', array() );
 				?>
 				<tr class="row<?php echo $i % 2; ?>">
 					<td class="order nowrap center hidden-phone">
@@ -239,8 +234,21 @@ $sortFields 	= $this->getSortFields();
 					
 					<td class="center">
 						<?php if( $type = $pluginTypesHelper->getTypes( true )->get( $item->field_type ) ) : ?>
-							<?php FieldsandfiltersExtensionsHelper::loadLanguage( 'plg_' . $type->type . '_' . $type->name ); ?>
-							<?php echo JText::_( $type->title ); ?>
+							<?php
+								$extensionsHelper->loadLanguage( 'plg_' . $type->type . '_' . $type->name );
+								$typeName 	= $pluginTypesHelper->getModeName( $item->mode, 'type' );
+								$typeForm	= $type->forms->get( $typeName, new JObject );
+								
+								if( isset( $typeForm->group->title ) )
+								{
+									$titleType =  JText::_( $typeForm->title ) . ' [' . JText::_( $typeForm->group->title ) . ']';
+								}
+								else
+								{
+									$titleType = JText::_( $typeForm->title );
+								}
+							?>
+							<?php echo $titleType; ?>
 						<?php else: ?>
 							<?php echo JText::_( 'JUNDEFINED' ); ?>
 						<?php endif; ?>
@@ -248,8 +256,11 @@ $sortFields 	= $this->getSortFields();
 					
 					<td class="center" class="hidden-phone">
 						<?php if( $extension = $pluginExtensionsHelper->getExtensionsPivot( 'extension_type_id', true )->get( (int) $item->extension_type_id ) ) : ?>
-							<?php FieldsandfiltersExtensionsHelper::loadLanguage( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR  ); ?>
-							<?php echo JText::_( $extension->title ); ?>
+							<?php
+								$extensionsHelper->loadLanguage( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR  );
+								$extensionForm = $extension->forms->get( 'extension', new JObject );
+							?>
+							<?php echo JText::_( $extensionForm->get( 'title' ) ); ?>
 						<?php else: ?>
 							<?php echo JText::_( 'JUNDEFINED' ); ?>
 						<?php endif; ?>

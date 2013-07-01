@@ -17,12 +17,13 @@ if( version_compare( JVERSION, 3.0, '<' ) )
 
 /**
  * Fieldvalues list controller class.
+ * @since	1.0.0
  */
 class FieldsandfiltersControllerFieldvalues extends JControllerAdmin
 {
 	/**
 	 * Proxy for getModel.
-	 * @since	1.6
+	 * @since	1.0.0
 	 */
 	public function getModel( $name = 'fieldvalue', $prefix = 'FieldsandfiltersModel', $config = array() )
 	{
@@ -35,7 +36,7 @@ class FieldsandfiltersControllerFieldvalues extends JControllerAdmin
 	 *
 	 * @return  void
 	 *
-	 * @since   3.0
+	 * @since	1.0.0
 	 */
 	public function saveOrderAjax()
 	{

@@ -34,16 +34,16 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
 		
 		$this->_getData( 'modes' )->elements->setProperties(
 			array(
-				'values' => array(
+				'filter' => array(
 							'single' 	=> 1,
 							'multi' 	=> 2
 				),
-				'data' 	 => array(
+				'field'	=> array(
 							'text' 		=> -1,
 							'json' 		=> -2
 				),
 				'static' => array(
-							'static' 	=> -6,
+							'text'	 	=> -6,
 							'json' 		=> -7
 				)
 			)
@@ -180,14 +180,17 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
 	 * @param   mixed   $default  		Optional default value, returned if the internal value is null.
 	 * @param   boolean   $pathKey  	Keys of array is the name of modes
 	 * @param   boolean   $flatten  	Flatten array
+	 * @param   array     $excluded		Excluded items array
 	 *
 	 * @return  mixed  Value of entry or null
 	 *
 	 * @since       1.1.0
 	 */
-	public function getModes( $paths = null, $default = array(), $flatten = false, $pathKey = false )
+	public function getModes( $paths = null, $default = array(), $flatten = false, $excluded = false, $pathKey = false )
 	{
-		$modes = array();
+		$modes 		= array();
+		$isExcluded	= ( $excluded && is_array( $excluded ) );
+		
 		if( is_null( $paths ) )
 		{
 			$modes = $this->_getData( 'modes' )->elements->getProperties();
@@ -216,9 +219,14 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
 		
 		if( !empty( $modes ) )
 		{
-			if( $flatten )
+			if( $flatten || $isExcluded )
 			{
 				$modes = FieldsandfiltersFactory::getArray()->flatten( $modes );
+			}
+			
+			if( $isExcluded )
+			{
+				$modes = array_diff( $modes, $excluded );
 			}
 		}
 		else
@@ -227,6 +235,43 @@ class FieldsandfiltersPluginTypesHelper extends FieldsandfiltersBufferCoreHelper
 		}
 		
 		return $modes;
+	}
+	
+	/**
+	 * @since       1.0.0
+	**/
+	public function getModeName( $id, $name = 'type', $default = null )
+	{
+		if( $id = (int) $id )
+		{
+			$modes = $this->_getData( 'modes' )->elements->getProperties();
+			
+			foreach( $modes AS $typeName => &$mode )
+			{
+				if( $modeName = array_search( $id, $mode ) )
+				{
+					switch( $name )
+					{
+						case 1:
+						case 'type':
+							return $typeName;
+						break;
+						case 2:
+						case 'mode':
+							return $modeName;
+						break;
+						case 3:
+						case 'path':
+							return ( $typeName . '.' . $modeName );
+						break;
+					}
+					
+					break;
+				}
+			}
+		}
+		
+		return $default;
 	}
 	
 	/**

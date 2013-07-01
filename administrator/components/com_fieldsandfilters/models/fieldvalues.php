@@ -16,6 +16,7 @@ if( version_compare( JVERSION, 3.0, '<' ) )
 
 /**
  * Methods supporting a list of Fieldsandfilters records.
+ * @since	1.1.0
  */
 class FieldsandfiltersModelfieldvalues extends JModelList
 {
@@ -24,7 +25,7 @@ class FieldsandfiltersModelfieldvalues extends JModelList
 	 *
 	 * @param    array    An optional associative array of configuration settings.
 	 * @see        JController
-	 * @since    1.6
+	 * @since	1.0.0
 	 */
 	public function __construct( $config = array() )
 	{
@@ -50,6 +51,7 @@ class FieldsandfiltersModelfieldvalues extends JModelList
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
+	 * @since	1.1.0
 	 */
 	protected function populateState( $ordering = null, $direction = null )
 	{
@@ -76,20 +78,14 @@ class FieldsandfiltersModelfieldvalues extends JModelList
 			if( !( $fieldID = $app->getUserState( $this->context . '.filter.field_id' ) ) )
 			{
 				// Load pluginTypes Helper
-				JLoader::import( 'helpers.fieldsandfilters.pluginTypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				
-				$valuesTypes = FieldsandfilterspluginTypesHelper::getInstance()->getMode( 'values' );
+				$filterMode 	= FieldsandfiltersFactory::getPluginTypes()->getMode( 'filter' );
 				
 				// Load pluginExtensions Helper
-				JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				
-				$extensionsID = FieldsandfilterspluginExtensionsHelper::getInstance()->getExtensionsColumn( 'extension_type_id' );
+				$extensionsID 	= FieldsandfiltersFactory::getPluginExtensions()->getExtensionsColumn( 'extension_type_id' );
 				
 				// Load Fields Helper
-				JLoader::import( 'helpers.fieldsandfilters.fields', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				
-				$fieldsID = FieldsandfiltersFieldsHelper::getInstance()->getFieldsByModeIDColumn( 'field_id', $extensionsID, $valuesTypes, array( 1, -1 ) );
-				$fieldID = current( $fieldsID );
+				$fieldsID 	= FieldsandfiltersFactory::getFields()->getFieldsByModeIDColumn( 'field_id', $extensionsID, $filterMode, array( 1, -1 ) );
+				$fieldID 	= current( $fieldsID );
 				
 			}
 		}
@@ -128,7 +124,7 @@ class FieldsandfiltersModelfieldvalues extends JModelList
 	 * Build an SQL query to load the list data.
 	 *
 	 * @return	JDatabaseQuery
-	 * @since	1.6
+	 * @since	1.0.0
 	 */
 	protected function getListQuery()
 	{
@@ -200,7 +196,7 @@ class FieldsandfiltersModelfieldvalues extends JModelList
 	 *
 	 * @return  mixed  An array of data items on success, false on failure.
 	 *
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function getItems()
 	{

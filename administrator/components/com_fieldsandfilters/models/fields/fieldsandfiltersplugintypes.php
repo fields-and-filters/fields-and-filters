@@ -20,7 +20,6 @@ JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/
  * @package     fieldsandfilters
  * @subpackage  Form
  * @see         JFormFieldPluginsType for a select list of type plugins.
- * 
  * @since       1.1.0
  */
 class JFormFieldFieldsandfiltersPluginTypes extends JFormFieldList
@@ -48,19 +47,25 @@ class JFormFieldFieldsandfiltersPluginTypes extends JFormFieldList
 		$size		= ( $v = $this->element['size'] ) ? ' size="' . $v . '"' : '';
 		$class		= ( $v = $this->element['class'] ) ? ' class="' . $v . '"' : 'class="inputbox"';
 		$recordId	= (int) $this->form->getValue( 'field_id', 0 );
+		$mode		= (int) $this->form->getValue( 'mode', 0 );
 		
-		if( $pluginType = FieldsandfiltersFactory::getPluginTypes()->getTypes( true )->get( $this->value ) )
+		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
+		
+		if( $mode && ( $pluginType = $pluginTypesHelper->getTypes( true )->get( $this->value ) ) )
 		{
 			// Load Extensions Helper
 			FieldsandfiltersFactory::getExtensions()->loadLanguage( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
 			
-			if( isset( $pluginType->group['title'] ) && isset( $pluginType->title ) )
+			$typeName 	= $pluginTypesHelper->getModeName( $mode, 'type' );
+			$typeForm	= $pluginType->forms->get( $typeName, new JObject );
+			
+			if( isset( $typeForm->group->title ) )
 			{
-				$value = JText::_( $pluginType->group['title'] ) . ' - ' . JText::_( $pluginType->title );
+				$value = JText::_( $typeForm->title ) . ' [' . JText::_( $typeForm->group->title ) . ']';
 			}
-			elseif( isset( $pluginType->title ) )
+			else if( isset( $typeForm->title ) )
 			{
-				$value = JText::_( $pluginType->title );
+				$value = JText::_( $typeForm->title );
 			}
 		}			
 		// Load the javascript and css

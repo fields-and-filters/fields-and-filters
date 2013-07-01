@@ -19,31 +19,38 @@ JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html'  );
 $profiler = new JProfiler();
 $profiler->mark( 'joomla' );
 
-FieldsandfiltersFactory::getFields();
+$factory = FieldsandfiltersFactory::getPluginTypes();
 
 $profiler->mark( 'factory' );
+// $profiler->mark( 'factory' );
 
 // $values = FieldsandfiltersFactory::getFields()->getFieldsPivot( 'field_id', array( 1,2 ) )->getProperties();
 
 /** Mozemy dorobic sortowanie w __call **/
 // $values = JArrayHelper::sortObjects( $values, 'ordering' );
 
+// $values = $factory->getModeName( -1, 4 );
 
-// $values = FieldsandfiltersFactory::getElements()->getElementID( array( 2 ), 1 );
+//
+//$values = FieldsandfiltersFactory::getPluginTypes()->getModes( null, array(), true, array( 1, -1 ) );
+
+// $profiler->mark( 'foreach' );
+
+//echo '<pre>';
+//var_dump($values);
+//echo '</pre>';
+
 
 //$plugins = JPluginHelper::getPlugin( 'fieldsandfiltersTypes' );
 //
 //foreach( $plugins AS $plugin )
 //{
 
+//echo '<pre>';
+//var_dump($version);
+//echo '</pre>';
 
 
-
-$profiler->mark('old');
-
-echo '<pre>';
-print_r($plugins);
-echo '</pre>';
 
 
 //echo '<pre>';

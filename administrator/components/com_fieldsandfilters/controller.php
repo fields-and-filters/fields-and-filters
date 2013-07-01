@@ -11,6 +11,8 @@
 // No direct access
 defined('_JEXEC') or die;
 
+
+
 class FieldsandfiltersController extends JControllerLegacy
 {
 	/**
@@ -24,9 +26,6 @@ class FieldsandfiltersController extends JControllerLegacy
 	 */
 	public function display( $cachable = false, $urlparams = false )
 	{
-		// Load the Fieldsandfilters Helper
-		JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-		
 		$jinput = JFactory::getApplication()->input;
 		
 		$view = $jinput->getCmd( 'view', 'cpanel' );

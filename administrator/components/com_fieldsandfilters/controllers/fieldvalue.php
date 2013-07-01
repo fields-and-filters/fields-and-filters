@@ -17,6 +17,7 @@ if( version_compare( JVERSION, 3.0, '<' ) )
 
 /**
  * Fieldvalue controller class.
+ * @since	1.0.0
  */
 class FieldsandfiltersControllerFieldvalue extends JControllerForm
 {
@@ -35,7 +36,7 @@ class FieldsandfiltersControllerFieldvalue extends JControllerForm
 	 *
 	 * @return  boolean  True if successful, false otherwise.
 	 *
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function save( $key = 'field_value_id', $urlVar = 'id' )
 	{
@@ -51,7 +52,7 @@ class FieldsandfiltersControllerFieldvalue extends JControllerForm
 	 *
 	 * @return  boolean  True if access level check and checkout passes, false otherwise.
 	 *
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function edit( $key = 'field_value_id', $urlVar = 'id' )
 	{                   

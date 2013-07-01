@@ -17,12 +17,13 @@ if( version_compare( JVERSION, 3.0, '<' ) )
 
 /**
  * Fieldsandfilters model.
+ * @since	1.0.0
  */
 class FieldsandfiltersModelfieldvalue extends JModelAdmin
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * @since	1.0.0
 	 */
 	protected $text_prefix = 'COM_FIELDSANDFILTERS';
 	
@@ -34,7 +35,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
 	 * @see     JController
-	 * @since   11.1
+	 * @since	1.0.0
 	 */
 	public function __construct( $config = array() )
 	{
@@ -57,7 +58,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	 * @param	string	A prefix for the table class name. Optional.
 	 * @param	array	Configuration array for model. Optional.
 	 * @return	JTable	A database object
-	 * @since	1.6
+	 * @since	1.0.0
 	 */
 	public function getTable( $type = 'Fieldvalue', $prefix = 'FieldsandfiltersTable', $config = array() )
 	{
@@ -70,7 +71,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	 * @param	array	$data		An optional array of data for the form to interogate.
 	 * @param	boolean	$loadData	True if the form is to load its own data (default case), false if not.
 	 * @return	JForm	A JForm object on success, false on failure
-	 * @since	1.6
+	 * @since	1.0.0
 	 */
 	public function getForm( $data = array(), $loadData = true )
 	{
@@ -92,7 +93,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return	mixed	The data for the form.
-	 * @since	1.6
+	 * @since	1.0.0
 	 */
 	protected function loadFormData()
 	{
@@ -114,7 +115,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	 * @param	integer	The id of the primary key.
 	 *
 	 * @return	mixed	Object on success, false on failure.
-	 * @since	1.6
+	 * @since	1.0.0
 	 */
 	public function getItem( $pk = null )
 	{
@@ -131,7 +132,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	 * Note. Calling getState in this method will result in recursion.
 	 *
 	 * @return	void
-	 * @since	2.5
+	 * @since	1.0.0
 	 */
 	protected function populateState()
 	{
@@ -150,7 +151,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	/**
 	 * Prepare and sanitise the table prior to saving.
 	 *
-	 * @since	1.6
+	 * @since	0.1.0
 	
 	protected function prepareTable(&$table)
 	{
@@ -177,7 +178,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	 *
 	 * @return  array  An array of conditions to add to ordering queries.
 	 *
-	 * @since   12.2
+	 * @since	1.0.0
 	 */
 	protected function getReorderConditions( $table )
 	{
@@ -193,7 +194,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	 *
 	 * @return  boolean  True if successful, false if an error occurs.
 	 *
-	 * @since   12.2
+	 * @since	1.0.0
 	 */
 	public function delete( &$pks )
 	{
