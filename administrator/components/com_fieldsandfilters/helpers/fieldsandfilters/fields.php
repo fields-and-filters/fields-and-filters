@@ -236,7 +236,7 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
         {
 		$this->_getData( $_field->extension_type_id )->elements->set( $_field->field_id, $_field );
 		$_field->params = new JRegistry( $_field->params );
-		$_field->location = $_field->params->get( 'extension.location', $this->_extension_locatnion_default );
+		$_field->location = (array) $_field->params->get( 'extension.location', $this->_extension_locatnion_default );
 		
 		
 		if( ( $byID = $this->method == 'getFieldsByID' ) || $this->method == 'getFieldsByModeID' )
