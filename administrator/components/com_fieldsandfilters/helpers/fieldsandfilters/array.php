@@ -194,7 +194,7 @@ class FieldsandfiltersArrayHelper
 	 *
 	 * @return  array  An array of arrays pivoted either on the value of the keys, or an individual key of an object or array.
 	 *
-	 * @since       1.0.0
+	 * @since       1.1.0
 	 */
 	public static function pivot($source, $key = null)
 	{
@@ -211,7 +211,7 @@ class FieldsandfiltersArrayHelper
 				{
 					continue;
 				}
-
+				
 				$resultKey = $value[$key];
 				$resultValue = &$source[$index];
 			}
@@ -222,9 +222,9 @@ class FieldsandfiltersArrayHelper
 				{
 					continue;
 				}
-
+				
 				$resultKey = $value->$key;
-				$resultValue = &$source->$index;
+				$resultValue = &$source[$index];
 			}
 			else
 			{
@@ -232,32 +232,65 @@ class FieldsandfiltersArrayHelper
 				$resultKey = $value;
 				$resultValue = $index;
 			}
-
-			// The counter tracks how many times a key has been used.
-			if (empty($counter[$resultKey]))
+			
+			if( is_array( $resultKey ) )
 			{
-				// The first time around we just assign the value to the key.
-				$result[$resultKey] = $resultValue;
-				$counter[$resultKey] = 1;
-			}
-			elseif ($counter[$resultKey] == 1)
-			{
-				// If there is a second time, we convert the value into an array.
-				$result[$resultKey] = array(
-					$result[$resultKey],
-					$resultValue,
-				);
-				$counter[$resultKey]++;
+				foreach( $resultKey AS $arrayKey )
+				{
+					// The counter tracks how many times a key has been used.
+					if (empty($counter[$arrayKey]))
+					{
+						// The first time around we just assign the value to the key.
+						$result[$arrayKey] = $resultValue;
+						$counter[$arrayKey] = 1;
+					}
+					elseif ($counter[$arrayKey] == 1)
+					{
+						// If there is a second time, we convert the value into an array.
+						$result[$arrayKey] = array(
+							$result[$arrayKey],
+							$resultValue,
+						);
+						$counter[$arrayKey]++;
+					}
+					else
+					{
+						// After the second time, no need to track any more. Just append to the existing array.
+						$result[$arrayKey][] = $resultValue;
+					}
+					
+					
+				}
 			}
 			else
 			{
-				// After the second time, no need to track any more. Just append to the existing array.
-				$result[$resultKey][] = $resultValue;
+				// The counter tracks how many times a key has been used.
+				if (empty($counter[$resultKey]))
+				{
+					// The first time around we just assign the value to the key.
+					$result[$resultKey] = $resultValue;
+					$counter[$resultKey] = 1;
+				}
+				elseif ($counter[$resultKey] == 1)
+				{
+					// If there is a second time, we convert the value into an array.
+					$result[$resultKey] = array(
+						$result[$resultKey],
+						$resultValue,
+					);
+					$counter[$resultKey]++;
+				}
+				else
+				{
+					// After the second time, no need to track any more. Just append to the existing array.
+					$result[$resultKey][] = $resultValue;
+				}
 			}
+			
 		}
-
+		
 		unset($counter);
-
+		
 		return $result;
 	}
 	

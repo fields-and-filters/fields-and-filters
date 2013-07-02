@@ -411,7 +411,7 @@ abstract class FieldsandfiltersBufferCoreHelper
                                 $buffer = call_user_func_array( array( $this, $this->method ), $arguments );
                                 
                                 $this->_pivots[$hash] = new JObject();
-                                $this->_pivots[$hash]->elements = new JObject( JArrayHelper::pivot( (array) get_object_vars( $buffer ), $pivot ) );
+                                $this->_pivots[$hash]->elements = new JObject( FieldsandfiltersFactory::getArray()->pivot( (array) get_object_vars( $buffer ), $pivot ) );
                                 $this->_pivots[$hash]->_pivot =  $pivot;
                                 
                                 unset( $buffer );
@@ -423,9 +423,10 @@ abstract class FieldsandfiltersBufferCoreHelper
                 }
                 elseif( $this->_pivots[$hash] && $this->_pivots[$hash]->_pivot != $pivot )
                 {
+                        $arrayHelper = FieldsandfiltersFactory::getArray();
                         $buffer = (array) get_objectvars( $this->_pivots[$hash]->elements );
                         
-                        $this->_pivots[$hash]->elements = new JObject( JArrayHelper::pivot( FieldsandfiltersFactory::getArray()->flatten( $buffer ), $pivot ) );
+                        $this->_pivots[$hash]->elements = new JObject( $arrayHelper->pivot( $arrayHelper->flatten( $buffer ), $pivot ) );
                         $this->_pivots[$hash]->_pivot =  $pivot;
                 }
                 
