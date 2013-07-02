@@ -17,22 +17,30 @@ if( version_compare( JVERSION, 3.0, '<' ) )
 
 /**
  * Fieldsandfilters model.
+ * @since       1.1.0
  */
 class FieldsandfiltersModelelement extends JModelAdmin
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	protected $text_prefix = 'COM_FIELDSANDFILTERS';
 	
 	/**
 	 * Item cache.
+	 * @since       1.0.0
 	 */
 	protected $_cache = array();
 	
+	/**
+	 * @since       1.0.0
+	 **/
 	protected $_item_states = array( -3, -2, -1, 0, 1, 2, 3 );
 	
+	/**
+	 * @since       1.0.0
+	 **/
 	protected $_dispatcher;
 	
 	/**
@@ -41,7 +49,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
 	 * @see     JController
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function __construct($config = array())
 	{
@@ -69,7 +77,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 * @param	string	A prefix for the table class name. Optional.
 	 * @param	array	Configuration array for model. Optional.
 	 * @return	JTable	A database object
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	public function getTable( $type = 'Element', $prefix = 'FieldsandfiltersTable', $config = array() )
 	{
@@ -82,7 +90,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 * @param	array	$data		An optional array of data for the form to interogate.
 	 * @param	boolean	$loadData	True if the form is to load its own data (default case), false if not.
 	 * @return	JForm	A JForm object on success, false on failure
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	public function getForm( $data = array(), $loadData = true )
 	{
@@ -120,7 +128,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 * @param	mixed	$data	The data expected for the form.
 	 *
 	 * @return	void
-	 * @since	2.5
+	 * @since       1.1.0
 	 * @throws	Exception if there is an error in the form event.
 	 */
 	protected function preprocessForm( JForm $form, $data, $group = 'content' )
@@ -151,18 +159,17 @@ class FieldsandfiltersModelelement extends JModelAdmin
 				
 				ksort( $fieldsForm );
 				
-				// Load the XML Helper
-				JLoader::import( 'helpers.fieldsandfilters.xmlhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				FieldsandfiltersXMLHelper::setFields( $fieldsetForm , $fieldsForm );
+				// Load the XML Helper:
+				FieldsandfiltersFactory::getXML()->setFields( $fieldsetForm , $fieldsForm );
 				
 				unset( $fieldsForm );
 				
-				// dodanie parametrów do formularza
+				// add parameters to form
 				$form->setFields( $elementsForm, 'fields' );
 				
 				if( $defaultForm = $jregistry->get( 'form.default' ) )
 				{
-					// dodawanie wartoœci do formularza
+					// add values to xml form
 					foreach( $defaultForm AS $fieldID => $default )
 					{
 						if( $defaultName = $default->get( 'name' ) )
@@ -181,6 +188,9 @@ class FieldsandfiltersModelelement extends JModelAdmin
 		parent::preprocessForm( $form, $data, $group );
 	}
 	
+	/**
+	 * @since       1.1.0
+	 **/
 	public function prepareFields( $extensionTypeID = null )
 	{
 		$extensionTypeID 	= ( !empty( $extensionTypeID ) ) ? (int) $extensionTypeID : (int) $this->getState( 'element.extension_type_id' );
@@ -193,9 +203,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 			if( $extensionTypeID )
 			{
 				// Load PluginExtensions Helper
-				JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				
-				$pluginExtensionsHelper = FieldsandfiltersPluginExtensionsHelper::getInstance();
+				$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
 				
 				if( $extensionName = $this->getState( 'element.extension_name', ( ( $pluginExtension = $pluginExtensionsHelper->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID )->get( $extensionTypeID ) ) ? $pluginExtension->name : null ) ) )
 				{
@@ -222,7 +230,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return	mixed	The data for the form.
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	protected function loadFormData()
 	{
@@ -243,7 +251,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 * @param	integer	The id of the primary key.
 	 *
 	 * @return	mixed	Object on success, false on failure.
-	 * @since	1.6
+	 * @since       1.1.0
 	 */
 	public function getItem( $elementID = null )
 	{		
@@ -278,9 +286,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 				$isNew = false;
 				
 				// Load Elements Helper
-				JLoader::import( 'helpers.fieldsandfilters.elements', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				
-				if( $element = FieldsandfiltersElementsHelper::getInstance()->getElementsByID( $table->extension_type_id, $table->element_id, $this->_item_states, 3 )->get( $table->element_id ) )
+				if( $element = FieldsandfiltersFactory::getElements()->getElementsByID( $table->extension_type_id, $table->element_id, $this->_item_states, 3 )->get( $table->element_id ) )
 				{
 					$table->fields = array(
 							       'connections' 	=>$element->connections->getProperties( true ),
@@ -332,6 +338,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
+	 * @since       1.0.0
 	 */
 	protected function populateState()
 	{
@@ -354,15 +361,15 @@ class FieldsandfiltersModelelement extends JModelAdmin
 		$value = JComponentHelper::getParams( $this->option );
 		$this->setState( 'params', $value );
 	}
-	
+	/**
+	 * @since       1.1.0
+	 **/
 	protected function setExtensionState( $extensionTypeID )
 	{
 		if( is_numeric( $extensionTypeID ) )
 		{
 			// Load PluginExtensions Helper
-			JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-			
-			if( $extensionTypeID && ( $pluginExtension = FieldsandfiltersPluginExtensionsHelper::getInstance()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID, true )->get( $extensionTypeID ) ) )
+			if( $extensionTypeID && ( $pluginExtension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID, true )->get( $extensionTypeID ) ) )
 			{
 				$this->setState( 'element.extension_name', $pluginExtension->name );
 				$this->setState( 'element.extension_title', $pluginExtension->title );
@@ -377,7 +384,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 *
 	 * @return  array  An array of conditions to add to add to ordering queries.
 	 *
-	 * @since   1.6
+	 * @since       1.0.0
 	 */
 	protected function getReorderConditions( $table )
 	{
@@ -393,7 +400,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 *
 	 * @return  void
 	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	protected function prepareTable( $table )
 	{
@@ -414,7 +421,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 *
 	 * @return  boolean  True on success, False on error.
 	 *
-	 * @since   12.2
+	 * @since       1.1.0
 	 */
 	public function save( $data )
 	{
@@ -454,9 +461,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 			}
 			
 			// Load PluginExtensions Helper
-			JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-			
-			$extensionName = ( $extension = FieldsandfiltersPluginExtensionsHelper::getInstance()->getExtensionsByIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
+			$extensionName = ( $extension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
 			
 			$context = $this->option . '.' . $this->name . '.' . $extensionName;
 			
@@ -506,16 +511,12 @@ class FieldsandfiltersModelelement extends JModelAdmin
 				$connections 	= $tableFields->get( 'connections', new JObject );
 				
 				// Load PluginTypes Helper
-				JLoader::import( 'helpers.fSieldsandfilters.plugintypes', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				$pluginTypesHelper 	= FieldsandfiltersPluginTypesHelper::getInstance();
-				$valuesModes 		= $pluginTypesHelper->getMode( 'values', array() ); // [TODO] zmienic na filter
-				$dataModes		= $pluginTypesHelper->getMode( 'data', array() ); // [TODO] pamietac o static lub zrobic w metodzie getMode mozliwosc odseparowania
-													 // lub usunac i tylko sprawdzac czy jest filterem
+				$pluginTypesHelper 	= FieldsandfiltersFactory::getPluginTypes();
+				$filterMode 		= (array) $pluginTypesHelper->getMode( 'filter', array() );
+				$otherMode		= (array) $pluginTypesHelper->getModes( null, array(), true, $filterMode );
 				
 				// Load Array Helper
-				JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-				
-				$fields = FieldsandfiltersArrayHelper::flatten( get_object_vars( $fields ) );
+				$fields = FieldsandfiltersFactory::getArray()->flatten( get_object_vars( $fields ) );
 				
 				while( $field = array_shift( $fields ) )
 				{
@@ -524,8 +525,8 @@ class FieldsandfiltersModelelement extends JModelAdmin
 					$_connections		= (array) $connections->get( $field->field_id, new JObject )->getProperties( true );
 					$_connectionsItem	= (array) $connectionsItem->get( $field->field_id, new JObject )->getProperties( true );
 					
-					// data
-					if( in_array( $field->mode, $dataModes ) && ( !empty( $_data ) || !empty( $_dataItem ) ) )
+					// other ( data/static )
+					if( in_array( $field->mode, $otherMode ) && ( !empty( $_data ) || !empty( $_dataItem ) ) )
 					{
 						$tableObject 		= new stdClass();
 						$tableObject->field_id 	= (int) $field->field_id;
@@ -550,8 +551,8 @@ class FieldsandfiltersModelelement extends JModelAdmin
 							$table->updateData( $tableObject );
 						}
 					}
-					// connections
-					elseif( in_array( $field->mode, $valuesModes ) && ( !empty( $_connections ) || !empty( $_connectionsItem ) ) )
+					// filter
+					elseif( in_array( $field->mode, $filterMode ) && ( !empty( $_connections ) || !empty( $_connectionsItem ) ) )
 					{
 						$tableObject 		= new stdClass();
 						$tableObject->field_id 	= (int) $field->field_id;
@@ -621,7 +622,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 	 *
 	 * @return  boolean  True if successful, false if an error occurs.
 	 *
-	 * @since   12.2
+	 * @since       1.1.0
 	 */
 	public function delete( &$pks )
 	{
@@ -632,8 +633,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 		JPluginHelper::importPlugin( 'content' );
 		
 		// Load PluginExtensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		$pluginExtensionsHelper = FieldsandfiltersPluginExtensionsHelper::getInstance();
+		$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
 		
 		// Iterate the items to delete each one.
 		foreach( $pks as $i => $pk )

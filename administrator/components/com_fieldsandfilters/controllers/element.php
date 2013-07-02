@@ -18,10 +18,13 @@ if( version_compare( JVERSION, 3.0, '<' ) )
 
 /**
  * Element controller class.
+ * @since       1.0.0
  */
 class FieldsandfiltersControllerElement extends JControllerForm
 {
-
+	/**
+	 * @since       1.0.0
+	 **/
 	public function __construct()
 	{
 		$this->view_list = 'elements';
@@ -36,7 +39,7 @@ class FieldsandfiltersControllerElement extends JControllerForm
 	 *
 	 * @return  boolean  True if successful, false otherwise.
 	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function save( $key = 'element_id', $urlVar = 'id' )
 	{
@@ -52,7 +55,7 @@ class FieldsandfiltersControllerElement extends JControllerForm
 	 *
 	 * @return  boolean  True if access level check and checkout passes, false otherwise.
 	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function edit( $key = 'element_id', $urlVar = 'id' )
 	{
@@ -67,7 +70,7 @@ class FieldsandfiltersControllerElement extends JControllerForm
 	 *
 	 * @return  string  The arguments to append to the redirect URL.
 	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	protected function getRedirectToItemAppend( $recordId = null, $urlVar = 'id' )
 	{

@@ -17,12 +17,13 @@ if( version_compare( JVERSION, 3.0, '<' ) )
 
 /**
  * Elements list controller class.
+ * @since       1.0.0
  */
 class FieldsandfiltersControllerElements extends JControllerAdmin
 {
 	/**
 	 * Proxy for getModel.
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	public function getModel( $name = 'element', $prefix = 'FieldsandfiltersModel', $config = array() )
 	{
@@ -34,8 +35,7 @@ class FieldsandfiltersControllerElements extends JControllerAdmin
 	 * Method to save the submitted ordering values for records via AJAX.
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
+	 * @since       1.0.0
 	 */
 	public function saveOrderAjax()
 	{

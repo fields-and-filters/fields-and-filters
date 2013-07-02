@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 
 /**
  * View class for a list of Fieldsandfilters.
+ * @since	1.1.0
  */
 class FieldsandfiltersViewElements extends JViewLegacy
 {

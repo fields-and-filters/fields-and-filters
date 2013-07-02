@@ -190,20 +190,28 @@ class FieldsandfiltersModelfield extends JModelAdmin
 					
 					if( $pluginForm = simplexml_load_file( $filePath ) )
 					{
+						// get plugin type properties field and set to $form fields properties
+						if( $pluginFieldsProperties = $pluginForm->xpath('//fields[@name="properties"]') )
+						{
+							$pluginFieldsProperties = $pluginFieldsProperties[0]->xpath('descendant::field');
+							
+							$form->setFields( $pluginFieldsProperties, 'properties' );
+						}
+						
+						// get Plugin type values fieldset and set to $form fields values
+						if( $pluginFieldsValues = $pluginForm->xpath('//fields[@name="values"]') )
+						{
+							$pluginFieldsValues = $pluginFieldsValues[0]->xpath('descendant::fieldset');
+							
+							$form->setFields( $pluginFieldsValues, 'values' );
+						}
+						
 						// get plugin type params fieldset and set to $form fields params.type
 						if( $pluginFieldsParams = $pluginForm->xpath('//fields[@name="params"]') )
 						{
 							$pluginFieldsParams = $pluginFieldsParams[0]->xpath('descendant::fieldset');
 							
 							$form->setFields( $pluginFieldsParams, 'params.type' );
-						}
-						
-						// get plugin type properties field and set to $form fields properties
-						if( $pluginFieldsParams = $pluginForm->xpath('//fields[@name="properties"]') )
-						{
-							$pluginFieldsParams = $pluginFieldsParams[0]->xpath('descendant::field');
-							
-							$form->setFields( $pluginFieldsParams, 'properties' );
 						}
 					}
 				}

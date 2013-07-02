@@ -130,6 +130,7 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 				</div>
 			<?php echo JHtml::_( 'bootstrap.endTab' ); ?>
 			
+			<?php echo $this->loadTemplate( 'values' ); ?>
 			<?php echo $this->loadTemplate( 'params' ); ?>
 			
 		<?php echo JHtml::_( 'bootstrap.endTabSet' ); ?>

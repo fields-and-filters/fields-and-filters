@@ -133,6 +133,11 @@
 			<option value="-1">COM_FIELDSANDFILTERS_HTML_ONLYADMIN</option>
 		</field>
 	</fieldset>
+	
+	<fields name="properties"></fields>
+	
+	<fields name="values"></fields>
+	
 	<fields name="params">
 		<fields name="base">
 			<fieldset name="base">
@@ -263,5 +268,4 @@
 			</fieldset>
 		</fields>
 	</fields>
-	<fields name="properties"></fields>
 </form>

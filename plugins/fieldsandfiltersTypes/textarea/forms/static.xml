@@ -8,9 +8,9 @@
 			<![CDATA[PLG_FAF_ES_TA_FORM_DESC]]>
 		</message>
 	</layout>
-	<group type="fields" title="PLG_FIELDSANDFILTERS_FORM_GROUP_FIELDS_TITLE">
+	<group title="PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_TITLE">
 		<message>
-			<![CDATA[PLG_FIELDSANDFILTERS_FORM_GROUP_FIELDS_DESC]]>
+			<![CDATA[PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_DESC]]>
 		</message>
 	</group>
 
@@ -21,6 +21,22 @@
 				name="mode"
 				type="hidden"
 				value="static.text"
+			/>
+		</fieldset>
+	</fields>
+	
+	<fields name="values">
+		<fieldset name="values">
+			<field
+				name="data"
+				type="editor"
+				buttons="true"
+				hide="pagebreak,readmore"
+				class="inputbox"
+				filter="JComponentHelper::filterText"
+				labelclass="controls-disabled"
+				label="JGLOBAL_DESCRIPTION"
+				description="COM_WEBLINKS_FIELD_DESCRIPTION_DESC"
 			/>
 		</fieldset>
 	</fields>

@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 
 /**
  * element Table class
+ * @since       1.0.0
  */
 class FieldsandfiltersTableElement extends JTable
 {
@@ -22,7 +23,7 @@ class FieldsandfiltersTableElement extends JTable
 	 *
 	 * @param JDatabase A database connector object
 	 *
-	 * @since	1.0.0
+	 * @since       1.0.0
 	 */
 	public function __construct( &$db )
 	{
@@ -217,7 +218,7 @@ class FieldsandfiltersTableElement extends JTable
 	}
 	
 	/**
-	 * @since	1.0.0
+	 * @since       1.0.0
 	 **/
 	public function deleteData( $object = null )
 	{
