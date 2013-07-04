@@ -6,9 +6,9 @@
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
-
-
 defined( 'JPATH_PLATFORM' ) or die;
+
+jimport('joomla.filesystem.path');
 
 /**
  * FieldsandfiltersExtensionsHelper
@@ -23,7 +23,7 @@ class FieldsandfiltersExtensionsHelper
 	/**
 	 * @since       1.1.0
 	 */
-	public static function loadPluginTemplate( $plugin, $layout = 'default', $folder = 'field' )
+	public static function loadPluginTemplate( $plugin, $layout = 'field_default' )
 	{
 		$type = $plugin->get( 'type' );
 		$name = $plugin->get( 'name' );
@@ -31,15 +31,14 @@ class FieldsandfiltersExtensionsHelper
 		// Create the plugin name
 		$extension 	= 'plg_' . $type . '_' . $name;
 		
-		jimport('joomla.filesystem.path');
-		if( is_null( $template = self::_getPath( 'plugins', $extension, $folder ) ) )
+		if( is_null( $template = self::_getPath( 'plugins', $extension, $layout ) ) )
 		{
-			$paths[] 	= JPATH_PLUGINS . '/' . $type . '/' . $name . '/tmpl/' . $folder;
-			$paths[] 	= JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/' . $extension . '/' . $folder;
+			$paths[] 	= JPATH_PLUGINS . '/' . $type . '/' . $name;
+			$paths[] 	= JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/' . $extension;
 			
 			$template 	= JPath::find( $paths, ( $layout . '.php' ) );
 			
-			self::_setPath( $template, 'plugins', $extension, $folder );
+			self::_setPath( $template. 'plugins', $extension, $layout );
 			
 			// Unset so as not to introduce into template scope
 			unset( $paths );
@@ -69,17 +68,17 @@ class FieldsandfiltersExtensionsHelper
 	/**
 	 * @since       1.1.0
 	 */
-	protected static function _setPath( $path, $type, $extension, $folder = 'default' )
+	protected static function _setPath( $path, $type, $extension, $layout = 'default' )
 	{
-		self::$_path[$type][$extension][$folder] = $path;
+		self::$_path[$type][$extension][$layout] = $path;
 	}
 	
 	/**
 	 * @since       1.1.0
 	 */
-	protected static function _getPath( $type, $extension, $folder = 'default' )
+	protected static function _getPath( $type, $extension, $layout  = 'default' )
 	{
-		return ( isset( self::$_path[$type][$extension][$folder] ) ? self::$_path[$type][$extension][$folder] : null ) ;
+		return ( isset( self::$_path[$type][$extension][$layout] ) ? self::$_path[$type][$extension][$layout] : null ) ;
 	}
 	
 	/**
