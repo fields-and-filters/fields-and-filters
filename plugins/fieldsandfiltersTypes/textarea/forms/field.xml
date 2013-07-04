@@ -27,7 +27,7 @@
 	
 	<!-- Add fields to the parameters object for the plugin type. -->
 	<fields name="params">
-		<fieldset name="type">
+		<fieldset addfieldpath="/administrator/components/com_fieldsandfilters/models/fields">
 			<field
 				name="rows"
 				type="text"
@@ -75,6 +75,10 @@
 			>
 				<option value="">JDEFAULT</option>
 			</field>
+			<field
+				name="layout"
+				type="fieldsandfiltersPluginLayout"
+			/>
 		</fieldset>
 	</fields>
 </pluginType>
