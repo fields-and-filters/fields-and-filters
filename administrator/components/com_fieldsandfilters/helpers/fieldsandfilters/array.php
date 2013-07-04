@@ -295,12 +295,12 @@ class FieldsandfiltersArrayHelper
 	}
 	
 	/**
-	 * @since       1.0.0
+	 * @since       1.1.0
 	 */
 	static function getEmptySlotObject( $object, $ordering, $path = 'form.fields.' )
-	{
+	{	
 		// if object is instance of JRegistry
-		if( $path !== false )
+		if( $path && $object instanceof JRegistry )
 		{
 			if( $object->exists( $path . $ordering ) )
 			{
@@ -308,13 +308,14 @@ class FieldsandfiltersArrayHelper
 			}
 		}
 		// if object is instance of JObject or stdClass
-		else
+		else if( is_object( $object ) )
 		{
 			if( isset( $object->$ordering ) )
 			{
 				self::getEmptySlotObject( $object, ++$ordering, $path );
 			}
 		}
+		
 		
 		return $ordering;
 	}

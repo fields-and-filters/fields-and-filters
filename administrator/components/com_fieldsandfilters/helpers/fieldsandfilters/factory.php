@@ -26,40 +26,62 @@ class FieldsandfiltersFactory
         public static function __callStatic( $name, $arguments = array() )
         {
                 $hash = md5( $name . serialize( $arguments ) );
-                if( !array_key_exists( $hash, self::$instances ) && substr( $name, 0, 3 ) == 'get' )
+                if( !array_key_exists( $hash, self::$instances ) )
 		{
-                        $file           = substr( $name, 3 );
-                        $class          = 'Fieldsandfilters' . ( ( strpos( $file, 'Helper' ) === 0 ) ? $file : $file . 'Helper' );
-                        $instance       = false;
-                        
-                        if( substr( $name, -4 ) == 'Site' )
+                        if( substr( $name, 0, 3 ) == 'get' )
                         {
-                                $path =  JPATH_SITE . self::$path;
-                        }
-                        else
-                        {
-                                $path =  JPATH_ADMINISTRATOR . self::$path;
-                        }
-                        
-                        if( JLoader::import( 'fieldsandfilters.' . strtolower( $file ), $path ) && class_exists( $class ) )
-                        {
-                                if( method_exists( $class, 'getInstance' ) )
+                                $file           = substr( $name, 3 );
+                                $class          = 'Fieldsandfilters' . ( ( strpos( $file, 'Helper' ) === 0 ) ? $file : $file . 'Helper' );
+                                $instance       = false;
+                                
+                                if( substr( $name, -4 ) == 'Site' )
                                 {
-                                        $instance = call_user_func_array( array( $class, 'getInstance' ), $arguments );
+                                        $path =  JPATH_SITE . self::$path;
                                 }
                                 else
                                 {
-                                        $instance = new $class;
+                                        $path =  JPATH_ADMINISTRATOR . self::$path;
+                                }
+                                
+                                if( JLoader::import( 'fieldsandfilters.' . strtolower( $file ), $path ) && class_exists( $class ) )
+                                {
+                                        if( method_exists( $class, 'getInstance' ) )
+                                        {
+                                                $instance = call_user_func_array( array( $class, 'getInstance' ), $arguments );
+                                        }
+                                        else
+                                        {
+                                                $instance = new $class;
+                                        }
+                                        
+                                        self::$instances[$hash] = $instance;
+                                }
+                                else
+                                {
+                                        throw new InvalidArgumentException( 'Method not exists ' . $name );
+                                        return false;
                                 }
                         }
                         else
                         {
                                 throw new InvalidArgumentException( 'Method not exists ' . $name );
+                                return false;
                         }
-                        
-			self::$instances[$hash] = $instance;
 		}
                 
                 return self::$instances[$hash];
+        }
+        
+        public static function isVersion( $operator = '>=', $versionIS = 3.0, $version = JVERSION )
+        {
+                static $versions;
+                
+                $key = ( $operator . $versionIS . $version );
+                if( isset( $versions[$key] ) )
+                {
+                        $versions[$key] = version_compare( $version, $versionIS, $operator );
+                }
+                
+                return $versions[$key];
         }
 }

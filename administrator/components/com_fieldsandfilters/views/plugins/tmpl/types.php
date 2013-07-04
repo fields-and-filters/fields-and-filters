@@ -67,7 +67,7 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 				$form = $type->forms->get( $nameGroup );
 			?>
 			<li>
-				<a class="choose_type" href="#" title="<?php echo $this->escape( $type->description ); ?>"
+				<a class="choose_type" href="#" title="<?php echo $this->escape( $form->description ); ?>"
 					onclick="javascript:setType('<?php echo base64_encode( json_encode( array( 'id' => $recordId, 'mode' => $nameGroup, 'type' => $type->type, 'name' => $type->name ) ) ); ?>')">
 					<?php if ($document->direction != 'rtl') : ?>
 						<?php echo $this->escape( JText::_( $form->title ) );?>

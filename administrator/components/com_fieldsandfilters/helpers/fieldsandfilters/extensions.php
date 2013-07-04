@@ -23,7 +23,7 @@ class FieldsandfiltersExtensionsHelper
 	/**
 	 * @since       1.1.0
 	 */
-	public static function loadPluginTemplate( $plugin, $layout = 'field_default' )
+	public static function loadPluginTemplate( $plugin, $layout = 'default' )
 	{
 		$type = $plugin->get( 'type' );
 		$name = $plugin->get( 'name' );
@@ -31,37 +31,69 @@ class FieldsandfiltersExtensionsHelper
 		// Create the plugin name
 		$extension 	= 'plg_' . $type . '_' . $name;
 		
-		if( is_null( $template = self::_getPath( 'plugins', $extension, $layout ) ) )
+		if( $template = self::_getPath( 'plugins', $extension, $layout ) )
 		{
-			$paths[] 	= JPATH_PLUGINS . '/' . $type . '/' . $name;
-			$paths[] 	= JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/' . $extension;
-			
-			$template 	= JPath::find( $paths, ( $layout . '.php' ) );
+			$template = self::_getLayoutPath( $type, $name, $layout );
 			
 			self::_setPath( $template. 'plugins', $extension, $layout );
-			
-			// Unset so as not to introduce into template scope
-			unset( $paths );
 		}
 		
-		if( $template != false)
+		// Unset so as not to introduce into template scope
+		unset( $extension, $type, $name );
+		
+		// Start capturing output into a buffer
+		ob_start();
+		
+		// Include the requested template filename in the local scope
+		// (this will execute the view logic).
+		include $template;
+		
+		// Done with the requested template; get the buffer and
+		// clear it.
+		$output = ob_get_contents();
+		ob_end_clean();
+		
+		return $output;
+	}
+	
+	protected static function _getLayoutPath( $type, $name, $layout = 'default' )
+	{
+		if( FieldsandfiltersFactory::isVersion() )
 		{
-			// Unset so as not to introduce into template scope
-			unset( $file, $extension, $type, $name );
+			return JPluginHelper::getLayoutPath( $type, $name, $layout );
+		}
+		else
+		{
+			$template = JFactory::getApplication()->getTemplate();
+			$defaultLayout = $layout;
 			
-			// Start capturing output into a buffer
-			ob_start();
+			if (strpos($layout, ':') !== false)
+			{
+				// Get the template and file name from the string
+				$temp = explode(':', $layout);
+				$template = ($temp[0] == '_') ? $template : $temp[0];
+				$layout = $temp[1];
+				$defaultLayout = ($temp[1]) ? $temp[1] : 'default';
+			}
 			
-			// Include the requested template filename in the local scope
-			// (this will execute the view logic).
-			include $template;
+			// Build the template and base path for the layout
+			$tPath = JPATH_THEMES . '/' . $template . '/html/plg_' . $type . '_' . $name . '/' . $layout . '.php';
+			$bPath = JPATH_BASE . '/plugins/' . $type . '/' . $name . '/tmpl/' . $defaultLayout . '.php';
+			$dPath = JPATH_BASE . '/plugins/' . $type . '/' . $name . '/tmpl/default.php';
 			
-			// Done with the requested template; get the buffer and
-			// clear it.
-			$output = ob_get_contents();
-			ob_end_clean();
-			
-			return $output;
+			// If the template has a layout override use it
+			if (file_exists($tPath))
+			{
+				return $tPath;
+			}
+			elseif (file_exists($bPath))
+			{
+				return $bPath;
+			}
+			else
+			{
+				return $dPath;
+			}
 		}
 	}
 	
@@ -102,8 +134,6 @@ class FieldsandfiltersExtensionsHelper
 		{
 			if( is_null( self::_getPath( 'controller', $controllerClass ) ) )
 			{
-				jimport( 'joomla.filesystem.path' );
-				
 				// Get the environment configuration.
 				$basePath = JArrayHelper::getValue( $config, 'base_path', JPATH_COMPONENT );
 				$nameConfig = empty( $type ) ? array( 'name' => 'controller' ) : array( 'name' => $type, 'format' => JFactory::getApplication()->input->get( 'format', '', 'word' ) );
@@ -192,6 +222,9 @@ class FieldsandfiltersExtensionsHelper
 			case 'plg' :
 				list( , $type, $name ) = explode( '_', $extension, 3 );
 				$path = JPATH_PLUGINS . '/' . $type . '/' . $name;
+			break;
+			case 'tpl' :
+				$path = JPATH_BASE . '/templates/' . $extension;
 			break;
 			default :
 				return;

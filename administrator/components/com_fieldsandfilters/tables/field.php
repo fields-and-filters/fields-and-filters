@@ -38,46 +38,24 @@ class FieldsandfiltersTableField extends JTable {
 	 * @return  boolean  True on success.
 	 *
 	 * @link    http://docs.joomla.org/JTable/bind
-	 * @since       1.0.0
+	 * @since       1.1.0
 	 */
 	public function bind( $array, $ignore = '' )
 	{
-		
-		
 		if( isset( $array['params'] ) && is_array( $array['params'] ) )
 		{
 			$registry = new JRegistry();
 			$registry->loadArray( $array['params'] );
 			$array['params'] = (string) $registry;
 		}
-	    /*
-		    if(!JFactory::getUser()->authorise('core.edit.state','com_fieldsandfilters') && $array['state'] == 1){
-			    $array['state'] = 0;
-		    }
-    
-	    
-    
-	    if (isset($array['metadata']) && is_array($array['metadata'])) {
-		$registry = new JRegistry();
-		$registry->loadArray($array['metadata']);
-		$array['metadata'] = (string) $registry;
-	    }
-	    if(!JFactory::getUser()->authorise('core.admin', 'com_fieldsandfilters.field.'.$array['id'])){
-		$actions = JFactory::getACL()->getActions('com_fieldsandfilters','field');
-		$default_actions = JFactory::getACL()->getAssetRules('com_fieldsandfilters.field.'.$array['id'])->getData();
-		$array_jaccess = array();
-		foreach($actions as $action){
-		    $array_jaccess[$action->name] = $default_actions[$action->name];
+		
+		if( isset( $array['values'] ) && is_array( $array['values'] ) )
+		{
+			$this->values = JArrayHelper::getValue( $array, 'values', array() );
+			unset( $array['values'] );
 		}
-		$array['rules'] = $this->JAccessRulestoArray($array_jaccess);
-	    }
-	    //Bind the rules for ACL where supported.
-		    if (isset($array['rules']) && is_array($array['rules'])) {
-			    $this->setRules($array['rules']);
-		    }
-		*/
     
-	    return parent::bind( $array, $ignore );
+		return parent::bind( $array, $ignore );
 	}
     
 	/**

@@ -41,7 +41,7 @@ class FieldsandfiltersTableElement extends JTable
 	 */
 	public function bind( $array, $ignore = '' )
 	{
-		$this->fields = JArrayHelper::getValue( $array, 'fields', array() );
+		$this->fields = JArrayHelper::getValue( (array) $array, 'fields', array() );
 		unset( $array['fields'] );
 		
 		return parent::bind($array, $ignore);
@@ -138,11 +138,48 @@ class FieldsandfiltersTableElement extends JTable
 	/**
 	 * @since	1.0.0
 	 **/
+	public function getData( $object )
+	{
+		$pk = $this->_testPrimaryKey( $object );
+		
+		if( !isset( $object->field_id ) )
+		{
+			$this->setError( '' );
+			return false;
+		}
+		
+		$query 	= $this->_db->getQuery( true );
+		
+		$query->select( $this->_db->quoteName( 'field_data' ) );
+		$query->from( $this->_db->quoteName( $this->_tbl_data ) );
+		$query->where( $this->_db->quoteName( $this->_tbl_key ) . ' = ' . (int) $pk );
+		$query->where( $this->_db->quoteName( 'extension_type_id' ) . ' = ' . (int) $this->extension_type_id );
+		$query->where( $this->_db->quoteName( 'field_id' ) . ' = ' . (int) $object->field_id );
+		
+		$this->_db->setQuery( $query );
+		
+		try
+		{
+			return $this->_db->loadResult();
+		}
+		catch( RuntimeException $e )
+		{
+			$this->setError( $e->getMessage() );
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	/**
+	 * @since	1.0.0
+	 **/
 	public function insertData( $object )
 	{
 		$pk = $this->_testPrimaryKey( $object );
 		
-		if( empty( $pk ) || !isset( $object->field_id ) || !isset( $object->field_data ) )
+		if( !isset( $object->field_id ) || !isset( $object->field_data ) )
 		{
 			$this->setError( '' );
 			return false;
@@ -187,7 +224,7 @@ class FieldsandfiltersTableElement extends JTable
 	{
 		$pk = $this->_testPrimaryKey( $object );
 		
-		if( empty( $pk ) || !isset( $object->field_id ) || !isset( $object->field_data ) )
+		if( !isset( $object->field_id ) || !isset( $object->field_data ) )
 		{
 			$this->setError( '' );
 			return false;
@@ -229,7 +266,7 @@ class FieldsandfiltersTableElement extends JTable
 		$query->delete();
 		$query->from( $this->_db->quoteName( $this->_tbl_data ) );
 		
-		if( !empty( $pk ) )
+		if( !is_null( $pk ) )
 		{
 			$query->where( $this->_db->quoteName( $this->_tbl_key ) . ' = ' . (int) $pk );
 		}
@@ -277,7 +314,7 @@ class FieldsandfiltersTableElement extends JTable
 	{
 		$pk = $this->_testPrimaryKey( $object );
 		
-		if( empty( $pk ) || !isset( $object->field_id ) || !isset( $object->field_value_id ) )
+		if( !isset( $object->field_id ) || !isset( $object->field_value_id ) )
 		{
 			$this->setError( '' );
 			return false;
@@ -351,7 +388,7 @@ class FieldsandfiltersTableElement extends JTable
 		$query->delete();
 		$query->from( $this->_db->quoteName( $this->_tbl_connections ) );
 		
-		if( !empty( $pk ) )
+		if( !in_null( $pk ) )
 		{
 			$query->where( $this->_db->quoteName( $this->_tbl_key ) . ' = ' . (int) $pk );
 		}

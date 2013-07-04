@@ -27,7 +27,7 @@
 	
 	<!-- Add fields to the parameters object for the plugin type. -->
 	<fields name="params">
-		<fieldset addfieldpath="/administrator/components/com_fieldsandfilters/models/fields">
+		<fieldset name="type">
 			<field
 				name="rows"
 				type="text"
@@ -78,6 +78,12 @@
 			<field
 				name="layout"
 				type="fieldsandfiltersPluginLayout"
+				mode="field"
+				plugin="fieldsandfiltersTypes"
+				key="field_type"
+				label="PLG_FAF_TS_TA_FORM_LAYOUT_LBL"
+				description="PLG_FAF_TS_TA_FORM_LAYOUT_DESC"
+				
 			/>
 		</fieldset>
 	</fields>

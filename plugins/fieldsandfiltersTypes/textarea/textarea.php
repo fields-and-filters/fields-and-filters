@@ -10,7 +10,8 @@
 
 defined('_JEXEC') or die;
 
-jimport('joomla.utilities.utility');
+// Load the Factory Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
  * Checkbox type fild
@@ -29,7 +30,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 	 * @access      protected
 	 * @param       object  $subject The object to observe
 	 * @param       array   $config  An array that holds the plugin configuration
-	 * @since       1.5
+	 * @since       1.0.0
 	 */
 	public function __construct( &$subject, $config )
 	{
@@ -42,7 +43,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 	 * @param	array	$data	The associated data for the form.
 	 *
 	 * @return	boolean
-	 * @since	2.5
+	 * @since       1.1.0
 	 */
 	public function onFieldsandfiltersPrepareFormField( $isNew = false )
 	{
@@ -52,9 +53,6 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 		{
 			return true;
 		}
-		
-		// Load Array Helper
-		JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
 		
 		$fields = is_array( $fields ) ? $fields : array( $fields );
 		
@@ -131,7 +129,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->field_id );
 			$element->addAttribute( 'hr', 'true' );
 			
-			$jregistry->set( 'form.fields.' . FieldsandfiltersArrayHelper::getEmptySlotObject( $jregistry, $field->ordering ), $root );
+			$jregistry->set( 'form.fields.' . FieldsandfiltersFactory::getArray()->getEmptySlotObject( $jregistry, $field->ordering ), $root );
 			
 			unset( $element, $elementSpacer );
 		}
@@ -139,7 +137,37 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 		return true;
 	}
 	
-	public function getFieldsandfiltersFieldsHTML( $fields, $element, $templateFields )
+	/**
+	 * @since       1.1.0
+	public function onFieldsandfiltersBeforeSaveData( $context, $newItem, $oldItem, $isNew )
+	{
+		if( $context == 'com_fieldsandfilters.field' && $newItem->field_type == $this->_name )
+		{
+			$data = $table->get( 'values', new JObject )->get( 'data' );
+			
+			if( !empty( $data ) )
+			{
+				
+			}
+			
+			echo '<pre>';
+			print_r($newItem);
+			echo '</pre>';
+			
+			
+			echo '<pre>';
+			print_r($oldItem);
+			echo '</pre>';
+			
+			exit;
+		}
+	}
+	*/
+	
+	/**
+	 * @since       1.1.0
+	 */
+	public function getFieldsandfiltersFieldsHTML( $templateFields, $fields, $element, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -149,10 +177,10 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 		$fields = is_array( $fields ) ? $fields : array( $fields );
 		
 		// Load Extensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 		
 		// Load Array Helper
-		JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+		$arrayHelper = FieldsandfiltersFactory::getArray();
 		
 		if( is_null( $this->_variables ) )
 		{
@@ -170,7 +198,8 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			
 			$this->_variables->field = $field;
 			
-			$templateFields->set( FieldsandfiltersArrayHelper::getEmptySlotObject( $templateFields, $field->ordering, false ), FieldsandfiltersExtensionsHelper::loadPluginTemplate( $this->_variables ) );
+			$template = $extensionsHelper->loadPluginTemplate( $this->_variables );
+			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->get( $ordering ), false ), $template );
 		}
 		
 		unset( $this->_variables->element, $this->_variables->field );
@@ -184,7 +213,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 	 *
 	 * @return  boolean  True, if the file has successfully loaded.
 	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function loadLanguage( $extension = '', $basePath = JPATH_ADMINISTRATOR )
 	{

@@ -35,6 +35,12 @@ class FieldsandfiltersModelfield extends JModelAdmin
 	protected $_folder_plugin_types = 'fieldsandfiltersTypes';
 	
 	/**
+	 * Item cache.
+	 * @since       1.1.0
+	 */
+	protected $_cache = array();
+	
+	/**
 	 * @var		string	Folder plugin extensions types name.
 	 * @since       1.0.0
 	 */
@@ -290,7 +296,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 
 		if( empty( $data ) )
 		{
-			$data = $this->getItem();
+			$data = new JRegistry( $this->getItem() );
             
 		}
 
@@ -309,61 +315,95 @@ class FieldsandfiltersModelfield extends JModelAdmin
 	{
 		$pk = ( !empty( $pk ) ) ? (int) $pk : (int) $this->getState( 'field.id' );
 		
-		// Get a level row instance.
-		$table = $this->getTable();
-		
-		// Attempt to load the row.
-		$table->load( $pk );
-		
-		// Check for a table object error.
-		if( $error = $table->getError() )
+		$store = md5( __METHOD__ . $pk );
+		if( !isset( $this->_cache[$store] ) )
 		{
-			$this->setError( $error );
-			return false;
+			$isNew	= true;
+			
+			// Get a level row instance.
+			$table = $this->getTable();
+			
+			// Attempt to load the row.
+			$table->load( $pk );
+			
+			// Check for a table object error.
+			if( $error = $table->getError() )
+			{
+				$this->setError( $error );
+				return false;
+			}
+			
+			// Prime required properties.
+			if( $fieldType = $this->getState( 'field.field_type' ) )
+			{
+				$table->field_type = $fieldType;
+			}
+			else
+			{
+				// We have a valid type, inject it into the state for forms to use.
+				$this->setState( 'field.field_type', $table->field_type );
+			}
+			
+			if( !$this->getState( 'field.type_mode' ) && $table->mode && ( $typeMode = FieldsandfiltersFactory::getPluginTypes()->getModeName( $table->mode, 'type' ) ) )
+			{
+				$this->setState( 'field.type_mode', $typeMode );
+			}
+			
+			
+			if( empty( $table->field_id ) )
+			{
+				$table->extension_type_id 	= 0;
+				$table->params			= '{}';
+			}
+			else
+			{
+				$isNew		= true;
+				$elementTable 	= $this->getTable( 'Element', 'FieldsandfiltersTable' );
+				
+				$objectTable			= new stdClass;
+				$objectTable->element_id 	= 0;
+				$objectTable->field_id 		= $table->field_id;
+				
+				$elementTable->extension_type_id = $table->extension_type_id;
+				
+				if( $data = $elementTable->getData( $objectTable ) )
+				{
+					$table->values = array(	'data' => $data );
+				}
+				
+				$this->setState( 'field.extension_type_id', $table->extension_type_id );
+			}
+			
+			// Convert to the JObject before adding the params.
+			$properties 	= $table->getProperties( true );
+			$item	 	= JArrayHelper::toObject( $properties, 'JObject' );
+			
+			// Convert the params field to an array.
+			$item->params	= new JRegistry;
+			$item->params->loadString( $table->params );
+			
+			if( !$isNew )
+			{
+				// Include the fieldsandfiltersExtensions plugins for the on prepare item events.
+				JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+				
+				// Trigger the onPrepareItem event.
+				$result = $this->_dispatcher->trigger( 'onFieldsandfiltersPrepareItem', array( ( $this->option . '.' . $this->name ), &$item, $isNew, $this->state ) );
+				
+				if( in_array( false, $result, true ) )
+				{
+					$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_PREPARE_ITEM', $this->getState( 'elements.extension_name' ) ) );
+					
+					return false;
+				}
+			}
+			
+			$item->params	= $item->params->toObject();
+			
+			$this->_cache[$store] = $item;
 		}
 		
-		// Prime required properties.
-		if( $fieldType = $this->getState( 'field.field_type' ) )
-		{
-			$table->field_type = $fieldType;
-		}
-		else
-		{
-			// We have a valid type, inject it into the state for forms to use.
-			$this->setState( 'field.field_type', $table->field_type );
-		}
-		
-		if( !$this->getState( 'field.type_mode' ) && $table->mode && ( $typeMode = FieldsandfiltersFactory::getPluginTypes()->getModeName( $table->mode, 'type' ) ) )
-		{
-			$this->setState( 'field.type_mode', $typeMode );
-		}
-		
-		if( $extensionTypeId = $this->getState( 'field.extension_type_id', false ) )
-		{
-			$table->extension_type_id = $extensionTypeId;
-		}
-		else
-		{
-			// We have a valid type, inject it into the state for forms to use.
-			$this->setState( 'field.extension_type_id', $table->extension_type_id );
-		}
-		
-		if( empty( $table->field_id ) )
-		{
-			$table->extension_type_id 	= 0;
-			$table->params			= '{}';
-		}
-		
-		// Convert to the JObject before adding the params.
-		$properties 	= $table->getProperties( true );
-		$result 	= JArrayHelper::toObject( $properties );
-		
-		// Convert the params field to an array.
-		$registry 	= new JRegistry;
-		$registry->loadString( $table->params );
-		$result->params	= $registry->toArray();
-		
-		return $result;
+		return $this->_cache[$store];
 	}
 	
 	/**
@@ -509,6 +549,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 		$key 			= $table->getKeyName();
 		$pk 			= ( !empty( $data[$key] ) ) ? $data[$key] : (int) $this->getState( $this->getName() . '.id' );
 		$isNew 			= true;
+		$elementTable 		= $this->getTable( 'Element', 'FieldsandfiltersTable' );
 
 		// Include the content plugins for the on save events.
 		JPluginHelper::importPlugin( 'content' );
@@ -525,14 +566,14 @@ class FieldsandfiltersModelfield extends JModelAdmin
 				$table->load( $pk );
 				$isNew = false;
 			}
-
+			
 			// Bind the data.
 			if( !$table->bind( $data ) )
 			{
 				$this->setError( $table->getError() );
 				return false;
 			}
-
+			
 			// Prepare the row for saving
 			$this->prepareTable( $table );
 
@@ -551,16 +592,24 @@ class FieldsandfiltersModelfield extends JModelAdmin
 				return false;
 			}
 			
-			$tableFields = (array) $table->get( 'fields' );
-			
-			// Get old item
-			$item = $this->getItem( $table->$key );
+			if( $isValues = isset( $table->values ) )
+			{
+				$tableFields = (array) $table->get( 'values' );
+				
+				// Get old item
+				$item = $this->getItem( $table->$key );
+			}
 			
 			// Store the data.
 			if( !$table->store() )
 			{
 				$this->setError( $table->getError() );
 				return false;
+			}
+			
+			if( $isValues )
+			{
+				$table->set( 'values', JArrayHelper::toObject( $tableFields, 'JObject' ) );
 			}
 			
 			// Trigger the onFieldsandfiltersBeforeSaveData event.
@@ -570,6 +619,50 @@ class FieldsandfiltersModelfield extends JModelAdmin
 			{
 				$this->setError( $table->getError() );
 				return false;
+			}
+			
+			if( $isValues )
+			{
+				// get Data
+				$data 		= $table->get( 'values', new JObject )->get( 'data' );
+				
+				$objectTable			= new stdClass;
+				$objectTable->element_id 	= 0;
+				$objectTable->field_id 		= $table->field_id;
+				
+				$elementTable->extension_type_id = $item->extension_type_id;
+				
+				$oldData = $elementTable->getData( $objectTable );
+				
+				if( !empty( $data ) )
+				{
+					$objectTable->field_data = $data;
+					
+					if( $oldData && $table->extension_type_id != $item->extension_type_id )
+					{
+						$elementTable->deleteData( $objectTable );
+						
+						$elementTable->extension_type_id = $table->extension_type_id;
+						
+						$elementTable->insertData( $objectTable );
+					}
+					else if( $oldData )
+					{
+						$elementTable->extension_type_id = $table->extension_type_id;
+						
+						$elementTable->updateData( $objectTable );
+					}
+					else
+					{
+						$elementTable->extension_type_id = $table->extension_type_id;
+						
+						$elementTable->insertData( $objectTable );
+					}
+				}
+				else if( $oldData )
+				{
+					$elementTable->deleteData( $objectTable );
+				}
 			}
 			
 			// Clean the cache.
@@ -651,8 +744,9 @@ class FieldsandfiltersModelfield extends JModelAdmin
 						return false;
 					}
 					
-					$objectTable 		= new stdClass();
-					$objectTable->field_id 	= $table->field_id;
+					$objectTable 			= new stdClass();
+					$objectTable->field_id 		= $table->field_id;
+					$objectTable->element_id 	= null;
 					
 					//delete fields values and connections
 					if( in_array( $table->mode, $filterMode ) )
