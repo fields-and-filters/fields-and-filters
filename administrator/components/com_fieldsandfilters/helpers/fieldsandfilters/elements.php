@@ -345,9 +345,8 @@ class FieldsandfiltersElementsHelper extends FieldsandfiltersBufferValuesHelper
 	 */
 	protected function _addValue( &$_value )
 	{
-		$element = $this->buffer->get( $_value->{$this->vars->elementName} );
-		
-		$valuesName = $this->vars->valuesName;
+		$element 	= $this->buffer->get( $_value->{$this->vars->elementName} );
+		$valuesName 	= $this->vars->valuesName;
 		
 		if( !( isset( $element->$valuesName ) && $element->$valuesName instanceof JObject ) )
 		{

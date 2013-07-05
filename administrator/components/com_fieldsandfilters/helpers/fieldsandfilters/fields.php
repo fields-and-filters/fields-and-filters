@@ -45,6 +45,12 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 	 * 
 	 * @since       1.1.0
 	 */
+	protected $_staticModes = array();
+	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
 	public function getFields( $types, $states = null, $values = null, $without = true )
 	{
 		$this->method = __FUNCTION__;
@@ -90,7 +96,10 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 	{
 		parent::__construct( $debug );
 		
-		$this->_valuesModes = (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'filter' );
+		$pluginTypesHelper =  FieldsandfiltersFactory::getPluginTypes();
+		
+		$this->_valuesModes = (array) $pluginTypesHelper->getMode( 'filter' );
+		$this->_staticModes = (array) $pluginTypesHelper->getMode( 'static' );
 	}
 	
 	/**
@@ -106,7 +115,23 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 		
 		if( $values )
 		{
-			$this->config->def( 'getValues', 'values' );
+			
+			
+			switch( $values )
+			{
+				case 1:
+				case 'values':
+					$this->config->def( 'getValues', 'values' );
+				break;
+				case 2:
+				case 'data':
+					$this->config->def( 'getValues', 'data' );
+				break;
+				case 3:
+				case 'both':
+					$this->config->def( 'getValues', array( 'values', 'data' ) );
+				break;
+			}
 		}
 	}
 	
@@ -294,7 +319,14 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 	 */
 	protected function _prepareVarsValues()
 	{
-		$this->vars->valuesName = 'values';
+		if( $this->methodValues == 'values' )
+		{
+			$this->vars->valuesName = 'values';
+		}
+		else if( $this->methodValues == 'data' )
+		{
+			$this->vars->valuesName = 'data';
+		}
 		
 		return parent::_prepareVarsValues();
 	}
@@ -308,11 +340,22 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 		$query = $this->_db->getQuery( true );
 		
 		$query->select( '*' )
-			->from( $this->_db->quoteName( '#__fieldsandfilters_field_values' ) )
-			->where( $this->_db->quoteName( 'field_id' ) . ' IN (' . implode( ',', $this->vars->values->elements ) . ')' )
-			->where( $this->_db->quoteName( 'state' ) . ' = 1' );
+			->where( $this->_db->quoteName( 'field_id' ) . ' IN (' . implode( ',', $this->vars->values->elements ) . ')' );
 			
-		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
+		if( $this->methodValues == 'values' )
+		{
+			$query->from( $this->_db->quoteName( '#__fieldsandfilters_field_values' ) );
+			$query->where( $this->_db->quoteName( 'state' ) . ' = 1' );
+			$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
+		}
+		else if( $this->methodValues == 'data' )
+		{
+			$query->from( $this->_db->quoteName( '#__fieldsandfilters_data' ) );
+			$query->where( $this->_db->quoteName( 'element_id' ) . ' = ' .  0 );
+			$query->where( $this->_db->quoteName( 'extension_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' );
+		}
+		
+		echo $query->dump();
 		
 		return $query;
 	}
@@ -323,25 +366,46 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 	 */
 	protected function _searchValuesElement( &$element )
         {
-                $elementName    = $this->vars->elementName;
-                $_vars          = $this->vars->values;
-                // if element don't have filter_connection, add to arrry
-                if( in_array( $element->mode, $this->_valuesModes ) && !isset( $element->{$this->vars->valuesName} ) )
-                {
-                        array_push( $_vars->elements, $element->$elementName );
-                }
-                // if we need only elements with filter_connections isn't empty
-                elseif( !$this->config->get( 'elemntsWithoutValues', true ) && isset( $element->{$this->vars->valuesName} ) )
-                {
-                        $_values = get_object_vars( $element->{$this->vars->valuesName} );
-                        
-                        if( empty( $_values ) )
-                        {
-                                unset( $this->buffer->{$element->$elementName} );
-                        }
-                        
-                        unset( $_values );
-                }
+		$elementName    = $this->vars->elementName;
+		$_vars          = $this->vars->values;
+		
+		if( $this->methodValues == 'values' )
+		{
+			$modes = $this->_valuesModes;
+		}
+		else if( $this->methodValues == 'data' )
+		{
+			$modes = $this->_staticModes;
+		}
+		else
+		{
+			return false;
+		}
+		
+		// if element don't have filter_connection, add to arrry
+		if( in_array( $element->mode, $modes ) && !isset( $element->{$this->vars->valuesName} ) )
+		{
+			array_push( $_vars->elements, $element->$elementName );
+		}
+		// if we need only elements with filter_connections isn't empty
+		elseif( !$this->config->get( 'elemntsWithoutValues', true ) && isset( $element->{$this->vars->valuesName} ) )
+		{
+			if( $this->methodValues == 'values' )
+			{
+				$_values = get_object_vars( $element->{$this->vars->valuesName} );
+			}
+			else if( $this->methodValues == 'data' )
+			{
+				$_values = $element->{$this->vars->valuesName};
+			}	
+			
+			if( empty( $_values ) )
+			{
+				unset( $this->buffer->{$element->$elementName} );
+			}
+			
+			unset( $_values );
+		}
         }
 	
 	/**
@@ -350,20 +414,36 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 	 */
 	protected function _addValue( &$_value )
 	{
-		$element = $this->buffer->get( $_value->{$this->vars->elementName} );
+		$element 	= $this->buffer->get( $_value->{$this->vars->elementName} );
+		$valuesName 	= $this->vars->valuesName;
 		
-		$valuesName = $this->vars->valuesName;
-		
-		if( !( isset( $element->$valuesName ) && $element->$valuesName instanceof JObject ) )
+		if( $this->methodValues == 'values' )
 		{
-		     $element->$valuesName = new JObject();
-		}
-		
-		if( isset( $_value->field_value_id ) )
-		{
-			unset( $_value->field_id );
+			if( !( isset( $element->$valuesName ) && $element->$valuesName instanceof JObject ) )
+			{
+			     $element->$valuesName = new JObject();
+			}
 			
-			$element->$valuesName->set( $_value->field_value_id, $_value );
+			if( isset( $_value->field_value_id ) )
+			{
+				unset( $_value->field_id );
+				
+				$element->$valuesName->set( $_value->field_value_id, $_value );
+			}
+		}
+		else if( $this->methodValues == 'data' )
+		{
+			if( isset( $_value->field_id ) && isset( $_value->field_data ) )
+			{
+				if( !isset( $element->$valuesName ) )
+				{
+					$element->$valuesName = $_value->field_data;
+				}
+			}
+			else if( !isset( $element->$valuesName ) )
+			{
+				$element->$valuesName = '';
+			}
 		}
 	}
 
