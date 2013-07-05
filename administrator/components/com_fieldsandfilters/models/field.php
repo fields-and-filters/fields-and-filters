@@ -318,7 +318,8 @@ class FieldsandfiltersModelfield extends JModelAdmin
 		$store = md5( __METHOD__ . $pk );
 		if( !isset( $this->_cache[$store] ) )
 		{
-			$isNew	= true;
+			$isNew			= true;
+			$pluginTypesHelper	= FieldsandfiltersFactory::getPluginTypes();
 			
 			// Get a level row instance.
 			$table = $this->getTable();
@@ -344,7 +345,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 				$this->setState( 'field.field_type', $table->field_type );
 			}
 			
-			if( !$this->getState( 'field.type_mode' ) && $table->mode && ( $typeMode = FieldsandfiltersFactory::getPluginTypes()->getModeName( $table->mode, 'type' ) ) )
+			if( !$this->getState( 'field.type_mode' ) && $table->mode && ( $typeMode = $pluginTypesHelper->getModeName( $table->mode, 'type' ) ) )
 			{
 				$this->setState( 'field.type_mode', $typeMode );
 			}
@@ -357,21 +358,24 @@ class FieldsandfiltersModelfield extends JModelAdmin
 			}
 			else
 			{
-				$isNew		= true;
-				$elementTable 	= $this->getTable( 'Element', 'FieldsandfiltersTable' );
-				
-				$objectTable			= new stdClass;
-				$objectTable->element_id 	= 0;
-				$objectTable->field_id 		= $table->field_id;
-				
-				$elementTable->extension_type_id = $table->extension_type_id;
-				
-				if( $data = $elementTable->getData( $objectTable ) )
-				{
-					$table->values = array(	'data' => $data );
-				}
-				
+				$isNew		= false;
 				$this->setState( 'field.extension_type_id', $table->extension_type_id );
+				
+				if( in_array( $table->mode, $pluginTypesHelper->getMode( 'static' ) ) )
+				{
+					$elementTable 	= $this->getTable( 'Element', 'FieldsandfiltersTable' );
+					
+					$objectTable			= new stdClass;
+					$objectTable->element_id 	= 0;
+					$objectTable->field_id 		= $table->field_id;
+					
+					$elementTable->extension_type_id = $table->extension_type_id;
+					
+					if( $data = $elementTable->getData( $objectTable ) )
+					{
+						$table->values = array(	'data' => $data );
+					}
+				}
 			}
 			
 			// Convert to the JObject before adding the params.
@@ -592,13 +596,13 @@ class FieldsandfiltersModelfield extends JModelAdmin
 				return false;
 			}
 			
-			if( $isValues = isset( $table->values ) )
+			if( $isValues = isset( $table->values )  )
 			{
 				$tableFields = (array) $table->get( 'values' );
-				
-				// Get old item
-				$item = $this->getItem( $table->$key );
 			}
+			
+			// Get old item
+			$item = $this->getItem( $table->$key );
 			
 			// Store the data.
 			if( !$table->store() )
@@ -621,48 +625,61 @@ class FieldsandfiltersModelfield extends JModelAdmin
 				return false;
 			}
 			
+			$staticModes = FieldsandfiltersFactory::getPluginTypes()->getMode( 'static' );
+			
 			if( $isValues )
 			{
-				// get Data
-				$data 		= $table->get( 'values', new JObject )->get( 'data' );
-				
+				if( in_array( $table->mode, $staticModes ) )
+				{
+					// get Data
+					$data 		= $table->get( 'values', new JObject )->get( 'data' );
+					
+					$objectTable			= new stdClass;
+					$objectTable->element_id 	= 0;
+					$objectTable->field_id 		= $table->field_id;
+					
+					$elementTable->extension_type_id = $item->extension_type_id;
+					
+					$oldData = $elementTable->getData( $objectTable );
+					
+					if( !empty( $data ) )
+					{
+						$objectTable->field_data = $data;
+						
+						if( $oldData && $table->extension_type_id != $item->extension_type_id )
+						{
+							$elementTable->deleteData( $objectTable );
+							
+							$elementTable->extension_type_id = $table->extension_type_id;
+							
+							$elementTable->insertData( $objectTable );
+						}
+						else if( $oldData )
+						{
+							$elementTable->extension_type_id = $table->extension_type_id;
+							
+							$elementTable->updateData( $objectTable );
+						}
+						else
+						{
+							$elementTable->extension_type_id = $table->extension_type_id;
+							
+							$elementTable->insertData( $objectTable );
+						}
+					}
+					else if( $oldData )
+					{
+						$elementTable->deleteData( $objectTable );
+					}
+				}
+			}
+			elseif( $table->mode != $item->mode && in_array( $item->mode, $staticModes ) )
+			{
 				$objectTable			= new stdClass;
 				$objectTable->element_id 	= 0;
 				$objectTable->field_id 		= $table->field_id;
 				
-				$elementTable->extension_type_id = $item->extension_type_id;
-				
-				$oldData = $elementTable->getData( $objectTable );
-				
-				if( !empty( $data ) )
-				{
-					$objectTable->field_data = $data;
-					
-					if( $oldData && $table->extension_type_id != $item->extension_type_id )
-					{
-						$elementTable->deleteData( $objectTable );
-						
-						$elementTable->extension_type_id = $table->extension_type_id;
-						
-						$elementTable->insertData( $objectTable );
-					}
-					else if( $oldData )
-					{
-						$elementTable->extension_type_id = $table->extension_type_id;
-						
-						$elementTable->updateData( $objectTable );
-					}
-					else
-					{
-						$elementTable->extension_type_id = $table->extension_type_id;
-						
-						$elementTable->insertData( $objectTable );
-					}
-				}
-				else if( $oldData )
-				{
-					$elementTable->deleteData( $objectTable );
-				}
+				$elementTable->deleteData( $objectTable );
 			}
 			
 			// Clean the cache.
