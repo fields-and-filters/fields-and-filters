@@ -91,9 +91,10 @@ class FieldsandfiltersControllerFilters extends JControllerLegacy
 		{
 			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
                         // Trigger the onFieldsandfiltersPrepareFormField event.
-                        $context = 'com_fieldsandfilters.filters.' . $extension->name;
+                        $context = 'com_fieldsandfilters.request.' . $extension->name;
                         
-                        JDispatcher::getInstance()->trigger( 'onFieldsandfiltersFiltersDisplay', array( $context ) );
+			// [TODO] w joomla 3 inaczej wyciagamy dispatcher
+                        JDispatcher::getInstance()->trigger( 'onFieldsandfiltersRequestJSON', array( $context ) );
                         
 			// Send the response.
 			$this->sendResponse( null );

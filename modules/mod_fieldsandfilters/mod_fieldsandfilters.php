@@ -19,8 +19,9 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 	
 	JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 	
-	// Trigger the onFieldsandfiltersPrepareFiltersForm event.
-	$templateFilters = JDispatcher::getInstance()->trigger( 'onFieldsandfiltersPrepareFiltersForm', array( $context, $fieldsID, $params ) );
+	// Trigger the onFieldsandfiltersPrepareFiltersHTML event.
+	// [TODO] jdispatcher jest inne w joomla 3.x
+	$templateFilters = JDispatcher::getInstance()->trigger( 'onFieldsandfiltersPrepareFiltersHTML', array( $context, $fieldsID, $params ) );
 	$templateFilters = implode( "\n", $templateFilters );
 	
 	$jregistry 	= JRegistry::getInstance( 'fieldsandfilters' );

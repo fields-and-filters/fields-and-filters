@@ -567,7 +567,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function onFieldsandfiltersPrepareFiltersForm( $context, $fieldsID = null, $options = null )
+	public function onFieldsandfiltersPrepareFiltersHTML( $context, $fieldsID = null, $options = null )
 	{
 		if( $context != 'com_content.category' )
 		{
@@ -682,9 +682,9 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function onFieldsandfiltersFiltersDisplay( $context )
+	public function onFieldsandfiltersRequestJSON( $context )
 	{
-		if( $context != 'com_fieldsandfilters.filters.content' )
+		if( $context != 'com_fieldsandfilters.request.content' )
 		{
 			return;
 		}
