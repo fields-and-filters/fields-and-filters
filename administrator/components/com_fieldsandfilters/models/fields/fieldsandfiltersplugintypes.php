@@ -82,13 +82,7 @@ class JFormFieldFieldsandfiltersPluginTypes extends JFormFieldList
 		
 		$link = JRoute::_( 'index.php?' . JURI::buildQuery( $query ) );
 		
-		if( version_compare( JVERSION, 3.0, '<' ) )
-		{
-			$html[] = '<input type="text" readonly="readonly" disabled="disabled" value="' . $value . '"' . $size . $class . ' />';
-			$html[] = '<input type="button" value="' . JText::_( 'JSELECT' ) . '" onclick="SqueezeBox.fromElement(this, {handler:\'iframe\', size: {x: 600, y: 450}, url:\'' . $link . '\'})" />';
-			$html[] = '<input type="hidden" name="' . $this->name . '" value="' . htmlspecialchars( $this->value, ENT_COMPAT, 'UTF-8' ) . '" />';
-		}
-		else
+		if( FieldsandfiltersFactory::isVersion() )
 		{
 			$html[] = '<span class="input-append">';
 			$html[] = '	<input type="text" readonly="readonly" disabled="disabled" value="' . $value . '"' . $size . $class . ' />';
@@ -98,6 +92,12 @@ class JFormFieldFieldsandfiltersPluginTypes extends JFormFieldList
 			$html[] = '	</a>';
 			$html[] = '</span>';
 			$html[] = '<input class="input-small" type="hidden" name="' . $this->name . '" value="' . htmlspecialchars( $this->value, ENT_COMPAT, 'UTF-8' ) . '" />';
+		}
+		else
+		{
+			$html[] = '<input type="text" readonly="readonly" disabled="disabled" value="' . $value . '"' . $size . $class . ' />';
+			$html[] = '<input type="button" value="' . JText::_( 'JSELECT' ) . '" onclick="SqueezeBox.fromElement(this, {handler:\'iframe\', size: {x: 600, y: 450}, url:\'' . $link . '\'})" />';
+			$html[] = '<input type="hidden" name="' . $this->name . '" value="' . htmlspecialchars( $this->value, ENT_COMPAT, 'UTF-8' ) . '" />';
 		}
 		
 		return implode( "\n", $html );	

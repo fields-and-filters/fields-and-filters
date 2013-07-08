@@ -10,7 +10,7 @@
 // No direct access
 defined('_JEXEC') or die;
 
-if( version_compare( JVERSION, 3.0, '<' ) )
+if( !FieldsandfiltersFactory::isVersion() )
 {
 	jimport( 'joomla.application.component.controllerform' );
 }

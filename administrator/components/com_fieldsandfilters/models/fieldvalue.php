@@ -10,7 +10,7 @@
 // No direct access.
 defined( '_JEXEC' ) or die;
 
-if( version_compare( JVERSION, 3.0, '<' ) )
+if( !FieldsandfiltersFactory::isVersion() )
 {
 	jimport( 'joomla.application.component.modeladmin' );
 }
@@ -41,13 +41,13 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	{
 		parent::__construct( $config );
 		
-		if( version_compare( JVERSION, 3.0, '<' ) )
+		if( FieldsandfiltersFactory::isVersion() )
 		{
-			$this->_dispatcher = JDispatcher::getInstance();
+			$this->_dispatcher = JEventDispatcher::getInstance();
 		}
 		else
 		{
-			$this->_dispatcher = JEventDispatcher::getInstance();
+			$this->_dispatcher = JDispatcher::getInstance();
 		}
 	}
 	
