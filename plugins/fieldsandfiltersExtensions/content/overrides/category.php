@@ -16,6 +16,9 @@ JLoader::import( 'com_content.models.category', JPATH_SITE . '/components' );
 // Load plgFieldsandfiltersTypesImageHelper Helper
 // JLoader::import( 'fieldsandfiltersExtensions.content.overrides.articles', JPATH_PLUGINS );
 
+/**
+* @since       1.0.0
+*/
 class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCategory
 {
 	protected $_model_articles;
@@ -26,7 +29,7 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 	 * Note. Calling getState in this method will result in recursion.
 	 *
 	 * return	void
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
@@ -143,7 +146,7 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 	 * Get the articles in the category
 	 *
 	 * @return	mixed	An array of articles or false if an error occurs.
-	 * @since	1.5
+	 * @since       1.0.0
 	 */
 	public function getItems()
 	{
@@ -178,6 +181,9 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 		return $this->_articles;
 	}
 	
+	/**
+	 * @since       1.0.0
+	 */
 	public function getContentItemsID()
 	{
 		$limit 		= $this->getState( 'list.limit' );
@@ -192,6 +198,9 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 		return $itemsID;
 	}
 	
+	/**
+	 * @since       1.0.0
+	 */
 	protected function _getModelArticles()
 	{
 		if( $this->_model_articles === null && $category = $this->getCategory() )

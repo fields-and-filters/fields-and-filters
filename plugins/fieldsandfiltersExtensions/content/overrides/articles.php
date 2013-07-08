@@ -12,13 +12,16 @@ defined( '_JEXEC' ) or die;
 
 JLoader::import( 'com_content.models.articles', JPATH_SITE . '/components' );
 
+/**
+* @since       1.0.0
+*/
 class plgFieldsandfiltersExtensionsContentModelArticles extends ContentModelArticles
 {
 	/**
 	 * Get the master query for retrieving a list of articles subject to the model state.
 	 *
 	 * @return	JDatabaseQuery
-	 * @since	1.6
+	 * @since       1.0.0
 	 */
 	public function getListQuery()
 	{
@@ -38,6 +41,9 @@ class plgFieldsandfiltersExtensionsContentModelArticles extends ContentModelArti
 		return $query;
 	}
 	
+	/**
+	 * @since       1.0.0
+	 */
 	public function getItemsID()
 	{
 		// Get a storage key.
@@ -79,7 +85,7 @@ class plgFieldsandfiltersExtensionsContentModelArticles extends ContentModelArti
 	 *
 	 * @return  integer  Number of rows for query
 	 *
-	 * @since   12.2
+	 * @since       1.0.0
 	 */
 	protected function _getListCount( $query )
 	{

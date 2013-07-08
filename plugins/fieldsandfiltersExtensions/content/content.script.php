@@ -10,6 +10,9 @@
 
 defined('_JEXEC') or die;
 
+/**
+* @since       1.0.0
+*/
 class plgFieldsandfiltersExtensionsContentInstallerScript
 {
         /**
@@ -18,6 +21,7 @@ class plgFieldsandfiltersExtensionsContentInstallerScript
          * @param   JAdapterInstance  $adapter  The object responsible for running this script
          *
          * @return  boolean  True on success
+         * @since       1.0.0
          */
         public function install( JAdapterInstance $adapter )
         {
@@ -32,6 +36,7 @@ class plgFieldsandfiltersExtensionsContentInstallerScript
 	 * @param   JAdapterInstance  $adapter  The object responsible for running this script
 	 *
 	 * @return  boolean  True on success
+	 * @since       1.0.0
 	 */
 	public function update( JAdapterInstance $adapter )
 	{
@@ -40,6 +45,9 @@ class plgFieldsandfiltersExtensionsContentInstallerScript
 		return true;
 	}
 	
+	/**
+	 * @since       1.0.0
+	 */
 	protected static function _checkExtensionName()
 	{
 		$db = JFactory::getDbo();
