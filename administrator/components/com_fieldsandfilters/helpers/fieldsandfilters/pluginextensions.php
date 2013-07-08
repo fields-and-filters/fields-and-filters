@@ -26,6 +26,26 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersBufferCoreH
         protected $_extension_default   = 'allextensions';
         
 	/**
+	 * Constructor
+	 * 
+	 * @since       1.0.0
+	 */
+	public function __construct( $debug = null )
+	{
+		parent::__construct( $debug );
+		
+		if( FieldsandfiltersFactory::isVersion() )
+		{
+			$this->_dispatcher = JEventDispatcher::getInstance();
+		}
+		else
+		{
+			$this->_dispatcher = JDispatcher::getInstance();
+		}
+	
+	}
+	
+	/**
 	 * @since       1.1.0
 	**/
 	public function getExtensions( $withXML = false )
@@ -125,6 +145,29 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersBufferCoreH
                 
                 return $group; 
         }
+	
+	/**
+	 * @since       1.1.0
+	**/
+	public function getExtensionsNameByOption( $option = null, $default = null )
+	{
+		if( !property_exists( $this->_data, 'options' ) )
+                {
+                        $data           = $this->_getData( 'options' );
+			
+			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+			
+			// Trigger the onFieldsandfiltersPrepareFormField event.
+			$options = $this->_dispatcher->trigger( 'onFieldsandfiltersPreparePluginExtensionsHelper', array( 'pluginextensions.options', $data->elements ) );			
+		}
+		
+		if( $option )
+		{
+			return $this->_getData( 'options' )->elements->get( $option, $default );
+		}
+		
+		return $this->_getData( 'options' )->elements;
+	}
 	
 	/**
 	 * @since       1.0.0

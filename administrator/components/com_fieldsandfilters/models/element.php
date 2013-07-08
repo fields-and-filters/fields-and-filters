@@ -372,7 +372,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 			if( $extensionTypeID && ( $pluginExtension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID, true )->get( $extensionTypeID ) ) )
 			{
 				$this->setState( 'element.extension_name', $pluginExtension->name );
-				$this->setState( 'element.extension_title', $pluginExtension->title );
+				$this->setState( 'element.extension_title', $pluginExtension->forms->get( 'extension', new JObject )->get( 'title', new JObject ) );
 			}
 		}
 	}

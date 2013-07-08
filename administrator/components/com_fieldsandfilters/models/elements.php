@@ -85,7 +85,7 @@ class FieldsandfiltersModelelements extends JModelList
 			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 			
 			// Trigger the onContentBeforeDelete event.
-			$this->_dispatcher->trigger( 'onFieldsandfiltersPopulateStateList', array( ( $this->context . '.' . $pluginExtension->name ), $this->state, &$this->filter_fields ) );
+			$this->_dispatcher->trigger( 'onFieldsandfiltersPopulateState', array( ( $this->context . '.' . $pluginExtension->name ), $this->state, &$this->filter_fields ) );
 			
 			$this->setState( 'elements.extension_name', $pluginExtension->name );
 		}

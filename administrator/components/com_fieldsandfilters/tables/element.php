@@ -41,7 +41,7 @@ class FieldsandfiltersTableElement extends JTable
 	 */
 	public function bind( $array, $ignore = '' )
 	{
-		$this->fields = JArrayHelper::getValue( (array) $array, 'fields', array() );
+		$this->fields = JArrayHelper::getValue( $array, 'fields', array() );
 		unset( $array['fields'] );
 		
 		return parent::bind($array, $ignore);
