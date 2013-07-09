@@ -54,7 +54,8 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			return true;
 		}
 		
-		$fields = is_array( $fields ) ? $fields : array( $fields );
+		$fields 	= is_array( $fields ) ? $fields : array( $fields );
+		$staticMode 	= (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'static' );
 		
 		while( $field = array_shift( $fields ) )
 		{
@@ -87,41 +88,58 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 				$element = $root->addChild( 'field'  );
 			}
 			
-			if( $field->params->get( 'type.display_editor' ) )
+			$element->addAttribute( 'name', $field->field_id );
+			$element->addAttribute( 'labelclass' , 'control-label' );
+			$element->addAttribute( 'label', ( '(' . $field->field_id . ') ' . ( $field->state == -1 ? $field->field_name . ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_ONLY_ADMIN' ) . ']' : $field->field_name ) ) );
+			$element->addAttribute( 'translate_label', 'false' );
+			
+			if( in_array( $field->mode, $staticMode ) )
 			{
-				$element->addAttribute( 'type', 'editor' );
-				$element->addAttribute( 'hide', 'readmore,pagebreak' );
+				$element->addAttribute( 'type', 'note' );
 				
-				if( $editor = $field->params->get( 'type.editor' ) )
+				if( isset( $field->data ) )
 				{
-					$element->addAttribute( 'editor', $editor );
+					$element->addAttribute( 'description', $field->data );
+					$element->addAttribute( 'header', 'h3' );
 				}
+				
 			}
 			else
 			{
-				$element->addAttribute( 'type', 'textarea' );
+				if( $field->params->get( 'type.display_editor' ) )
+				{
+					$element->addAttribute( 'type', 'editor' );
+					$element->addAttribute( 'hide', 'readmore,pagebreak' );
+					
+					if( $editor = $field->params->get( 'type.editor' ) )
+					{
+						$element->addAttribute( 'editor', $editor );
+					}
+				}
+				else
+				{
+					$element->addAttribute( 'type', 'textarea' );
+				}
+				
+				if( $rows = (int) $field->params->get( 'type.rows' ) )
+				{
+					$element->addAttribute( 'rows', $rows );
+				}
+				
+				if( $cols = (int) $field->params->get( 'type.cols' ) )
+				{
+					$element->addAttribute( 'cols', $cols );
+				}
+				
+				$element->addAttribute( 'filter', 'safehtml' );
+				
+				if( $field->required )
+				{
+					$element->addAttribute( 'required', 'true' );
+				}
 			}
 			
-			if( $rows = (int) $field->params->get( 'type.rows' ) )
-			{
-				$element->addAttribute( 'rows', $rows );
-			}
-			
-			if( $cols = (int) $field->params->get( 'type.cols' ) )
-			{
-				$element->addAttribute( 'cols', $cols );
-			}
-			
-			$element->addAttribute( 'name', $field->field_id );
-			$element->addAttribute( 'labelclass' , 'control-label' );
-			$element->addAttribute( 'label', ( $field->state == -1 ? $field->field_name . ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_ONLY_ADMIN' ) . ']' : $field->field_name ) );
-			$element->addAttribute( 'translate_label', 'false' );
-			$element->addAttribute( 'filter', 'safehtml' );
-			
-			if( $field->required )
-			{
-				$element->addAttribute( 'required', 'true' );
-			}
+
 			
 			// hr bottom spacer
 			$element = $root->addChild( 'field' );

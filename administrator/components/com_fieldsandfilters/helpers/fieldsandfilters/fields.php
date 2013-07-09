@@ -107,7 +107,8 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 	 * @since       1.1.0
 	 */
 	protected function _setConfigFields( $values = false, $without = true )
-	{		
+	{
+
 		if( !$without )
 		{
 			$this->config->def( 'elemntsWithoutValues', $without );
@@ -115,8 +116,6 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 		
 		if( $values )
 		{
-			
-			
 			switch( $values )
 			{
 				case 1:
@@ -354,9 +353,7 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 			$query->where( $this->_db->quoteName( 'element_id' ) . ' = ' .  0 );
 			$query->where( $this->_db->quoteName( 'extension_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' );
 		}
-		
-		echo $query->dump();
-		
+				
 		return $query;
 	}
 	
@@ -460,18 +457,21 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 	 * @since       1.1.0
 	**/
 	protected function _beforeCall( $type, $method, $name, &$arguments )
-	{		
+	{
 		if( $type == 'Pivot' )
 		{
-			$values 	= isset( $arguments[4] ) ? $arguments[4] : null;
-			$without 	= isset( $arguments[5] ) ? $arguments[5] : true;
+			if( $method == 'getFields' )
+			{
+				$values 	= isset( $arguments[3] ) ? $arguments[3] : null;
+				$without 	= isset( $arguments[4] ) ? $arguments[4] : true;
+			}
+			else
+			{
+				$values 	= isset( $arguments[4] ) ? $arguments[4] : null;
+				$without 	= isset( $arguments[5] ) ? $arguments[5] : true;
+			}
+			
 			$this->_setConfigFields( $values, $without );	
-		}
-		
-		if( $method == 'getFields' )
-		{
-			$arguments[3] = isset( $arguments[2] ) ? $arguments[2] : null;
-			$arguments[2] = null;
 		}
 	}
 	

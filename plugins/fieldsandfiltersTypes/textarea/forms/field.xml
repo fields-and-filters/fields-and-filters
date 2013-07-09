@@ -76,14 +76,13 @@
 				<option value="">JDEFAULT</option>
 			</field>
 			<field
-				name="layout"
+				name="field_layout"
 				type="fieldsandfiltersPluginLayout"
 				mode="field"
 				plugin="fieldsandfiltersTypes"
 				key="field_type"
-				label="PLG_FAF_TS_TA_FORM_LAYOUT_LBL"
-				description="PLG_FAF_TS_TA_FORM_LAYOUT_DESC"
-				
+				label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
+				description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
 			/>
 		</fieldset>
 	</fields>

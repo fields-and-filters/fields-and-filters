@@ -10,7 +10,8 @@
 
 defined('_JEXEC') or die;
 
-jimport('joomla.utilities.utility');
+// Load the Fieldsandfilters Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
  * Checkbox type fild
@@ -20,6 +21,9 @@ jimport('joomla.utilities.utility');
  */
 class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 {
+	/**
+	 * @since	1.0.0
+	 */
 	protected $_variables;
 	
 	/**
@@ -28,7 +32,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	 * @access      protected
 	 * @param       object  $subject The object to observe
 	 * @param       array   $config  An array that holds the plugin configuration
-	 * @since       1.5
+	 * @since	1.0.0
 	 */
 	public function __construct(& $subject, $config)
 	{
@@ -41,7 +45,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	 * @param	array	$data	The associated data for the form.
 	 *
 	 * @return	boolean
-	 * @since	2.5
+	 * @since	1.1.0
 	 */
 	public function onFieldsandfiltersPrepareFormField( $isNew = false )
 	{
@@ -52,11 +56,12 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			return true;
 		}
 		
-		// Load Array Helper
-		JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
 		JForm::addFieldPath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/models/fields' );
 		
-		$fields = is_array( $fields ) ? $fields : array( $fields );
+		// Load Array Helper
+		$arrayHelper 	= FieldsandfiltersFactory::getArray();
+		
+		$fields 	= is_array( $fields ) ? $fields : array( $fields );
 		
 		while( $field = array_shift( $fields ) )
 		{
@@ -130,7 +135,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->field_id );
 			$element->addAttribute( 'hr', 'true' );
 			
-			$jregistry->set( 'form.fields.' . FieldsandfiltersArrayHelper::getEmptySlotObject( $jregistry, $field->ordering ), $root );
+			$jregistry->set( 'form.fields.' . $arrayHelper->getEmptySlotObject( $jregistry, $field->ordering ), $root );
 			
 			unset( $element );
 		}
@@ -138,6 +143,9 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		return true;
 	}
 	
+	/**
+	 * @since	1.1.0
+	 */
 	public function getFieldsandfiltersFieldsHTML( $fields, $element, $templateFields )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
@@ -148,10 +156,10 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		$fields = is_array( $fields ) ? $fields : array( $fields );
 		
 		// Load Extensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 		
 		// Load Array Helper
-		JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+		$arrayHelper = FieldsandfiltersFactory::getArray();
 		
 		if( is_null( $this->_variables ) )
 		{
@@ -169,12 +177,16 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			
 			$this->_variables->field = $field;
 			
-			$templateFields->set( FieldsandfiltersArrayHelper::getEmptySlotObject( $templateFields, $field->ordering, false ), FieldsandfiltersExtensionsHelper::loadPluginTemplate( $this->_variables ) );
+			$template = $extensionsHelper->loadPluginTemplate( $this->_variables );
+			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->ordering, false ), $template );
 		}
 		
 		unset( $this->_variables->element, $this->_variables->field );
 	}
 	
+	/**
+	 * @since	1.1.0
+	 */
 	public function getFieldsandfiltersFiltersHTML( $fields, $options, $templateFields )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
@@ -185,10 +197,10 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		$fields = is_array( $fields ) ? $fields : array( $fields );
 		
 		// Load Extensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 		
 		// Load Array Helper
-		JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+		$arrayHelper = FieldsandfiltersFactory::getArray();
 		
 		if( is_null( $this->_variables ) )
 		{
@@ -201,7 +213,8 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		{
 			$this->_variables->field = $field;
 			
-			$templateFields->set( FieldsandfiltersArrayHelper::getEmptySlotObject( $templateFields, $field->ordering, false ), FieldsandfiltersExtensionsHelper::loadPluginTemplate( $this->_variables, 'default', 'filter' ) );
+			$template = $extensionsHelper->loadPluginTemplate( $this->_variables, 'default', 'filter' );
+			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->ordering, false ), $template );
 		}
 		
 		unset( $this->_variables->element, $this->_variables->field );
@@ -215,7 +228,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	 *
 	 * @return  boolean  True, if the file has successfully loaded.
 	 *
-	 * @since   11.1
+	 * @since	1.1.0
 	 */
 	public function loadLanguage( $extension = '', $basePath = JPATH_ADMINISTRATOR )
 	{

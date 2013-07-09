@@ -398,15 +398,18 @@ class FieldsandfiltersElementsHelper extends FieldsandfiltersBufferValuesHelper
 	{
 		if( $type == 'Pivot' )
 		{
-			$values 	= isset( $arguments[4] ) ? $arguments[4] : null;
-			$without 	= isset( $arguments[5] ) ? $arguments[5] : true;
+			if( $method == 'getFilters' )
+			{
+				$values 	= isset( $arguments[3] ) ? $arguments[3] : null;
+				$without 	= isset( $arguments[4] ) ? $arguments[4] : true;
+			}
+			else
+			{
+				$values 	= isset( $arguments[4] ) ? $arguments[4] : null;
+				$without 	= isset( $arguments[5] ) ? $arguments[5] : true;
+			}
+			
 			$this->_setConfigElements( $values, $without );	
-		}
-		
-		if( $method == 'getElements' )
-		{
-			$arguments[3] = isset( $arguments[2] ) ? $arguments[2] : null;
-			$arguments[2] = null;
 		}
 	}
 }

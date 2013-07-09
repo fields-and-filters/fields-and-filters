@@ -169,7 +169,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		// Load Fields Helper
-		$fields = FieldsandfiltersFactory::getFields()->getFieldsPivot( 'field_type', $extensionsTypeID, array( 1, -1 ), true );
+		$fields = FieldsandfiltersFactory::getFields()->getFieldsPivot( 'field_type', $extensionsTypeID, array( 1, -1 ), 'both' );
 		
 		JRegistry::getInstance( 'fieldsandfilters' )->set( 'fields', $fields );
 	}
