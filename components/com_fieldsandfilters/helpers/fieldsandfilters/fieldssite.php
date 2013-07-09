@@ -96,6 +96,10 @@ class FieldsandfiltersFieldsSiteHelper
 		$fields = new JObject( JArrayHelper::pivot( $object->fields->getProperties(), 'field_type' ) );
 		
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		
+		// [TODO] zmienić kolejność pierwsze $templateFields
+		// [TODO] można teraz szukać np po id
+		// [TODO] można dodawać parametry
 		// Trigger the onFieldsandfiltersPrepareFormField event.
 		self::$_dispatcher->trigger( 'getFieldsandfiltersFieldsHTML', array( $fields, $object->element, $templateFields ) );
 		

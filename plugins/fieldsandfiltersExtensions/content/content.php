@@ -563,7 +563,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		// Trigger the onFieldsandfiltersPrepareFormField event.
-		$this->_dispatcher->trigger( 'getFieldsandfiltersFieldsHTML', array( $fields, $element, $templateFields ) );
+		$this->_dispatcher->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $element ) );
 		
 		$templateFields = $templateFields->getProperties( true );
 		

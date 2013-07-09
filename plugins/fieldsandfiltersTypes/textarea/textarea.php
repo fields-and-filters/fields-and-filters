@@ -177,7 +177,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML( $templateFields, $fields, $element, $ordering = 'ordering' )
+	public function getFieldsandfiltersFieldsHTML( $templateFields, $fields, $element, $params = false, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -191,6 +191,9 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 		
 		// Load Array Helper
 		$arrayHelper = FieldsandfiltersFactory::getArray();
+		
+		// Load Plugin Types Helper
+		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
 		
 		if( is_null( $this->_variables ) )
 		{
@@ -206,10 +209,32 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 				continue;
 			}
 			
+			if( $isParams = ( $params && $params instanceof JRegistry ) )
+			{
+				$paramsTemp 	= $field->params;
+				$paramsField 	= clone $field->params;
+				
+				$paramsField->merge( $params );
+				$field->params 	= $paramsField;
+			}
+			
+			$layoutField = $field->get( 'type.field_layout' );
+			
+			if( !$layoutField )
+			{
+				$modeName 	= ( ( $v = $pluginTypesHelper->getModeName( $field->mode ) ) != 'filter' ) ? $v : 'field';
+				$layoutField	= $modeName . '-default';
+			}
+			
 			$this->_variables->field = $field;
 			
 			$template = $extensionsHelper->loadPluginTemplate( $this->_variables );
 			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->get( $ordering ), false ), $template );
+			
+			if( $isParams )
+			{
+				$field = $paramsTemp;
+			}
 		}
 		
 		unset( $this->_variables->element, $this->_variables->field );
