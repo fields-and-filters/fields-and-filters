@@ -388,7 +388,7 @@ class FieldsandfiltersTableElement extends JTable
 		$query->delete();
 		$query->from( $this->_db->quoteName( $this->_tbl_connections ) );
 		
-		if( !in_null( $pk ) )
+		if( !is_null( $pk ) )
 		{
 			$query->where( $this->_db->quoteName( $this->_tbl_key ) . ' = ' . (int) $pk );
 		}

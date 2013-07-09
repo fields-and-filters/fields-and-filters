@@ -530,7 +530,6 @@ class FieldsandfiltersModelelement extends JModelAdmin
 					{
 						$tableObject 			= new stdClass();
 						$tableObject->field_id 		= (int) $field->field_id;
-						$objectTable->element_id	= null;
 						
 						// delete text
 						if( !empty( $_dataItem ) && empty( $_data ) )
@@ -542,7 +541,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 						{
 							$tableObject->field_data	= $_data;
 							
-							$table->insertData( $tableObject );	
+							$table->insertData( $tableObject );
 						}
 						// update text
 						elseif( $_dataItem != $_data )
@@ -557,7 +556,6 @@ class FieldsandfiltersModelelement extends JModelAdmin
 					{
 						$tableObject 			= new stdClass();
 						$tableObject->field_id 		= (int) $field->field_id;
-						$tableObject->element_id	= null;
 						
 						$field_valuesID 	= array_keys( $field->values->getProperties( true ) );
 						$_connections		= array_intersect( $field_valuesID, $_connections );

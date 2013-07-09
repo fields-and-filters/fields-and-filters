@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<config>	
+<config>
+	<fieldset
+		name="fields"
+		label="COM_FIELDSANDFILTERS_fields_LABEL"
+		description="COM_FIELDSANDFILTERS_fields_DESC"
+	>
+		<field
+			name="static_spacer"
+			type="spacer"
+			label="COM_FIELDSANDFILTERS_STATIC_SPACER_LABEL"
+			description="COM_FIELDSANDFILTERS_STATIC_SPACER_DESC"
+		/>
+		<field
+			name="static_show"
+			type="radio"
+			class="btn-group"
+			label="COM_FIELDSANDFILTERS_STATIC_SHOW_LABEL"
+			description="COM_FIELDSANDFILTERS_STATIC_SHOW_DESC"
+			default="1"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+	</fieldset>
+	<!--[TODO]	site_filters zmieniamy na filters nie ma potrzeby rozdzielać tego na stronę i administrację -->
 	<fieldset
 		name="site_filters"
 		label="COM_FIELDSANDFILTERS_SITE_FILTERS_LABEL"

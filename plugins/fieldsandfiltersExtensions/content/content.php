@@ -169,7 +169,20 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		// Load Fields Helper
-		$fields = FieldsandfiltersFactory::getFields()->getFieldsPivot( 'field_type', $extensionsTypeID, array( 1, -1 ), 'both' );
+		$fieldsHelper = FieldsandfiltersFactory::getFields();
+		
+		if( JComponentHelper::getParams( 'com_fieldsandfilters' )->get( 'static_show', 1 ) )
+		{
+			$fields = $fieldsHelper->getFieldsPivot( 'field_type', $extensionsTypeID, array( 1, -1 ), 'both' );
+		}
+		else
+		{
+			$pluginTypesHelper 	= FieldsandfiltersFactory::getPluginTypes();
+			$staticMode		= (array) $pluginTypesHelper->getMode( 'static' );
+			$othersMode		= (array) $pluginTypesHelper->getModes( null, array(), true, $staticMode );
+			
+			$fields = $fieldsHelper->getFieldsByModeIDPivot( 'field_type', $extensionsTypeID, $othersMode, array( 1, -1 ), 'both' );
+		}
 		
 		JRegistry::getInstance( 'fieldsandfilters' )->set( 'fields', $fields );
 	}
@@ -342,7 +355,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			
 			$attribs = new JRegistry( $attribs );
 			
-			$jtable->attribs = (string) $attribs;
+			$item->attribs = (string) $attribs;
 			
 			unset( $attribs );
 		}

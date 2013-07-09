@@ -88,21 +88,19 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 				$element = $root->addChild( 'field'  );
 			}
 			
-			$element->addAttribute( 'name', $field->field_id );
-			$element->addAttribute( 'labelclass' , 'control-label' );
-			$element->addAttribute( 'label', ( '(' . $field->field_id . ') ' . ( $field->state == -1 ? $field->field_name . ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_ONLY_ADMIN' ) . ']' : $field->field_name ) ) );
-			$element->addAttribute( 'translate_label', 'false' );
+			$label = '<strong>' . $field->field_name . '</strong> (' . $field->field_id . ')';;
+			
+			if( $field->state == -1 )
+			{
+				$label .= ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_ONLY_ADMIN' ) . ']';
+			}
 			
 			if( in_array( $field->mode, $staticMode ) )
 			{
-				$element->addAttribute( 'type', 'note' );
+				$element->addAttribute( 'type', 'spacer' );
+				$element->addAttribute( 'description', $field->data );
 				
-				if( isset( $field->data ) )
-				{
-					$element->addAttribute( 'description', $field->data );
-					$element->addAttribute( 'header', 'h3' );
-				}
-				
+				$label .= ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_FIELD_STATIC' ) . ']';
 			}
 			else
 			{
@@ -139,6 +137,11 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 				}
 			}
 			
+			$element->addAttribute( 'name', $field->field_id );
+			$element->addAttribute( 'labelclass' , 'control-label' );
+			$element->addAttribute( 'label', $label );
+			$element->addAttribute( 'translate_label', 'false' );
+			
 
 			
 			// hr bottom spacer
@@ -167,17 +170,6 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			{
 				
 			}
-			
-			echo '<pre>';
-			print_r($newItem);
-			echo '</pre>';
-			
-			
-			echo '<pre>';
-			print_r($oldItem);
-			echo '</pre>';
-			
-			exit;
 		}
 	}
 	*/
