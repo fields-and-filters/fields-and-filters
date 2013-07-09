@@ -550,7 +550,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		// Load Fields Helper
-		if( !( $fields = FieldsandfiltersFactory::getFilters()->getFieldsByIDPivot( 'location', $extensionContent->extension_type_id, $fieldsID, 1, true )->get( $location ) ) )
+		if( !( $fields = FieldsandfiltersFactory::getFields()->getFieldsByIDPivot( 'location', $extensionContent->extension_type_id, $fieldsID, 1, true )->get( $location ) ) )
 		{
 			return;
 		}
@@ -627,7 +627,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$extensionsID = $pluginExtensionsHelper->getExtensionsByNameColumn( 'extension_type_id', array( 'allextensions' , $this->_name ) );
 		
 		// Load Fields Helper
-		$fieldsHelper = FieldsandfiltersFactory::getFilters();
+		$fieldsHelper = FieldsandfiltersFactory::getFields();
 		
 		if( is_null( $fieldsID ) )
 		{

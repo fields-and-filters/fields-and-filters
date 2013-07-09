@@ -22,6 +22,9 @@ JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/
  */
 class plgFieldsandfiltersTypesTextarea extends JPlugin
 {
+	/**
+	* @since       1.0.0
+	 */
 	protected $_variables;
 	
 	/**
@@ -218,7 +221,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 				$field->params 	= $paramsField;
 			}
 			
-			$layoutField = $field->get( 'type.field_layout' );
+			$layoutField = $field->params->get( 'type.field_layout' );
 			
 			if( !$layoutField )
 			{
@@ -226,10 +229,12 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 				$layoutField	= $modeName . '-default';
 			}
 			
+			$field->params->set( 'type.field_layout', $layoutField );
+			
 			$this->_variables->field = $field;
 			
-			$template = $extensionsHelper->loadPluginTemplate( $this->_variables );
-			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->get( $ordering ), false ), $template );
+			$template = $extensionsHelper->loadPluginTemplate( $this->_variables, $layoutField );
+			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->$ordering, false ), $template );
 			
 			if( $isParams )
 			{

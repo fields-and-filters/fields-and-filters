@@ -10,7 +10,8 @@
 
 defined('_JEXEC') or die;
 
-jimport('joomla.utilities.utility');
+// Load the Fieldsandfilters Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
  * Checkbox type fild
@@ -26,6 +27,10 @@ class plgSystemFieldsandfilters extends JPlugin
 	 */
 	protected $_folder_plugin_extensions = 'fieldsandfiltersExtensions';
 	
+	/**
+	 * @var		string	Dispatcher.
+	 * @since	1.0.0
+	 */
 	protected $_dispatcher;
 	
 	/**
@@ -40,13 +45,13 @@ class plgSystemFieldsandfilters extends JPlugin
 	{
 		parent::__construct( $subject, $config );
 		
-		if( version_compare( JVERSION, 3.0, '<' ) )
+		if( FieldsandfiltersFactory::isVersion() )
 		{
-			$this->_dispatcher = JDispatcher::getInstance();
+			$this->_dispatcher = JEventDispatcher::getInstance();
 		}
 		else
 		{
-			$this->_dispatcher = JEventDispatcher::getInstance();
+			$this->_dispatcher = JDispatcher::getInstance();
 		}
 	}
 	

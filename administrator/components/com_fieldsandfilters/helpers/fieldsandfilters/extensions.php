@@ -25,28 +25,17 @@ class FieldsandfiltersExtensionsHelper
 	 */
 	public static function loadPluginTemplate( $plugin, $layout = 'default' )
 	{
-		$type = $plugin->get( 'type' );
-		$name = $plugin->get( 'name' );
-		
-		// Create the plugin name
-		$extension 	= 'plg_' . $type . '_' . $name;
-		
-		if( $template = self::_getPath( 'plugins', $extension, $layout ) )
+		if( !isset( $plugin->type ) || !isset( $plugin->name ) )
 		{
-			$template = self::_getLayoutPath( $type, $name, $layout );
-			
-			self::_setPath( $template. 'plugins', $extension, $layout );
+			return null;
 		}
-		
-		// Unset so as not to introduce into template scope
-		unset( $extension, $type, $name );
 		
 		// Start capturing output into a buffer
 		ob_start();
 		
 		// Include the requested template filename in the local scope
 		// (this will execute the view logic).
-		include $template;
+		include self::getPluginLayoutPath( $plugin->type, $plugin->name, $layout );
 		
 		// Done with the requested template; get the buffer and
 		// clear it.
@@ -56,45 +45,58 @@ class FieldsandfiltersExtensionsHelper
 		return $output;
 	}
 	
-	protected static function _getLayoutPath( $type, $name, $layout = 'default' )
+	public static function getPluginLayoutPath( $type, $name, $layout = 'default' )
 	{
-		if( FieldsandfiltersFactory::isVersion() )
+		// Create the plugin name
+		$extension 	= 'plg_' . $type . '_' . $name;
+		
+		if( !$template = self::_getPath( 'plugins', $extension, $layout ) )
 		{
-			return JPluginHelper::getLayoutPath( $type, $name, $layout );
-		}
-		else
-		{
-			$template = JFactory::getApplication()->getTemplate();
-			$defaultLayout = $layout;
 			
-			if (strpos($layout, ':') !== false)
-			{
-				// Get the template and file name from the string
-				$temp = explode(':', $layout);
-				$template = ($temp[0] == '_') ? $template : $temp[0];
-				$layout = $temp[1];
-				$defaultLayout = ($temp[1]) ? $temp[1] : 'default';
-			}
 			
-			// Build the template and base path for the layout
-			$tPath = JPATH_THEMES . '/' . $template . '/html/plg_' . $type . '_' . $name . '/' . $layout . '.php';
-			$bPath = JPATH_BASE . '/plugins/' . $type . '/' . $name . '/tmpl/' . $defaultLayout . '.php';
-			$dPath = JPATH_BASE . '/plugins/' . $type . '/' . $name . '/tmpl/default.php';
-			
-			// If the template has a layout override use it
-			if (file_exists($tPath))
+			if( FieldsandfiltersFactory::isVersion() )
 			{
-				return $tPath;
-			}
-			elseif (file_exists($bPath))
-			{
-				return $bPath;
+				return JPluginHelper::getLayoutPath( $type, $name, $layout );
 			}
 			else
 			{
-				return $dPath;
+				$template = JFactory::getApplication()->getTemplate();
+				$defaultLayout = $layout;
+				
+				if (strpos($layout, ':') !== false)
+				{
+					// Get the template and file name from the string
+					$temp = explode(':', $layout);
+					$template = ($temp[0] == '_') ? $template : $temp[0];
+					$layout = $temp[1];
+					$defaultLayout = ($temp[1]) ? $temp[1] : 'default';
+				}
+				
+				// Build the template and base path for the layout
+				$tPath = JPATH_THEMES . '/' . $template . '/html/plg_' . $type . '_' . $name . '/' . $layout . '.php';
+				$bPath = JPATH_BASE . '/plugins/' . $type . '/' . $name . '/tmpl/' . $defaultLayout . '.php';
+				$dPath = JPATH_BASE . '/plugins/' . $type . '/' . $name . '/tmpl/default.php';
+				
+				// If the template has a layout override use it
+				if (file_exists($tPath))
+				{
+					return $tPath;
+				}
+				elseif (file_exists($bPath))
+				{
+					return $bPath;
+				}
+				else
+				{
+					return $dPath;
+				}
 			}
+			
+			$template = self::_getLayoutPath( $type, $name, $layout );
+			self::_setPath( $template, 'plugins', $extension, $layout );
 		}
+		
+		return $template;
 	}
 	
 	/**
