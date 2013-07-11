@@ -239,6 +239,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			if( $isParams )
 			{
 				$field = $paramsTemp;
+				unset( $paramsField );
 			}
 		}
 		
