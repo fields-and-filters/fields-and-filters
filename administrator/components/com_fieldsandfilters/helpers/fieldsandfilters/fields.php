@@ -108,7 +108,6 @@ class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
 	 */
 	protected function _setConfigFields( $values = false, $without = true )
 	{
-
 		if( !$without )
 		{
 			$this->config->def( 'elemntsWithoutValues', $without );

@@ -429,6 +429,11 @@ abstract class FieldsandfiltersBufferCoreHelper
                         $this->_pivots[$hash]->elements = new JObject( $arrayHelper->pivot( $arrayHelper->flatten( $buffer ), $pivot ) );
                         $this->_pivots[$hash]->_pivot =  $pivot;
                 }
+                else
+                {
+                        // Reset arguments 
+                        $this->_resetArgs();
+                }
                 
                 return $this->_pivots[$hash]->get( 'elements', new JObject );  
         }
@@ -457,6 +462,11 @@ abstract class FieldsandfiltersBufferCoreHelper
                         {
                                 $this->_columns[$hash] = array();
                         }
+                }
+                else
+                {
+                        // Reset arguments 
+                        $this->_resetArgs();
                 }
                 
                 return $this->_columns[$hash];  

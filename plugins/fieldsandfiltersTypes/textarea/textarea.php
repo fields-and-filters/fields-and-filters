@@ -207,7 +207,9 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 		
 		while( $field = array_shift( $fields ) )
 		{
-			if( !property_exists( $element->data, $field->field_id ) )
+			$modeName = $pluginTypesHelper->getModeName( $field->mode );
+			
+			if( ( $modeName == 'static' && empty( $field->data ) ) || ( $modeName == 'field' && !property_exists( $element->data, $field->field_id ) ) )
 			{
 				continue;
 			}
@@ -225,7 +227,6 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			
 			if( !$layoutField )
 			{
-				$modeName 	= ( ( $v = $pluginTypesHelper->getModeName( $field->mode ) ) != 'filter' ) ? $v : 'field';
 				$layoutField	= $modeName . '-default';
 			}
 			

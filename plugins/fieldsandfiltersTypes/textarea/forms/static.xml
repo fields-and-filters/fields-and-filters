@@ -94,7 +94,7 @@
 			<field
 				name="field_layout"
 				type="fieldsandfiltersPluginLayout"
-				mode="staitc"
+				mode="static"
 				plugin="fieldsandfiltersTypes"
 				key="field_type"
 				label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"

@@ -171,7 +171,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// Load Fields Helper
 		$fieldsHelper = FieldsandfiltersFactory::getFields();
 		
-		if( JComponentHelper::getParams( 'com_fieldsandfilters' )->get( 'static_show', 1 ) )
+		if( $this->params->get( 'show_static_fields', 1 ) && JComponentHelper::getParams( 'com_fieldsandfilters' )->get( 'show_static_fields', 1 ) )
 		{
 			$fields = $fieldsHelper->getFieldsPivot( 'field_type', $extensionsTypeID, array( 1, -1 ), 'both' );
 		}
@@ -480,42 +480,66 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	}
 	
 	/**
-	 * @since       1.0.0
+	 * @since       1.1.0
 	 */
 	public function onFieldsandfiltersContentAfterTitle( $context, &$row, &$params, $page )
 	{
-		if( !in_array( $context, array( $this->_context, 'com_content.category' ) ) )
+		switch( $context )
 		{
-			return;
+			case 'com_content.category':
+				return $this->_onFieldsandfiltersContent( 'onContentAfterTitleCategory', $row, $params, $page );
+			break;
+			case 'com_content.article':
+				return $this->_onFieldsandfiltersContent( 'onContentAfterTitleArticle', $row, $params, $page );
+			break;
+			case 'com_content.featured':
+				return $this->_onFieldsandfiltersContent( 'onContentAfterTitleFeatured', $row, $params, $page );
+			break;	
 		}
 		
-		return $this->_onFieldsandfiltersContent( 'onContentAfterTitle', $row, $params, $page );
+		return;
 	}
 	
 	/**
-	 * @since       1.0.0
+	 * @since       1.1.0
 	 */
 	public function onFieldsandfiltersContentBeforeDisplay( $context, &$row, &$params, $page )
 	{
-		if( !in_array( $context, array( $this->_context, 'com_content.category' ) ) )
+		switch( $context )
 		{
-			return;
+			case 'com_content.category':
+				return $this->_onFieldsandfiltersContent( 'onContentBeforeDisplayCategory', $row, $params, $page );
+			break;
+			case 'com_content.article':
+				return $this->_onFieldsandfiltersContent( 'onContentBeforeDisplayArticle', $row, $params, $page );
+			break;
+			case 'com_content.featured':
+				return $this->_onFieldsandfiltersContent( 'onContentBeforeDisplayFeatured', $row, $params, $page );
+			break;	
 		}
 		
-		return $this->_onFieldsandfiltersContent( 'onContentBeforeDisplay', $row, $params, $page );
+		return;
 	}
 	
 	/**
-	 * @since       1.0.0
+	 * @since       1.1.0
 	 */
 	public function onFieldsandfiltersContentAfterDisplay( $context, &$row, &$params, $page )
 	{
-		if( !in_array( $context, array( $this->_context, 'com_content.category' ) ) )
+		switch( $context )
 		{
-			return;
+			case 'com_content.category':
+				return $this->_onFieldsandfiltersContent( 'onContentAfterDisplayCategory', $row, $params, $page );
+			break;
+			case 'com_content.article':
+				return $this->_onFieldsandfiltersContent( 'onContentAfterDisplayArticle', $row, $params, $page );
+			break;
+			case 'com_content.featured':
+				return $this->_onFieldsandfiltersContent( 'onContentAfterDisplayFeatured', $row, $params, $page );
+			break;	
 		}
 		
-		return $this->_onFieldsandfiltersContent( 'onContentAfterDisplay', $row, $params, $page );
+		return;
 	}
 	
 	/**
@@ -526,36 +550,66 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// Load PluginExtensions Helper
 		$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
 		
-		
 		if( !( $extensionContent = $pluginExtensionsHelper->getExtensionsByName( $this->_name )->get( $this->_name ) ) )
 		{
 			return;
 		}
 		
-		// Load elements Helper
-		if( !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionContent->extension_type_id, $row->id, $row->state, 3 )->get( $row->id ) ) )
-		{
-			return;
-		}
-		
-		/*
-		$extensionsID = $pluginExtensionsHelper->getExtensionsByNameColumn( 'extension_type_id', array( 'allextensions', $this->_name ) );
-		*/
-		
-		$fieldsID = array_merge( array_keys( $element->connections->getProperties( true ) ), array_keys( $element->data->getProperties( true ) ) );
-		
-		if( empty( $fieldsID ) )
-		{
-			return;
-		}
-		
 		// Load Fields Helper
-		if( !( $fields = FieldsandfiltersFactory::getFields()->getFieldsByIDPivot( 'location', $extensionContent->extension_type_id, $fieldsID, 1, true )->get( $location ) ) )
+		$fieldsHelper = FieldsandfiltersFactory::getFields();
+		
+		if( $isStaticFields = $this->params->get( 'use_static_fields', 1 ) )
+		{
+			// Load Plugin Types Helper
+			$staticMode = FieldsandfiltersFactory::getPluginTypes()->getMode( 'static' );
+			if( $fieldsStatic = $fieldsHelper->getFieldsByModeIDPivot( 'location', $extensionContent->extension_type_id, $staticMode, 1, 2 )->get( $location ) )
+			{
+				$fieldsStatic	= is_array( $fieldsStatic ) ? $fieldsStatic : array( $fieldsStatic );
+			}
+			else
+			{
+				$isStaticFields = false;
+			}
+		}
+		
+		// Load elements Helper
+		if( !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionContent->extension_type_id, $row->id, $row->state, 3 )->get( $row->id ) ) && !$isStaticFields )
 		{
 			return;
 		}
 		
-		$fields = is_array( $fields ) ? $fields : array( $fields );
+		if( $element )
+		{
+			$fieldsID = array_merge( array_keys( $element->connections->getProperties( true ) ), array_keys( $element->data->getProperties( true ) ) );
+			
+			if( empty( $fieldsID ) && !$isStaticFields )
+			{
+				return;
+			}
+			
+			if( !( $fields = $fieldsHelper->getFieldsByIDPivot( 'location', $extensionContent->extension_type_id, $fieldsID, 1, 1 )->get( $location ) ) && !$isStaticFields )
+			{
+				return;
+			}
+		}
+		else
+		{
+			$fields = false;
+		}
+		
+		if( $fields && $isStaticFields )
+		{
+			$fields = is_array( $fields ) ? $fields : array( $fields );
+			$fields = array_merge( $fields, $fieldsStatic );
+		}
+		else if( $fields )
+		{
+			$fields = is_array( $fields ) ? $fields : array( $fields );
+		}
+		else if( $isStaticFields )
+		{
+			$fields = $fieldsStatic;
+		}
 		
 		$fields = new JObject( JArrayHelper::pivot( (array) $fields, 'field_type' ) );
 		

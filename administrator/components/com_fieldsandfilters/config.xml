@@ -6,17 +6,23 @@
 		description="COM_FIELDSANDFILTERS_fields_DESC"
 	>
 		<field
-			name="static_spacer"
+			name="fields_site_spacer"
 			type="spacer"
-			label="COM_FIELDSANDFILTERS_STATIC_SPACER_LABEL"
-			description="COM_FIELDSANDFILTERS_STATIC_SPACER_DESC"
+			label="COM_FIELDSANDFILTERS_FIELDS_SITE_SPACER_LABEL"
+			description="COM_FIELDSANDFILTERS_FIELDS_SITE_SPACER_DESC"
 		/>
 		<field
-			name="static_show"
+			name="fields_admin_spacer"
+			type="spacer"
+			label="COM_FIELDSANDFILTERS_FIELDS_ADMIN_SPACER_LABEL"
+			description="COM_FIELDSANDFILTERS_FIELDS_ADMIN_SPACER_DESC"
+		/>
+		<field
+			name="show_static_fields"
 			type="radio"
 			class="btn-group"
-			label="COM_FIELDSANDFILTERS_STATIC_SHOW_LABEL"
-			description="COM_FIELDSANDFILTERS_STATIC_SHOW_DESC"
+			label="COM_FIELDSANDFILTERS_SHOW_STATIC_FIELDS_LABEL"
+			description="COM_FIELDSANDFILTERS_SHOW_STATIC_FIELDS_DESC"
 			default="1"
 		>
 			<option value="0">JNO</option>

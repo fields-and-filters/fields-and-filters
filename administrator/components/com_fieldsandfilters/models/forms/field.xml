@@ -256,14 +256,14 @@
 				<field
 					name="location"
 					type="list"
-					size="1"
+					size="10"
 					class="inputbox"
-					default="1"
-					filter="safehtml"
+					default="onSyntax"
 					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_LOCATION"
 					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_EXTENSIONS_LOCATION"
+					multiple="true"
 				>
-					<option value="onBeforeRender">COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_TYPE_OPTION_ONLY_SYNTAX</option>
+					<option value="onSyntax">COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_TYPE_OPTION_ONLY_SYNTAX</option>
 				</field>
 			</fieldset>
 		</fields>

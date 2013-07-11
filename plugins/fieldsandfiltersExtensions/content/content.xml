@@ -23,10 +23,48 @@
 		<language tag="en-GB">language/en-GB.plg_fieldsandfiltersExtensions_content.ini</language>
 		<language tag="en-GB">language/en-GB.plg_fieldsandfiltersExtensions_content.sys.ini</language>
 	</languages>
-	<!--<config>
+	<config>
 		<fields name="params">
 			<fieldset name="basic">
+				<field
+					name="site_spacer"
+					type="spacer"
+					label="PLG_FIELDSANDFILTERS_FORM_LBL_SITE_SPACER"
+					description="PLG_FIELDSANDFILTERS_FORM_DESC_SITE_SPACER"
+				/>
+				<field
+					name="use_static_fields"
+					type="radio"
+					size="1"
+					class="btn-group"
+					label="PLG_FIELDSANDFILTERS_FORM_LBL_USE_STATIC_FIELDS"
+					description="PLG_FIELDSANDFILTERS_FORM_DESC_USE_STATIC_FIELDS"
+					default="1"
+					filter="intval"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				
+				<field
+					name="admin_spacer"
+					type="spacer"
+					label="PLG_FIELDSANDFILTERS_FORM_LBL_ADMIN_SPACER"
+					description="PLG_FIELDSANDFILTERS_FORM_DESC_ADMIN_SPACER"
+				/>
+				
+				<field
+					name="show_static_fields"
+					type="radio"
+					class="btn-group"
+					label="PLG_FIELDSANDFILTERS_FORM_LBL_SHOW_STATIC_FIELDS"
+					description="PLG_FIELDSANDFILTERS_FORM_LBL_SHOW_STATIC_FIELDS"
+					default="1"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
 			</fieldset>
 		</fields>
-	</config>-->
+	</config>
 </extension>
