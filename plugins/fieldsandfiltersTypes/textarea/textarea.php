@@ -132,7 +132,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 					$element->addAttribute( 'cols', $cols );
 				}
 				
-				$element->addAttribute( 'filter', 'safehtml' );
+				$element->addAttribute( 'filter', 'JComponentHelper::filterText' );
 				
 				if( $field->required )
 				{

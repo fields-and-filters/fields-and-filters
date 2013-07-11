@@ -59,7 +59,15 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-			
+			<field
+				name="field_layout"
+				type="fieldsandfiltersPluginLayout"
+				mode="field"
+				plugin="fieldsandfiltersTypes"
+				key="field_type"
+				label="PLG_FAF_TS_IT_FORM_FIELD_LAYOUT_LBL"
+				description="PLG_FAF_IT_TA_FORM_FIELD_LAYOUT_DESC"
+			/>
 		</fieldset>
 	</fields>
 </pluginType>

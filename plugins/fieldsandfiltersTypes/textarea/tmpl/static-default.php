@@ -10,11 +10,31 @@
 
 defined( '_JEXEC' ) or die;
 
-$field                  = $plugin->field;
-$data                   = $plugin->element->data->get( $field->field_id );
-$enableDescription      = $field->params->get( 'base.site_enabled_description', 0 );
-$typeDescription        = $field->params->get( 'base.site_description_type', 0 );
-$positionDescription    = $field->params->get( 'base.site_description_position', 0 );
+$field  = $plugin->field;
+$data   = $field->data;
+
+$isDescriptionTip = $isDescriptionBefore = $isDescriptionAfter = false;
+if( $field->params->get( 'base.site_enabled_description', 0 ) && !empty( $field->description ) )
+{
+        switch( $field->params->get( 'base.site_description_type', 0 ) )
+        {
+                case 'description':
+                        switch( $field->params->get( 'base.site_description_position', 0 ) )
+                        {
+                                case 'before':
+                                        $isDescriptionBefore = true;
+                                break;
+                                case 'after':
+                                        $isDescriptionAfter = true;
+                                break;
+                        }
+                break;
+                case 'tip':
+                        $isDescriptionTip = true;
+                break;
+        }
+}
+
 ?>
 
 <?php if( !empty( $data ) ) : ?>
@@ -23,7 +43,7 @@ $positionDescription    = $field->params->get( 'base.site_description_position',
                 
                 $attribsDiv = array( 'class' => 'faf-name' );
                 
-                if( $enableDescription && $typeDescription == 'tip' && !empty( $field->description ) )
+                if( $isDescriptionTip )
                 {
                         JHtml::_( 'behavior.tooltip', '.faf-hasTip' );
                         $attribsDiv['class'] = $attribsDiv['class'] . ' faf-hasTip';
@@ -37,7 +57,7 @@ $positionDescription    = $field->params->get( 'base.site_description_position',
         </div>
         <?php endif; ?>
                 
-        <?php if( $enableDescription && $typeDescription == 'description' && $positionDescription == 'before' && !empty( $field->description ) ) : ?>
+        <?php if( $isDescriptionBefore ) : ?>
         <div class="faf-description">
                 <?php echo $field->description; ?> 
         </div>
@@ -47,7 +67,7 @@ $positionDescription    = $field->params->get( 'base.site_description_position',
                 <?php echo $data; ?>
         </div>
         
-        <?php if( $enableDescription && $typeDescription == 'description' && $positionDescription == 'after' && !empty( $field->description ) ) : ?>
+        <?php if( $isDescriptionAfter ) : ?>
         <div class="faf-description">
                 <?php echo $field->description; ?> 
         </div>
