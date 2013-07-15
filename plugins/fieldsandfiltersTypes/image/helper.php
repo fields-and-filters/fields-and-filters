@@ -10,17 +10,33 @@
 
 defined('_JEXEC') or die;
 
+/**
+ * Image Helper
+ * @since       1.0.0
+ */
 class plgFieldsandfiltersTypesImageHelper extends JImage
 {
+	/**
+	* @since       1.0.0
+	*/
 	protected static $_quality_png = array( 0 => 9, 1 => 8, 2 => 7, 3 => 6, 4 => 5, 5 => 4, 6 => 3, 7 => 2, 8 => 1, 9 => 0 );
         
+	/**
+	* @since       1.0.0
+	*/
         protected static $_cache_folder = 'cache/fieldsandfilters';
         
+	/**
+	* @since       1.0.0
+	*/
         public static function getCacheFolder()
         {
                 return self::$_cache_folder;
         }
         
+	/**
+	* @since       1.0.0
+	*/
         public static function createImage( JObject $jobject )
 	{
 		jimport( 'joomla.filesystem.file' );
@@ -131,7 +147,7 @@ class plgFieldsandfiltersTypesImageHelper extends JImage
 	 *
 	 * @return  JImage
 	 *
-	 * @since   11.3
+	 * @since       1.0.0
 	 * @throws  LogicException
 	 */
 	public function crop($width, $height, $left = null, $top = null, $createNew = true)
@@ -213,7 +229,7 @@ class plgFieldsandfiltersTypesImageHelper extends JImage
 	 *
 	 * @return  boolean  True on success, false on failure or if no image is loaded
 	 *
-	 * @since 12.3
+	 * @since       1.0.0
 	 */
 	public function destroy()
 	{
@@ -230,6 +246,7 @@ class plgFieldsandfiltersTypesImageHelper extends JImage
 	 * to free any memory when the object is unset
 	 *
 	 * @see     JImage::destroy()
+	 * @since       1.0.0
 	 */
 	public function __destruct()
 	{

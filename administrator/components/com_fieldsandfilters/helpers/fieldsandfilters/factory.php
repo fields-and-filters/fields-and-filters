@@ -26,6 +26,37 @@ class FieldsandfiltersFactory
 	 */
         protected static $path = '/components/com_fieldsandfilters/helpers';
         
+	/**
+	 * @since       1.0.0
+	 */
+	public static function getPluginHelper( $type, $name, $helper = 'helper' )
+	{
+		$key = strtolower( $type . $name . $helper );
+		if( !array_key_exists( $key, self::$instances ) )
+		{
+			$class = 'plg' . ucfirst( $type ) . ucfirst( $name ) . ucfirst( $helper );
+			if( JLoader::import( ( $type . '.' . $name . '.' . $helper ), JPATH_PLUGINS ) && class_exists( $class ) )
+			{
+				if( method_exists( $class, 'getInstance' ) )
+				{
+					$instance = call_user_func_array( array( $class, 'getInstance' ), array() );
+				}
+				else
+				{
+					$instance = new $class;
+				}
+				
+				self::$instances[$key] = $instance;
+			}
+			else
+			{
+				throw new InvalidArgumentException( 'Method not exists ' . $name );
+				return false;
+			}
+		}
+		return self::$instances[$key];
+	}
+	
         /**
 	 * @since       1.1.0
 	 */

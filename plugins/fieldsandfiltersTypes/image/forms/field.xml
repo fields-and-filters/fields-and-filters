@@ -161,7 +161,15 @@
 				<option value="3">PLG_FAF_TS_IE_FORM_TARGET_OPTION_MODAL</option>
 				<option value="4">PLG_FAF_TS_IE_FORM_TARGET_OPTION_PARENT</option>
 			</field>
-			
+			<field
+				name="field_layout"
+				type="fieldsandfiltersPluginLayout"
+				mode="field"
+				plugin="fieldsandfiltersTypes"
+				key="field_type"
+				label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
+				description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
+			/>
 		</fieldset>
 	</fields>
 </pluginType>

@@ -2,7 +2,7 @@
 /**
  * @version     1.0.0
  * @package     fieldsandfilters.plugin
- * @subpackage  fieldsandfilters_field_type.checkbox
+ * @subpackage  fieldsandfilters_field_type.checkboxlist
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
@@ -10,13 +10,13 @@
 
 defined('_JEXEC') or die;
 
-// Load the Fieldsandfilters Helper
+// Load the Factory Helper
 JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
- * Checkbox type fild
+ * Checkboxlist type fild
  * @package     fieldsandfilters.plugin
- * @subpackage  fieldsandfilters_types.checkbox
+ * @subpackage  fieldsandfilters_types.checkboxlist
  * @since       1.0.0
  */
 class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
@@ -146,7 +146,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	/**
 	 * @since	1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML( $fields, $element, $templateFields )
+	public function getFieldsandfiltersFieldsHTML( $templateFields, $fields, $element, $params = false, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -170,15 +170,41 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		
 		while( $field = array_shift( $fields ) )
 		{
-			if( !property_exists( $element->connections, $field->field_id ) )
+			$modeName = $pluginTypesHelper->getModeName( $field->mode );
+			
+			if( ( $modeName == 'static' && empty( $field->connections ) ) || ( $modeName == 'field' && !property_exists( $element->connections, $field->field_id ) ) )
 			{
 				continue;
 			}
 			
+			if( $isParams = ( $params && $params instanceof JRegistry ) )
+			{
+				$paramsTemp 	= $field->params;
+				$paramsField 	= clone $field->params;
+				
+				$paramsField->merge( $params );
+				$field->params 	= $paramsField;
+			}
+			
+			$layoutField = $field->params->get( 'type.field_layout' );
+			
+			if( !$layoutField )
+			{
+				$layoutField	= $modeName . '-default';
+			}
+			
+			$field->params->set( 'type.field_layout', $layoutField );
+			
 			$this->_variables->field = $field;
 			
-			$template = $extensionsHelper->loadPluginTemplate( $this->_variables );
-			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->ordering, false ), $template );
+			$template = $extensionsHelper->loadPluginTemplate( $this->_variables, $layoutField );
+			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->$ordering, false ), $template );
+			
+			if( $isParams )
+			{
+				$field = $paramsTemp;
+				unset( $paramsField );
+			}
 		}
 		
 		unset( $this->_variables->element, $this->_variables->field );
@@ -187,7 +213,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	/**
 	 * @since	1.1.0
 	 */
-	public function getFieldsandfiltersFiltersHTML( $fields, $options, $templateFields )
+	public function getFieldsandfiltersFiltersHTML( $templateFields, $fields, $params = false, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -211,10 +237,34 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		
 		while( $field = array_shift( $fields ) )
 		{
+			if( $isParams = ( $params && $params instanceof JRegistry ) )
+			{
+				$paramsTemp 	= $field->params;
+				$paramsFilter 	= clone $field->params;
+				
+				$paramsFilter->merge( $params );
+				$field->params 	= $paramsFilter;
+			}
+			
+			$layoutFilter = $field->params->get( 'type.filter_layout' );
+			
+			if( !$layoutFilter )
+			{
+				$layoutFilter	= 'filter-default';
+			}
+			
+			$field->params->set( 'type.filter_layout', $layoutFilter );
+			
 			$this->_variables->field = $field;
 			
-			$template = $extensionsHelper->loadPluginTemplate( $this->_variables, 'default', 'filter' );
-			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->ordering, false ), $template );
+			$template = $extensionsHelper->loadPluginTemplate( $this->_variables, $layoutFilter );
+			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->$ordering, false ), $template );
+			
+			if( $isParams )
+			{
+				$field = $paramsTemp;
+				unset( $paramsFilter );
+			}
 		}
 		
 		unset( $this->_variables->element, $this->_variables->field );
@@ -228,7 +278,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	 *
 	 * @return  boolean  True, if the file has successfully loaded.
 	 *
-	 * @since	1.1.0
+	 * @since       1.0.0
 	 */
 	public function loadLanguage( $extension = '', $basePath = JPATH_ADMINISTRATOR )
 	{

@@ -10,10 +10,11 @@
 
 defined('_JEXEC') or die;
 
-jimport('joomla.utilities.utility');
+// Load the Factory Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
- * Checkbox type fild
+ * Input type fild
  * @package     fieldsandfilters.plugin
  * @subpackage  fieldsandfilters_types.input
  * @since       1.0.0
@@ -21,6 +22,9 @@ jimport('joomla.utilities.utility');
  */
 class plgFieldsandfiltersTypesInput extends JPlugin
 {
+	/**
+	 * @since       1.0.0
+	 */
 	protected $_variables;
 	
 	/**
@@ -29,7 +33,7 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 	 * @access      protected
 	 * @param       object  $subject The object to observe
 	 * @param       array   $config  An array that holds the plugin configuration
-	 * @since       1.5
+	 * @since       1.0.0
 	 */
 	public function __construct( &$subject, $config )
 	{
@@ -42,7 +46,7 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 	 * @param	array	$data	The associated data for the form.
 	 *
 	 * @return	boolean
-	 * @since	2.5
+	 * @since       1.1.0
 	 */
 	public function onFieldsandfiltersPrepareFormField( $isNew = false )
 	{
@@ -54,9 +58,9 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 		}
 		
 		// Load Array Helper
-		JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		$fields = is_array( $fields ) ? $fields : array( $fields );
+		$fields 	= is_array( $fields ) ? $fields : array( $fields );
+		$staticMode 	= (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'static' );
+		$arrayHelper	= FieldsandfiltersFactory::getArray();
 		
 		while( $field = array_shift( $fields ) )
 		{
@@ -96,24 +100,42 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 					$element = $root->addChild( 'field'  );
 				}
 				
-				if( $field->params->get( 'type.readonly', 0 ) )
+				$label = '<strong>' . $field->field_name . '</strong> (' . $field->field_id . ')';
+				
+				if( $field->state == -1 )
 				{
-					$element->addAttribute( 'class', 'readonly' );
+					$label .= ' [' . JText::_( 'PLG_FAF_TS_IT_FORM_ONLY_ADMIN' ) . ']';
+				}
+				
+				if( in_array( $field->mode, $staticMode ) )
+				{
+					$element->addAttribute( 'type', 'spacer' );
+					$element->addAttribute( 'description', $field->data );
+					
+					$label .= ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_FIELD_STATIC' ) . ']';
 				}
 				else
 				{
-					$element->addAttribute( 'class', 'inputbox' );
+					if( $field->params->get( 'type.readonly', 0 ) )
+					{
+						$element->addAttribute( 'class', 'readonly' );
+					}
+					else
+					{
+						$element->addAttribute( 'class', 'inputbox' );
+					}
+					
+					$element->addAttribute( 'type', 'text' );
+					
+					if( $field->required )
+					{
+						$element->addAttribute( 'required', 'true' );
+					}
 				}
 				
 				$element->addAttribute( 'labelclass' , 'control-label' );
-				$element->addAttribute( 'label', ( $field->state == -1 ? $field->field_name . ' [' . JText::_( 'PLG_FAF_TS_IT_FORM_ONLY_ADMIN' ) . ']' : $field->field_name ) );
+				$element->addAttribute( 'label', $label );
 				$element->addAttribute( 'translate_label', 'false' );
-				$element->addAttribute( 'type', 'text' );
-				
-				if( $field->required )
-				{
-					$element->addAttribute( 'required', 'true' );
-				}
 			}
 			
 			$element->addAttribute( 'id', $field->field_id );
@@ -125,7 +147,7 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->field_id );
 			$element->addAttribute( 'hr', 'true' );
 			
-			$jregistry->set( 'form.fields.' . FieldsandfiltersArrayHelper::getEmptySlotObject( $jregistry, $field->ordering ), $root );
+			$jregistry->set( 'form.fields.' . $arrayHelper->getEmptySlotObject( $jregistry, $field->ordering ), $root );
 			
 			unset( $element, $elementSpacer );
 		}
@@ -133,7 +155,10 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 		return true;
 	}
 	
-	public function getFieldsandfiltersFieldsHTML( $fields, $element, $templateFields )
+	/**
+	 * @since       1.1.0
+	 */
+	public function getFieldsandfiltersFieldsHTML( $templateFields, $fields, $element, $params = false, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -143,10 +168,13 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 		$fields = is_array( $fields ) ? $fields : array( $fields );
 		
 		// Load Extensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 		
 		// Load Array Helper
-		JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+		$arrayHelper = FieldsandfiltersFactory::getArray();
+		
+		// Load Plugin Types Helper
+		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
 		
 		if( is_null( $this->_variables ) )
 		{
@@ -157,14 +185,41 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 		
 		while( $field = array_shift( $fields ) )
 		{
-			if( !property_exists( $element->data, $field->field_id ) )
+			$modeName = $pluginTypesHelper->getModeName( $field->mode );
+			
+			if( ( $modeName == 'static' && empty( $field->data ) ) || ( $modeName == 'field' && !property_exists( $element->data, $field->field_id ) ) )
 			{
 				continue;
 			}
 			
+			if( $isParams = ( $params && $params instanceof JRegistry ) )
+			{
+				$paramsTemp 	= $field->params;
+				$paramsField 	= clone $field->params;
+				
+				$paramsField->merge( $params );
+				$field->params 	= $paramsField;
+			}
+			
+			$layoutField = $field->params->get( 'type.field_layout' );
+			
+			if( !$layoutField )
+			{
+				$layoutField	= $modeName . '-default';
+			}
+			
+			$field->params->set( 'type.field_layout', $layoutField );
+			
 			$this->_variables->field = $field;
 			
-			$templateFields->set( FieldsandfiltersArrayHelper::getEmptySlotObject( $templateFields, $field->ordering, false ), FieldsandfiltersExtensionsHelper::loadPluginTemplate( $this->_variables ) );
+			$template = $extensionsHelper->loadPluginTemplate( $this->_variables, $layoutField );
+			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->$ordering, false ), $template );
+			
+			if( $isParams )
+			{
+				$field = $paramsTemp;
+				unset( $paramsField );
+			}
 		}
 		
 		unset( $this->_variables->element, $this->_variables->field );
@@ -178,7 +233,7 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 	 *
 	 * @return  boolean  True, if the file has successfully loaded.
 	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function loadLanguage( $extension = '', $basePath = JPATH_ADMINISTRATOR )
 	{

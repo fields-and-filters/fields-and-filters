@@ -10,7 +10,9 @@
 
 defined('_JEXEC') or die;
 
-jimport('joomla.utilities.utility');
+// Load the Factory Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
+
 
 /**
  * Checkbox type fild
@@ -20,9 +22,10 @@ jimport('joomla.utilities.utility');
  */
 class plgFieldsandfiltersTypesImage extends JPlugin
 {
+	/**
+	 * @since       1.0.0
+	 */
 	protected $_variables;
-	
-	
 	
 	/**
 	 * Constructor
@@ -43,7 +46,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	 * @param	array	$data	The associated data for the form.
 	 *
 	 * @return	boolean
-	 * @since	1.0.0
+	 * @since	1.1.0
 	 */
 	public function onFieldsandfiltersPrepareFormField( $isNew = false )
 	{
@@ -54,8 +57,10 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			return true;
 		}
 		
-		// Load Array Helper
-		JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+		$fields 	= is_array( $fields ) ? $fields : array( $fields );
+		$staticMode 	= (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'static' );
+		$arrayHelper	= FieldsandfiltersFactory::getArray();
+		$xmlHelper	= FieldsandfiltersFactory::getXML();
 		
 		JHtml::_( 'behavior.formvalidation' );
 		$script[] = 'window.addEvent( "domready", function(){';
@@ -69,7 +74,6 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		
 		JFactory::getDocument()->addScriptDeclaration( implode( "\n", $script ) );
 		
-		$fields = is_array( $fields ) ? $fields : array( $fields );
 		while( $field = array_shift( $fields ) )
 		{
 			$root = new JXMLElement( '<fields />' );
@@ -78,13 +82,23 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			$rootJson = $root->addChild( 'fields' );
 			$rootJson->addAttribute( 'name', $field->field_id );
 			
-			// name spacer
-			$element = $rootJson->addChild( 'field' );
-			$element->addAttribute( 'type', 'spacer' );
-			$element->addAttribute( 'name', 'name_spacer_' . $field->field_id );
-			$element->addAttribute( 'label', ( $field->state == -1 ? $field->field_name . ' [' . JText::_( 'PLG_FAF_TS_IE_FORM_ONLY_ADMIN' ) . ']' : $field->field_name ) );
-			$element->addAttribute( 'translate_label', 'false' );
-			$element->addAttribute( 'class', 'text' );
+			$label = '<strong>' . $field->field_name . '</strong> (' . $field->field_id . ')';
+			
+			if( $field->state == -1 )
+			{
+				$label .= ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_ONLY_ADMIN' ) . ']';
+			}
+			
+			if( !( $isStaticMode = in_array( $field->mode, $staticMode ) ) )
+			{
+				// name spacer
+				$element = $rootJson->addChild( 'field' );
+				$element->addAttribute( 'type', 'spacer' );
+				$element->addAttribute( 'name', 'name_spacer_' . $field->field_id );
+				$element->addAttribute( 'label', $label );
+				$element->addAttribute( 'translate_label', 'false' );
+				$element->addAttribute( 'class', 'text' );
+			}
 			
 			if( !empty( $field->description ) && $field->params->get( 'base.admin_enabled_description', 0 ) )
 			{
@@ -105,87 +119,98 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				}
 			}
 			
-			//image
 			$element = $rootJson->addChild( 'field' );
-			$element->addAttribute( 'name', 'image' );
-			$element->addAttribute( 'type', 'media' );
-			$element->addAttribute( 'class', 'inputbox' );
 			$element->addAttribute( 'labelclass' , 'control-label' );
-			$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_IMAGE_LBL' );
-			$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_IMAGE_DESC' );
-			$element->addAttribute( 'filter', 'safehtml' );
 			
-			if( $field->required )
+			if( $isStaticMode )
 			{
-				$element->addAttribute( 'required', 'true' );
-			}
-			
-			//src
-			$element = $rootJson->addChild( 'field' );
-			$element->addAttribute( 'name', 'src' );
-			$element->addAttribute( 'type', 'hidden' );
-			$element->addAttribute( 'filter', 'safehtml' );
-			
-			// caption
-			$element = $rootJson->addChild( 'field' );
-			$element->addAttribute( 'name', 'caption' );
-			$element->addAttribute( 'type', 'text' );
-			$element->addAttribute( 'class', 'inputbox' );
-			$element->addAttribute( 'labelclass' , 'control-label' );
-			$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_CAPTION_LBL' );
-			$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_CAPTION_DESC' );
-			$element->addAttribute( 'filter', 'safehtml' );
-			
-			// alt
-			$element = $rootJson->addChild( 'field' );
-			$element->addAttribute( 'name', 'alt' );
-			$element->addAttribute( 'type', 'text' );
-			$element->addAttribute( 'class', 'inputbox' );
-			$element->addAttribute( 'labelclass' , 'control-label' );
-			$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_ALT_LBL' );
-			$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_ALT_DESC' );
-			$element->addAttribute( 'filter', 'safehtml' );
-			
-			if( $field->params->get( 'type.create_thumb' ) )
-			{
-				//src thumb
-				$element = $rootJson->addChild( 'field' );
-				$element->addAttribute( 'name', 'src_thumb' );
-				$element->addAttribute( 'type', 'hidden' );
-				$element->addAttribute( 'filter', 'safehtml' );
+				$label .= ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_FIELD_STATIC' ) . ']';
+				
+				$element->addAttribute( 'type', 'spacer' );
+				$element->addAttribute( 'description', $field->data );
+				$element->addAttribute( 'name', $field->field_id );
+				$element->addAttribute( 'label', $label );
+				$element->addAttribute( 'translate_label', 'false' );
 			}
 			else
 			{
-				// Load XML Helper
-				JLoader::import( 'helpers.fieldsandfilters.xmlhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+				//image
+				$element->addAttribute( 'name', 'image' );
+				$element->addAttribute( 'type', 'media' );
+				$element->addAttribute( 'class', 'inputbox' );
+				$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_IMAGE_LBL' );
+				$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_IMAGE_DESC' );
+				$element->addAttribute( 'filter', 'safehtml' );
 				
-				// link
+				if( $field->required )
+				{
+					$element->addAttribute( 'required', 'true' );
+				}
+				
+				//src
 				$element = $rootJson->addChild( 'field' );
-				$element->addAttribute( 'name', 'link' );
+				$element->addAttribute( 'name', 'src' );
+				$element->addAttribute( 'type', 'hidden' );
+				$element->addAttribute( 'filter', 'safehtml' );
+				
+				// caption
+				$element = $rootJson->addChild( 'field' );
+				$element->addAttribute( 'name', 'caption' );
 				$element->addAttribute( 'type', 'text' );
-				$element->addAttribute( 'class', 'validate-url' );
-				$element->addAttribute( 'labelclass' , 'control-label' );
-				$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_LINK_LBL' );
-				$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_LINK_DESC' );
-				$element->addAttribute( 'validate', 'url' );
-				
-				// link target
-				$element = $rootJson->addChild( 'field' );
-				$element->addAttribute( 'name', 'target' );
-				$element->addAttribute( 'type', 'list' );
 				$element->addAttribute( 'class', 'inputbox' );
 				$element->addAttribute( 'labelclass' , 'control-label' );
-				$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_TARGET_LBL' );
-				$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_TARGET_DESC' );
+				$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_CAPTION_LBL' );
+				$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_CAPTION_DESC' );
+				$element->addAttribute( 'filter', 'safehtml' );
 				
-				FieldsandfiltersXMLHelper::addOptionsNode( $element, array(
-						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_DEFAULT'	=> '',
-						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_BLANK'	=> 1,
-						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_POPUP'	=> 2,
-						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_MODAL'	=> 3,
-						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_PARENT'	=> 4
-						
-					) );
+				// alt
+				$element = $rootJson->addChild( 'field' );
+				$element->addAttribute( 'name', 'alt' );
+				$element->addAttribute( 'type', 'text' );
+				$element->addAttribute( 'class', 'inputbox' );
+				$element->addAttribute( 'labelclass' , 'control-label' );
+				$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_ALT_LBL' );
+				$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_ALT_DESC' );
+				$element->addAttribute( 'filter', 'safehtml' );
+				
+				if( $field->params->get( 'type.create_thumb' ) )
+				{
+					//src thumb
+					$element = $rootJson->addChild( 'field' );
+					$element->addAttribute( 'name', 'src_thumb' );
+					$element->addAttribute( 'type', 'hidden' );
+					$element->addAttribute( 'filter', 'safehtml' );
+				}
+				else
+				{
+					// link
+					$element = $rootJson->addChild( 'field' );
+					$element->addAttribute( 'name', 'link' );
+					$element->addAttribute( 'type', 'text' );
+					$element->addAttribute( 'class', 'validate-url' );
+					$element->addAttribute( 'labelclass' , 'control-label' );
+					$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_LINK_LBL' );
+					$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_LINK_DESC' );
+					$element->addAttribute( 'validate', 'url' );
+					
+					// link target
+					$element = $rootJson->addChild( 'field' );
+					$element->addAttribute( 'name', 'target' );
+					$element->addAttribute( 'type', 'list' );
+					$element->addAttribute( 'class', 'inputbox' );
+					$element->addAttribute( 'labelclass' , 'control-label' );
+					$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_TARGET_LBL' );
+					$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_TARGET_DESC' );
+					
+					$xmlHelper->addOptionsNode( $element, array(
+							'PLG_FAF_TS_IE_FORM_TARGET_OPTION_DEFAULT'	=> '',
+							'PLG_FAF_TS_IE_FORM_TARGET_OPTION_BLANK'	=> 1,
+							'PLG_FAF_TS_IE_FORM_TARGET_OPTION_POPUP'	=> 2,
+							'PLG_FAF_TS_IE_FORM_TARGET_OPTION_MODAL'	=> 3,
+							'PLG_FAF_TS_IE_FORM_TARGET_OPTION_PARENT'	=> 4
+							
+						) );
+				}
 			}
 			
 			// hr bottom spacer
@@ -194,7 +219,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->field_id );
 			$element->addAttribute( 'hr', 'true' );
 			
-			$jregistry->set( 'form.fields.' . FieldsandfiltersArrayHelper::getEmptySlotObject( $jregistry, $field->ordering ), $root );
+			$jregistry->set( 'form.fields.' . $arrayHelper->getEmptySlotObject( $jregistry, $field->ordering ), $root );
 			
 			unset( $element );
 		}
@@ -203,7 +228,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	}
 	
 	/**
-	 * @since   1.0.0
+	 * @since       1.0.0
 	 */
 	public function onFieldsandfiltersBeforeSaveData( $context, $newItem, $oldItem, $isNew )
 	{
@@ -222,7 +247,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				$dataOld	= $fieldsItem->get( 'data', new JObject );
 				
 				// Load plgFieldsandfiltersTypesImageHelper Helper
-				JLoader::import( 'fieldsandfiltersTypes.image.helper', JPATH_PLUGINS );
+				$pluginHeleper = FieldsandfiltersFactory::getPluginHelper( $this->_type, $this->_name );
 				
 				$fields = is_array( $fields ) ? $fields : array( $fields );
 				
@@ -247,9 +272,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 							$imageInfo->folder 		= $field->field_id;
 							$imageInfo->prefixName		= $newItem->element_id;
 							
-							plgFieldsandfiltersTypesImageHelper::createNameImage( $imageInfo );
+							$pluginHeleper->createNameImage( $imageInfo );
 							
-							$folder = plgFieldsandfiltersTypesImageHelper::getCacheFolder() . '/' . $field->field_id . '/';
+							$folder = $pluginHeleper->getCacheFolder() . '/'  . $field->field_id . '/';
 							
 							if( $scaleImage )
 							{
@@ -270,7 +295,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 									
 									try
 									{
-										if( plgFieldsandfiltersTypesImageHelper::createImage( $imageInfo ) )
+										if( $pluginHeleper->createImage( $imageInfo ) )
 										{
 											$_data->set( 'src', str_replace( JPath::clean( $jroot ), '', $imageInfo->src ) );
 											
@@ -310,7 +335,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 									
 									try
 									{
-										if( plgFieldsandfiltersTypesImageHelper::createImage( $imageInfo ) )
+										if( $pluginHeleper->createImage( $imageInfo ) )
 										{
 											$_data->set( 'src_thumb', str_replace( JPath::clean( $jroot ), '', $imageInfo->src ) );
 											
@@ -364,6 +389,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		return true;
 	}
 	
+	/**
+	 * @since       1.1.0
+	 */
 	public function onFieldsandfiltersBeforeDeleteData( $context, $item )
 	{
 		if( $context == 'com_fieldsandfilters.field' && $item->field_type == $this->_name )
@@ -371,9 +399,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			jimport( 'joomla.filesystem.folder' );
 			
 			// Load plgFieldsandfiltersTypesImageHelper Helper
-			JLoader::import( 'fieldsandfiltersTypes.image.helper', JPATH_PLUGINS );
+			$pluginHeleper = FieldsandfiltersFactory::getPluginHelper( $this->_type, $this->_name );
 			
-			$path 		= plgFieldsandfiltersTypesImageHelper::getCacheFolder() . '/' . $item->field_id;
+			$path 		= $pluginHeleper->getCacheFolder() . '/' . $item->field_id;
 			$fullname 	= JPath::clean( JPATH_ROOT . '/' . $path );
 			
 			if( is_dir( $fullname ) )
@@ -429,6 +457,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		return true;
 	}
 	
+	/**
+	 * @since       1.0.0
+	 */
 	public function onFieldsandfiltersPrepareItem( $context, $item, $isNew, $state )
 	{
 		if( $isNew )
@@ -460,7 +491,10 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		return true;
 	}
 	
-	public function getFieldsandfiltersFieldsHTML( $fields, $element, $templateFields )
+	/**
+	 * @since       1.1.0
+	 */
+	public function getFieldsandfiltersFieldsHTML( $templateFields, $fields, $element, $params = false, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -470,13 +504,16 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		$fields = is_array( $fields ) ? $fields : array( $fields );
 		
 		// Load Extensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.extensionshelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		// Load plgFieldsandfiltersTypesImageHelper Helper
-		JLoader::import( 'fieldsandfiltersTypes.image.helper', JPATH_PLUGINS );
+		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 		
 		// Load Array Helper
-		JLoader::import( 'helpers.fieldsandfilters.arrayhelper', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
+		$arrayHelper = FieldsandfiltersFactory::getArray();
+		
+		// Load Plugin Types Helper
+		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
+		
+		// Load plgFieldsandfiltersTypesImageHelper Helper
+		$pluginHeleper = FieldsandfiltersFactory::getPluginHelper( $this->_type, $this->_name );
 		
 		if( is_null( $this->_variables ) )
 		{
@@ -491,16 +528,28 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		
 		while( $field = array_shift( $fields ) )
 		{
-			if( !property_exists( $element->data, $field->field_id ) )
+			$modeName = $pluginTypesHelper->getModeName( $field->mode );
+			$isStaticMode = ( $modeName == 'static' );
+			
+			if( ( $isStaticMode && empty( $field->data ) ) || ( $modeName == 'field' && !property_exists( $element->data, $field->field_id ) ) )
 			{
 				continue;
 			}
 			
-			$dataElement = $element->data->get( $field->field_id );
+			$dataElement = ( $isStaticMode ) ? $field->data :  $element->data->get( $field->field_id );
+			
+			
 			
 			if( is_string( $dataElement ) )
 			{
-				$element->data->set( $field->field_id, new JRegistry( $dataElement ) );
+				if( $isStaticMode )
+				{
+					$field->data = new JRegistry( $dataElement );
+				}
+				else
+				{
+					$element->data->set( $field->field_id, new JRegistry( $dataElement ) );
+				}
 			}
 			
 			// create new image if not exists		
@@ -510,11 +559,10 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			
 			if( $scaleImage || ( $createThumb && $scaleThumb ) )
 			{
-				$data = $element->data->get( $field->field_id, new JRegistry );
+				$data = $isStaticMode ? $field->data : $element->data->get( $field->field_id, new JRegistry );
 				
 				if( ( $image = $data->get( 'image' ) ) && file_exists( JPath::clean( $jroot . $image ) ) )
 				{
-					
 					if( $scaleImage && ( $src = $data->get( 'src' ) ) && !file_exists( JPath::clean( $jroot . $src ) ) )
 					{
 						$imageInfo 		= new JObject();
@@ -529,7 +577,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						
 						try
 						{
-							if( !plgFieldsandfiltersTypesImageHelper::createImage( $imageInfo ) )
+							if( !$pluginHeleper->createImage( $imageInfo ) )
 							{
 								throw new RuntimeException( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_NOT_CREATE_IMAGE', $field->field_name ) );
 							}
@@ -552,11 +600,11 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						$imageInfo->quality	= (int) $field->params->def( 'type.quality_thumb', $this->params->get( 'quality_thumb', 0 ) );
 						$imageInfo->name	= basename( $src );
 						
-						plgFieldsandfiltersTypesImageHelper::createImage( $imageInfo );
+						$pluginHeleper->createImage( $imageInfo );
 						
 						try
 						{
-							if( !plgFieldsandfiltersTypesImageHelper::createImage( $imageInfo ) )
+							if( !$pluginHeleper->createImage( $imageInfo ) )
 							{
 								throw new RuntimeException( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_NOT_CREATE_IMAGE', $field->field_name ) );
 							}
@@ -574,9 +622,34 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			
 			unset( $fieldTypeParams );
 			
+			if( $isParams = ( $params && $params instanceof JRegistry ) )
+			{
+				$paramsTemp 	= $field->params;
+				$paramsField 	= clone $field->params;
+				
+				$paramsField->merge( $params );
+				$field->params 	= $paramsField;
+			}
+			
+			$layoutField = $field->params->get( 'type.field_layout' );
+			
+			if( !$layoutField )
+			{
+				$layoutField	= $modeName . '-default';
+			}
+			
+			$field->params->set( 'type.field_layout', $layoutField );
+			
 			$this->_variables->field = $field;
 			
-			$templateFields->set( FieldsandfiltersArrayHelper::getEmptySlotObject( $templateFields, $field->ordering, false ), FieldsandfiltersExtensionsHelper::loadPluginTemplate( $this->_variables ) );
+			$template = $extensionsHelper->loadPluginTemplate( $this->_variables, $layoutField );
+			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->$ordering, false ), $template );
+			
+			if( $isParams )
+			{
+				$field = $paramsTemp;
+				unset( $paramsField );
+			}
 		}
 		
 		unset( $this->_variables->element, $this->_variables->field );
@@ -590,7 +663,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	 *
 	 * @return  boolean  True, if the file has successfully loaded.
 	 *
-	 * @since   11.1
+	 * @since       1.0.0
 	 */
 	public function loadLanguage( $extension = '', $basePath = JPATH_ADMINISTRATOR )
 	{

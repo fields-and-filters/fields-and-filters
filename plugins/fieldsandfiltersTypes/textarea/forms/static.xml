@@ -35,8 +35,8 @@
 				class="inputbox"
 				filter="JComponentHelper::filterText"
 				labelclass="controls-disabled"
-				label="JGLOBAL_DESCRIPTION"
-				description="COM_WEBLINKS_FIELD_DESCRIPTION_DESC"
+				label="PLG_FAF_TS_TA_FORM_VALUE_DATA_LBL"
+				description="PLG_FAF_TS_TA_FORM_VALUE_DATA_DESC"
 			/>
 		</fieldset>
 	</fields>

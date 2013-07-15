@@ -14,16 +14,15 @@ defined('_JEXEC') or die;
 JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 /**
- * Checkbox type fild
+ * Textarea type fild
  * @package     fieldsandfilters.plugin
  * @subpackage  fieldsandfilters_types.textarea
  * @since       1.0.0
- * 
  */
 class plgFieldsandfiltersTypesTextarea extends JPlugin
 {
 	/**
-	* @since       1.0.0
+	 * @since       1.0.0
 	 */
 	protected $_variables;
 	
@@ -59,6 +58,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 		
 		$fields 	= is_array( $fields ) ? $fields : array( $fields );
 		$staticMode 	= (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'static' );
+		$arrayHelper	= FieldsandfiltersFactory::getArray();
 		
 		while( $field = array_shift( $fields ) )
 		{
@@ -91,7 +91,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 				$element = $root->addChild( 'field'  );
 			}
 			
-			$label = '<strong>' . $field->field_name . '</strong> (' . $field->field_id . ')';;
+			$label = '<strong>' . $field->field_name . '</strong> (' . $field->field_id . ')';
 			
 			if( $field->state == -1 )
 			{
@@ -120,6 +120,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 				else
 				{
 					$element->addAttribute( 'type', 'textarea' );
+					$element->addAttribute( 'class', 'inputbox' );
 				}
 				
 				if( $rows = (int) $field->params->get( 'type.rows' ) )
@@ -145,15 +146,13 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			$element->addAttribute( 'label', $label );
 			$element->addAttribute( 'translate_label', 'false' );
 			
-
-			
 			// hr bottom spacer
 			$element = $root->addChild( 'field' );
 			$element->addAttribute( 'type', 'spacer' );
 			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->field_id );
 			$element->addAttribute( 'hr', 'true' );
 			
-			$jregistry->set( 'form.fields.' . FieldsandfiltersFactory::getArray()->getEmptySlotObject( $jregistry, $field->ordering ), $root );
+			$jregistry->set( 'form.fields.' . $arrayHelper->getEmptySlotObject( $jregistry, $field->ordering ), $root );
 			
 			unset( $element, $elementSpacer );
 		}

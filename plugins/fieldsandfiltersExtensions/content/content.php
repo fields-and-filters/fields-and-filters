@@ -634,7 +634,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function onFieldsandfiltersPrepareFiltersHTML( $context, $fieldsID = null, $options = null )
+	public function onFieldsandfiltersPrepareFiltersHTML( $context, $fieldsID = null, $params = false, $ordering = 'ordering' )
 	{
 		if( $context != 'com_content.category' )
 		{
@@ -668,7 +668,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			return;
 		}
-		
 		
 		// Load Filters Helper
 		$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extensionContent->extension_type_id, $fieldsID, $itemsID );
@@ -706,12 +705,11 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			return;
 		}
 		
-		$options	= is_array( $options ) ? new JObject( $options ) : $options;
 		$templateFields = new JObject;
 		
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		// Trigger the onFieldsandfiltersPrepareFormField event.
-		$this->_dispatcher->trigger( 'getFieldsandfiltersFiltersHTML', array( $fields, $options, $templateFields ) );
+		$this->_dispatcher->trigger( 'getFieldsandfiltersFiltersHTML', array( $templateFields, $fields, $params, $ordering ) );
 		
 		$templateFields = $templateFields->getProperties( true );
 		
