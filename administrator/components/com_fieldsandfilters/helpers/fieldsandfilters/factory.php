@@ -16,8 +16,14 @@ defined('_JEXEC') or die;
  */
 class FieldsandfiltersFactory
 {
+	/**
+	 * @since       1.1.0
+	 */
         protected static $instances = array();
         
+	/**
+	 * @since       1.1.0
+	 */
         protected static $path = '/components/com_fieldsandfilters/helpers';
         
         /**
@@ -72,6 +78,9 @@ class FieldsandfiltersFactory
                 return self::$instances[$hash];
         }
         
+	/**
+	 * @since       1.1.0
+	 */
         public static function isVersion( $operator = '>=', $versionIS = 3.0, $version = JVERSION )
         {
                 static $versions;

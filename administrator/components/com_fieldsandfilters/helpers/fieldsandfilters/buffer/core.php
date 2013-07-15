@@ -24,10 +24,10 @@ abstract class FieldsandfiltersBufferCoreHelper
         /**
          * The elements instance.
          * 
-	 * @var    FieldsandfiltersElementsHelper 
+	 * @var    $_instances
 	 * @since       1.1.0
 	 */
-	protected static $_instance = array();
+	protected static $_instances = array();
         
         /**
 	 * Database Connector
@@ -171,12 +171,12 @@ abstract class FieldsandfiltersBufferCoreHelper
                 $name = get_called_class();
                 
 		// Only create the object if it doesn't exist.
-		if( empty( self::$_instance[$name] ) )
+		if( empty( self::$_instances[$name] ) )
 		{
-			self::$_instance[$name] = new $name( $debug );
+			self::$_instances[$name] = new $name( $debug );
 		}
 
-		return self::$_instance[$name];
+		return self::$_instances[$name];
 	}
         
         /**
@@ -291,7 +291,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 			$notType = isset( $this->_not[$notName] ) ? $this->_not[$notName] : $this->_not[key($this->_not)];
 			
                         reset( $this->types );
-			while( $type = current( $this->types ) )
+			while( ( $type = current( $this->types ) ) !== false )
 			{
                                 // Get type date
 				$data = $this->_getData( $type );
@@ -322,7 +322,7 @@ abstract class FieldsandfiltersBufferCoreHelper
                 $data = $this->_getData( $type );
                 
                 reset( $this->_not );       
-                while( $not = current( $this->_not ) )
+                while( ( $not = current( $this->_not ) ) !== false )
                 {
                         // Get not Elements buffer from date
                         $notBuffer = $data->get( $not, array() );

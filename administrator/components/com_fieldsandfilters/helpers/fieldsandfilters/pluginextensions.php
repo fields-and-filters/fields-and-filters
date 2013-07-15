@@ -24,6 +24,7 @@ class FieldsandfiltersPluginExtensionsHelper extends FieldsandfiltersBufferCoreH
 {
 	protected $_plugins_folder 	= 'fieldsandfiltersExtensions';
         protected $_extension_default   = 'allextensions';
+	protected $_dispatcher;
         
 	/**
 	 * Constructor

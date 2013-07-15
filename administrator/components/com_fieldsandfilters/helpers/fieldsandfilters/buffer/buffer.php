@@ -49,7 +49,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
 	 */
         protected function _searchData()
         {
-                while( $type = current( $this->types ) )
+                while( ( $type = current( $this->types ) ) !== false )
 		{
 			$this->_beforeQuery( $type );
                         
@@ -131,7 +131,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
 		$_elementsID    = array();
                 
                 reset( $this->elements );
-		while( $elementID = current( $this->elements ) )
+		while( ( $elementID = current( $this->elements ) ) !== false )
 		{
 			$this->_searchElements( $data, $elementID, $_elementsID, $_notElements );
 			next( $this->elements );
@@ -224,7 +224,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
 		{
 			$_elements = get_object_vars( $this->_getData( array_shift( $this->types ) )->get( 'elements', new JObject ) ) ;
 			// Add only those elements are suitable states
-			while( $_element = current( $_elements ) )
+			while( ( $_element = current( $_elements ) ) !== false )
 			{
 				if( in_array( $_element->{$this->vars->stateName}, $this->states ) )
 				{
