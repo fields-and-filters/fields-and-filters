@@ -232,156 +232,27 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	 */
 	public function onFieldsandfiltersBeforeSaveData( $context, $newItem, $oldItem, $isNew )
 	{
-		if( $context == 'com_fieldsandfilters.element' )
+		if( $context == 'com_fieldsandfilters.field' && $field_type == $this->_name )
 		{
-			jimport( 'joomla.filesystem.file' );
-			
-			$app		= JFactory::getApplication();
+			$newItem->params = new JRegistry( $newItem->params );
+			$newItem->values->set( 'data', (string) $this->_createImages( $newItem, $newItem, $newItem->values ) );
+		}
+		else if( $context == 'com_fieldsandfilters.element' )
+		{
 			$jregistry 	= JRegistry::getInstance( 'fieldsandfilters' );
 			$fieldsItem 	= $newItem->get( 'fields', new JObject );
 			
 			if( ( $data = $fieldsItem->get( 'data', new JObject ) ) && ( $fields = $jregistry->get( 'fields.' . $this->_name ) ) )
 			{
-				$jroot		= JPATH_ROOT . '/';
+				
 				$fieldsItemOld	= $oldItem->get( 'fields', new JObject );
 				$dataOld	= $fieldsItem->get( 'data', new JObject );
-				
-				// Load plgFieldsandfiltersTypesImageHelper Helper
-				$pluginHeleper = FieldsandfiltersFactory::getPluginHelper( $this->_type, $this->_name );
 				
 				$fields = is_array( $fields ) ? $fields : array( $fields );
 				
 				while( $field = array_shift( $fields ) )
 				{
-					$_data 		= $data->get( $field->field_id, new JObject );
-					$_dataOld 	= $data->get( $field->field_id, new JObject );
-					
-					if( ( $image = $_data->get( 'image' ) ) && file_exists( JPath::clean( $jroot . $image ) ) )
-					{
-						$_data 			= new JRegistry( $_data->getProperties( true ) );
-						$_dataOld 		= new JRegistry( $_dataOld->getProperties( true ) );
-						
-						$scaleImage 	= (int) $field->params->def( 'type.scale',  $this->params->get( 'scale', 0 ) );
-						$createThumb	= (boolean) $field->params->get( 'type.create_thumb' );
-						$scaleThumb 	= (int) $field->params->def( 'type.scale_thumb', $this->params->get( 'scale_thumb', 0 ) );
-						
-						if( $scaleImage || ( $createThumb && $scaleThumb ) )
-						{
-							$imageInfo 			= new JObject();
-							$imageInfo->path 		= $image;
-							$imageInfo->folder 		= $field->field_id;
-							$imageInfo->prefixName		= $newItem->element_id;
-							
-							$pluginHeleper->createNameImage( $imageInfo );
-							
-							$folder = $pluginHeleper->getCacheFolder() . '/'  . $field->field_id . '/';
-							
-							if( $scaleImage )
-							{
-								$src 		= JPath::clean(  $folder . $imageInfo->name );
-								$srcOld 	= $_dataOld->get( 'src', false );
-								
-								if( $src != $srcOld || !file_exists( JPath::clean( $jroot . $src ) ) )
-								{
-									if( $srcOld && file_exists( $srcOld = JPath::clean( $jroot . $srcOld ) ) )
-									{
-										JFile::delete( $srcOld );
-									}
-									
-									$imageInfo->width 	= (int) $field->params->def( 'type.width', $this->params->get( 'width', 0 ) );
-									$imageInfo->height 	= (int) $field->params->def( 'type.height', $this->params->get( 'height', 0 ) );
-									$imageInfo->method 	= (int) $scaleImage;
-									$imageInfo->quality	= (int) $field->params->def( 'type.quality', $this->params->get( 'quality', 75 ) );
-									
-									try
-									{
-										if( $pluginHeleper->createImage( $imageInfo ) )
-										{
-											$_data->set( 'src', str_replace( JPath::clean( $jroot ), '', $imageInfo->src ) );
-											
-											$app->enqueueMessage(  JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_CREATE_IMAGE', $field->field_name ) );
-										}
-										else
-										{
-											throw new RuntimeException( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_NOT_CREATE_IMAGE', $field->field_name ) );
-										}
-									}
-									catch( Exception $e )
-									{
-										$app->enqueueMessage( $e->getMessage(), 'error' );
-									}
-								}
-							}
-							
-							if( $createThumb && $scaleThumb  )
-							{
-								$src 		= JPath::clean( $folder . 'thumbs/' . $imageInfo->name );
-								$srcOld 	= $_dataOld->get( 'src_thumb', false );
-								
-								if( $scaleThumb && ( $src != $srcOld || !file_exists( JPath::clean( $jroot . $src ) ) ) )
-								{
-									if( $srcOld && file_exists( $srcOld = JPath::clean( $jroot . $srcOld ) ) )
-									{
-										JFile::delete( $srcOld );
-									}
-									
-									unset( $imageInfo->src );
-									
-									$imageInfo->folder 	= $imageInfo->folder . '/thumbs';
-									$imageInfo->width 	= (int) $field->params->def( 'type.width_thumb', $this->params->get( 'width_thumb', 0 ) );
-									$imageInfo->height 	= (int) $field->params->def( 'type.height_thumb', $this->params->get( 'height_thumb', 0 ) );
-									$imageInfo->method 	= (int) $scaleThumb;
-									$imageInfo->quality	= (int) $field->params->def( 'type.quality_thumb', $this->params->get( 'quality_thumb', 0 ) );
-									
-									try
-									{
-										if( $pluginHeleper->createImage( $imageInfo ) )
-										{
-											$_data->set( 'src_thumb', str_replace( JPath::clean( $jroot ), '', $imageInfo->src ) );
-											
-											$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_CREATE_THUMB', $field->field_name ) );
-										}
-										else
-										{
-											throw new RuntimeException( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_NOT_CREATE_THUMB', $field->field_name ) );
-										}
-									}
-									catch( Exception $e )
-									{
-										$app->enqueueMessage( $e->getMessage(), 'error' );
-									}
-								}
-							}	
-						}
-						
-						unset( $imageInfo );
-					}
-					else
-					{
-						if( ( $src = $_data->get( 'src' ) ) && file_exists( JPath::clean( $jroot . $src ) ) )
-						{
-							// delete image
-							if( !JFile::delete( $jroot . $src ) )
-							{
-								$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_DELETE_IMAGE', $field->field_name, $src ), 'error' );
-							}
-						}
-						
-						if( ( $src = $_data->get( 'src_thumb' ) ) && file_exists( JPath::clean( $jroot . $src ) ) )
-						{
-							// delete thumb
-							if( !JFile::delete( $jroot . $src ) )
-							{
-								$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_DELETE_THUMB', $field->field_name, $src ), 'error' );
-							}
-						}
-						
-						$_data = null;
-					}
-					
-					$data->set( $field->field_id, (string) $_data );
-					
-					unset( $_data, $_dataOld );
+					$data->set( $field->field_id, (string) $this->_createImages( $newItem, $field, $_data ) );
 				}
 			}
 		}
@@ -389,6 +260,140 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		return true;
 	}
 	
+	protected function _createImages( $element, $field, $_data )
+	{
+		jimport( 'joomla.filesystem.file' );
+		
+		$app		= JFactory::getApplication();
+		$jroot		= JPATH_ROOT . '/';
+		
+		// Load plgFieldsandfiltersTypesImageHelper Helper
+		$pluginHeleper = FieldsandfiltersFactory::getPluginHelper( $this->_type, $this->_name );
+		
+		if( ( $image = $_data->get( 'image' ) ) && file_exists( JPath::clean( $jroot . $image ) ) )
+		{
+			$_data 			= new JRegistry( $_data->getProperties( true ) );
+			
+			$scaleImage 	= (int) $field->params->def( 'type.scale',  $this->params->get( 'scale', 0 ) );
+			$createThumb	= (boolean) $field->params->get( 'type.create_thumb' );
+			$scaleThumb 	= (int) $field->params->def( 'type.scale_thumb', $this->params->get( 'scale_thumb', 0 ) );
+			
+			if( $scaleImage || ( $createThumb && $scaleThumb ) )
+			{
+				$imageInfo 			= new JObject();
+				$imageInfo->path 		= $image;
+				$imageInfo->folder 		= $field->field_id;
+				$imageInfo->prefixName		= property_exists( $element, 'element_id' ) ? $element->element_id : 0;
+				
+				$pluginHeleper->createNameImage( $imageInfo );
+				
+				$folder = $pluginHeleper->getCacheFolder() . '/'  . $field->field_id . '/';
+				
+				if( $scaleImage )
+				{
+					$src 		= JPath::clean(  $folder . $imageInfo->name );
+					$srcOld 	= $_data->get( 'src', false );
+					
+					if( $src != $srcOld || !file_exists( JPath::clean( $jroot . $src ) ) )
+					{
+						if( $srcOld && file_exists( $srcOld = JPath::clean( $jroot . $srcOld ) ) )
+						{
+							JFile::delete( $srcOld );
+						}
+						
+						$imageInfo->width 	= (int) $field->params->def( 'type.width', $this->params->get( 'width', 0 ) );
+						$imageInfo->height 	= (int) $field->params->def( 'type.height', $this->params->get( 'height', 0 ) );
+						$imageInfo->method 	= (int) $scaleImage;
+						$imageInfo->quality	= (int) $field->params->def( 'type.quality', $this->params->get( 'quality', 75 ) );
+						
+						try
+						{
+							if( $pluginHeleper->createImage( $imageInfo ) )
+							{
+								$_data->set( 'src', str_replace( JPath::clean( $jroot ), '', $imageInfo->src ) );
+								
+								$app->enqueueMessage(  JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_CREATE_IMAGE', $field->field_name ) );
+							}
+							else
+							{
+								throw new RuntimeException( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_NOT_CREATE_IMAGE', $field->field_name ) );
+							}
+						}
+						catch( Exception $e )
+						{
+							$app->enqueueMessage( $e->getMessage(), 'error' );
+						}
+					}
+				}
+				
+				if( $createThumb && $scaleThumb  )
+				{
+					$src 		= JPath::clean( $folder . 'thumbs/' . $imageInfo->name );
+					$srcOld 	= $_data->get( 'src_thumb', false );
+					
+					if( $scaleThumb && ( $src != $srcOld || !file_exists( JPath::clean( $jroot . $src ) ) ) )
+					{
+						if( $srcOld && file_exists( $srcOld = JPath::clean( $jroot . $srcOld ) ) )
+						{
+							JFile::delete( $srcOld );
+						}
+						
+						unset( $imageInfo->src );
+						
+						$imageInfo->folder 	= $imageInfo->folder . '/thumbs';
+						$imageInfo->width 	= (int) $field->params->def( 'type.width_thumb', $this->params->get( 'width_thumb', 0 ) );
+						$imageInfo->height 	= (int) $field->params->def( 'type.height_thumb', $this->params->get( 'height_thumb', 0 ) );
+						$imageInfo->method 	= (int) $scaleThumb;
+						$imageInfo->quality	= (int) $field->params->def( 'type.quality_thumb', $this->params->get( 'quality_thumb', 0 ) );
+						
+						try
+						{
+							if( $pluginHeleper->createImage( $imageInfo ) )
+							{
+								$_data->set( 'src_thumb', str_replace( JPath::clean( $jroot ), '', $imageInfo->src ) );
+								
+								$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_CREATE_THUMB', $field->field_name ) );
+							}
+							else
+							{
+								throw new RuntimeException( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_NOT_CREATE_THUMB', $field->field_name ) );
+							}
+						}
+						catch( Exception $e )
+						{
+							$app->enqueueMessage( $e->getMessage(), 'error' );
+						}
+					}
+				}	
+			}
+			
+			unset( $imageInfo );
+		}
+		else
+		{
+			if( ( $src = $_data->get( 'src' ) ) && file_exists( JPath::clean( $jroot . $src ) ) )
+			{
+				// delete image
+				if( !JFile::delete( $jroot . $src ) )
+				{
+					$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_DELETE_IMAGE', $field->field_name, $src ), 'error' );
+				}
+			}
+			
+			if( ( $src = $_data->get( 'src_thumb' ) ) && file_exists( JPath::clean( $jroot . $src ) ) )
+			{
+				// delete thumb
+				if( !JFile::delete( $jroot . $src ) )
+				{
+					$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_DELETE_THUMB', $field->field_name, $src ), 'error' );
+				}
+			}
+			
+			$_data = null;
+		}
+		
+		return $_data;
+	}
 	/**
 	 * @since       1.1.0
 	 */
@@ -467,24 +472,37 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			return true;
 		}
 		
-		$fieldsItem = $item->get( 'fields', new JObject );
-		if( ( $data = $fieldsItem->get( 'data', new JObject ) ) && ( $fields = JRegistry::getInstance( 'fieldsandfilters' )->get( 'fields.' . $this->_name ) ) )
+		if( $context == 'com_fieldsandfilters.field' && $field_type == $this->_name )
 		{
-			$fields = is_array( $fields ) ? $fields : array( $fields );
-			
-			while( $field = array_shift( $fields ) )
+			if( !empty( $item->values->data ) && !is_object( $item->values->data ) )
 			{
-				$_data = $data->get( $field->field_id, '' );
-				
-				if( empty( $_data ) || is_object( $_data ) )
-				{
-					continue;
-				}
-				
-				$_data = new JRegistry( $_data );
+				$_data = new JRegistry( $item->values->data );
 				$_data = new JObject( $_data->toObject() );
 				
-				$data->set( $field->field_id, $_data );
+				$item->values = $_data;
+			}
+		}
+		elseif( $context == 'com_fieldsandfilters.element' )
+		{
+			$fieldsItem = $item->get( 'fields', new JObject );
+			if( ( $data = $fieldsItem->get( 'data', new JObject ) ) && ( $fields = JRegistry::getInstance( 'fieldsandfilters' )->get( 'fields.' . $this->_name ) ) )
+			{
+				$fields = is_array( $fields ) ? $fields : array( $fields );
+				
+				while( $field = array_shift( $fields ) )
+				{
+					$_data = $data->get( $field->field_id, '' );
+					
+					if( empty( $_data ) || is_object( $_data ) )
+					{
+						continue;
+					}
+					
+					$_data = new JRegistry( $_data );
+					$_data = new JObject( $_data->toObject() );
+					
+					$data->set( $field->field_id, $_data );
+				}
 			}
 		}
 		
@@ -537,8 +555,6 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			}
 			
 			$dataElement = ( $isStaticMode ) ? $field->data :  $element->data->get( $field->field_id );
-			
-			
 			
 			if( is_string( $dataElement ) )
 			{

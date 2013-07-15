@@ -161,6 +161,9 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		// Load Array Helper
 		$arrayHelper = FieldsandfiltersFactory::getArray();
 		
+		// Load Plugin Types Helper
+		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
+		
 		if( is_null( $this->_variables ) )
 		{
 			$this->_variables = new JObject( array( 'type' => $this->_type, 'name' => $this->_name, 'params' => $this->params ) );
