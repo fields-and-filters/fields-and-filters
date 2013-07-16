@@ -173,9 +173,10 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		
 		while( $field = array_shift( $fields ) )
 		{
-			$modeName = $pluginTypesHelper->getModeName( $field->mode );
+			$modeName 	= $pluginTypesHelper->getModeName( $field->mode );
+			$isStaticMode 	= (  $modeName == 'static' );
 			
-			if( ( $modeName == 'static' && empty( $field->connections ) ) || ( $modeName == 'field' && !property_exists( $element->connections, $field->field_id ) ) )
+			if( ( $isStaticMode && empty( $field->connections ) ) || ( $modeName == 'field' && !property_exists( $element->connections, $field->field_id ) ) )
 			{
 				continue;
 			}
@@ -193,7 +194,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			
 			if( !$layoutField )
 			{
-				$layoutField	= $modeName . '-default';
+				$layoutField	= ( $isStaticMode ? $modeName : 'field' ) . '-default';
 			}
 			
 			$field->params->set( 'type.field_layout', $layoutField );
