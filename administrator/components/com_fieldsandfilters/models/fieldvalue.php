@@ -27,30 +27,6 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 	 */
 	protected $text_prefix = 'COM_FIELDSANDFILTERS';
 	
-	protected $_dispatcher;
-	
-	/**
-	 * Constructor.
-	 *
-	 * @param   array  $config  An optional associative array of configuration settings.
-	 *
-	 * @see     JController
-	 * @since	1.0.0
-	 */
-	public function __construct( $config = array() )
-	{
-		parent::__construct( $config );
-		
-		if( FieldsandfiltersFactory::isVersion() )
-		{
-			$this->_dispatcher = JEventDispatcher::getInstance();
-		}
-		else
-		{
-			$this->_dispatcher = JDispatcher::getInstance();
-		}
-	}
-	
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
@@ -201,6 +177,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 		$pks 		= (array) $pks;
 		$table 		= $this->getTable();
 		$elementTable 	= $this->getTable( 'Element', 'FieldsandfiltersTable' );
+		$dispatcher	= FieldsandfiltersFactory::getDispatcher();
 		
 		// Include the content plugins for the on delete events.
 		JPluginHelper::importPlugin( 'content' );
@@ -215,7 +192,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 					$context = $this->option . '.' . $this->name;
 					
 					// Trigger the onContentBeforeDelete event.
-					$result = $this->_dispatcher->trigger( $this->event_before_delete, array( $context, $table ) );
+					$result = $dispatcher->trigger( $this->event_before_delete, array( $context, $table ) );
 					if( in_array( false, $result, true ) )
 					{
 						$this->setError( $table->getError() );
@@ -239,7 +216,7 @@ class FieldsandfiltersModelfieldvalue extends JModelAdmin
 					}
 					
 					// Trigger the onContentAfterDelete event.
-					$this->_dispatcher->trigger( $this->event_after_delete, array( $context, $table ) );
+					$dispatcher->trigger( $this->event_after_delete, array( $context, $table ) );
 				}
 				else
 				{

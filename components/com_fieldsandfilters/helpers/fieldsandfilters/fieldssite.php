@@ -10,44 +10,28 @@
 // No direct access
 defined('_JEXEC') or die;
 
+// Load the Factory Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
+
+/**
+* @since       1.0.0
+*/
 class FieldsandfiltersFieldsSiteHelper
-{
-	protected static $_dispatcher;
-	
-	protected static function getDispatcher()
-	{
-		if( is_null( self::$_dispatcher ) )
-		{
-			if( version_compare( JVERSION, 3.0, '<' ) )
-			{
-				self::$_dispatcher = JDispatcher::getInstance();
-			}
-			else
-			{
-				self::$_dispatcher = JEventDispatcher::getInstance();
-			}
-		}
-		
-		return self::$_dispatcher;
-	}
-	
-	public static function getFieldsByItemID( $option, $itemID, $fieldsID = null, $state = null, $getAllextensions = true )
+{	
+	/**
+        * @since       1.1.0
+        */
+	public static function getFieldsByItemID( $option, $itemID, $fieldsID = null, $getAllextensions = true )
 	{
 		// Load PluginExtensions Helper
-		JLoader::import( 'helpers.fieldsandfilters.pluginextensions', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		$pluginExtensionsHelper = FieldsandfiltersPluginExtensionsHelper::getInstance();
+		$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
 		
 		if( !is_string( $option ) )
 		{
 			$option = JFactory::getApplication()->input->get( 'option' );
 		}
 		
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
-		// Trigger the onFieldsandfiltersPrepareFormField event.
-		$extensionName		= (array) self::getDispatcher()->trigger( 'getFieldsandfiltersExtensionName', array( $option ) );
-		reset( $extensionName );
-		$extensionName 	= current( $extensionName );
-		$extensionsID 		= $pluginExtensionsHelper->getExtensionsByNameColumn( 'extension_type_id', $extensionName );
+		$extensionsID = $pluginExtensionsHelper->getExtensionsIDByOption( $option );
 		
 		if( empty( $extensionsID ) )
 		{
@@ -55,9 +39,7 @@ class FieldsandfiltersFieldsSiteHelper
 		}
 		
 		// Load elements Helper
-		JLoader::import( 'helpers.fieldsandfilters.elements', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		if( !( $element = FieldsandfilterselementsHelper::getInstance()->getElementsByItemIDPivot( 'item_id', $extensionsID, $itemID, $state, 3 )->get( $itemID ) ) )
+		if( !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionsID, $itemID, 1, 3 )->get( $itemID ) ) )
 		{
 			return self::_returnEmpty();
 		}
@@ -78,9 +60,7 @@ class FieldsandfiltersFieldsSiteHelper
 		}
 		
 		// Load Fields Helper
-		JLoader::import( 'helpers.fieldsandfilters.fields', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters' );
-		
-		if( !( $fields = FieldsandfiltersFieldsHelper::getInstance()->getFieldsByID( $extensionsID, $fieldsID, 1, true ) ) )
+		if( !( $fields = FieldsandfiltersFactory::getFields()->getFieldsByID( $extensionsID, $fieldsID, 1, 3 ) ) )
 		{
 			return self::_returnEmpty();
 		}
@@ -88,24 +68,25 @@ class FieldsandfiltersFieldsSiteHelper
 		return new JObject( array( 'element' => $element, 'fields' => $fields ) );
 	}
 	
-	public static function getFieldsByItemIDWithTemplate( $option, $itemID, $fieldsID = null, $state = null, $getAllextensions = true )
+	/**
+        * @since       1.1.0
+        */
+	public static function getFieldsByItemIDWithTemplate( $option, $itemID, $fieldsID = null, $getAllextensions = true, $params = false, $ordering = 'ordering' )
 	{
-		$object 	= self::getFieldsByItemID( $option, $itemID, $fieldsID, $state, $getAllextensions );
+		$object 	= self::getFieldsByItemID( $option, $itemID, $fieldsID, $getAllextensions );
 		$templateFields = new JObject;
 		
 		$fields = new JObject( JArrayHelper::pivot( $object->fields->getProperties(), 'field_type' ) );
-		
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		
-		// [TODO] zmienić kolejność pierwsze $templateFields
-		// [TODO] można teraz szukać np po id
-		// [TODO] można dodawać parametry
-		// Trigger the onFieldsandfiltersPrepareFormField event.
-		self::$_dispatcher->trigger( 'getFieldsandfiltersFieldsHTML', array( $fields, $object->element, $templateFields ) );
+		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $object->element, $params, $ordering ) );
 		
 		return $templateFields;
 	}
 	
+	/**
+        * @since       1.0.0
+        */
 	protected static function _returnEmpty()
 	{
 		return new JObject( array( 'element' => new JObject(), 'fields' => new JObject() ) );

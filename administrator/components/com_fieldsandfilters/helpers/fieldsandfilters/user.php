@@ -11,13 +11,13 @@
 defined( '_JEXEC' ) or die;
 
 /**
- * Fieldsandfilters Factory.
- * since       1.1.0
+ * Fieldsandfilters User.
+ * @since       1.1.0
  */
 class FieldsandfiltersUserHelper
 {
         /**
-        * since       1.1.0
+        * @since       1.1.0
         */
         public static function getUserIP()
 	{

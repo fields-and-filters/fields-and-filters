@@ -9,6 +9,9 @@
 
 defined('_JEXEC') or die;
 
+// Load the Fieldsandfilters Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
+
 // Execute the task.
 $controller	= JControllerLegacy::getInstance( 'Fieldsandfilters' );
 $controller->execute( JFactory::getApplication()->input->get('task') );

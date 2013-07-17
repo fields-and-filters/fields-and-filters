@@ -43,15 +43,6 @@ class FieldsandfiltersModelelements extends JModelList
 		}
 		
 		parent::__construct( $config );
-		
-		if( FieldsandfiltersFactory::isVersion() )
-		{
-			$this->_dispatcher = JEventDispatcher::getInstance();
-		}
-		else
-		{
-			$this->_dispatcher = JDispatcher::getInstance();
-		}
 	}
 
 
@@ -85,7 +76,7 @@ class FieldsandfiltersModelelements extends JModelList
 			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 			
 			// Trigger the onContentBeforeDelete event.
-			$this->_dispatcher->trigger( 'onFieldsandfiltersPopulateState', array( ( $this->context . '.' . $pluginExtension->name ), $this->state, &$this->filter_fields ) );
+			FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPopulateState', array( ( $this->context . '.' . $pluginExtension->name ), $this->state, &$this->filter_fields ) );
 			
 			$this->setState( 'elements.extension_name', $pluginExtension->name );
 		}
@@ -159,7 +150,7 @@ class FieldsandfiltersModelelements extends JModelList
 		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 		
 		// Trigger the onPrepareListQuery event.
-		$result = $this->_dispatcher->trigger( 'onFieldsandfiltersPrepareListQuery', array( ( $this->context . '.' . $extensionName ), $query, $this->state ) );
+		$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareListQuery', array( ( $this->context . '.' . $extensionName ), $query, $this->state ) );
 		
 		if( in_array( false, $result, true ) )
 		{

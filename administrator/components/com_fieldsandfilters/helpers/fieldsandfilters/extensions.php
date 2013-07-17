@@ -18,6 +18,9 @@ jimport('joomla.filesystem.path');
  */
 class FieldsandfiltersExtensionsHelper
 {
+	/**
+	 * @since       1.0.0
+	 */
 	protected static $_path = array( 'plugins' => array() );
 	
 	/**
@@ -45,6 +48,9 @@ class FieldsandfiltersExtensionsHelper
 		return $output;
 	}
 	
+	/**
+	 * @since       1.1.0
+	 */
 	public static function getPluginLayoutPath( $type, $name, $layout = 'default' )
 	{
 		// Create the plugin name
@@ -208,7 +214,7 @@ class FieldsandfiltersExtensionsHelper
 	/**
 	 * @since       1.0.0
 	 */
-	static function loadLanguage( $extension, $basePath = JPATH_BASE )
+	public static function loadLanguage( $extension, $basePath = JPATH_BASE )
 	{
 		$lang 		= JFactory::getLanguage();
 		$type 		= strtolower( substr( $extension, 0, 3 ) );
@@ -237,5 +243,13 @@ class FieldsandfiltersExtensionsHelper
 			|| $lang->load( $extension, $basePath, $lang->getDefault(), false, false )
 			|| $lang->load( $extension, $path, null, false, false )
 			|| $lang->load( $extension, $path, $lang->getDefault(), false, false );
+	}
+	
+	/**
+	 * @since       1.0.0
+	 */
+	public static function isAjaxRequest()
+	{
+		return !empty( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest';
 	}
 }

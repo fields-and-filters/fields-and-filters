@@ -34,12 +34,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	protected $_states = array( 1, 0 , 2, -2 );
 	
 	/**
-	 * @var		string	Dispatcher.
-	 * @since	1.0.0
-	 */
-	protected $_dispatcher;
-	
-	/**
 	 * Constructor
 	 *
 	 * @access      protected
@@ -51,15 +45,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	{
 		parent::__construct( $subject, $config );
 		$this->loadLanguage();
-		
-		if( FieldsandfiltersFactory::isVersion() )
-		{
-			$this->_dispatcher = JEventDispatcher::getInstance();
-		}
-		else
-		{
-			$this->_dispatcher = JDispatcher::getInstance();
-		}
 	}
 	
 	/**
@@ -286,7 +271,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 			
 		// Trigger the onFieldsandfiltersPrepareFormField event.
-		$this->_dispatcher->trigger( 'onFieldsandfiltersPrepareFormField', array( !(boolean) $elementModel->getState( 'element.element_id', 0 ) ) );
+		FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFormField', array( !(boolean) $elementModel->getState( 'element.element_id', 0 ) ) );
 		
 		if( $fieldsForm = $jregistry->get( 'form.fields' ) )
 		{
@@ -617,7 +602,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		// Trigger the onFieldsandfiltersPrepareFormField event.
-		$this->_dispatcher->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $element ) );
+		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $element ) );
 		
 		$templateFields = $templateFields->getProperties( true );
 		
@@ -709,7 +694,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		// Trigger the onFieldsandfiltersPrepareFormField event.
-		$this->_dispatcher->trigger( 'getFieldsandfiltersFiltersHTML', array( $templateFields, $fields, $params, $ordering ) );
+		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFiltersHTML', array( $templateFields, $fields, $params, $ordering ) );
 		
 		$templateFields = $templateFields->getProperties( true );
 		
@@ -749,7 +734,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	 */
 	public function onFieldsandfiltersRequestJSON( $context )
 	{
-		if( $context != 'com_fieldsandfilters.request.content' )
+		if( $context != 'com_fieldsandfilters.filters.content' )
 		{
 			return;
 		}

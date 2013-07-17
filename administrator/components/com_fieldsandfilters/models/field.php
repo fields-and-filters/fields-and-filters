@@ -54,8 +54,6 @@ class FieldsandfiltersModelfield extends JModelAdmin
 	 */
 	protected $event_change_required = null;
 	
-	protected $_dispatcher;
-	
 	/**
 	 * Constructor.
 	 *
@@ -75,15 +73,6 @@ class FieldsandfiltersModelfield extends JModelAdmin
 		elseif( empty( $this->event_change_required ) )
 		{
 			$this->event_change_required = 'onContentChangeRequired';
-		}
-		
-		if( FieldsandfiltersFactory::isVersion() )
-		{
-			$this->_dispatcher = JEventDispatcher::getInstance();
-		}
-		else
-		{
-			$this->_dispatcher = JDispatcher::getInstance();
 		}
 	}
 
@@ -392,7 +381,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 				JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 				
 				// Trigger the onPrepareItem event.
-				$result = $this->_dispatcher->trigger( 'onFieldsandfiltersPrepareItem', array( ( $this->option . '.' . $this->name ), &$item, $isNew, $this->state ) );
+				$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareItem', array( ( $this->option . '.' . $this->name ), &$item, $isNew, $this->state ) );
 				
 				if( in_array( false, $result, true ) )
 				{
@@ -525,7 +514,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 		$context = $this->option . '.' . $this->name;
 
 		// Trigger the onContentChangeState event.
-		$result = $this->_dispatcher->trigger( $this->event_change_required, array( $context, $pks, $value ) );
+		$result = FieldsandfiltersFactory::getDispatcher()->trigger( $this->event_change_required, array( $context, $pks, $value ) );
 
 		if( in_array( false, $result, true ) )
 		{
@@ -554,6 +543,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 		$pk 			= ( !empty( $data[$key] ) ) ? $data[$key] : (int) $this->getState( $this->getName() . '.id' );
 		$isNew 			= true;
 		$elementTable 		= $this->getTable( 'Element', 'FieldsandfiltersTable' );
+		$dispatcher		= FieldsandfiltersFactory::getDispatcher();
 
 		// Include the content plugins for the on save events.
 		JPluginHelper::importPlugin( 'content' );
@@ -589,7 +579,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 			}
 			
 			// Trigger the onContentBeforeSave event.
-			$result = $this->_dispatcher->trigger( $this->event_before_save, array( $this->option . '.' . $this->name, $table, $isNew ) );
+			$result = $dispatcher->trigger( $this->event_before_save, array( $this->option . '.' . $this->name, $table, $isNew ) );
 			if( in_array( false, $result, true ) )
 			{
 				$this->setError( $table->getError() );
@@ -617,7 +607,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 			}
 			
 			// Trigger the onFieldsandfiltersBeforeSaveData event.
-			$result = $this->_dispatcher->trigger( 'onFieldsandfiltersBeforeSaveData', array( ( $this->option . '.' . $this->name ), $table, $item, $isNew ) ); // array( $newItem, $oldItem )
+			$result = $dispatcher->trigger( 'onFieldsandfiltersBeforeSaveData', array( ( $this->option . '.' . $this->name ), $table, $item, $isNew ) ); // array( $newItem, $oldItem )
 			
 			if( in_array( false, $result, true ) )
 			{
@@ -686,7 +676,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 			$this->cleanCache();
 
 			// Trigger the onContentAfterSave event.
-			$this->_dispatcher->trigger( $this->event_after_save, array( $this->option . '.' . $this->name . '.' . $extensionName, $table, $isNew ) );
+			$dispatcher->trigger( $this->event_after_save, array( $this->option . '.' . $this->name . '.' . $extensionName, $table, $isNew ) );
 		}
 		catch( Exception $e )
 		{
@@ -720,6 +710,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 		$table 		= $this->getTable();
 		$valueTable 	= $this->getTable( 'Fieldvalue', 'FieldsandfiltersTable' );
 		$elementTable 	= $this->getTable( 'Element', 'FieldsandfiltersTable' );
+		$dispatcher	= FieldsandfiltersFactory::getDispatcher();
 		
 		// Load PluginTypes Helper
 		$pluginTypesHelper	= FieldsandfiltersFactory::getPluginTypes();
@@ -742,7 +733,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 					$context = $this->option . '.' . $this->name;
 					
 					// Trigger the onContentBeforeDelete event.
-					$result = $this->_dispatcher->trigger( $this->event_before_delete, array( $context, $table ) );
+					$result = $dispatcher->trigger( $this->event_before_delete, array( $context, $table ) );
 					if( in_array( false, $result, true ) )
 					{
 						$this->setError( $table->getError() );
@@ -753,7 +744,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 					$item = $this->getItem( $pk );
 					
 					// Trigger the onFieldsandfiltersBeforeSaveData event.
-					$result = $this->_dispatcher->trigger( 'onFieldsandfiltersBeforeDeleteData', array( $context, $item ) );
+					$result = $dispatcher->trigger( 'onFieldsandfiltersBeforeDeleteData', array( $context, $item ) );
 					
 					if( in_array( false, $result, true ) )
 					{
@@ -797,7 +788,7 @@ class FieldsandfiltersModelfield extends JModelAdmin
 					}
 					
 					// Trigger the onContentAfterDelete event.
-					$this->_dispatcher->trigger( $this->event_after_delete, array( $context, $table ) );
+					$dispatcher->trigger( $this->event_after_delete, array( $context, $table ) );
 				}
 				else
 				{

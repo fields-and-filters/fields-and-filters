@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     1.0.1
+ * @version     1.0.0
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 /**
  * Fieldsandfilters Factory.
- * since       1.1.0
+ * @since       1.1.0
  */
 class FieldsandfiltersFactory
 {
@@ -124,4 +124,26 @@ class FieldsandfiltersFactory
                 
                 return $versions[$key];
         }
+	
+	/**
+        * @since       1.1.0
+        */
+	protected static function getDispatcher()
+	{
+		static $_dispatcher;
+		
+		if( is_null( $_dispatcher ) )
+		{
+			if( self::isVersion() )
+			{
+				$_dispatcher = JEventDispatcher::getInstance();
+			}
+			else
+			{
+				$_dispatcher = JDispatcher::getInstance();
+			}
+		}
+		
+		return $_dispatcher;
+	}
 }

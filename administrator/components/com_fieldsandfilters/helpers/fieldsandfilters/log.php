@@ -7,21 +7,21 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-jimport( 'joomla.filesystem.file' );
-
 // No direct access
 defined( '_JEXEC' ) or die;
 
+jimport( 'joomla.filesystem.file' );
+
 /**
- * Fieldsandfilters Factory.
- * since       1.1.0
+ * Fieldsandfilters Log.
+ * @since       1.1.0
  */
-class FieldsandfiltersLog
+class FieldsandfiltersLogHelper
 {
         /**
 	 * Options array for the JLog instance.
 	 * @var    array
-	 * since       1.1.0
+	 * @since       1.1.0
 	 */
 	protected $options = array();
         

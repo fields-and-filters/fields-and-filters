@@ -15,28 +15,6 @@ defined('_JEXEC') or die;
 */
 class FieldsandfiltersControllerRequest extends JControllerLegacy
 {
-	/**
-	 * @since       1.1.0
-	 */
-	protected $_dispatcher;
-	
-        /**
-	 * @since       1.1.0
-	 */
-	public function __construct( $config = array() )
-	{
-		parent::__construct( $config );
-		
-		if( FieldsandfiltersFactory::isVersion() )
-		{
-			$this->_dispatcher = JEventDispatcher::getInstance();
-		}
-		else
-		{
-			$this->_dispatcher = JDispatcher::getInstance();
-		}
-	}
-	
         /**
 	 * @since       1.1.0
 	 */
@@ -44,15 +22,12 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 	{
                 // Check for a valid token. If invalid, send a 403 with the error message.
 		JSession::checkToken( 'request' ) OR die();
-                
-		$app = JFactory::getApplication();
-                JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
-                
+		
                 $app 		        = JFactory::getApplication();
 		$fieldID 	        = $app->input->get( 'fid', 0, 'int' );
 		$extensionTypeID 	= $app->input->get( 'etid', 0, 'int' );
 		
-		if( $extensionID && $fieldID )
+		if( ( $app->input->get( 'format' ) == 'raw' ) && $extensionID && $fieldID )
 		{
                         // Load PluginExtensions Helper
                         if( !( $extension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID )->get( $extensionTypeID ) ) )
@@ -65,8 +40,10 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
                         }
                         else
                         {
+				JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+				
                                 $context = 'com_fieldsandfilters.fields.' . $field->field_type;
-                                $this->_dispatcher->trigger( 'onFieldsandfiltersFieldsControllerRaw', array( $context, $field ) );
+                                FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersFieldsRequestRaw', array( $context, $field ) );
                         }
 		}
 		

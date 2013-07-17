@@ -14,10 +14,13 @@ jimport( 'joomla.filesystem.file' );
 
 /**
  * Fieldsandfilters File.
- * since       1.1.0
+ * @since       1.1.0
  */
 class FieldsandfiltersFileHelper
 {
+	/**
+        * @since       1.1.0
+        */
         protected static $_mime_types = array(
                                 'txt' => 'text/plain',
                                 'htm' => 'text/html',
@@ -73,6 +76,9 @@ class FieldsandfiltersFileHelper
                                 'ods' => 'application/vnd.oasis.opendocument.spreadsheet'
         );
         
+	/**
+        * @since       1.1.0
+        */
         public static function getMimeType( $file )
 	{
 		$ext = JFile::getExt( $file );

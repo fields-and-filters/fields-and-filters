@@ -319,4 +319,22 @@ class FieldsandfiltersArrayHelper
 		
 		return $ordering;
 	}
+	
+	/**
+	 * @since       1.1.0
+	 */
+	protected static function checkForIntersect( $a, $b )
+	{
+		$c = array_flip( $a );
+		
+		foreach( $b as $v )
+		{
+			if( array_key_exists( $v, $c ) )
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }
