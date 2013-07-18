@@ -183,6 +183,8 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 		
 		$this->_variables->element = $element;
 		
+		$isParams = ( $params && $params instanceof JRegistry );
+		
 		while( $field = array_shift( $fields ) )
 		{
 			$modeName = $pluginTypesHelper->getModeName( $field->mode );
@@ -192,7 +194,7 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 				continue;
 			}
 			
-			if( $isParams = ( $params && $params instanceof JRegistry ) )
+			if( $isParams )
 			{
 				$paramsTemp 	= $field->params;
 				$paramsField 	= clone $field->params;

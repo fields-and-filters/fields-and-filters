@@ -540,6 +540,8 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		
 		$this->_variables->element = $element;
 		
+		$isParams = ( $params && $params instanceof JRegistry );
+		
 		$jroot = JPATH_ROOT . '/';
 		
 		jimport( 'joomla.filesystem.file' );
@@ -566,6 +568,15 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				{
 					$element->data->set( $field->field_id, new JRegistry( $dataElement ) );
 				}
+			}
+			
+			if( $isParams )
+			{
+				$paramsTemp 	= $field->params;
+				$paramsField 	= clone $field->params;
+				
+				$paramsField->merge( $params );
+				$field->params 	= $paramsField;
 			}
 			
 			// create new image if not exists		
@@ -637,15 +648,6 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			}
 			
 			unset( $fieldTypeParams );
-			
-			if( $isParams = ( $params && $params instanceof JRegistry ) )
-			{
-				$paramsTemp 	= $field->params;
-				$paramsField 	= clone $field->params;
-				
-				$paramsField->merge( $params );
-				$field->params 	= $paramsField;
-			}
 			
 			$layoutField = $field->params->get( 'type.field_layout' );
 			
