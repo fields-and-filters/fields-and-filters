@@ -21,7 +21,7 @@ class FieldsandfiltersFieldsSiteHelper
 	/**
         * @since       1.1.0
         */
-	public static function getFieldsByItemID( $fieldsID = null, $itemID = null, $option = null, $getAllextensions = true )
+	public static function getFieldsByItemID( $option = null, $itemID = null, $fieldsID = null,  $getAllextensions = true )
 	{
 		$app = JFactory::getApplication();
 		
@@ -88,7 +88,7 @@ class FieldsandfiltersFieldsSiteHelper
 	/**
         * @since       1.1.0
         */
-	public static function getFieldsByItemIDWithTemplate( $fieldsID = null, $itemID = null, $option = null, $getAllextensions = true, $params = false, $ordering = 'ordering' )
+	public static function getFieldsByItemIDWithTemplate( $option = null, $itemID = null, $fieldsID = null, $getAllextensions = true, $params = false, $ordering = 'ordering' )
 	{
 		$object 	= self::getFieldsByItemID( $option, $itemID, $fieldsID, $getAllextensions );
 		$templateFields = new JObject;
