@@ -10,10 +10,22 @@
 // No direct access
 defined('_JEXEC') or die;
 
+// Load the Factory Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
+/**
+* @since       1.0.0
+*/
 class FieldsandfiltersFiltersSiteHelper
 {
+	/**
+	* @since       1.0.0
+	*/
 	protected static $_items = array();
+	
+	/**
+	* @since       1.0.0
+	*/
 	protected static $_counts = array();
 	
 	protected static function _checkArg( &$arg )
@@ -22,6 +34,7 @@ class FieldsandfiltersFiltersSiteHelper
 		JArrayHelper::toInteger( $arg );
 	}
 	
+	// [TODO] jeżeli beetween values jest na AND robimy IN() i pozniej w skrypcie sprawdzamy ktore elementy pasuja.
 	public static function getFiltersValuesCount( $types, $filters = null, $items = null, $states = null )
 	{
 		$hash = md5( serialize( func_get_args() ) );

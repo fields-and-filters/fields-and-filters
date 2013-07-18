@@ -88,12 +88,18 @@ class FieldsandfiltersFieldsSiteHelper
 	/**
         * @since       1.1.0
         */
-	public static function getFieldsByItemIDWithTemplate( $option, $itemID, $fieldsID = null, $getAllextensions = true, $params = false, $ordering = 'ordering' )
+	public static function getFieldsByItemIDWithTemplate( $fieldsID = null, $itemID = null, $option = null, $getAllextensions = true, $params = false, $ordering = 'ordering' )
 	{
 		$object 	= self::getFieldsByItemID( $option, $itemID, $fieldsID, $getAllextensions );
 		$templateFields = new JObject;
 		
-		$fields = new JObject( JArrayHelper::pivot( $object->fields->getProperties(), 'field_type' ) );
+		$fields = $object->fields->getProperties();
+		if( empty( $fields ) )
+		{
+			return $templateFields;
+		}
+		
+		$fields = new JObject( JArrayHelper::pivot( $fields, 'field_type' ) );
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $object->element, $params, $ordering ) );
