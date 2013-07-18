@@ -178,7 +178,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			$modeName 	= $pluginTypesHelper->getModeName( $field->mode );
 			$isStaticMode 	= (  $modeName == 'static' );
 			
-			if( ( $isStaticMode && empty( $field->connections ) ) || ( $modeName == 'field' && !property_exists( $element->connections, $field->field_id ) ) )
+			if( ( $isStaticMode && empty( $field->connections ) ) || ( $modeName == 'filter' && isset( $element->connections ) && !property_exists( $element->connections, $field->field_id ) ) )
 			{
 				continue;
 			}

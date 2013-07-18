@@ -210,7 +210,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 		{
 			$modeName = $pluginTypesHelper->getModeName( $field->mode );
 			
-			if( ( $modeName == 'static' && empty( $field->data ) ) || ( $modeName == 'field' && !property_exists( $element->data, $field->field_id ) ) )
+			if( ( $modeName == 'static' && empty( $field->data ) ) || ( $modeName == 'field' && isset( $element->data ) && !property_exists( $element->data, $field->field_id ) ) )
 			{
 				continue;
 			}
