@@ -175,9 +175,9 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	/**
 	 * @since       1.0.0
 	 */
-	public function onFieldsandfiltersPrepareItem( $context, $item, $isNew, $state )
+	public function onFieldsandfiltersPrepareElement( $context, $item, $isNew, $state )
 	{
-		if( !in_array( $context, array( $this->_context, 'com_fieldsandfilters.element.content' ) ) || empty( $item->item_id ) )
+		if( !( $context == $this->_context && $context == 'com_fieldsandfilters.element.content' ) || empty( $item->item_id ) )
 		{
 			return true;
 		}

@@ -297,10 +297,13 @@ class FieldsandfiltersModelelement extends JModelAdmin
 			{
 				// Include the fieldsandfiltersExtensions plugins for the on prepare item events.
 				JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+				
+				// Trigger the onFieldsandfiltersPrepareElement event.
+				$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareElement', array( ( $this->option . '.' . $this->name . '.' . $extensionName ), &$item, $isNew, $this->state ) );
 				JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 				
 				// Trigger the onPrepareItem event.
-				$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareItem', array( ( $this->option . '.' . $this->name . '.' . $extensionName ), &$item, $isNew, $this->state ) );
+				$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareElementFields', array( ( $this->option . '.' . $this->name ), &$item, $isNew, $this->state ) );
 				
 				if( in_array( false, $result, true ) )
 				{

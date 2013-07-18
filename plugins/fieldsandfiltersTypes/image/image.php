@@ -244,15 +244,11 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			
 			if( ( $data = $fieldsItem->get( 'data', new JObject ) ) && ( $fields = $jregistry->get( 'fields.' . $this->_name ) ) )
 			{
-				
-				$fieldsItemOld	= $oldItem->get( 'fields', new JObject );
-				$dataOld	= $fieldsItem->get( 'data', new JObject );
-				
 				$fields = is_array( $fields ) ? $fields : array( $fields );
 				
 				while( $field = array_shift( $fields ) )
 				{
-					$data->set( $field->field_id, (string) $this->_createImages( $newItem, $field, $_data ) );
+					$data->set( $field->field_id, (string) $this->_createImages( $newItem, $field, $data->get( $field->field_id, new JObject ) ) );
 				}
 			}
 		}
@@ -465,7 +461,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	/**
 	 * @since       1.0.0
 	 */
-	public function onFieldsandfiltersPrepareItem( $context, $item, $isNew, $state )
+	public function onFieldsandfiltersPrepareElementFields( $context, $item, $isNew, $state )
 	{
 		if( $isNew )
 		{
