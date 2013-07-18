@@ -137,7 +137,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 			JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 			
 			// Trigger the onFieldsandfiltersPrepareFormField event.
-			$this->_dispatcher->trigger( 'onFieldsandfiltersPrepareFormField', array( !(boolean) $this->getState( 'element.element_id', 0 ) ) );
+			FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFormField', array( !(boolean) $this->getState( 'element.element_id', 0 ) ) );
 			
 			if( $fieldsForm = $jregistry->get( 'form.fields' ) )
 			{

@@ -227,7 +227,7 @@ $sortFields 	= $this->getSortFields();
 					<?php endif; ?>
 					<td class="center hidden-phone">
 						<?php if( $extension = $pluginExtensionsHelper->getExtensionsPivot( 'extension_type_id', true )->get( (int) $this->state->get( 'filter.extension_type_id', 0 ) ) ) : ?>
-							<?php echo JText::_( $extension->title ); ?>
+							<?php echo JText::_( $extension->forms->extension->title ); ?>
 						<?php else: ?>
 							<?php echo JText::_( 'JUNDEFINED' ); ?>
 						<?php endif; ?>

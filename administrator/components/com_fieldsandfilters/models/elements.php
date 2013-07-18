@@ -20,8 +20,6 @@ if( !FieldsandfiltersFactory::isVersion() )
  */
 class FieldsandfiltersModelelements extends JModelList
 {
-	protected $_dispatcher;
-	
 	/**
 	 * Constructor.
 	 *
