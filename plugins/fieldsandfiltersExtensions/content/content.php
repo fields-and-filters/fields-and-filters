@@ -269,7 +269,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// $fieldsetForm->addAttribute( 'description', 'COM_MENUS_ITEM_ASSOCIATIONS_FIELDSET_DESC' );
 		
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
-			
+		
 		// Trigger the onFieldsandfiltersPrepareFormField event.
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFormField', array( !(boolean) $elementModel->getState( 'element.element_id', 0 ) ) );
 		
@@ -285,19 +285,16 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			unset( $fieldsForm );
 			
 			// For joomla 2.5 && Key Reference
-			if( version_compare( JVERSION, 3.0, '<' ) )
+			if( !FieldsandfiltersFactory::isVersion() )
 			{
 				$fieldsetJ25 = $fields->addChild( 'fieldset' );
 				$fieldsetJ25->addAttribute( 'name', 'key_reference' );
 				$fieldsetJ25->addAttribute( 'label', 'Key Reference' );	
 			}
-			
-			// dodanie parametrów do formularza
 			$form->setFields( $elementsForm, 'attribs' );
 			
 			if( $defaultForm = $jregistry->get( 'form.default' ) )
 			{
-				// dodawanie wartoœci do formularza
 				foreach( $defaultForm AS $fieldID => $default )
 				{
 					if( $defaultName = $default->get( 'name' ) )

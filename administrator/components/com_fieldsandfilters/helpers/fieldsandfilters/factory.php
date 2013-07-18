@@ -128,7 +128,7 @@ class FieldsandfiltersFactory
 	/**
         * @since       1.1.0
         */
-	protected static function getDispatcher()
+	public static function getDispatcher()
 	{
 		static $_dispatcher;
 		
