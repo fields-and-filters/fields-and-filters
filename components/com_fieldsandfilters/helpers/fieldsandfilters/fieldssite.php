@@ -33,7 +33,13 @@ class FieldsandfiltersFieldsSiteHelper
 			$option = $app->input->get( 'option' );
 		}
 		
-		$extensionsID = $pluginExtensionsHelper->getExtensionsIDByOption( $option );
+		$extensionsID = (array) $pluginExtensionsHelper->getExtensionsIDByOption( $option );
+		
+		
+		if( $getAllextensions )
+		{
+			$extensionsID = array_merge( $extensionsID, (array) $pluginExtensionsHelper->getExtensionsByNameColumn( 'extension_type_id', 'allextensions' ) );
+		}
 		
 		if( empty( $extensionsID ) )
 		{
@@ -45,11 +51,6 @@ class FieldsandfiltersFieldsSiteHelper
 		if( !( $isNullItemID = is_null( $itemID ) ) && !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionsID, $itemID, 1, 3 )->get( $itemID ) ) )
 		{
 			return self::_returnEmpty();
-		}
-		
-		if( !$element && $getAllextensions )
-		{
-			$extensionsID = array_merge( $extensionsID, (array) $pluginExtensionsHelper->getExtensionsByNameColumn( 'extension_type_id', 'allextensions' ) );
 		}
 		
 		if( !( $isNullFieldsID = is_null( $fieldsID ) ) && $element )

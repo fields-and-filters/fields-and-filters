@@ -58,8 +58,6 @@ class FieldsandfiltersExtensionsHelper
 		
 		if( !$template = self::_getPath( 'plugins', $extension, $layout ) )
 		{
-			
-			
 			if( FieldsandfiltersFactory::isVersion() )
 			{
 				return JPluginHelper::getLayoutPath( $type, $name, $layout );

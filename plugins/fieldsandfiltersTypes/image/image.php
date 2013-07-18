@@ -468,7 +468,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			return true;
 		}
 		
-		if( $context == 'com_fieldsandfilters.field' && $field_type == $this->_name )
+		if( $context == 'com_fieldsandfilters.field' && isset( $item->field_type ) && $item->field_type == $this->_name )
 		{
 			if( !empty( $item->values->data ) && !is_object( $item->values->data ) )
 			{
