@@ -21,14 +21,16 @@ class FieldsandfiltersFieldsSiteHelper
 	/**
         * @since       1.1.0
         */
-	public static function getFieldsByItemID( $option, $itemID, $fieldsID = null, $getAllextensions = true )
+	public static function getFieldsByItemID( $fieldsID = null, $itemID = null, $option = null, $getAllextensions = true )
 	{
+		$app = JFactory::getApplication();
+		
 		// Load PluginExtensions Helper
 		$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
 		
-		if( !is_string( $option ) )
+		if( is_null( $option ) )
 		{
-			$option = JFactory::getApplication()->input->get( 'option' );
+			$option = $app->input->get( 'option' );
 		}
 		
 		$extensionsID = $pluginExtensionsHelper->getExtensionsIDByOption( $option );
@@ -39,28 +41,43 @@ class FieldsandfiltersFieldsSiteHelper
 		}
 		
 		// Load elements Helper
-		if( !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionsID, $itemID, 1, 3 )->get( $itemID ) ) )
+		$element = false;
+		if( !( $isNullItemID = is_null( $itemID ) ) && !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionsID, $itemID, 1, 3 )->get( $itemID ) ) )
 		{
 			return self::_returnEmpty();
 		}
 		
-		if( $getAllextensions )
+		if( !$element && $getAllextensions )
 		{
 			$extensionsID = array_merge( $extensionsID, (array) $pluginExtensionsHelper->getExtensionsByNameColumn( 'extension_type_id', 'allextensions' ) );
 		}
 		
-		if( is_null( $fieldsID ) )
+		if( !( $isNullFieldsID = is_null( $fieldsID ) ) && $element )
+		{
+			$values = 3;
+		}
+		else if( $isNullFieldsID && $element )
 		{
 			$fieldsID = array_merge( array_keys( $element->connections->getProperties( true ) ), array_keys( $element->data->getProperties( true ) ) );
+			
+			if( empty( $fieldsID ) )
+			{
+				return self::_returnEmpty();
+			}
+			
+			$values = 1;	
 		}
-		
-		if( empty( $fieldsID ) )
+		else if( !$isNullFieldsID && $isNullItemID )
+		{
+			$values = 2;
+		}
+		else
 		{
 			return self::_returnEmpty();
 		}
 		
 		// Load Fields Helper
-		if( !( $fields = FieldsandfiltersFactory::getFields()->getFieldsByID( $extensionsID, $fieldsID, 1, 3 ) ) )
+		if( !( $fields = FieldsandfiltersFactory::getFields()->getFieldsByID( $extensionsID, $fieldsID, 1, $values ) ) )
 		{
 			return self::_returnEmpty();
 		}
