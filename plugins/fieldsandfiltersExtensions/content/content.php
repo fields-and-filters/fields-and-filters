@@ -616,7 +616,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function onFieldsandfiltersPrepareFiltersHTML( $context, $fieldsID = null, $params = false, $ordering = 'ordering' )
+	public function onFieldsandfiltersPrepareFiltersHTML( $context, $fieldsID = null, $getAllextensions = true, $params = false, $ordering = 'ordering' )
 	{
 		if( $context != 'com_content.category' )
 		{
@@ -659,7 +659,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			return;
 		}
 		
-		$extensionsID = $pluginExtensionsHelper->getExtensionsByNameColumn( 'extension_type_id', array( 'allextensions' , $this->_name ) );
+		$extensionsID = ( $getAllextensions ) ? $pluginExtensionsHelper->getExtensionsByNameColumn( 'extension_type_id', array( 'allextensions' , $this->_name ) ) : $extensionContent->extension_type_id;
 		
 		// Load Fields Helper
 		$fieldsHelper = FieldsandfiltersFactory::getFields();
@@ -667,12 +667,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( is_null( $fieldsID ) )
 		{
 			// Load PluginTypes Helper
-			if( $modes = FieldsandfiltersFactory::getPluginTypes()->getMode( 'values' ) );
+			if( $modes = FieldsandfiltersFactory::getPluginTypes()->getMode( 'filter' ) );
 			{
 				// multi extensions array( $this->_name, 'allextensions' )
 				// $fields = $fieldsHelper->getFieldsByModeIDPivot( 'field_type', $extensionsID, $modes, 1, true );
 				// single extension $this->_name
-				$fields = $fieldsHelper->getFieldsByModeIDPivot( 'field_type', $extensionContent->extension_type_id, $modes, 1, true );
+				$fields = $fieldsHelper->getFieldsByModeIDPivot( 'field_type', $extensionsID, $modes, 1, true );
 			}
 		}
 		else if( is_numeric( $fieldsID ) || is_array( $fieldsID ) )
@@ -680,7 +680,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			// multi extensions array( $this->_name, 'allextensions' )
 			// $fields = $fieldsHelper->getFieldsByIDPivot( 'field_type', $extensionContent->extension_type_id, $fieldsID, 1, true );
 			// single extension $this->_name
-			$fields = $fieldsHelper->getFieldsByIDPivot( 'field_type', $extensionContent->extension_type_id, $fieldsID, 1, true );
+			$fields = $fieldsHelper->getFieldsByIDPivot( 'field_type', $extensionsID, $fieldsID, 1, true );
 		}
 		else
 		{
@@ -803,7 +803,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// Load Extensions Helper && Load common and local language files.
 		$option = 'com_content';
 		
-		FieldsandfiltersFactory::getExtensions()->loadLanguage( $option, JPATH_COMPONENT );
+		FieldsandfiltersFactory::getExtensions()->loadLanguage( $option );
 		
 		$model->setState( 'fieldsandfilters.itemsID', $itemsID );
 		

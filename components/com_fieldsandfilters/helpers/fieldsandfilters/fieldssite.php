@@ -21,7 +21,7 @@ class FieldsandfiltersFieldsSiteHelper
 	/**
         * @since       1.1.0
         */
-	public static function getFieldsByItemID( $option = null, $itemID = null, $fieldsID = null,  $getAllextensions = true )
+	public static function getFieldsByItemID( $option = null, $itemID = null, $fieldsID = null, $getAllextensions = true )
 	{
 		$app = JFactory::getApplication();
 		

@@ -13,7 +13,6 @@ defined( '_JEXEC' ) or die;
 
 JLoader::import( 'com_content.models.category', JPATH_SITE . '/components' );
 
-// Load plgFieldsandfiltersTypesImageHelper Helper
 // JLoader::import( 'fieldsandfiltersExtensions.content.overrides.articles', JPATH_PLUGINS );
 
 /**

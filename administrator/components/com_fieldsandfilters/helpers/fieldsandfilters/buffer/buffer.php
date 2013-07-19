@@ -130,6 +130,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
                 
 		$_elementsID    = array();
                 
+		// [TODO] change this code
                 reset( $this->elements );
 		while( ( $elementID = current( $this->elements ) ) !== false )
 		{
@@ -138,9 +139,9 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
 		}
 		
 		// We need only isn't exists elements id
-		$this->elements = array_values( array_diff( $this->elements, $_elementsID ) );
+		$elements = array_values( array_diff( $this->elements, $_elementsID ) );
 		
-		if( !empty( $_states ) && !empty( $this->elements ) )
+		if( !empty( $_states ) && !empty( $elements ) )
 		{
 			// Add difference states and extension type id to query varibles.
 			$this->vars->states += $_states;
@@ -170,7 +171,11 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
                                 $this->buffer->set( $_element->{$this->vars->elementName}, $_element );	
                         }
                         
-                        array_push( $_elementsID, $elementID );
+			if( ( $key = array_search( $elementID, $this->elements ) ) !== false )
+			{
+				unset( $this->elements[$key] );
+			}
+                        
                 }
                 // If argument element id in array ids not exist, add that id to array exist id, because we know that id isn't exist
                 elseif( in_array( $elementID, $_notElements ) )

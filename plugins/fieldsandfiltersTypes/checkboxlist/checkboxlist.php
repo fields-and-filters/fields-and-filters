@@ -239,8 +239,6 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			$this->_variables = new JObject( array( 'type' => $this->_type, 'name' => $this->_name, 'params' => $this->params ) );
 		}
 		
-		$this->_variables->options = $options;
-		
 		$isParams = ( $params && $params instanceof JRegistry );
 		
 		while( $field = array_shift( $fields ) )

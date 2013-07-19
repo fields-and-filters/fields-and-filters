@@ -11,6 +11,8 @@
 // no direct access
 defined('_JEXEC') or die;
 
+// Load the BufferCore Helper
+JLoader::import( 'fieldsandfilters.buffer.core', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 if( $fieldsID = $params->get( 'fields_id' ) )
 {
@@ -20,8 +22,7 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 	JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 	
 	// Trigger the onFieldsandfiltersPrepareFiltersHTML event.
-	// [TODO] jdispatcher jest inne w joomla 3.x
-	$templateFilters = JDispatcher::getInstance()->trigger( 'onFieldsandfiltersPrepareFiltersHTML', array( $context, $fieldsID, $params ) );
+	$templateFilters = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFiltersHTML', array( $context, $fieldsID, $params->get( 'getAllextensions', true ), false ) );
 	$templateFilters = implode( "\n", $templateFilters );
 	
 	$jregistry 	= JRegistry::getInstance( 'fieldsandfilters' );
@@ -38,7 +39,7 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 			
 		$request = array(
 				'option' 	=> 'com_fieldsandfilters',
-				'task' 		=> 'filters.filters',
+				'task' 		=> 'request.filters',
 				'tmpl' 		=> 'component',
 				'format'	=> 'json',
 				'Itemid'	=> $jinput->get( 'Itemid', 0, 'int' )
