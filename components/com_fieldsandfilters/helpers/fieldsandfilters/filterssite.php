@@ -177,6 +177,24 @@ class FieldsandfiltersFiltersSiteHelper
 								
 								if( count( $unions ) )
 								{
+									// union - zbior obu eleementow działa jak ON (suma zbiorow)
+									// INTERSECT - zbior (iloczyn (część wspólna))
+									// 	lecz nie jest obslogiwany w mysql musimy uzyc dyrektywy using (w pdf -> firefox-> Tutoriale  -> sql)
+									/*
+										SELECT DISTINCT `e`.`item_id`
+										FROM `iy9mz_fieldsandfilters_elements` AS `e`
+										INNER JOIN `iy9mz_fieldsandfilters_connections` AS `c1` ON `c1`.`element_id` = `e`.`element_id` AND `c1`.`field_id` = 14 AND `c1`.`field_value_id` IN(8) AND `c1`.`extension_type_id` IN(2)
+										INNER JOIN `iy9mz_fieldsandfilters_connections` AS `c2` ON `c2`.`element_id` = `e`.`element_id` AND `c2`.`field_id` = 15 AND `c2`.`field_value_id` IN(10) AND WHERE `c2`.`extension_type_id` IN(2)
+										
+										Faster:
+										SELECT DISTINCT `e`.`item_id`
+										FROM `iy9mz_fieldsandfilters_elements` AS `e`
+										INNER JOIN `iy9mz_fieldsandfilters_connections` AS `c1` ON `c1`.`element_id` = `e`.`element_id` AND `c1`.`field_id` = 14 AND `c1`.`field_value_id` IN(8) 
+										INNER JOIN `iy9mz_fieldsandfilters_connections` AS `c2` ON `c2`.`element_id` = `e`.`element_id` AND `c2`.`field_id` = 15 AND `c2`.`field_value_id` IN(10)
+										WHERE `e`.`extension_type_id` IN(2)
+									*/
+									
+									
 									$subQuery = '(' . implode( PHP_EOL . ') UNION DISTINCT (', $unions ) . PHP_EOL . ')' ;
 									$query->clear( 'from' );
 									$query->from( '(' . $subQuery . ') AS c' );
