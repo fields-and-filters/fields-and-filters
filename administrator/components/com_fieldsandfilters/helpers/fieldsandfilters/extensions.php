@@ -113,10 +113,9 @@ class FieldsandfiltersExtensionsHelper
 		$key = strtolower( $type . $plugin );
                 if( !isset( $_params[$key] ) )
                 {
-                        $params = false;
+			$params = new JRegistry();
                         if( $plugin = JPluginHelper::getPlugin( $type, $plugin ) )
                         {
-                                $params = new JRegistry();
                                 $params->loadString( $plugin->params );
                         }
                         
@@ -210,27 +209,85 @@ class FieldsandfiltersExtensionsHelper
 	}
 	
 	/**
-	 * @since       1.0.0
+	 * @since       1.1.0
 	 */
 	public static function isAjaxRequest()
 	{
 		return !empty( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest';
 	}
 	
-	public static function getExtensionsParam( $name, JObject $extensions, $default )
+	/**
+	 * @since       1.1.0
+	 */
+	public static function getExtensionsParam( $key, JObject $extensions, $default = null )
 	{
-		$isEmptyValue = true;
+		$value 		= $default;
+		$isEmptyValue 	= true;
+		
+		// get module param
 		if( !property_exists( $extensions, 'module.off' ) )
 		{
-			if( $value = $extensions->get( 'module.value' ) )
+			$valueName = 'module.value';
+			if( property_exists( $extensions, $valueName ) )
 			{
-				// value is empty ?
+				$value = $extensions->$valueName;
+				if( $value !== null && $value !== '' )
+				{
+					$isEmptyValue = false;
+				}
 			}
-			else if( $moduleID = (int) $extensions->ge( 'module.id' ) )
+			else if( $moduleID = (int) $extensions->get( 'module.id' ) )
 			{
-				$module = FieldsandfiltersFactory::getModule()->getModuleParams( 88 );
+				if( !is_null( $value = FieldsandfiltersFactory::getModule()->getModuleParams( $moduleID )->get( $key ) ) )
+				{
+					$isEmptyValue = false;
+				}
 			}
 		}
+		
+		// get plugin param
+		if( $isEmptyValue && !property_exists( $extensions, 'plugin.off' ) )
+		{
+			$valueName = 'plugin.value';
+			if( property_exists( $extensions, $valueName ) )
+			{
+				$value = $extensions->$valueName;
+				if( $value !== null && $value !== '' )
+				{
+					$isEmptyValue = false;
+				}
+			}
+			else if( ( $type = $extensions->get( 'plugin.type', 'fieldsandfiltersExtensions' ) ) && ( $name = $extensions->get( 'plugin.name' ) ) )
+			{
+				if( !is_null( $value = self::getPluginParams( $type, $name )->get( $key ) ) )
+				{
+					$isEmptyValue = false;
+				}
+			}
+		}
+		
+		// get component param
+		if( $isEmptyValue && !property_exists( $extensions, 'component.off' ) )
+		{
+			$valueName = 'component.value';
+			if( property_exists( $extensions, $valueName ) )
+			{
+				$value = $extensions->$valueName;
+				if( $value !== null && $value !== '' )
+				{
+					$isEmptyValue = false;
+				}
+			}
+			else if( $option = $extensions->get( 'component.option', 'com_fieldsandfilters' ) )
+			{
+				if( !is_null( $value = JComponentHelper::getParams( $option )->get( $key ) ) )
+				{
+					$isEmptyValue = false;
+				}
+			}
+		}
+		
+		return ( !$isEmptyValue ? $value : $default );
 	}
 	
 	/**

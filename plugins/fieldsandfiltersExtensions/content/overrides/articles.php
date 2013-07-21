@@ -38,10 +38,6 @@ class plgFieldsandfiltersExtensionsContentModelArticles extends ContentModelArti
 			JArrayHelper::toInteger( $itemsID );
 			$query->where( $db->quoteName( 'a.id' ) . ' IN( ' . implode( ',', $itemsID ) . ')' );
 		}
-		else if( $emptyItemsID )
-		{
-			$query->where( $db->quoteName( 'a.id' ) . ' = ' . 1 );
-		}
 		
 		return $query;
 	}

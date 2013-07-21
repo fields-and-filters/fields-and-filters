@@ -11,18 +11,28 @@
 // no direct access
 defined('_JEXEC') or die;
 
-// Load the BufferCore Helper
-JLoader::import( 'fieldsandfilters.buffer.core', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
+// Load the Factory Helper
+JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
 
 if( $fieldsID = $params->get( 'fields_id' ) )
 {
 	$jinput = JFactory::getApplication()->input;
 	$context = $jinput->get( 'option' ) . '.' . $jinput->get( 'view' );
 	
+	// Load Extensions Helper
+	$extensionsHelper = FieldsandfiltersFactory::getExtensions();
+	
+	$extensionsParams = new JObject( array(
+					'module.value'		=> $params->get( 'use_allextensions_filters' ),
+					'plugin.name'		=> 'content'
+			) );
+	
+	$showAllextensions = $extensionsHelper->getExtensionsParam( 'use_allextensions_filters', $extensionsParams, true );
+	
 	JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 	
 	// Trigger the onFieldsandfiltersPrepareFiltersHTML event.
-	$templateFilters = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFiltersHTML', array( $context, $fieldsID, $params->get( 'getAllextensions', true ), false ) );
+	$templateFilters = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFiltersHTML', array( $context, $fieldsID, $showAllextensions, false ) );
 	$templateFilters = implode( "\n", $templateFilters );
 	
 	$jregistry 	= JRegistry::getInstance( 'fieldsandfilters' );
@@ -57,11 +67,9 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 			'pagination'	=> ( !empty( $pagination ) ? $pagination : array( 'limitstart' => 0 ) )
 		);
 		
-		// get component params
-		$fieldsandfilters = JComponentHelper::getParams( 'com_fieldsandfilters' );
-		
 		// get selectors
-		if( $selectorBody = trim( $fieldsandfilters->get( 'selector_body' ) ) )
+		$extensionsParams->set( 'module.value', $params->get( 'selector_body_filters' ) );
+		if( $selectorBody = trim( $extensionsHelper->getExtensionsParam( 'selector_body_filters', $extensionsParams ) ) )
 		{
 			$selectors['body'] = $selectorBody;
 		}
@@ -72,7 +80,8 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		}
 		
 		// get functions
-		if( $functionDone = trim( $fieldsandfilters->get( 'function_done' ) ) )
+		$extensionsParams->set( 'module.value', $params->get( 'function_done_filters' ) );
+		if( $functionDone = trim( $extensionsHelper->getExtensionsParam( 'function_done_filters', $extensionsParams ) ) )
 		{
 			$fn['done'] = '\\' . $functionDone;
 		}

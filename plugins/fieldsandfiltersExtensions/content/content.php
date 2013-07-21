@@ -156,7 +156,13 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// Load Fields Helper
 		$fieldsHelper = FieldsandfiltersFactory::getFields();
 		
-		if( $this->params->get( 'show_static_fields', 1 ) && JComponentHelper::getParams( 'com_fieldsandfilters' )->get( 'show_static_fields', 1 ) )
+		$extensionsParams = new JObject( array(
+					'module.off'		=> true,
+					'plugin.value'		=> $params->get( 'show_static_fields' )
+			) );
+		
+		// Load Extensions Helper
+		if( FieldsandfiltersFactory::getExtensions()->getExtensionsParam( 'show_static_fields', $extensionsParams, true ) )
 		{
 			$fields = $fieldsHelper->getFieldsPivot( 'field_type', $extensionsTypeID, array( 1, -1 ), 'both' );
 		}
@@ -540,7 +546,13 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// Load Fields Helper
 		$fieldsHelper = FieldsandfiltersFactory::getFields();
 		
-		if( $isStaticFields = $this->params->get( 'use_static_fields', 1 ) )
+		$extensionsParams = new JObject( array(
+					'module.off'		=> true,
+					'plugin.value'		=> $params->get( 'use_static_fields' )
+			) );
+		
+		// Load Extensions Helper
+		if( $isStaticFields = FieldsandfiltersFactory::getExtensions()->getExtensionsParam( 'use_static_fields', $extensionsParams, true ) )
 		{
 			// Load Plugin Types Helper
 			$staticMode = FieldsandfiltersFactory::getPluginTypes()->getMode( 'static' );
@@ -755,7 +767,8 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		JLoader::import( 'com_content.helpers.query', JPATH_SITE . '/components' );
 		
 		// Load Extensions Helper
-		if( !( $controller = FieldsandfiltersFactory::getExtensions()->getControllerInstance( null, 'contentController', array( 'base_path' => $basePath, 'view_path' => ( $basePath . '/views' ) ) ) ) )
+		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
+		if( !( $controller = $extensionsHelper->getControllerInstance( null, 'contentController', array( 'base_path' => $basePath, 'view_path' => ( $basePath . '/views' ) ) ) ) )
 		{
 			return false;
 		}
@@ -776,7 +789,28 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		// Load FiltersSite Helper
 		$filtersSiteHelper = FieldsandfiltersFactory::getFiltersSite();
-		$itemsID = !empty( $fieldsandfilters ) ? $filtersSiteHelper->getItemsIDByFilters( $extension->extension_type_id, $fieldsandfilters ) : $filtersSiteHelper->getSimpleItemsID( false );
+		if( !empty( $fieldsandfilters ) )
+		{
+			$extensionsParams = new JObject( array(
+					'plugin.value'		=> $this->params->get( 'comparison_between_filters' )
+			) );
+			
+			if( $moduleID = $jinput->get( 'module', 0, 'int' ) )
+			{
+				$extensionsParams->set( 'module.id', $moduleID );
+			}
+	
+			$betweenFilters = $extensionsHelper->getExtensionsParam( 'comparison_between_filters', $extensionsParams, 'OR' );
+			
+			$extensionsParams->set( 'plugin.value', $this->params->get( 'comparison_between_values_filters' ) );
+			$betweenValues = $extensionsHelper->getExtensionsParam( 'comparison_between_values_filters', $extensionsParams, 'OR' );
+			
+			$itemsID = $filtersSiteHelper->getItemsIDByFilters( $extension->extension_type_id, $fieldsandfilters, 1, $betweenFilters, $betweenValues );
+		}
+		else
+		{
+			$itemsID = $filtersSiteHelper->getSimpleItemsID( false );
+		}
 		
 		// set new jinput values
 		$jinput->set( 'option', 'com_content' );
@@ -822,23 +856,24 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		else
 		{
-			$body = JText::_( 'nie isniteje' );
+			$body = JText::_( 'PLG_FAF_ES_CT_ERROR_NOT_EXISTS_ARTICLES' );
 		}
 
 		$itemsID 	= $model->getState( 'fieldsandfilters.itemsID', array() );
 		$fieldsID 	= $jinput->get( 'fields', array(), 'array' );
+		$jregistry	= JRegistry::getInstance( 'fieldsandfilters' );
 		
 		if( !empty( $itemsID ) && !empty( $fieldsID ) && !$emptyItemsID  )
 		{
 			// Load Filters Helper
 			$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extension->extension_type_id, $fieldsID, $itemsID );
 			
-			JRegistry::getInstance( 'fieldsandfilters' )->set( 'filters.counts', $counts );
+			$jregistry->set( 'filters.counts', $counts );
 		}
 		else if( $emptyItemsID )
 		{
 			// [TODO] when is empty display all fields with 0 counts or display special buttons to reset filters
-			JRegistry::getInstance( 'fieldsandfilters' )->set( 'filters.empty', $emptyItemsID );
+			$jregistry->set( 'filters.empty', $emptyItemsID );
 		}
 		
 		$document->setBuffer( $body, array( 'type' => 'component', 'name' => 'fieldsandfilters', 'title' => null ) );

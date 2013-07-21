@@ -52,10 +52,9 @@ class FieldsandfiltersModuleHelper extends JModuleHelper
                 
                 if( !isset( $_params[$id] ) )
                 {
-                        $params = false;
+                        $params = new JRegistry();
                         if( $module = self::getModuleByID( $id ) )
                         {
-                                $params = new JRegistry();
                                 $params->loadString($module->params);
                         }
                         
