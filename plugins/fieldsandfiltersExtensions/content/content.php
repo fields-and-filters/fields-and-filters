@@ -775,7 +775,8 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$fieldsandfilters = $jinput->get( 'fieldsandfilters', array(), 'array' );
 		
 		// Load FiltersSite Helper
-		$itemsID = !empty( $fieldsandfilters ) ? FieldsandfiltersFactory::getFiltersSite()->getItemsIDByFilters( $extension->extension_type_id, $fieldsandfilters ) : array();
+		$filtersSiteHelper = FieldsandfiltersFactory::getFiltersSite();
+		$itemsID = !empty( $fieldsandfilters ) ? $filtersSiteHelper->getItemsIDByFilters( $extension->extension_type_id, $fieldsandfilters ) : $filtersSiteHelper->getSimpleItemsID( false );
 		
 		// set new jinput values
 		$jinput->set( 'option', 'com_content' );
@@ -805,36 +806,53 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		FieldsandfiltersFactory::getExtensions()->loadLanguage( $option );
 		
-		$model->setState( 'fieldsandfilters.itemsID', $itemsID );
+		$emptyItemsID = $itemsID->get( 'empty', false );
+		$model->setState( 'fieldsandfilters.itemsID', (array) $itemsID->get( 'itemsID' ) );
+		$model->setState( 'fieldsandfilters.emptyItemsID', $emptyItemsID );
 		
-		ob_start();
+		if( !$emptyItemsID )
+		{
+			ob_start();
+				
+			$view->display();
 			
-		$view->display();
-		
-		$body = ob_get_contents();
-		
-		ob_end_clean();
+			$body = ob_get_contents();
+			
+			ob_end_clean();
+		}
+		else
+		{
+			$body = JText::_( 'nie isniteje' );
+		}
 
 		$itemsID 	= $model->getState( 'fieldsandfilters.itemsID', array() );
 		$fieldsID 	= $jinput->get( 'fields', array(), 'array' );
 		
-		if( !empty( $itemsID ) && !empty( $fieldsID ) )
+		if( !empty( $itemsID ) && !empty( $fieldsID ) && !$emptyItemsID  )
 		{
 			// Load Filters Helper
 			$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extension->extension_type_id, $fieldsID, $itemsID );
 			
 			JRegistry::getInstance( 'fieldsandfilters' )->set( 'filters.counts', $counts );
 		}
+		else if( $emptyItemsID )
+		{
+			// [TODO] when is empty display all fields with 0 counts or display special buttons to reset filters
+			JRegistry::getInstance( 'fieldsandfilters' )->set( 'filters.empty', $emptyItemsID );
+		}
 		
 		$document->setBuffer( $body, array( 'type' => 'component', 'name' => 'fieldsandfilters', 'title' => null ) );
 		
-		$js[] = 'jQuery(document).ready(function($) {';
-		$js[] = '	$(".pagination").fieldsandfilters("pagination"'
-					. ( !FieldsandfiltersFactory::isVersion() ? ',{pagination: "limitstart"}' : '' )
-					. ');';
-		$js[] = '});';
-		
-		$document->addScriptDeclaration( implode( "\n", $js ) );
+		if( $emptyItemsID )
+		{
+			$js[] = 'jQuery(document).ready(function($) {';
+			$js[] = '	$(".pagination").fieldsandfilters("pagination"'
+						. ( !FieldsandfiltersFactory::isVersion() ? ',{pagination: "limitstart"}' : '' )
+						. ');';
+			$js[] = '});';
+			
+			$document->addScriptDeclaration( implode( "\n", $js ) );
+		}
 	}
 	
 	/**

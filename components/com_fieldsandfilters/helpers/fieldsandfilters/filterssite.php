@@ -28,11 +28,9 @@ class FieldsandfiltersFiltersSiteHelper
 	*/
 	protected static $_counts = array();
 	
-	protected static function _checkArg( &$arg )
-	{
-		$arg = array_unique( (array) $arg );
-		JArrayHelper::toInteger( $arg );
-	}
+	protected static $filters;
+	protected static $types;
+	
 	
 	// [TODO] jeżeli beetween values jest na AND robimy IN() i pozniej w skrypcie sprawdzamy ktore elementy pasuja.
 	public static function getFiltersValuesCount( $types, $filters = null, $items = null, $states = null )
@@ -121,7 +119,7 @@ class FieldsandfiltersFiltersSiteHelper
 		return self::$_counts[$hash];
 	}
 	
-	public static function getItemsIDByFilters( $types, $filters = null, $states = null )
+	public static function getItemsIDByFilters( $types, $filters = null, $states = null, $betweenFilters = 'AND', $betweenValues = 'OR' )
 	{
 		$hash = md5( serialize( func_get_args() ) );
 		
@@ -133,7 +131,8 @@ class FieldsandfiltersFiltersSiteHelper
 			
 			self::_checkArg( $types );
 			
-			
+			$query->select( 'DISTINCT ' . $db->quoteName( 'e.item_id' ) )
+				->from( $db->quoteName( '#__fieldsandfilters_elements', 'e' ) );			
 			try
 			{
 				if( empty( $types )  )
@@ -141,130 +140,207 @@ class FieldsandfiltersFiltersSiteHelper
 					throw new RuntimeException( 'Empty types' );
 				}
 				
-				$query->from( $db->quoteName( '#__fieldsandfilters_connections', 'c' ) );
-					
+				self::$types 	= $types;
 				
 				if( !is_null( $filters ) )
 				{
 					$filters = (array) $filters;
 					if( !empty( $filters ) )
 					{
-						if( JArrayHelper::isAssociative( $filters ) )
+						self::$filters = $filters;
+						switch( strtoupper( $betweenFilters . '-' . $betweenValues ) )
 						{
-							if( count( $filters ) > 1 )
-							{
-								$unions 	= array();
-								$subQuery 	= clone $query;
-								$subQuery->select( $db->quoteName( 'c.element_id' ) );
-								
-								foreach( $filters AS $filter => &$filter_values )
-								{
-									$filter 	= (int) $filter;
-									
-									self::_checkArg( $filter_values );
-									
-									if( !$filter || empty( $filter_values ) )
-									{
-										continue;
-									}
-									
-									$subQuery->clear( 'where' );
-									$subQuery->where( $db->quoteName( 'c.field_id' ) . ' = ' . $filter );
-									$subQuery->where( $db->quoteName( 'c.field_value_id' ) . ' IN(' . implode( ',', $filter_values ) . ')' );
-									$subQuery->where( $db->quoteName( 'c.extension_type_id' ) . ' IN(' . implode( ',', $types ) . ')' );
-									$unions[] = $subQuery->__toString();
-								}
-								
-								if( count( $unions ) )
-								{
-									// union - zbior obu eleementow działa jak ON (suma zbiorow)
-									// INTERSECT - zbior (iloczyn (część wspólna))
-									// 	lecz nie jest obslogiwany w mysql musimy uzyc dyrektywy using (w pdf -> firefox-> Tutoriale  -> sql)
-									/*
-										SELECT DISTINCT `e`.`item_id`
-										FROM `iy9mz_fieldsandfilters_elements` AS `e`
-										INNER JOIN `iy9mz_fieldsandfilters_connections` AS `c1` ON `c1`.`element_id` = `e`.`element_id` AND `c1`.`field_id` = 14 AND `c1`.`field_value_id` IN(8) AND `c1`.`extension_type_id` IN(2)
-										INNER JOIN `iy9mz_fieldsandfilters_connections` AS `c2` ON `c2`.`element_id` = `e`.`element_id` AND `c2`.`field_id` = 15 AND `c2`.`field_value_id` IN(10) AND WHERE `c2`.`extension_type_id` IN(2)
-										
-										Faster:
-										SELECT DISTINCT `e`.`item_id`
-										FROM `iy9mz_fieldsandfilters_elements` AS `e`
-										INNER JOIN `iy9mz_fieldsandfilters_connections` AS `c1` ON `c1`.`element_id` = `e`.`element_id` AND `c1`.`field_id` = 14 AND `c1`.`field_value_id` IN(8) 
-										INNER JOIN `iy9mz_fieldsandfilters_connections` AS `c2` ON `c2`.`element_id` = `e`.`element_id` AND `c2`.`field_id` = 15 AND `c2`.`field_value_id` IN(10)
-										WHERE `e`.`extension_type_id` IN(2)
-									*/
-									
-									
-									$subQuery = '(' . implode( PHP_EOL . ') UNION DISTINCT (', $unions ) . PHP_EOL . ')' ;
-									$query->clear( 'from' );
-									$query->from( '(' . $subQuery . ') AS c' );
-									// $query->where( $db->quoteName( 'c.element_id' ) . ' = (' . $subQuery . ')' );
-									
-								}
-								else
-								{
-									$filters = null;
-								}
-								
-							}
-							else
-							{
-								$filter 	= (int) key( $filters );
-								$filter_values 	= current( $filters );
-								
-								self::_checkArg( $filter_values );
-								
-								if( $filter && !empty( $filter_values ) )
-								{
-									$query->where( $db->quoteName( 'c.field_id' ) . ' = ' . $filter );
-									$query->where( $db->quoteName( 'c.field_value_id' ) . ' IN(' . implode( ',', $filter_values ) . ')' );
-									$query->where( $db->quoteName( 'c.extension_type_id' ) . ' IN(' . implode( ',', $types ) . ')' );
-								}
-								else
-								{
-									$filters = null;
-								}
-							}
-						}
-						else
-						{
-							self::_checkArg( $filters );
-							if( !empty( $filters ) )
-							{
-								$query->where( $db->quoteName( 'c.field_id' ) . ' IN(' . implode( ',', $filters ) . ')' );
-								$query->where( $db->quoteName( 'c.extension_type_id' ) . ' IN(' . implode( ',', $types ) . ')' );
-							}
+							case 'OR-OR':
+								self::_prepareQueyrBetweenFieldsOrValuesOr( $query );
+							break;
+							case 'AND-OR':
+								self::_prepareQueyrBetweenFieldsAndValuesOr( $query );
+							break;
+							default:
+								throw new RuntimeException( 'Not exists comparation method' );
+							break;
 						}
 					}
 					
 				}
 				
-				$query->select( 'DISTINCT ' . $db->quoteName( 'e.item_id' ) )
-					->join( 'INNER', $db->quoteName( '#__fieldsandfilters_elements', 'e' ) . ' ON ' . $db->quoteName( 'e.element_id' ) . '=' . $db->quoteName( 'c.element_id' ) );
-				
-				if( empty( $filters ) )
+				if( empty( self::$filters ) )
 				{
 					$states = is_null( $states ) ? array( 1 ) : $states;
 					self::_checkArg( $states );
 					
 					$query->where( $db->quoteName( 'e.state' ) . ' IN (' . implode( ',', $states ) . ')' );
-					$query->where( $db->quoteName( 'c.extension_type_id' ) . ' IN(' . implode( ',', $types ) . ')' );
 				}
+				
+				$query->where( $db->quoteName( 'e.extension_type_id' ) . ' IN(' . implode( ',', self::$types ) . ')' );
 				
 				$result = $db->setQuery( $query )->loadColumn();
 				
-				// echo $query->dump();
+				//echo $query->dump();
+				//exit;
+				
+				self::$types = null;
+				self::$filters = null;
 				
 			}
 			catch( RuntimeException $e )
 			{
+				//echo $e->getMessage();
+				//exit;
 				JLog::add( __METHOD__ . ': ' . $e->getMessage(), JLog::ERROR, 'Fieldsandfilters-FiltersHelper' );
 				$result = false;
 			}
 			
-			self::$_items[$hash] = $result;
+			self::$_items[$hash] = !empty( $result ) ? self::getSimpleItemsID( false, $result ) : self::getSimpleItemsID();
 		}
 		
 		return self::$_items[$hash];
+	}
+	
+	/**
+        * @since       1.0.0
+        */
+	public static function getSimpleItemsID( $empty = true, $itemsID = array() )
+	{
+		return new JObject( array( 'empty' => $empty, 'itemsID' => (array) $itemsID ) );
+	}
+	
+	protected static function _prepareQueyrBetweenFieldsOrValuesOr( $query )
+	{
+		$db = JFactory::getDbo();
+		
+		if( JArrayHelper::isAssociative( self::$filters ) )
+		{
+			if( count( self::$filters ) > 1 )
+			{
+				$unions 	= array();
+				$subQuery 	= $db->getQuery(true);
+				$subQuery->select( $db->quoteName( 'c.element_id' ) )
+					->from( $db->quoteName( '#__fieldsandfilters_connections', 'c' ) );
+					
+				foreach( self::$filters AS $filter => &$filter_values )
+				{
+					$filter 	= (int) $filter;
+					
+					self::_checkArg( $filter_values );
+					
+					if( !$filter || empty( $filter_values ) )
+					{
+						continue;
+					}
+					
+					$subQuery->clear( 'where' );
+					$subQuery->where( $db->quoteName( 'c.field_id' ) . ' = ' . $filter );
+					$subQuery->where( $db->quoteName( 'c.field_value_id' ) . ' IN(' . implode( ',', $filter_values ) . ')' );
+					$subQuery->where( $db->quoteName( 'c.extension_type_id' ) . ' IN(' . implode( ',', self::$types ) . ')' );
+					$unions[] = $subQuery->__toString();
+				}
+				
+				if( count( $unions ) )
+				{
+					$subQuery = '(' . implode( PHP_EOL . ') UNION DISTINCT (', $unions ) . PHP_EOL . ')' ;
+					$query->join( 'INNER', '(' . $subQuery . ') AS `c` ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ) );					
+				}
+
+				
+			}
+			else
+			{
+				self::_prepareQueyrFilterAssociativeArray( $query );
+			}
+		}
+		else
+		{
+			self::_prepareQueyrFilterArray( $query );
+		}
+	}
+	
+	protected static function _prepareQueyrBetweenFieldsAndValuesOr( $query )
+	{
+		$db = JFactory::getDbo();
+		
+		if( JArrayHelper::isAssociative( self::$filters ) )
+		{
+			if( count( self::$filters ) > 1 )
+			{
+				foreach( self::$filters AS $filter => &$filter_values )
+				{
+					$filter 	= (int) $filter;
+					
+					self::_checkArg( $filter_values );
+					
+					if( !$filter || empty( $filter_values ) )
+					{
+						continue;
+					}
+					
+					$alias = 'c' . $filter ;
+					$and = array(
+							$db->quoteName( $alias . '.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ),
+							$db->quoteName( $alias . '.field_id' ) . ' = ' . $filter,
+							$db->quoteName( $alias . '.field_value_id' ) . ' IN(' . implode( ',', $filter_values ) . ')'
+						);
+					
+					$query->join( 'INNER', $db->quoteName( '#__fieldsandfilters_connections', $alias ) . ' ON ' . implode( ' AND ', $and ) );
+					
+					unset( $and );
+				}
+			}
+			else
+			{
+				self::_prepareQueyrFilterAssociativeArray( $query );
+			}
+		}
+		else
+		{
+			self::_prepareQueyrFilterArray( $query );
+		}
+	}
+	
+	protected static function _prepareQueyrFilterAssociativeArray( $query )
+	{
+		$db = JFactory::getDbo();
+		
+		$filter 	= (int) key( self::$filters );
+		$filter_values 	= current( self::$filters );
+		
+		self::_checkArg( $filter_values );
+		
+		if( $filter && !empty( $filter_values ) )
+		{
+			$query->join( 'INNER', $db->quoteName( '#__fieldsandfilters_connections', 'c' ) . ' ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ) )
+				->where( $db->quoteName( 'c.field_id' ) . ' = ' . $filter )
+				->where( $db->quoteName( 'c.field_value_id' ) . ' IN(' . implode( ',', $filter_values ) . ')' );
+		}
+		else
+		{
+			self::$filters = null;
+		}
+	}
+	
+	protected static function _prepareQueyrFilterArray( $query )
+	{
+		$db = JFactory::getDbo();
+		
+		self::_checkArg( self::$filters );
+		if( !empty( self::$filters ) )
+		{
+			$query->join( 'INNER', $db->quoteName( '#__fieldsandfilters_connections', 'c' ) . ' ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ) )
+				->where( $db->quoteName( 'c.field_id' ) . ' IN(' . implode( ',', self::$filters ) . ')' );
+		}
+	}
+	
+	protected static function _prepareQueyrBetweenFieldsOrValuesAnd()
+	{
+	}
+	
+	protected static function _prepareQueyrBetweenFieldsAndValuesAnd( $filters )
+	{
+	}
+	
+	protected static function _checkArg( &$arg )
+	{
+		$arg = array_unique( (array) $arg );
+		JArrayHelper::toInteger( $arg );
 	}
 }

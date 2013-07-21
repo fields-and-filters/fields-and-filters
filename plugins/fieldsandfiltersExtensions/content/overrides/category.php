@@ -170,9 +170,8 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 			{
 				$this->_articles	= array();
 			}
-			
-			$itemsID = $model->getState( 'fieldsandfilters.itemsID', array() );
-			$this->setState( 'fieldsandfilters.itemsID', $itemsID );
+			$this->setState( 'fieldsandfilters.itemsID', $model->getState( 'fieldsandfilters.itemsID', array() ) );
+			$this->setState( 'fieldsandfilters.emptyItemsID', $this->setState( 'fieldsandfilters.emptyItemsID', false ) );
 			
 			$this->_pagination = $model->getPagination();
 		}
@@ -207,6 +206,7 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 			$model = JModelLegacy::getInstance( 'Articles', 'plgFieldsandfiltersExtensionsContentModel', array( 'ignore_request' => true) );
 			
 			$model->setState( 'params', JFactory::getApplication()->getParams( 'com_content' ) );
+			// [TODO] when 'filter.category_id' is comment all products form all categories is display
 			$model->setState( 'filter.category_id', $category->id );
 			$model->setState( 'filter.published', $this->getState( 'filter.published' ) );
 			$model->setState( 'filter.access', $this->getState( 'filter.access' ) );
@@ -220,7 +220,9 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 			$model->setState( 'filter.subcategories', $this->getState( 'filter.subcategories' ) );
 			$model->setState( 'filter.max_category_levels', $this->setState( 'filter.max_category_levels' ) );
 			$model->setState( 'list.links', $this->getState( 'list.links' ) );
+			
 			$model->setState( 'fieldsandfilters.itemsID', $this->getState( 'fieldsandfilters.itemsID' ) );
+			$model->setState( 'fieldsandfilters.emptyItemsID', $this->getState( 'fieldsandfilters.emptyItemsID', false ) );
 			
 			$this->_model_articles = $model;
 		}

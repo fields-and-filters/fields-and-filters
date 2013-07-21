@@ -31,11 +31,16 @@ class plgFieldsandfiltersExtensionsContentModelArticles extends ContentModelArti
 		$query = parent::getListQuery();
 		
 		// Filter Fieldsandfilters itemsID
-		$itemsID = (array) $this->getState( 'fieldsandfilters.itemsID' );
-		if( !empty( $itemsID ) )
+		$itemsID 	= (array) $this->getState( 'fieldsandfilters.itemsID' );
+		$emptyItemsID 	= $this->setState( 'fieldsandfilters.emptyItemsID', false );
+		if( !empty( $itemsID ) && !$emptyItemsID  )
 		{
 			JArrayHelper::toInteger( $itemsID );
 			$query->where( $db->quoteName( 'a.id' ) . ' IN( ' . implode( ',', $itemsID ) . ')' );
+		}
+		else if( $emptyItemsID )
+		{
+			$query->where( $db->quoteName( 'a.id' ) . ' = ' . 1 );
 		}
 		
 		return $query;
