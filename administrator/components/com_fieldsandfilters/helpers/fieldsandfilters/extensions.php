@@ -106,18 +106,25 @@ class FieldsandfiltersExtensionsHelper
 	/**
 	 * @since       1.1.0
 	 */
-	protected static function _setPath( $path, $type, $extension, $layout = 'default' )
-	{
-		self::$_path[$type][$extension][$layout] = $path;
-	}
-	
-	/**
-	 * @since       1.1.0
-	 */
-	protected static function _getPath( $type, $extension, $layout  = 'default' )
-	{
-		return ( isset( self::$_path[$type][$extension][$layout] ) ? self::$_path[$type][$extension][$layout] : null ) ;
-	}
+        public static function getPluginParams( $type, $plugin )
+        {
+                static $_params;
+                
+		$key = strtolower( $type . $plugin );
+                if( !isset( $_params[$key] ) )
+                {
+                        $params = false;
+                        if( $plugin = JPluginHelper::getPlugin( $type, $plugin ) )
+                        {
+                                $params = new JRegistry();
+                                $params->loadString( $plugin->params );
+                        }
+                        
+                        $_params[$key] = $params;
+                }
+                
+                return $_params[$key];
+        }
 	
 	/**
 	 * Returns a Controller object, always creating it
@@ -167,47 +174,6 @@ class FieldsandfiltersExtensionsHelper
 
 		return new $controllerClass( $config );
 	}
-
-	
-	/**
-	 * Create the filename for a resource.
-	 *
-	 * @param   string  $type   The resource type to create the filename for.
-	 * @param   array   $parts  An associative array of filename information. Optional.
-	 *
-	 * @return  string  The filename.
-	 *
-	 * @since       1.0.0
-	 */
-	protected static function _createFileName( $type, $parts = array() )
-	{
-		$filename = '';
-
-		switch( $type )
-		{
-			case 'controller':
-				if( !empty($parts['format'] ) )
-				{
-					if ($parts['format'] == 'html')
-					{
-						$parts['format'] = '';
-					}
-					else
-					{
-						$parts['format'] = '.' . $parts['format'];
-					}
-				}
-				else
-				{
-					$parts['format'] = '';
-				}
-
-				$filename = strtolower( $parts['name'] . $parts['format'] . '.php' );
-			break;
-		}
-
-		return $filename;
-	}
 	
 	/**
 	 * @since       1.0.0
@@ -249,5 +215,78 @@ class FieldsandfiltersExtensionsHelper
 	public static function isAjaxRequest()
 	{
 		return !empty( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest';
+	}
+	
+	public static function getExtensionsParam( $name, JObject $extensions, $default )
+	{
+		$isEmptyValue = true;
+		if( !property_exists( $extensions, 'module.off' ) )
+		{
+			if( $value = $extensions->get( 'module.value' ) )
+			{
+				// value is empty ?
+			}
+			else if( $moduleID = (int) $extensions->ge( 'module.id' ) )
+			{
+				$module = FieldsandfiltersFactory::getModule()->getModuleParams( 88 );
+			}
+		}
+	}
+	
+	/**
+	 * @since       1.1.0
+	 */
+	protected static function _setPath( $path, $type, $extension, $layout = 'default' )
+	{
+		self::$_path[$type][$extension][$layout] = $path;
+	}
+	
+	/**
+	 * @since       1.1.0
+	 */
+	protected static function _getPath( $type, $extension, $layout  = 'default' )
+	{
+		return ( isset( self::$_path[$type][$extension][$layout] ) ? self::$_path[$type][$extension][$layout] : null ) ;
+	}
+
+	
+	/**
+	 * Create the filename for a resource.
+	 *
+	 * @param   string  $type   The resource type to create the filename for.
+	 * @param   array   $parts  An associative array of filename information. Optional.
+	 *
+	 * @return  string  The filename.
+	 *
+	 * @since       1.0.0
+	 */
+	protected static function _createFileName( $type, $parts = array() )
+	{
+		$filename = '';
+
+		switch( $type )
+		{
+			case 'controller':
+				if( !empty($parts['format'] ) )
+				{
+					if ($parts['format'] == 'html')
+					{
+						$parts['format'] = '';
+					}
+					else
+					{
+						$parts['format'] = '.' . $parts['format'];
+					}
+				}
+				else
+				{
+					$parts['format'] = '';
+				}
+
+				$filename = strtolower( $parts['name'] . $parts['format'] . '.php' );
+			break;
+		}
+
+		return $filename;
 	}
 }
