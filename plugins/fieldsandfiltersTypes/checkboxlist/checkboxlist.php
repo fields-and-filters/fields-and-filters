@@ -93,11 +93,19 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			{
 				$element = $root->addChild( 'field'  );
 			}
+			
+			$label = '<strong>' . $field->field_name . '</strong> {' . $field->field_id . '}';
+				
+			if( $field->state == -1 )
+			{
+				$label .= ' [' . JText::_( 'PLG_FAF_TS_IT_FORM_ONLY_ADMIN' ) . ']';
+			}
 
+			$element->addAttribute( 'id', $field->field_id );
 			$element->addAttribute( 'name', $field->field_id );
 			$element->addAttribute( 'class', 'inputbox' );
 			$element->addAttribute( 'labelclass' , 'control-label' );
-			$element->addAttribute( 'label', $field->field_name );
+			$element->addAttribute( 'label', $label );
 			$element->addAttribute( 'translate_label', 'false' );
 			$element->addAttribute( 'type', 'fieldsandfiltersCheckboxes' );
 			$element->addAttribute( 'filter', 'int_array' );
@@ -164,6 +172,9 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		// Load Plugin Types Helper
 		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
 		
+		// Load Plugin Extextensions
+		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		
 		if( is_null( $this->_variables ) )
 		{
 			$this->_variables = new JObject( array( 'type' => $this->_type, 'name' => $this->_name, 'params' => $this->params ) );
@@ -190,6 +201,14 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				
 				$paramsField->merge( $params );
 				$field->params 	= $paramsField;
+			}
+			
+			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
+			{
+				$context 	= 'com_fieldsandfilters.' . ( $modeName != 'filter' ? $modeName : 'field' );
+				
+				// Trigger the onFinderBeforeSave event.
+				FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentPrepare', array( $context, $field, $field->params ) );
 			}
 			
 			$layoutField = $field->params->get( 'type.field_layout' );
@@ -234,6 +253,9 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		// Load Array Helper
 		$arrayHelper = FieldsandfiltersFactory::getArray();
 		
+		// Load Plugin Extextensions
+		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		
 		if( is_null( $this->_variables ) )
 		{
 			$this->_variables = new JObject( array( 'type' => $this->_type, 'name' => $this->_name, 'params' => $this->params ) );
@@ -250,6 +272,14 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				
 				$paramsFilter->merge( $params );
 				$field->params 	= $paramsFilter;
+			}
+			
+			if( $field->params->get( 'type.filter_prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
+			{
+				$context 	= 'com_fieldsandfilters.filters';
+				
+				// Trigger the onFinderBeforeSave event.
+				FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentPrepare', array( $context, $field, $field->params ) );
 			}
 			
 			$layoutFilter = $field->params->get( 'type.filter_layout' );

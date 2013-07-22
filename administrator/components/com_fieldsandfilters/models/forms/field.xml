@@ -215,6 +215,19 @@
 				</field>
 				
 				<field
+					name="prepare_description"
+					type="radio"
+					class="btn-group"
+					default="0"
+					filter="intval"
+					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_PREPARE_DESCRIPTION"
+					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_PREPARE_DESCRIPTION"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				
+				<field
 					name="base_administration_spacer"
 					type="spacer"
 					class="text"

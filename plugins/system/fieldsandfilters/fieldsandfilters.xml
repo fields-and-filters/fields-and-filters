@@ -17,10 +17,30 @@
 		<language tag="en-GB">language/en-GB.plg_system_fieldsandfilters.ini</language>
 		<language tag="en-GB">language/en-GB.plg_system_fieldsandfilters.sys.ini</language>
 	</languages>
-	<!--<config>
+	<config>
 		<fields name="params">
 			<fieldset name="basic">
+				<field
+					name="prepare_content"
+					type="radio"
+					class="btn-group"
+					label="PLG_FAF_FORM_PREPARE_CONTENT_LBL"
+					description="PLG_FAF_FORM_PREPARE_CONTENT_DESC"
+					default="0"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field
+					name="interpolation"
+					type="test"
+					class="input"
+					label="PLG_FAF_FORM_INTERPOLATION_LBL"
+					description="PLG_FAF_FORM_INTERPOLATION_DESC"
+					default="#{%s}"
+					size="40"
+				/>
 			</fieldset>
 		</fields>
-	</config>-->
+	</config>
 </extension>

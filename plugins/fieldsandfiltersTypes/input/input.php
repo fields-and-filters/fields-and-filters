@@ -100,7 +100,7 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 					$element = $root->addChild( 'field'  );
 				}
 				
-				$label = '<strong>' . $field->field_name . '</strong> (' . $field->field_id . ')';
+				$label = '<strong>' . $field->field_name . '</strong> {' . $field->field_id . '}';
 				
 				if( $field->state == -1 )
 				{
@@ -176,6 +176,9 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 		// Load Plugin Types Helper
 		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
 		
+		// Load Plugin Extextensions
+		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		
 		if( is_null( $this->_variables ) )
 		{
 			$this->_variables = new JObject( array( 'type' => $this->_type, 'name' => $this->_name, 'params' => $this->params ) );
@@ -201,6 +204,14 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 				
 				$paramsField->merge( $params );
 				$field->params 	= $paramsField;
+			}
+			
+			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
+			{
+				$context 	= 'com_fieldsandfilters.' . $modeName;
+				
+				// Trigger the onFinderBeforeSave event.
+				FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentPrepare', array( $context, $field, $field->params ) );
 			}
 			
 			$layoutField = $field->params->get( 'type.field_layout' );

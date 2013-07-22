@@ -12,9 +12,11 @@ var $fn = $[faf] = { $name : faf };
 
 $.fn[faf] = function( type, options )
 {
-	if( !this.length )
+	var $this = this;
+	
+	if( !$this.length )
 	{
-                return this;
+                return $this;
         }
 	
 	if( typeof type === 'object' )
@@ -31,7 +33,7 @@ $.fn[faf] = function( type, options )
 				pagination	: 'start'
 			}, options );
 			
-			$fn.pagination( this, options );
+			$fn.pagination( $this, options );
 		break;
 		case 'filters' :
 		default:
@@ -42,6 +44,10 @@ $.fn[faf] = function( type, options )
 					input 	: '.faf-filters-input',
 					group 	: '.faf-control-group',
 					count 	: '.faf-filters-count',
+					reset	: '.faf-form-reset',
+					fieldset: '.faf-filters',
+					empty	: '.faf-form-empty',
+					submit	: '.faf-form-submit',
 					loadingClass : 'faf-filters-loading'
 				},
 				setCount : true,
@@ -61,25 +67,34 @@ $.fn[faf] = function( type, options )
 			$fn.del( options, [ 'request', 'token', 'fields', 'selectors', 'fn' ] );
 			
 			// add options to global
-			$fn.options( this, options );
+			$fn.options( $this, options );
 			
-			$fn.inputs( this );
+			$fn.inputs( $this );
 			
-			// $fn.setCounts( this );
+			// $fn.setCounts( $this );
 			
 			// add event submint form
-			this.submit( function( event ){
+			$this.submit( function( event ){
 				/* stop form from submitting normally */
 				event.preventDefault();
 				
 				$fn.pagination( 'reset' );
 				$fn.ajax( $( this ) );
-			}).removeClass( $fn.selector( 'loadingClass' ) );
+			}).removeClass( $fn.selector( 'loadingClass' ) )
+			.find( $fn.selector( 'reset' ) ).add( $fn.selector( 'empty' ) ).on( 'click', function( event ) {
+				event.preventDefault();
+				
+				if( $this.serialize() || !$this.find( $fn.selector( 'input' ) + ':visible' ).size() )
+				{
+					$( $fn.selector( 'form' ) ).trigger( 'reset' );
+					$this.trigger( 'submit' );
+				}
+			}).filter( $fn.selector( 'empty' ) ).hide();
 		
 		break;
 	}
 	
-	return this;
+	return $this;
 };
 
 // core
@@ -381,8 +396,18 @@ $.extend( $fn, {
 			{
 				// set new coutns
 				$fn.set( '$counts', $fn.get( data, 'counts', [] ) );
-				
 				$fn.inputs( $form, true );
+				if( $fn.get( data, 'empty', false ) )
+				{
+					$form.find( $fn.selector( 'empty' ) + ':hidden' ).show().end()
+					.find( $fn.selector( 'submit' ) + ':visible' ).hide();
+				}
+				else
+				{
+					$form.find( $fn.selector( 'empty' ) + ':visible' ).hide().end()
+					.find( $fn.selector( 'submit' ) + ':hidden' ).show();
+				}
+				
 			}
 			
 			// set body
@@ -537,9 +562,9 @@ $.extend( $fn, {
 	
 	inputs : function( $form, forAll, parent )
 	{
-		var options, inputs, self;
+		var options, inputs, self,
 		forms = $( forAll ? this.selector( 'form' ) : $form ),
-		fns = this.get( '$inputs', {} );
+		fns = this.get( '$inputs', {} ),
 		inputSel = this.selector( 'input' );
 		
 		if( !$.isEmptyObject( fns ) && inputSel )
@@ -557,7 +582,7 @@ $.extend( $fn, {
 					
 					fn.apply( inputs, [ self, options, forAll, $fn ] );
 				});
-			})
+			});
 		}
 		
 		return ( !parent && inputSel ? forms.find( inputSel ) : forms );
@@ -615,7 +640,7 @@ $fn.fn( {
 	
 	setCount : function( form, options, forAll )
 	{
-		var parent = $fn.selector( 'group' ),
+		var group = $fn.selector( 'group' ),
 		spanSel = $fn.selector( 'count' ),
 		count;
 		
@@ -623,26 +648,38 @@ $fn.fn( {
 		{
 			this.each( function() {
 				count = $( this ).data( 'count' );
-				$( this ).parents( parent ).find( spanSel ).text( count !== false ? count : 0 );
+				$( this ).parents( group ).find( spanSel ).text( count !== false ? count : 0 );
 			} );
 		}
 	},
 	
 	hideCount : function( options, forAll )
 	{
-		var parent = $fn.selector( 'group' );
-		if( parent )
+		var group = $fn.selector( 'group' );
+		if( group )
 		{
 			this.each( function() {
 				if( !$( this ).data( 'count' ) )
 				{
-					$( this ).attr( 'disabled', true ).parents( parent ).hide();
+					$( this ).attr( 'disabled', true ).parents( group ).hide();
 				}
 				else
 				{
-					$( this ).attr( 'disabled', false ).parents( parent ).show();
+					$( this ).attr( 'disabled', false ).parents( group ).show();
 				}
-			} );
+			}).parents( $fn.selector( 'fieldset' ) ).each( function(){
+				var counts = $(this).find( $fn.selector( 'input' ) + ':enabled' ).size();
+				visible = $(this).is( ':visible' );
+				
+				if( !visible && counts )
+				{
+					$(this).show();
+				}
+				else if( visible && !counts )
+				{
+					$(this).hide();
+				}
+			})
 		}
 	}
 	

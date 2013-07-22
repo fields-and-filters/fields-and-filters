@@ -79,6 +79,7 @@
 					label="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_LBL"
 					description="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_DESC"
 				/>
+					<!--
 					<field
 						name="selector_body_filters"
 						type="text"
@@ -96,6 +97,7 @@
 						label="COM_FIELDSANDFILTERS_FUNCTION_DONE_FILTERS_LBL"
 						description="COM_FIELDSANDFILTERS_FUNCTION_DONE_FILTERS_DESC"
 					/>
+					-->
 					<field
 						name="use_allextensions_filters"
 						type="radio"

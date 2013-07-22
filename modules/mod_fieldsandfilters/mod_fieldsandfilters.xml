@@ -45,8 +45,21 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
+				<field
+					name="show_reset"
+					type="radio"
+					class="btn-group"
+					label="MOD_FIELDSANDFILTERS_SHOW_RESET_LBL"
+					description="MOD_FIELDSANDFILTERS_SHOW_RESET_DESC"
+					default="0"
+					filter="int"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
 			</fieldset>
 			<fieldset name="display">
+				<!--
 				<field
 					name="selector_body_filters"
 					type="text"
@@ -64,6 +77,7 @@
 					label="COM_FIELDSANDFILTERS_FUNCTION_DONE_FILTERS_LBL"
 					description="COM_FIELDSANDFILTERS_FUNCTION_DONE_FILTERS_DESC"
 				/>
+				-->
 				<field
 					name="use_allextensions_filters"
 					type="radio"

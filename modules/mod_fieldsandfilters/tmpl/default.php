@@ -12,7 +12,7 @@ defined( '_JEXEC' ) or die;
 
 // Import CSS
 JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters.css', array(), true );
-
+$isReset = $params->get( 'show_reset', 0 );
 ?>
 	
 <div id="faf-mod-<?php echo $module->id; ?>" class="faf-mod">
@@ -21,8 +21,15 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters.css', array
                 
                 <?php echo $templateFilters; ?>
                 
+		<?php if( !$isReset ) : ?>
+			<input type="reset" id="faf-form-empty-<?php echo $module->id; ?>" name="faf-form-empty-<?php echo $module->id; ?>" class="btn btn-link faf-form-empty" value="<?php echo JText::_( 'MOD_FILEDSANDFILTERS_FORM_RESET' );?>" />
+		<?php endif; ?>
+		
                 <?php if( $params->get( 'show_submit', 1 ) ) : ?>
                 <input type="submit" id="faf-form-submit-<?php echo $module->id; ?>" name="faf-form-submit-<?php echo $module->id; ?>" class="btn btn-primary faf-form-submit" value="<?php echo JText::_( 'MOD_FILEDSANDFILTERS_FORM_SUBMIT' );?>" />
+                <?php endif; ?>
+		<?php if( $isReset ) : ?>
+                <input type="reset" id="faf-form-reset-<?php echo $module->id; ?>" name="faf-form-reset-<?php echo $module->id; ?>" class="btn btn-info faf-form-reset" value="<?php echo JText::_( 'MOD_FILEDSANDFILTERS_FORM_RESET' );?>" />
                 <?php endif; ?>
         </form>
 </div>

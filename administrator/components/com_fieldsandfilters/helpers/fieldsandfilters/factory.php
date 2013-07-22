@@ -112,16 +112,16 @@ class FieldsandfiltersFactory
 	/**
 	 * @since       1.1.0
 	 */
-        public static function isVersion( $operator = '>=', $versionIS = 3.0, $version = JVERSION )
+        public static function isVersion( $operator = '>=', $need = 3.0, $version = JVERSION )
         {
                 static $versions;
-                
-                $key = ( $operator . $versionIS . $version );
-                if( isset( $versions[$key] ) )
+		
+                $key = ( $operator . $need . $version );
+                if( !isset( $versions[$key] ) )
                 {
-                        $versions[$key] = version_compare( $version, $versionIS, $operator );
+                        $versions[$key] = version_compare( $version, $need, $operator );
                 }
-                
+		
                 return $versions[$key];
         }
 	

@@ -158,7 +158,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$extensionsParams = new JObject( array(
 					'module.off'		=> true,
-					'plugin.value'		=> $params->get( 'show_static_fields' )
+					'plugin.value'		=> $this->params->get( 'show_static_fields' )
 			) );
 		
 		// Load Extensions Helper
@@ -444,7 +444,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		// Load Elements Helper
-		$elementsID = FieldsandfiltersFactory::getElements()->getElementsID( $extensionContent->extension_type_id, $pks, $this->_states, false );
+		$elementsID = FieldsandfiltersFactory::getElements()->getElementsByIDColumn( 'element_id', $extensionContent->extension_type_id, $pks, $this->_states, false );
 		
 		if( empty( $elementsID ) )
 		{
@@ -462,6 +462,22 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			$item->setError( $elementModel->getError() );
 			return false;
+		}
+		
+		return true;
+	}
+	
+	public function onFieldsandfiltersContentPrepare( $context, $item, $params, $page = 0 )
+	{
+		$jinput 	= JFactory::getApplication()->input;
+		$option 	= $jinput->get( 'option' );
+		if( $context == 'com_content.category' || $context == 'com_content.article' || $context == 'com_content.featured' || ( $option == 'com_content' && $context == 'mod_custom.content' ) )
+		{
+			FieldsandfiltersFactory::getFieldsSite()->preparationConetent( $item->text, 'com_content', $item->id );
+		}
+		else if( $option == 'com_content' && ( $context == 'com_fieldsandfilters.field' || $context == 'com_fieldsandfilters.filter' || $context == 'com_fieldsandfilters.static' ) && ( $id = $jinput->get( 'id', 0, 'int' ) ) ) 
+		{
+			FieldsandfiltersFactory::getFieldsSite()->preparationConetent( $item->description, $option, $id, null, array( $item->field_id ) );
 		}
 		
 		return true;
@@ -548,7 +564,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$extensionsParams = new JObject( array(
 					'module.off'		=> true,
-					'plugin.value'		=> $params->get( 'use_static_fields' )
+					'plugin.value'		=> $this->params->get( 'use_static_fields' )
 			) );
 		
 		// Load Extensions Helper
@@ -858,7 +874,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			$body = JText::_( 'PLG_FAF_ES_CT_ERROR_NOT_EXISTS_ARTICLES' );
 		}
-
+		
 		$itemsID 	= $model->getState( 'fieldsandfilters.itemsID', array() );
 		$fieldsID 	= $jinput->get( 'fields', array(), 'array' );
 		$jregistry	= JRegistry::getInstance( 'fieldsandfilters' );
@@ -878,7 +894,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$document->setBuffer( $body, array( 'type' => 'component', 'name' => 'fieldsandfilters', 'title' => null ) );
 		
-		if( $emptyItemsID )
+		if( !$emptyItemsID )
 		{
 			$js[] = 'jQuery(document).ready(function($) {';
 			$js[] = '	$(".pagination").fieldsandfilters("pagination"'

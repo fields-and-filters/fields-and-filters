@@ -184,13 +184,10 @@ class FieldsandfiltersFiltersSiteHelper
 					
 				}
 				
-				if( empty( self::$filters ) )
-				{
-					$states = is_null( $states ) ? array( 1 ) : $states;
-					self::_checkArg( $states );
-					
-					$query->where( $db->quoteName( 'e.state' ) . ' IN (' . implode( ',', $states ) . ')' );
-				}
+				$states = is_null( $states ) ? array( 1 ) : $states;
+				self::_checkArg( $states );
+				
+				$query->where( $db->quoteName( 'e.state' ) . ' IN (' . implode( ',', $states ) . ')' );
 				
 				$query->where( $db->quoteName( 'e.extension_type_id' ) . ' IN(' . implode( ',', self::$types ) . ')' );
 				
