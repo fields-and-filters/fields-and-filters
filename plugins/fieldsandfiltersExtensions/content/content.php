@@ -467,22 +467,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		return true;
 	}
 	
-	public function onFieldsandfiltersContentPrepare( $context, $item, $params, $page = 0 )
-	{
-		$jinput 	= JFactory::getApplication()->input;
-		$option 	= $jinput->get( 'option' );
-		if( $context == 'com_content.category' || $context == 'com_content.article' || $context == 'com_content.featured' || ( $option == 'com_content' && $context == 'mod_custom.content' ) )
-		{
-			FieldsandfiltersFactory::getFieldsSite()->preparationConetent( $item->text, 'com_content', $item->id );
-		}
-		else if( $option == 'com_content' && ( $context == 'com_fieldsandfilters.field' || $context == 'com_fieldsandfilters.filter' || $context == 'com_fieldsandfilters.static' ) && ( $id = $jinput->get( 'id', 0, 'int' ) ) ) 
-		{
-			FieldsandfiltersFactory::getFieldsSite()->preparationConetent( $item->description, $option, $id, null, array( $item->field_id ) );
-		}
-		
-		return true;
-	}
-	
 	/**
 	 * @since       1.1.0
 	 */

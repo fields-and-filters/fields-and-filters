@@ -131,9 +131,10 @@ class FieldsandfiltersFieldsSiteHelper
 				return true;
 			}
 			
-			$itemID			= $itemID ? (int) $itemID : null;
-			$option			= $option ? $option : null;
-			$matchesID		= array();
+			$jinput			= JFactory::getApplication()->input;
+			$itemID			= ( $itemID = (int) $itemID ) ? $itemID : $jinput->get( 'id', 0, 'int' );
+			$option			= $option ? $option : $jinput->get( 'option' );
+			$extensionsOptions 	= FieldsandfiltersFactory::getPluginExtensions()->getExtenionsOptions();
 			$combinations 		= array();
 			$getAllextensions 	= true;
 			$isExcluded		= !empty( $excluded ) && is_array( $excluded );
@@ -142,58 +143,59 @@ class FieldsandfiltersFieldsSiteHelper
 			foreach( $matches as $match )
 			{
 				$matcheslist 	= explode( ',', $match[1] );
-				$fieldID 	= (int) $matcheslist[0];
 				
+				$fieldID 	= (int) $matcheslist[0];
 				if( $isExcluded && in_array( $fieldID, $excluded ) )
 				{
-					if( !array_key_exists( $fieldID, $excludes ) )
+					if( !in_array( $match[0], $excludes ) )
 					{
-						$excludes[$fieldID] = $match[0];
+						$excludes[] = $match[0];
 					}
 					continue;
 				}
 				
-				if( array_key_exists( 2, $matcheslist ) && ( $_itemID = (int) $matcheslist[2] ) )
+				$_option = ( array_key_exists( 2, $matcheslist ) && ( $_option = trim( $matcheslist[2] ) ) ) ? $_option : $option;
+				if( !property_exists( $extensionsOptions, $_option ) )
 				{
-					$itemID = $_itemID;
+					if( !in_array( $match[0], $excludes ) )
+					{
+						$excludes[] = $match[0];
+					}
+					continue;
 				}
 				
-				if( !array_key_exists( $itemID, $combinations ) )
+				$_itemID 	= ( array_key_exists( 1, $matcheslist ) && ( $_itemID = (int) $matcheslist[1] ) ) ? $_itemID : $itemID;
+				$key 		= $_option . '-' . $_itemID;
+				
+				if( !array_key_exists( $key, $combinations ) )
 				{
-					$combinations[$itemID] = array( 'item_id' => $itemID );
-					$combinations[$itemID]['option'] = ( array_key_exists( 1, $matcheslist ) && ( $_option = trim( $matcheslist[1] ) ) ) ? $_option : $option;
+					$combinations[$key] = array(
+									'item_id' 	=> $_itemID,
+									'option' 	=> $_option,
+									'matches'	=> array()
+							);
 				}
 				
-				
-				$matchesID[$itemID][$fieldID] 	= $match[0];
-				
-				$combinations[$itemID]['fields_id'][] = $fieldID;
-				
+				$combinations[$key]['fields_id'][] = $fieldID;
+				$combinations[$key]['matches'][$fieldID] = $match[0];
 			}
 			
 			if( !empty( $combinations ) )
 			{
 				while( $combination = array_shift( $combinations ) )
 				{
-					$itemID = $combination['item_id'];
-					$fields = FieldsandfiltersFactory::getFieldsSite()->getFieldsByItemIDWithTemplate( $combination['option'], $itemID, $combination['fields_id'], $getAllextensions, false, 'field_id' );
-					$maches	= $matchesID[$itemID];
+					$fields = self::getFieldsByItemIDWithTemplate( $combination['option'], $combination['item_id'], $combination['fields_id'], $getAllextensions, false, 'field_id' );
 					
-					foreach( $maches AS $id => &$match )
+					foreach( $combination['matches'] AS $fieldID => &$match )
 					{
-						$field = $fields->get( $id, '' );
-						
-						$text = str_replace( $match, addcslashes( $field, '\\$' ), $text );
+						$text = str_replace( $match, addcslashes( $fields->get( $fieldID, '' ), '\\$' ), $text );
 					}
 				}
 			}
 			
 			if( !empty( $excludes ) )
 			{
-				while( $match = array_shift( $excludes ) )
-				{
-					$text = str_replace( $match, addcslashes( '', '\\$' ), $text );
-				}
+				$text = str_replace( $excludes, addcslashes( '', '\\$' ), $text );
 			}
 		}
 	}

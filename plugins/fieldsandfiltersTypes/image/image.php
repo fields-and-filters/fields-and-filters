@@ -529,8 +529,8 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		// Load plgFieldsandfiltersTypesImageHelper Helper
 		$pluginHeleper = FieldsandfiltersFactory::getPluginHelper( $this->_type, $this->_name );
 		
-		// Load Plugin Extextensions
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		// Load Fields Site Helper
+		$fieldsSiteHelper = FieldsandfiltersFactory::getFieldsSite();
 		
 		if( is_null( $this->_variables ) )
 		{
@@ -580,10 +580,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			
 			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
 			{
-				$context 	= 'com_fieldsandfilters.' . $modeName;
-				
-				// Trigger the onFinderBeforeSave event.
-				FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentPrepare', array( $context, $field, $field->params ) );
+				$fieldsSiteHelper->preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
 			}
 			
 			// create new image if not exists		

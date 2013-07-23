@@ -143,14 +143,9 @@ class plgSystemFieldsandfilters extends JPlugin
 			return true;
 		}
 		
-		if( $this->params->get( 'prepare_content', 0 ) && ( $interpolation = $this->params->get( 'interpolation', '#{%s}' ) ) && strpos( $interpolation, '%s' ) !== false )
+		if( $this->params->get( 'prepare_content', 0 ) && ( $interpolation = $this->params->get( 'interpolation', '#{%s}' ) ) && property_exists( $row, 'text' ) && property_exists( $row, 'id' ) )
 		{
-		
-			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
-			
-			// Trigger the onFinderBeforeSave event.
-			FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentPrepare', array( $context, $row, $params, $page = 0 ) );
-		
+			FieldsandfiltersFactory::getFieldsSite()->preparationConetent( $row->text, null, $row->id, $interpolation );
 		}
 	}
 	
