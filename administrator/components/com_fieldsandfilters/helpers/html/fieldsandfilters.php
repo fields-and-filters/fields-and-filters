@@ -135,15 +135,15 @@ abstract class JHtmlFieldsandfilters
 		$options = array();
 		if( !array_key_exists( 'published', $config ) || $config['published'] )
 		{
-			$options[] = JHtml::_( 'select.option', '1', 'JPUBLISHED' );
+			$options[] = JHtml::_( 'select.option', '1', JText::_( 'JPUBLISHED' ) );
 		}
 		if( !array_key_exists( 'unpublished', $config ) || $config['unpublished'] )
 		{
-			$options[] = JHtml::_( 'select.option', '0', 'JUNPUBLISHED' );
+			$options[] = JHtml::_( 'select.option', '0', JText::_( 'JUNPUBLISHED' ) );
 		}
 		if( !array_key_exists( 'adminonly', $config ) || $config['adminonly'] )
 		{
-			$options[] = JHtml::_( 'select.option', '-1', 'COM_FIELDSANDFILTERS_HTML_ONLYADMIN' );
+			$options[] = JHtml::_( 'select.option', '-1', JText::_( 'COM_FIELDSANDFILTERS_HTML_ONLYADMIN' ) );
 		}
 		return $options;
 	}

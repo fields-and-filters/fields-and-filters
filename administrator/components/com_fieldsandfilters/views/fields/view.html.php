@@ -62,31 +62,31 @@ class FieldsandfiltersViewFields extends JViewLegacy
 		JHtmlSidebar::addFilter(
 			JText::_( 'JOPTION_SELECT_PUBLISHED' ),
 			'filter_published',
-			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions' ), 'value', 'text', $this->state->get( 'filter.state' ), true )
+			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions' ), 'value', 'text', $this->state->get( 'filter.state' ), false )
 		);
 		
 		JHtmlSidebar::addFilter(
 			JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
 			'filter_extension_type_id',
-			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), true )
+			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
 		);
 		
 		JHtmlSidebar::addFilter(
 			JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE' ),
 			'filter_type',
-			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginTypesOptions' ), 'value', 'text', $this->state->get( 'filter.type' ), true )
+			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginTypesOptions' ), 'value', 'text', $this->state->get( 'filter.type' ), false )
 		);
 		
 		JHtmlSidebar::addFilter(
 			JText::_( 'JOPTION_SELECT_ACCESS' ),
 			'filter_access',
-			JHtml::_( 'select.options', JHtml::_( 'access.assetgroups' ), 'value', 'text', $this->state->get( 'filter.access' ), true )
+			JHtml::_( 'select.options', JHtml::_( 'access.assetgroups' ), 'value', 'text', $this->state->get( 'filter.access' ), false )
 		);
 		
 		JHtmlSidebar::addFilter(
 			JText::_( 'JOPTION_SELECT_LANGUAGE' ),
 			'filter_language',
-			JHtml::_( 'select.options', JHtml::_( 'contentlanguage.existing' ), 'value', 'text', $this->state->get( 'filter.language' ), true )
+			JHtml::_( 'select.options', JHtml::_( 'contentlanguage.existing' ), 'value', 'text', $this->state->get( 'filter.language' ), false )
 		);
 		
 		if( $canDo->get( 'core.create' ) )

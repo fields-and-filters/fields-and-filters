@@ -257,7 +257,11 @@ $sortFields 	= $this->getSortFields();
 					<td class="center" class="hidden-phone">
 						<?php if( $extension = $pluginExtensionsHelper->getExtensionsPivot( 'extension_type_id', true )->get( (int) $item->extension_type_id ) ) : ?>
 							<?php
-								$extensionsHelper->loadLanguage( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR  );
+							// load plugin language
+								if( $extension->name != 'allextensions' )
+								{
+									$extensionsHelper->loadLanguage( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR  );
+								}
 								$extensionForm = $extension->forms->get( 'extension', new JObject );
 							?>
 							<?php echo JText::_( $extensionForm->get( 'title' ) ); ?>

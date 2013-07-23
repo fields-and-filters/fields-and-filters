@@ -271,7 +271,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				$field->params 	= $paramsFilter;
 			}
 			
-			if( $field->params->get( 'type.filter_prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
+			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
 			{
 				$fieldsSiteHelper->preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
 			}
