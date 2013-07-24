@@ -22,7 +22,7 @@ $isReset = $params->get( 'show_reset', 0 );
                 <?php echo $templateFilters; ?>
                 
 		<?php if( !$isReset ) : ?>
-			<input type="reset" id="faf-form-empty-<?php echo $module->id; ?>" name="faf-form-empty-<?php echo $module->id; ?>" class="btn btn-link faf-form-empty" value="<?php echo JText::_( 'MOD_FILEDSANDFILTERS_FORM_RESET' );?>" />
+			<input type="reset" id="faf-form-empty-<?php echo $module->id; ?>" name="faf-form-empty-<?php echo $module->id; ?>" class="btn btn-link faf-form-empty" value="<?php echo JText::_( 'PLG_FAF_ES_CT_ERROR_NOT_MATCH_TO_FILTERS_RESET' );?>" />
 		<?php endif; ?>
 		
                 <?php if( $params->get( 'show_submit', 1 ) ) : ?>

@@ -104,15 +104,16 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 				
 				if( $field->state == -1 )
 				{
-					$label .= ' [' . JText::_( 'PLG_FAF_TS_IT_FORM_ONLY_ADMIN' ) . ']';
+					$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN' ) . ']';
 				}
 				
 				if( in_array( $field->mode, $staticMode ) )
 				{
 					$element->addAttribute( 'type', 'spacer' );
 					$element->addAttribute( 'description', $field->data );
+					$element->addAttribute( 'translate_description', 'false' );
 					
-					$label .= ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_FIELD_STATIC' ) . ']';
+					$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_TITLE' ) . ']';
 				}
 				else
 				{
@@ -192,7 +193,7 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 		{
 			$modeName = $pluginTypesHelper->getModeName( $field->mode );
 			
-			if( ( $modeName == 'static' && empty( $field->data ) ) || ( $modeName == 'field' && isset( $element->data ) && !property_exists( $element->data, $field->field_id ) ) )
+			if( ( $modeName == 'static' && empty( $field->data ) ) || !( $modeName == 'field' && isset( $element->data ) && property_exists( $element->data, $field->field_id ) ) )
 			{
 				continue;
 			}
@@ -232,7 +233,7 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 			}
 		}
 		
-		unset( $this->_variables->element, $this->_variables->field );
+		// unset( $this->_variables->element, $this->_variables->field );
 	}
 	
 	/**

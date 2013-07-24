@@ -52,8 +52,8 @@
 				<field
 					name="admin_fields_spacer"
 					type="spacer"
-					label="PLG_FAF_ES_CT_FORM_ADMIN_FIELDS_SPACER_LBL"
-					description="PLG_FAF_ES_CT_FORM_ADMIN_FIELDS_SPACER_DESC"
+					label="COM_FIELDSANDFILTERS_ADMIN_FIELDS_SPACER_LBL"
+					description="COM_FIELDSANDFILTERS_ADMIN_FIELDS_SPACER_DESC"
 				/>
 					<field
 						name="show_static_fields"

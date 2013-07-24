@@ -24,31 +24,31 @@ class FieldsandfiltersHelper
 	public static function addSubmenu( $vName = '' )
 	{
 		JHtmlSidebar::addEntry(
-			JText::_( 'COM_FIELDSANDFILTERS_TITLE_PANEL' ),
+			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_PANEL' ),
 			'index.php?option=com_fieldsandfilters',
 			$vName == 'cpanel'
 		);
 		
 		JHtmlSidebar::addEntry(
-			JText::_( 'COM_FIELDSANDFILTERS_TITLE_FIELDS' ),
+			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_FIELDS' ),
 			'index.php?option=com_fieldsandfilters&view=fields',
 			$vName == 'fields'
 		);
 		
 		JHtmlSidebar::addEntry(
-			JText::_( 'COM_FIELDSANDFILTERS_TITLE_ELEMENTS' ),
+			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_ELEMENTS' ),
 			'index.php?option=com_fieldsandfilters&view=elements',
 			$vName == 'elements'
 		);
 		
 		JHtmlSidebar::addEntry(
-			JText::_( 'COM_FIELDSANDFILTERS_TITLE_PLUGIN_TYPES' ),
+			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_PLUGIN_TYPES' ),
 			'index.php?option=com_plugins&filter_folder=fieldsandfiltersTypes',
 			$vName == 'plugin_types'
 		);
 		
 		JHtmlSidebar::addEntry(
-			JText::_( 'COM_FIELDSANDFILTERS_TITLE_PLUGIN_EXTENSIONS' ),
+			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_PLUGIN_EXTENSIONS' ),
 			'index.php?option=com_plugins&filter_folder=fieldsandfiltersExtensions',
 			$vName == 'plugin_extensions'
 		);

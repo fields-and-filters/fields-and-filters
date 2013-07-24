@@ -102,18 +102,9 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 			$listOrder = 'ASC';
 		}
 		$this->setState( 'list.direction', $listOrder);
-
 		
-		// For joomla 2.5 && Key Reference
-		if( version_compare( JVERSION, 3.0, '<' ) )
-		{
-			$this->setState( 'list.start', $app->input->get( 'limitstart', 0, 'uint' ) );
-		}
-		else
-		{
-			$this->setState( 'list.start', $app->input->get( 'start', 0, 'uint' ) );
-		}
-
+		$this->setState( 'list.start', $app->input->get( 'limitstart', 0, 'uint' ) );
+		
 		// set limit for query. If list, use parameter. If blog, add blog parameters for limit.
 		if( ( $app->input->get( 'layout' ) == 'blog' ) || $params->get( 'layout_type' ) == 'blog' )
 		{

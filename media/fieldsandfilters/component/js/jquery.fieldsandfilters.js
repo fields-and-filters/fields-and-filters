@@ -30,7 +30,7 @@ $.fn[faf] = function( type, options )
 		case 'pagination' :
 			options = $.extend( true, {
 				selector 	: 'a',
-				pagination	: 'start'
+				pagination	: 'limitstart'
 			}, options );
 			
 			$fn.pagination( $this, options );

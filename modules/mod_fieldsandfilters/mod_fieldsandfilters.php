@@ -38,8 +38,7 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 	$jregistry 	= JRegistry::getInstance( 'fieldsandfilters' );
 	$filtersRequest = $jregistry->get( 'filters.request', new stdClass );
 	$counts 	= $jregistry->get( 'filters.counts', array() );
-	$pagination 	= (array) $jregistry->get( 'filters.pagination', array() );
-	
+	$pagination 	= (array) $jregistry->get( 'filters.pagination', array( 'limitstart' => 0 ) );
 	
 	if( property_exists( $filtersRequest, 'extensionID' ) && !empty( $counts ) )
 	{
@@ -64,7 +63,7 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 			'module' 	=> $module->id,
 			'counts'	=> $jregistry->get( 'filters.counts', array() ),
 			'request'	=> $request,
-			'pagination'	=> ( !empty( $pagination ) ? $pagination : array( 'limitstart' => 0 ) )
+			'pagination'	=> $pagination
 		);
 		
 		// get selectors

@@ -183,7 +183,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	 */
 	public function onFieldsandfiltersPrepareElement( $context, $item, $isNew, $state )
 	{
-		if( !( $context == $this->_context && $context == 'com_fieldsandfilters.element.content' ) || empty( $item->item_id ) )
+		if( !( $context == $this->_context || $context == 'com_fieldsandfilters.element.content' ) || empty( $item->item_id ) )
 		{
 			return true;
 		}
@@ -725,16 +725,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$jregistry->set( 'filters.counts', $counts );
 		$jregistry->set( 'filters.pagination.limitstart', 0 );
 		
-		if( FieldsandfiltersFactory::isVersion() )
-		{
-			$jregistry->set( 'filters.pagination.start', 0 );
-		}
-		else
-		{
-			// For joomla 2.5 && Key Reference
-			$jregistry->set( 'filters.pagination.limitstart', 0 );
-		}
-		
 		return implode( "\n", $templateFields );
 	}
 	
@@ -856,7 +846,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		else
 		{
-			$body = JText::_( 'PLG_FAF_ES_CT_ERROR_NOT_EXISTS_ARTICLES' );
+			$body = JText::_( 'PLG_FAF_ES_CT_ERROR_NOT_MATCH_TO_FILTERS' );
 		}
 		
 		$itemsID 	= $model->getState( 'fieldsandfilters.itemsID', array() );
@@ -881,9 +871,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( !$emptyItemsID )
 		{
 			$js[] = 'jQuery(document).ready(function($) {';
-			$js[] = '	$(".pagination").fieldsandfilters("pagination"'
-						. ( !FieldsandfiltersFactory::isVersion() ? ',{pagination: "limitstart"}' : '' )
-						. ');';
+			$js[] = '	$(".pagination").fieldsandfilters("pagination");';
 			$js[] = '});';
 			
 			$document->addScriptDeclaration( implode( "\n", $js ) );

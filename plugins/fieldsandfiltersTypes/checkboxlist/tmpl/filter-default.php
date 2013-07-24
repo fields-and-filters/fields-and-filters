@@ -66,10 +66,11 @@ $id = 'faf-filters-' . $field->field_id;
         
         <?php foreach( $values AS &$value ) : ?>
         <div class="control-group faf-control-group">
-                <label for="<?php echo ( $id . ' - ' . $value->field_value_id ); ?>" class="checkbox">
-                        <input type="checkbox" name="fieldsandfilters[<?php echo $field->field_id; ?>][]" id="<?php echo ( $id . '-' . $value->field_value_id ); ?>"
-                                class="faf-filters-input inputbox" value="<?php echo $value->field_value_id; ?>" data-ordering="<?php echo $value->ordering; ?>"
-                                data-alias="<?php echo htmlspecialchars( $value->field_value_alias ); ?>" />
+                <input type="checkbox" name="fieldsandfilters[<?php echo $field->field_id; ?>][]" id="<?php echo ( $id . '-' . $value->field_value_id ); ?>"
+                        class="faf-filters-input inputbox" value="<?php echo $value->field_value_id; ?>" data-ordering="<?php echo $value->ordering; ?>"
+                        data-alias="<?php echo htmlspecialchars( $value->field_value_alias ); ?>" />
+                        
+                <label for="<?php echo ( $id . '-' . $value->field_value_id ); ?>" class="checkbox">
                         <?php echo htmlspecialchars( $value->field_value ); ?>
                         <span class="faf-filters-count badge"></span>
                 </label>

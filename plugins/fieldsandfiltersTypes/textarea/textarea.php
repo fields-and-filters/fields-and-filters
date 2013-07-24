@@ -95,15 +95,16 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			
 			if( $field->state == -1 )
 			{
-				$label .= ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_ONLY_ADMIN' ) . ']';
+				$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN' ) . ']';
 			}
 			
 			if( in_array( $field->mode, $staticMode ) )
 			{
 				$element->addAttribute( 'type', 'spacer' );
 				$element->addAttribute( 'description', $field->data );
+				$element->addAttribute( 'translate_description', 'false' );
 				
-				$label .= ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_FIELD_STATIC' ) . ']';
+				$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_TITLE' ) . ']';
 			}
 			else
 			{
@@ -211,9 +212,10 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 		
 		while( $field = array_shift( $fields ) )
 		{
-			$modeName = $pluginTypesHelper->getModeName( $field->mode );
+			$modeName	= $pluginTypesHelper->getModeName( $field->mode );
+			$isStaticMode 	= (  $modeName == 'static' );
 			
-			if( ( $modeName == 'static' && empty( $field->data ) ) || ( $modeName == 'field' && isset( $element->data ) && !property_exists( $element->data, $field->field_id ) ) )
+			if( ( $isStaticMode && empty( $field->data ) ) || !( $modeName == 'field' && isset( $element->data ) && property_exists( $element->data, $field->field_id ) ) )
 			{
 				continue;
 			}
@@ -229,7 +231,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			
 			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
 			{
-				$fieldsSiteHelper->preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
+				$fieldsSiteHelper->preparationConetent( $field->description, null, ( !$isStaticMode ? $element->item_id : null ), null, array( $field->field_id ) );
 			}
 			
 			$layoutField = $field->params->get( 'type.field_layout' );
@@ -253,7 +255,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			}
 		}
 		
-		unset( $this->_variables->element, $this->_variables->field );
+		// unset( $this->_variables->element, $this->_variables->field );
 	}
 	
 	/**

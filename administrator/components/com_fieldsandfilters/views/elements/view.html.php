@@ -63,7 +63,7 @@ class FieldsandfiltersViewElements extends JViewLegacy
 		JHtmlSidebar::addFilter(
 			JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
 			'filter_extension_type_id',
-			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), true )
+			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
 		);
 		
 		if( is_array( $filtersOptions = $this->state->get( 'filters.options' ) ) )
@@ -73,7 +73,7 @@ class FieldsandfiltersViewElements extends JViewLegacy
 				JHtmlSidebar::addFilter(
 					null,
 					( 'filter_' . $filter ),
-					JHtml::_( 'select.options', $options, 'value', 'text', $this->state->get( 'filter.' . $filter ), true )
+					JHtml::_( 'select.options', $options, 'value', 'text', $this->state->get( 'filter.' . $filter ), false )
 				);
 			}
 		}

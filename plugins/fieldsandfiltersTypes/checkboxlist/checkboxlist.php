@@ -98,7 +98,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				
 			if( $field->state == -1 )
 			{
-				$label .= ' [' . JText::_( 'PLG_FAF_TS_IT_FORM_ONLY_ADMIN' ) . ']';
+				$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN' ) . ']';
 			}
 
 			$element->addAttribute( 'id', $field->field_id );
@@ -189,7 +189,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			$modeName 	= $pluginTypesHelper->getModeName( $field->mode );
 			$isStaticMode 	= (  $modeName == 'static' );
 			
-			if( ( $isStaticMode && empty( $field->connections ) ) || ( $modeName == 'filter' && isset( $element->connections ) && !property_exists( $element->connections, $field->field_id ) ) )
+			if( ( $isStaticMode && empty( $field->connections ) ) || !( $modeName == 'filter' && isset( $element->connections ) && property_exists( $element->connections, $field->field_id ) ) )
 			{
 				continue;
 			}
@@ -229,7 +229,8 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			}
 		}
 		
-		unset( $this->_variables->element, $this->_variables->field );
+		// [TODO] When field have field in description, then secend field(description), unset $this->_variables->element for the first field
+		// unset( $this->_variables->element, $this->_variables->field );
 	}
 	
 	/**

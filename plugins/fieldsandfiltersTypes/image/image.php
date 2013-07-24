@@ -86,7 +86,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			
 			if( $field->state == -1 )
 			{
-				$label .= ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_ONLY_ADMIN' ) . ']';
+				$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN' ) . ']';
 			}
 			
 			if( !( $isStaticMode = in_array( $field->mode, $staticMode ) ) )
@@ -124,13 +124,14 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			
 			if( $isStaticMode )
 			{
-				$label .= ' [' . JText::_( 'PLG_FAF_TS_TA_FORM_FIELD_STATIC' ) . ']';
+				$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_TITLE' ) . ']';
 				
 				$element->addAttribute( 'type', 'spacer' );
 				$element->addAttribute( 'description', $field->data );
 				$element->addAttribute( 'name', $field->field_id );
 				$element->addAttribute( 'label', $label );
 				$element->addAttribute( 'translate_label', 'false' );
+				$element->addAttribute( 'translate_description', 'false' );
 			}
 			else
 			{
@@ -550,7 +551,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			$modeName = $pluginTypesHelper->getModeName( $field->mode );
 			$isStaticMode = ( $modeName == 'static' );
 			
-			if( ( $isStaticMode && empty( $field->data ) ) || ( $modeName == 'field' && isset( $element->data ) && !property_exists( $element->data, $field->field_id ) ) )
+			if( ( $isStaticMode && empty( $field->data ) ) || !( $modeName == 'field' && isset( $element->data ) && property_exists( $element->data, $field->field_id ) ) )
 			{
 				continue;
 			}
@@ -674,7 +675,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			}
 		}
 		
-		unset( $this->_variables->element, $this->_variables->field );
+		// unset( $this->_variables->element, $this->_variables->field );
 	}
 	
 	/**

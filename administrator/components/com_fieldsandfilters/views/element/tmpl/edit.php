@@ -39,8 +39,8 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 		<?php if( $extensionTitle = $this->state->get( 'element.extension_title' ) ) : ?>
 			<?php echo JText::_( $extensionTitle ); ?>: 
 		<?php endif; ?>
-		<?php echo $this->escape( $this->item->get( 'item_name', '' ) ); ?> 
-		(<?php echo (int) $this->item->get( 'item_id' ); ?>)
+			<?php echo $this->escape( $this->item->get( 'item_name', '' ) ); ?> 
+			(<?php echo (int) $this->item->get( 'item_id' ); ?>)
 		</legend>
 		<div class="row-fluid">
 			<?php foreach( $this->form->getFieldset( 'fields' ) AS $name => $field ) : ?>

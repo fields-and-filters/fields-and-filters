@@ -52,7 +52,6 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 				
 				// Initialize some field attributes.
 				$class 			= $this->element['class'] ? ' class="checkboxes ' . (string) $this->element['class'] . '"' : ' class="checkboxes"';
-				$translateOptions 	= !( (string) $this->element['translate_options'] == 'false' || (string) $this->element['translate_options'] == '0' );
 				$checkedOptions 	= explode( ',', (string) $this->element['checked'] );
 				
 				// Start the checkbox field output.
@@ -89,7 +88,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 					$html[] = '	<label' . $class . '>';
 					$html[] = '		<input type="checkbox" id="' . $this->id . $i . '" name="' . $this->name . '" value="'
 									. htmlspecialchars( $option->value, ENT_COMPAT, 'UTF-8' ) . '"' . $checked . $class . $onclick . $disabled . $required . '/>';
-					$html[] = 		( $translateOptions ? JText::_( $option->text ) : $option->text );
+					$html[] = 			$option->text;
 					$html[] = '	</label>';
 					$html[] = '</li>';
 				}
