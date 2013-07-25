@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<params>
+	<layout
+		title="PLG_FIELDSANDFILTERS_FORM_ALLEXTENSIONS_TITLE"
+		option="PLG_FIELDSANDFILTERS_FORM_ALLEXTENSIONS_OPTION"
+	>
+		<message>
+			<![CDATA[PLG_FIELDSANDFILTERS_FORM_ALLEXTENSIONS_DESC]]>
+		</message>
+	</layout>
+	
+	<!-- Add fields to the properties variables for the plugin extension. -->
+	<group type="allextensions" title="PLG_FIELDSANDFILTERS_FORM_GROUP_ALLEXTENSIONS_TITLE">
+		<message>
+			<![CDATA[PLG_FIELDSANDFILTERS_FORM_GROUP_ALLEXTENSIONS_TITLE_DESC]]>
+		</message>
+	</group>
+	
+	<!-- Add fields to the parameters object for the plugin extension. -->
+	<!--
+	<fields name="params">
+		<fieldset name="extension">
+			<field name="test" type="list"
+				label="TEST_LBL"
+				description="TEST_DESC"
+			>
+				<option value="">TEST_OPTION</option>
+				<option value="0">TEST_OPTION_0</option>
+				<option value="1">TEST_OPTION_1</option>
+			</field>
+	
+		</fieldset>
+	</fields>
+	-->
+</params>
