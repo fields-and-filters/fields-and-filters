@@ -8,14 +8,22 @@
 .icon-48-element              { background-image: url(../images/icons/icon-48-element.png); }
 
 /* -- CONTROL PANEL STYLES ----------------------------- */
-.cpanel div.icon, #cpanel div.icon {
+.cpanel-block {
+      display: inline-block;
+      width: 100%;
+}
+
+.cpanel div.icon,
+#cpanel div.icon {
 	text-align: center;
 	margin-right: 15px;
 	float: left;
 	margin-bottom: 15px;
 
 }
-.cpanel div.icon a, #cpanel div.icon a {
+
+.cpanel div.icon a,
+#cpanel div.icon a {
 	background-color: #fff;
 	background-position: -30px;
 	display: block;
@@ -26,7 +34,6 @@
 	vertical-align: middle;
 	text-decoration: none;
 	border: 1px solid #CCC;
-
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
@@ -42,12 +49,12 @@
 	-moz-transition-duration: 0.8s;
 }
 
-#cpanel div.icon a:hover,
-#cpanel div.icon a:focus,
-#cpanel div.icon a:active,
 .cpanel div.icon a:hover,
 .cpanel div.icon a:focus,
-.cpanel div.icon a:active {
+.cpanel div.icon a:active,
+#cpanel div.icon a:hover,
+#cpanel div.icon a:focus,
+#cpanel div.icon a:active {
 	background-position: 0;
 	-webkit-border-bottom-left-radius: 50% 20px;
 	-moz-border-radius-bottomleft: 50% 20px;
@@ -59,19 +66,18 @@
 	z-index: 10;
 }
 
-#cpanel img,
-.cpanel img {
-	padding: 10px 0;
-	margin: 0 auto;
-}
-
-#cpanel span,
-.cpanel span {
+.cpanel span,
+#cpanel span {
 	display: block;
 	text-align: center;
 }
 
-.cpanel-block {
-      display: inline-block;
-      width: 100%;
+.cpanel img,
+#cpanel img {
+	border: 0 none;
+	height: auto;
+	max-width: 100%;
+	vertical-align: middle;
+	margin: 0 auto;
+	padding: 10px 0;
 }

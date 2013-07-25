@@ -23,11 +23,6 @@ JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/
 class plgFieldsandfiltersTypesInput extends JPlugin
 {
 	/**
-	 * @since       1.0.0
-	 */
-	protected $_variables;
-	
-	/**
 	 * Constructor
 	 *
 	 * @access      protected
@@ -180,12 +175,11 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 		// Load Fields Site Helper
 		$fieldsSiteHelper = FieldsandfiltersFactory::getFieldsSite();
 		
-		if( is_null( $this->_variables ) )
-		{
-			$this->_variables = new JObject( array( 'type' => $this->_type, 'name' => $this->_name, 'params' => $this->params ) );
-		}
-		
-		$this->_variables->element = $element;
+		$variables 		= new JObject;
+		$variables->type	= $this->_type;
+		$variables->name	= $this->_name;
+		$variables->params	= $this->params;
+		$variables->element 	= $element;
 		
 		$isParams = ( $params && $params instanceof JRegistry );
 		
@@ -221,9 +215,9 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 			
 			$field->params->set( 'type.field_layout', $layoutField );
 			
-			$this->_variables->field = $field;
+			$variables->field = $field;
 			
-			$template = $extensionsHelper->loadPluginTemplate( $this->_variables, $layoutField );
+			$template = $extensionsHelper->loadPluginTemplate( $variables, $layoutField );
 			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->$ordering, false ), $template );
 			
 			if( $isParams )
@@ -233,7 +227,7 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 			}
 		}
 		
-		// unset( $this->_variables->element, $this->_variables->field );
+		unset( $variables );
 	}
 	
 	/**
