@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     1.0.0
+ * @version     1.1.0
  * @package     com_fieldsandfilters
  * @subpackage  mod_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
