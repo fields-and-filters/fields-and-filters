@@ -68,12 +68,14 @@ class FieldsandfiltersViewElements extends JViewLegacy
 		
 		if( is_array( $filtersOptions = $this->state->get( 'filters.options' ) ) )
 		{
-			foreach( $filtersOptions AS $filter => &$options )
+			foreach( $filtersOptions AS $name => &$filter )
 			{
+				$filter = !is_array( $filter ) ? (array) $filter : $filter;
+				
 				JHtmlSidebar::addFilter(
-					null,
-					( 'filter_' . $filter ),
-					JHtml::_( 'select.options', $options, 'value', 'text', $this->state->get( 'filter.' . $filter ), false )
+					JArrayHelper::getValue( $filter, 'label' ),
+					( 'filter_' . $name ),
+					JHtml::_( 'select.options', JArrayHelper::getValue( $filter, 'options', array(), 'array' ), 'value', 'text', $this->state->get( 'filter.' . $name ), false )
 				);
 			}
 		}

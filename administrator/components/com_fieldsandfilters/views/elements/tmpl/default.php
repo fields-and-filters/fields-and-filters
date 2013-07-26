@@ -17,6 +17,7 @@ JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html'  );
 $pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
 
 JHtml::_( 'bootstrap.tooltip' );
+JHtml::_( 'behavior.multiselect' );
 JHtml::_( 'dropdown.init' );
 JHtml::_( 'formbehavior.chosen', 'select' );
 

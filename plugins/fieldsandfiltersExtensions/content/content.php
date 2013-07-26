@@ -81,10 +81,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$state->set( 'query.item_name', 'a.title' );
 		$state->set( 'query.item_category', 'c.title' );
 		
-		$categoryOptions =  JHtml::_( 'category.options', 'com_content' );
-		array_unshift( $categoryOptions, JHtml::_( 'select.option', '*', JText::_( 'JOPTION_SELECT_CATEGORY' ) ) );
-		
-		$state->set( 'filters.options', array( 'item_category' => $categoryOptions ) );
+		$state->set( 'filters.options', array(
+				'item_category' => array(
+						'label' 	=> JText::_( 'JOPTION_SELECT_CATEGORY' ),
+						'options'	=> JHtml::_( 'category.options', 'com_content' )
+					)
+			) );
 		
 		$state->set( 'enabled_search', true );
 		
