@@ -17,7 +17,6 @@ $extensionsHelper = FieldsandfiltersFactory::getExtensions();
 $pluginTypesHelper 	= FieldsandfiltersFactory::getPluginTypes();
 $valuesMode		= (array) $pluginTypesHelper->getMode( 'filter' );
 
-
 // Load PluginExtensions Helper
 $pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
 

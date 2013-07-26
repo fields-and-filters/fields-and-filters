@@ -725,7 +725,15 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$jregistry->set( 'filters.request', $request );
 		$jregistry->set( 'filters.counts', $counts );
-		$jregistry->set( 'filters.pagination.limitstart', 0 );
+		
+		if( FieldsandfiltersFactory::isVersion() )
+		{
+			$jregistry->set( 'filters.pagination.limitstart', 0 );
+		}
+		else
+		{
+			$jregistry->set( 'filters.pagination.start', 0 );
+		}
 		
 		return implode( "\n", $templateFields );
 	}
@@ -873,7 +881,9 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( !$emptyItemsID )
 		{
 			$js[] = 'jQuery(document).ready(function($) {';
-			$js[] = '	$(".pagination").fieldsandfilters("pagination");';
+			$js[] = '	$(".pagination").fieldsandfilters("pagination"'
+						. ( !FieldsandfiltersFactory::isVersion() ? ',{pagination: "start"}' : '' )
+						. ');';
 			$js[] = '});';
 			
 			$document->addScriptDeclaration( implode( "\n", $js ) );
