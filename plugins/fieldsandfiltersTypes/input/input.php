@@ -186,8 +186,9 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 		while( $field = array_shift( $fields ) )
 		{
 			$modeName = $pluginTypesHelper->getModeName( $field->mode );
+			$isStaticMode 	= (  $modeName == 'static' );
 			
-			if( ( $modeName == 'static' && empty( $field->data ) ) || !( $modeName == 'field' && isset( $element->data ) && property_exists( $element->data, $field->field_id ) ) )
+			if( ( $isStaticMode && empty( $field->data ) ) || ( $modeName == 'field' && ( !isset( $element->data ) || !property_exists( $element->data, $field->field_id ) ) ) )
 			{
 				continue;
 			}
