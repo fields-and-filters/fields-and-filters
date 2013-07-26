@@ -23,33 +23,33 @@ class FieldsandfiltersHelper
 	 */
 	public static function addSubmenu( $vName = '' )
 	{
-		$menuClass = FieldsandfiltersFactory::isVersion() ? 'JHtmlSidebar' : 'JSubMenuHelper';
+		$htmlClass = FieldsandfiltersFactory::isVersion() ? 'JHtmlSidebar' : 'JSubMenuHelper';
 		
-		$menuClass::addEntry(
+		$htmlClass::addEntry(
 			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_PANEL' ),
 			'index.php?option=com_fieldsandfilters',
 			$vName == 'cpanel'
 		);
 		
-		$menuClass::addEntry(
+		$htmlClass::addEntry(
 			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_FIELDS' ),
 			'index.php?option=com_fieldsandfilters&view=fields',
 			$vName == 'fields'
 		);
 		
-		$menuClass::addEntry(
+		$htmlClass::addEntry(
 			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_ELEMENTS' ),
 			'index.php?option=com_fieldsandfilters&view=elements',
 			$vName == 'elements'
 		);
 		
-		$menuClass::addEntry(
+		$htmlClass::addEntry(
 			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_PLUGIN_TYPES' ),
 			'index.php?option=com_plugins&filter_folder=fieldsandfiltersTypes',
 			$vName == 'plugin_types'
 		);
 		
-		$menuClass::addEntry(
+		$htmlClass::addEntry(
 			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_PLUGIN_EXTENSIONS' ),
 			'index.php?option=com_plugins&filter_folder=fieldsandfiltersExtensions',
 			$vName == 'plugin_extensions'
