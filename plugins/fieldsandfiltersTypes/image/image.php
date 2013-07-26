@@ -228,10 +228,10 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	 */
 	public function onFieldsandfiltersBeforeSaveData( $context, $newItem, $oldItem, $isNew )
 	{
-		if( $context == 'com_fieldsandfilters.field' && $field_type == $this->_name )
+		if( $context == 'com_fieldsandfilters.field' && $newItem->field_type == $this->_name )
 		{
 			$newItem->params = new JRegistry( $newItem->params );
-			$newItem->values->set( 'data', (string) $this->_createImages( $newItem, $newItem, $newItem->values ) );
+			$newItem->values->set( 'data', (string) $this->_createImages( new stdClass, $newItem, $newItem->values ) );
 		}
 		else if( $context == 'com_fieldsandfilters.element' )
 		{
