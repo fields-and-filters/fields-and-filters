@@ -143,7 +143,7 @@ class plgSystemFieldsandfilters extends JPlugin
 			return true;
 		}
 		
-		if( $this->params->get( 'prepare_content', 0 ) && ( $interpolation = $this->params->get( 'interpolation', '#{%s}' ) ) && property_exists( $row, 'text' ) )
+		if( $this->params->get( 'prepare_content', 1 ) && ( $interpolation = $this->params->get( 'interpolation', '#{%s}' ) ) && property_exists( $row, 'text' ) )
 		{
 			FieldsandfiltersFactory::getFieldsSite()->preparationConetent( $row->text, null, ( property_exists( $row, 'id' ) ? $row->id : null ), $interpolation );
 		}
