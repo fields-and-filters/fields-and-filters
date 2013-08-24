@@ -38,7 +38,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
                 
                 $app                    = JFactory::getApplication();
                 $extensionTypeID        = $app->input->get( 'extensionID', 0, 'int' );
-                $requestID              = $app->input->get( 'requestID', 0, 'double' );
+                $requestID              = $app->input->get( 'requestID', 0, 'alnum' );
                 
                 // Check if exist requestID and extention type id
                 if( !$requestID )
@@ -91,7 +91,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		JSession::checkToken( 'request' ) OR $this->sendResponse( new Exception( JText::_( 'JINVALID_TOKEN' ), 403 ) );
                 
                 $app                    = JFactory::getApplication();
-                $requestID              = $app->input->get( 'requestID', 0, 'double' );
+                $requestID              = $app->input->get( 'requestID', 0, 'alnum' );
                 $fieldID              	= $app->input->get( 'fieldID', 0, 'int' );
 		$extensionTypeID        = $app->input->get( 'extensionID', 0, 'int' );
 		
@@ -229,7 +229,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
                 
                 // The old token is invalid so send a new one.
 		$response->token            = JFactory::getSession()->getFormToken();
-                $response->requestID        = $app->input->get( 'requestID', 0, 'double' );
+                $response->requestID        = $app->input->get( 'requestID', 0, 'alnum' );
 
 		// Add the buffer.
 		// $response->buffer = JDEBUG ? ob_get_contents() : ob_end_clean();

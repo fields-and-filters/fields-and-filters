@@ -340,7 +340,8 @@ $.extend( $fn, {
 $.extend( $fn, {
 	requestID : function( createNew )
 	{
-		return ( createNew ? this.set( '$request.requestID', +new Date() ) : this.def( '$request.requestID', +new Date() ) );
+		var newID = (+new Date()).toString(32).toUpperCase();;
+		return ( createNew ? this.set( '$request.requestID', newID ) : this.def( '$request.requestID', newID ) );
 	},
 	
 	token : function( newToken )
