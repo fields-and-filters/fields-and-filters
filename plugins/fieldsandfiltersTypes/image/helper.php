@@ -37,7 +37,7 @@ class plgFieldsandfiltersTypesImageHelper extends JImage
 	/**
 	* @since       1.0.0
 	*/
-        public static function createImage( JObject $jobject )
+        public static function createImage( $name, JObject $jobject )
 	{
 		jimport( 'joomla.filesystem.file' );
 		
@@ -69,7 +69,7 @@ class plgFieldsandfiltersTypesImageHelper extends JImage
 			
 			if( !$width || !$height )
 			{
-				throw new UnexpectedValueException( JText::_( 'PLG_FAF_TS_IE_ERROR_UNEXPECTED_VALUE_WIDTH_OR_HEIGHT' ) );
+				throw new UnexpectedValueException( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_UNEXPECTED_VALUE_WIDTH_OR_HEIGHT', $name ) );
 				return false;
 			}
 			
