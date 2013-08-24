@@ -228,7 +228,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	 */
 	public function onFieldsandfiltersBeforeSaveData( $context, $newItem, $oldItem, $isNew )
 	{
-		if( $context == 'com_fieldsandfilters.field' && $newItem->field_type == $this->_name )
+		if( $context == 'com_fieldsandfilters.field' && $newItem->field_type == $this->_name && FieldsandfiltersFactory::getPluginTypes()->getModeName( $field->mode ) == 'static' )
 		{
 			$newItem->params = new JRegistry( $newItem->params );
 			$newItem->values->set( 'data', (string) $this->_createImages( new stdClass, $newItem, $newItem->values ) );
