@@ -728,11 +728,11 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		if( FieldsandfiltersFactory::isVersion() )
 		{
-			$jregistry->set( 'filters.pagination.limitstart', 0 );
+			$jregistry->set( 'filters.pagination', array( 'start' => 0 ) );
 		}
 		else
 		{
-			$jregistry->set( 'filters.pagination.start', 0 );
+			$jregistry->set( 'filters.pagination', array( 'limitstart' => 0 ) );
 		}
 		
 		return implode( "\n", $templateFields );
@@ -882,7 +882,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			$js[] = 'jQuery(document).ready(function($) {';
 			$js[] = '	$(".pagination").fieldsandfilters("pagination"'
-						. ( !FieldsandfiltersFactory::isVersion() ? ',{pagination: "start"}' : '' )
+						. ( FieldsandfiltersFactory::isVersion() ? ',{pagination: "start"}' : '' )
 						. ');';
 			$js[] = '});';
 			

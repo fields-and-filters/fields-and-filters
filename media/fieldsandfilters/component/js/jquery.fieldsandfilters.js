@@ -180,10 +180,11 @@ $.extend( $fn, {
 							.replace( /&/g, '","' )
 							.replace( /=/g, '":"' ) ) + '"}'
 					);
+					
 					$.map( keys, function( key ){
 						$fn.set( ( '$request.' + key ), $fn.get( object, key, 0 ) )
 					});
-					
+										
 					$fn.ajax();
 					
 					return false;
