@@ -42,7 +42,6 @@ class plgFieldsandfiltersTypesImageHelper extends JImage
 		jimport( 'joomla.filesystem.file' );
 		
 		$jroot 	= JPATH_ROOT . '/';
-		$return = false;
 		
 		$jimage = new plgFieldsandfiltersTypesImageHelper();
 		$jimage->loadFile( JPath::clean( $jroot . $jobject->get( 'path' ) ) );
@@ -50,7 +49,7 @@ class plgFieldsandfiltersTypesImageHelper extends JImage
 		if( !$jimage->isLoaded() )
 		{
 			throw new RuntimeException( JText::_( 'PLG_FAF_TS_IE_ERROR_IMAGE_FILE_NOT_EXIST' ) );
-			return $return;
+			return false;
 		}
 		
 		// If the parent folder doesn't exist we must create it
@@ -68,53 +67,55 @@ class plgFieldsandfiltersTypesImageHelper extends JImage
 			$height = (int) $jobject->get( 'height' );
 			$method = (int) $jobject->get( 'method' );
 			
-			if( $width && $height )
+			if( !$width || !$height )
 			{
-				// Generate cropping image
-				if( $method == 4 )
-				{
-					$jimage->crop( $width, $height, null, null, false );
-					
-				}
-				// Generate resizing image
-				else
-				{
-					$jimage->resize( $width, $height, false, $method );
-				}
+				throw new UnexpectedValueException( JText::_( 'PLG_FAF_TS_IE_ERROR_UNEXPECTED_VALUE_WIDTH_OR_HEIGHT' ) );
+				return false;
+			}
+			
+			// Generate cropping image
+			if( $method == 4 )
+			{
+				$jimage->crop( $width, $height, null, null, false );
 				
-				// Parent image properties
-				$properties 	= $jimage::getImageFileProperties( $jimage->getPath() );
-				$quality 	= (int) $jobject->get( 'quality', 75 );
-				$quality 	= (int) min( max( $quality, 0 ), 100 );
-				
-				if( $properties->type == IMAGETYPE_PNG )
-				{
-					$quality = max( floor( ( $quality - 1 ) / 10 ), 0 );
-					$quality = (int) JArrayHelper::getValue( self::$_quality_png, $quality, 0 );
-				}
-				
-				if( !( $name = $jobject->get( 'name' ) ) )
-				{
-					self::_createNameImage( $jobject );
-					$name = $jobject->get( 'name' );
-				}
-				
-				$imagePath = JPath::clean( $folder . '/' . JFile::makeSafe( $name ) ) ;
-				
-				// Save image file to disk
-				$jimage->toFile( $imagePath, $properties->type, array( 'quality' => $quality ) );
-				
-				if( file_exists( $imagePath ) )
-				{
-					$jobject->src = $imagePath;
-					$return = true;
-				}
+			}
+			// Generate resizing image
+			else
+			{
+				$jimage->resize( $width, $height, false, $method );
+			}
+			
+			// Parent image properties
+			$properties 	= $jimage::getImageFileProperties( $jimage->getPath() );
+			$quality 	= (int) $jobject->get( 'quality', 75 );
+			$quality 	= (int) min( max( $quality, 0 ), 100 );
+			
+			if( $properties->type == IMAGETYPE_PNG )
+			{
+				$quality = max( floor( ( $quality - 1 ) / 10 ), 0 );
+				$quality = (int) JArrayHelper::getValue( self::$_quality_png, $quality, 0 );
+			}
+			
+			if( !( $name = $jobject->get( 'name' ) ) )
+			{
+				self::_createNameImage( $jobject );
+				$name = $jobject->get( 'name' );
+			}
+			
+			$imagePath = JPath::clean( $folder . '/' . JFile::makeSafe( $name ) ) ;
+			
+			// Save image file to disk
+			$jimage->toFile( $imagePath, $properties->type, array( 'quality' => $quality ) );
+			
+			if( file_exists( $imagePath ) )
+			{
+				$jobject->src = $imagePath;
 			}
 		}
 		
 		$jimage->destroy();
 		
-		return $return;
+		return true;
 	}
         
         public static function createNameImage( JObject $jobject )
