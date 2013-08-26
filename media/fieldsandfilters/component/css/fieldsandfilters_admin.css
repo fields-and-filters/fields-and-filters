@@ -91,3 +91,65 @@
 .jgrid span.onlyadmin         { background-image: url(../images/icons/icon-16-notice.png); }
 .jgrid span.required          { background-image: url(../images/icons/icon-16-deny.png); }
 .jgrid span.unrequired        { background-image: url(../images/icons/icon-16-remove.png); }
+
+/* -- CONTROL PANEL STYLES -- */
+.paypal-button {
+      display: inline-block;
+      padding: 4px 14px;
+      margin-bottom: 0;
+      font-size: 13px;
+      line-height: 18px;
+      text-align: center;
+      vertical-align: middle;
+      cursor: pointer;
+      color: #fff;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+      background-color: #363636;
+      background-image: -moz-linear-gradient(top,#444,#222);
+      background-image: -webkit-gradient(linear,0 0,0 100%,from(#444),to(#222));
+      background-image: -webkit-linear-gradient(top,#444,#222);
+      background-image: -o-linear-gradient(top,#444,#222);
+      background-image: linear-gradient(to bottom,#444,#222);
+      background-repeat: repeat-x;
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff444444', endColorstr='#ff222222', GradientType=0);
+      border-color: #222 #222 #000;
+      border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+      filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+      border: 1px solid #BBB;
+      border-bottom-color: #A2A2A2;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+      -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+      -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+      
+}
+
+.paypal-button:hover {
+      color: #FFF;
+      background-color: #222;
+      background-position: 0 -15px;
+}
+
+.nav {
+      margin: 10px;
+      padding: 0;
+      list-style: none;
+}
+
+.nav .choose_type {
+      display: block;
+      border: 1px solid #DDD;
+      padding: 8px 12px;
+      line-height: 18px;
+      margin-bottom: -1px;
+      font-size: 13px;
+}
+
+.nav .choose_type:hover {
+      text-decoration: none;
+      background-color: #EEE;
+}
+
+.nav .choose_type .muted { color: #999; }
