@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     1.1.0
+ * @version     1.1.1
  * @package     fieldsandfilters.plugin
  * @subpackage  fieldsandfilters_extension.content
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
@@ -374,23 +374,61 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			return true;
 		}
 		
+		$app = JFactory::getApplication();
+		
 		JModelLegacy::addIncludePath( ( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/models' ), 'FieldsandfiltersModel' );
 		
 		if( !( $elementModel = JModelLegacy::getInstance( 'element', 'FieldsandfiltersModel', array( 'ignore_request' => true, 'table_path' => ( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/tables' ) ) ) ) )
 		{
-			return true;
+			$app->enqueueMessage( JText::sprintf( 'JLIB_APPLICATION_ERROR_MODELCLASS_NOT_FOUND', ( $prefix . ucfirst( $type ) ) ), 'error' );
+			return false;
 		}
 		
-		$data = new JRegistry();
-		$data->set( 'item_id', 			$item->id );
-		$data->set( 'state', 			$item->get( 'state', 0 ) );
-		$data->set( 'extension_type_id', 	$extensionContent->extension_type_id );
-		$data->set( 'fields', 			$itemData );
-		$data = $data->toArray();
+		$data = array(
+			'item_id'		=> $item->id,
+			'state'			=> $item->get( 'state', 0 ),
+			'extension_type_id'	=> $extensionContent->extension_type_id,
+			'fields'		=> $itemData
+		);
 		
-		if( !$elementModel->save( $data ) )
+		// Get the form.
+		JForm::addFormPath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/models/forms' );
+		JForm::addFieldPath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/models/fields' );
+		
+		// Validate the posted data.
+		// Sometimes the form needs some posted data, such as for plugins and modules.
+		if( !( $form = $elementModel->getForm( $data, false ) ) )
 		{
-			$item->setError( $elementModel->getError() );
+			$app->enqueueMessage( $elementModel->getError(), 'error' );
+			return false;
+		}
+		
+		// Test whether the data is valid.
+		$validData = $elementModel->validate( $form, $data );
+		
+		// Check for validation errors.
+		if( $validData === false )
+		{
+			// Get the validation messages.
+			$errors = $elementModel->getErrors();
+
+			// Push up to three validation messages out to the user.
+			for( $i = 0, $n = count( $errors ); $i < $n && $i < 3; $i++ )
+			{
+				if( $errors[$i] instanceof Exception )
+				{
+					$app->enqueueMessage( $errors[$i]->getMessage(), 'warning' );
+				}
+				else
+				{
+					$app->enqueueMessage( $errors[$i], 'warning' );
+				}
+			}
+		}
+		
+		if( !$elementModel->save( $validData ) )
+		{
+			$app->enqueueMessage( $elementModel->getError(), 'error' );
 			return false;
 		}
 		
@@ -637,7 +675,8 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			return;
 		}
 		
-		$jinput = JFactory::getApplication()->input;
+		$app 	= JFactory::getApplication();
+		$jinput = $app->input;
 		$id 	= $jinput->get( 'id', 0, 'int' );
 		
 		// Load PluginExtensions Helper
@@ -726,13 +765,13 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$jregistry->set( 'filters.request', $request );
 		$jregistry->set( 'filters.counts', $counts );
 		
-		if( FieldsandfiltersFactory::isVersion() )
+		if( $app->getCfg( 'sef', 0 ) )
 		{
-			$jregistry->set( 'filters.pagination.limitstart', 0 );
+			$jregistry->set( 'filters.pagination', array( 'start' => 0 ) );
 		}
 		else
 		{
-			$jregistry->set( 'filters.pagination.start', 0 );
+			$jregistry->set( 'filters.pagination', array( 'limitstart' => 0 ) );
 		}
 		
 		return implode( "\n", $templateFields );
@@ -881,8 +920,8 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( !$emptyItemsID )
 		{
 			$js[] = 'jQuery(document).ready(function($) {';
-			$js[] = '	$(".pagination").fieldsandfilters("pagination"'
-						. ( !FieldsandfiltersFactory::isVersion() ? ',{pagination: "start"}' : '' )
+			$js[] = '	$("' . $this->params->get( 'selector_pagination_filters', '.pagination' ) . '").fieldsandfilters("pagination"'
+						. ( $app->getCfg( 'sef', 0 ) ? ',{pagination: "start"}' : '' )
 						. ');';
 			$js[] = '});';
 			

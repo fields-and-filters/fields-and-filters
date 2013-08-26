@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     1.1.0
+ * @version     1.1.1
  * @package     com_fieldsandfilters
  * @subpackage  mod_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
@@ -42,10 +42,6 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 	
 	if( property_exists( $filtersRequest, 'extensionID' ) && !empty( $counts ) )
 	{
-		// Import JS
-		JHtml::_( 'jquery.framework' );
-		JHtml::_( 'script', 'fieldsandfilters/component/jquery.fieldsandfilters.js', false, true );
-			
 		$request = array(
 				'option' 	=> 'com_fieldsandfilters',
 				'task' 		=> 'request.filters',
@@ -90,12 +86,37 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 			$options['fn'] = $fn;
 		}
 		
+		// Import JS
+		if( FieldsandfiltersFactory::isVersion() )
+		{
+			JHtml::_( 'jquery.framework' );
+			
+			$options = JHtml::getJSObject( $options );
+		}
+		else
+		{
+			if( $params->get( 'load_jquery', 1 ) )
+			{
+				JHtml::_( 'script', 'fieldsandfilters/component/jquery-1.10.2.min.js', false, true );
+			}
+			
+			if( $params->get( 'load_noconflict', 1 ) )
+			{
+				$script[] = 'jQuery.noConflict();';
+			}
+			
+			JHtml::addIncludePath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers/html' );
+			
+			$options = JHtml::_( 'fieldsandfilters_25.getJSObject', $options );
+		}
+		
+		JHtml::_( 'script', 'fieldsandfilters/component/jquery.fieldsandfilters.js', false, true );
+		
 		$script[]       = 'jQuery(document).ready(function($) {';
-		$script[]       = '     $( "#faf-form-' . $module->id . '" ).fieldsandfilters(' .  JHtml::getJSObject( $options ) . ');';
+		$script[]       = '     $( "#faf-form-' . $module->id . '" ).fieldsandfilters(' .  $options . ');';
 		$script[]       = '});';
 		
 		JFactory::getDocument()->addScriptDeclaration( implode( "\n", $script ) );
-		
 		
 		require JModuleHelper::getLayoutPath( 'mod_fieldsandfilters', $params->get( 'layout', 'default' ) );
 	}
