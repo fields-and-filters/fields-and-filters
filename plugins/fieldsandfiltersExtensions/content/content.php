@@ -919,7 +919,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( !$emptyItemsID )
 		{
 			$js[] = 'jQuery(document).ready(function($) {';
-			$js[] = '	$(".pagination").fieldsandfilters("pagination"'
+			$js[] = '	$("' . $this->params->get( 'selector_pagination_filters', '.pagination' ) . '").fieldsandfilters("pagination"'
 						. ( FieldsandfiltersFactory::isVersion() ? ',{pagination: "start"}' : '' )
 						. ');';
 			$js[] = '});';

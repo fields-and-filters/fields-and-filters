@@ -99,6 +99,13 @@
 					/>
 					-->
 					<field
+						name="selector_pagination_filters"
+						type="text"
+						default=".pagination"
+						label="COM_FIELDSANDFILTERS_SELECTOR_PAGINATION_FILTERS_LBL"
+						description="COM_FIELDSANDFILTERS_SELECTOR_PAGINATION_FILTERS_DESC"
+					/>
+					<field
 						name="use_allextensions_filters"
 						type="radio"
 						class="btn-group"
