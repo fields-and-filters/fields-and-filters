@@ -675,7 +675,8 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			return;
 		}
 		
-		$jinput = JFactory::getApplication()->input;
+		$app 	= JFactory::getApplication();
+		$jinput = $app->input;
 		$id 	= $jinput->get( 'id', 0, 'int' );
 		
 		// Load PluginExtensions Helper
@@ -764,7 +765,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$jregistry->set( 'filters.request', $request );
 		$jregistry->set( 'filters.counts', $counts );
 		
-		if( FieldsandfiltersFactory::isVersion() )
+		if( $app->getCfg( 'sef', 0 ) )
 		{
 			$jregistry->set( 'filters.pagination', array( 'start' => 0 ) );
 		}
@@ -920,7 +921,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			$js[] = 'jQuery(document).ready(function($) {';
 			$js[] = '	$("' . $this->params->get( 'selector_pagination_filters', '.pagination' ) . '").fieldsandfilters("pagination"'
-						. ( FieldsandfiltersFactory::isVersion() ? ',{pagination: "start"}' : '' )
+						. ( $app->getCfg( 'sef', 0 ) ? ',{pagination: "start"}' : '' )
 						. ');';
 			$js[] = '});';
 			
