@@ -39,7 +39,15 @@ class FieldsandfiltersViewFields extends JViewLegacy
 		FieldsandfiltersFactory::getHelper()->addSubmenu( JFactory::getApplication()->input->getCmd( 'view', '' ) );
 		
 		$this->addToolbar();
-		$this->sidebar = JHtmlSidebar::render();
+		
+		if( FieldsandfiltersFactory::isVersion() )
+		{
+			$this->sidebar = JHtmlSidebar::render();
+		}
+		else if( is_null( $tpl ) )
+		{
+			$tpl = '2.5';
+		}
 		
 		parent::display( $tpl );
 	}
@@ -57,37 +65,40 @@ class FieldsandfiltersViewFields extends JViewLegacy
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_FIELDS' ), 'fields.png' );
 		
-		JHtmlSidebar::setAction( 'index.php?option=com_fieldsandfilters&view=fields' );
-		
-		JHtmlSidebar::addFilter(
-			JText::_( 'JOPTION_SELECT_PUBLISHED' ),
-			'filter_published',
-			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions' ), 'value', 'text', $this->state->get( 'filter.state' ), false )
-		);
-		
-		JHtmlSidebar::addFilter(
-			JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
-			'filter_extension_type_id',
-			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
-		);
-		
-		JHtmlSidebar::addFilter(
-			JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE' ),
-			'filter_type',
-			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginTypesOptions' ), 'value', 'text', $this->state->get( 'filter.type' ), false )
-		);
-		
-		JHtmlSidebar::addFilter(
-			JText::_( 'JOPTION_SELECT_ACCESS' ),
-			'filter_access',
-			JHtml::_( 'select.options', JHtml::_( 'access.assetgroups' ), 'value', 'text', $this->state->get( 'filter.access' ), false )
-		);
-		
-		JHtmlSidebar::addFilter(
-			JText::_( 'JOPTION_SELECT_LANGUAGE' ),
-			'filter_language',
-			JHtml::_( 'select.options', JHtml::_( 'contentlanguage.existing' ), 'value', 'text', $this->state->get( 'filter.language' ), false )
-		);
+		if( FieldsandfiltersFactory::isVersion() )
+		{
+			JHtmlSidebar::setAction( 'index.php?option=com_fieldsandfilters&view=fields' );
+			
+			JHtmlSidebar::addFilter(
+				JText::_( 'JOPTION_SELECT_PUBLISHED' ),
+				'filter_published',
+				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions' ), 'value', 'text', $this->state->get( 'filter.state' ), false )
+			);
+			
+			JHtmlSidebar::addFilter(
+				JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
+				'filter_extension_type_id',
+				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
+			);
+			
+			JHtmlSidebar::addFilter(
+				JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE' ),
+				'filter_type',
+				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginTypesOptions' ), 'value', 'text', $this->state->get( 'filter.type' ), false )
+			);
+			
+			JHtmlSidebar::addFilter(
+				JText::_( 'JOPTION_SELECT_ACCESS' ),
+				'filter_access',
+				JHtml::_( 'select.options', JHtml::_( 'access.assetgroups' ), 'value', 'text', $this->state->get( 'filter.access' ), false )
+			);
+			
+			JHtmlSidebar::addFilter(
+				JText::_( 'JOPTION_SELECT_LANGUAGE' ),
+				'filter_language',
+				JHtml::_( 'select.options', JHtml::_( 'contentlanguage.existing' ), 'value', 'text', $this->state->get( 'filter.language' ), false )
+			);
+		}
 		
 		if( $canDo->get( 'core.create' ) )
 		{
