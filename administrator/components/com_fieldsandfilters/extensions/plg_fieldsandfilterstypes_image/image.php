@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     1.1.0
+ * @version     1.1.1
  * @package     fieldsandfilters.plugin
  * @subpackage  fieldsandfilters_field_type.image
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
@@ -228,7 +228,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	 */
 	public function onFieldsandfiltersBeforeSaveData( $context, $newItem, $oldItem, $isNew )
 	{
-		if( $context == 'com_fieldsandfilters.field' && $newItem->field_type == $this->_name )
+		if( $context == 'com_fieldsandfilters.field' && $newItem->field_type == $this->_name && FieldsandfiltersFactory::getPluginTypes()->getModeName( $newItem->mode ) == 'static' )
 		{
 			$newItem->params = new JRegistry( $newItem->params );
 			$newItem->values->set( 'data', (string) $this->_createImages( new stdClass, $newItem, $newItem->values ) );
@@ -277,6 +277,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				$imageInfo->folder 		= $field->field_id;
 				$imageInfo->prefixName		= property_exists( $element, 'element_id' ) ? $element->element_id : 0;
 				
+				$isCreated			= true;
+				$isCreatedThumb			= true;
+				
 				$pluginHeleper->createNameImage( $imageInfo );
 				
 				$folder = $pluginHeleper->getCacheFolder() . '/'  . $field->field_id . '/';
@@ -300,7 +303,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						
 						try
 						{
-							if( $pluginHeleper->createImage( $imageInfo ) )
+							if( $pluginHeleper->createImage( $field->field_name, $imageInfo ) )
 							{
 								$_data->set( 'src', str_replace( JPath::clean( $jroot ), '', $imageInfo->src ) );
 								
@@ -313,6 +316,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						}
 						catch( Exception $e )
 						{
+							$isCreated = false;
+							
+							$_data->set( 'src', '' );
 							$app->enqueueMessage( $e->getMessage(), 'error' );
 						}
 					}
@@ -340,7 +346,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						
 						try
 						{
-							if( $pluginHeleper->createImage( $imageInfo ) )
+							if( $pluginHeleper->createImage( ( $field->field_name . ' Thumbs' ), $imageInfo ) )
 							{
 								$_data->set( 'src_thumb', str_replace( JPath::clean( $jroot ), '', $imageInfo->src ) );
 								
@@ -353,10 +359,18 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						}
 						catch( Exception $e )
 						{
+							$isCreatedThumb = false;
+							
+							$_data->set( 'src_thumb', '' );
 							$app->enqueueMessage( $e->getMessage(), 'error' );
 						}
 					}
-				}	
+				}
+				
+				if( !$isCreated && !( $createThumb && $isCreatedThumb ) )
+				{
+					$_data = null;
+				}
 			}
 			
 			unset( $imageInfo );
@@ -603,7 +617,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						
 						try
 						{
-							if( !$pluginHeleper->createImage( $imageInfo ) )
+							if( !$pluginHeleper->createImage( $field->field_name, $imageInfo ) )
 							{
 								throw new RuntimeException( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_NOT_CREATE_IMAGE', $field->field_name ) );
 							}
@@ -626,11 +640,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						$imageInfo->quality	= (int) $field->params->def( 'type.quality_thumb', $this->params->get( 'quality_thumb', 0 ) );
 						$imageInfo->name	= basename( $src );
 						
-						$pluginHeleper->createImage( $imageInfo );
-						
 						try
 						{
-							if( !$pluginHeleper->createImage( $imageInfo ) )
+							if( !$pluginHeleper->createImage( ( $field->field_name . ' Thumbs' ), $imageInfo ) )
 							{
 								throw new RuntimeException( JText::sprintf( 'PLG_FAF_TS_IE_ERROR_NOT_CREATE_IMAGE', $field->field_name ) );
 							}

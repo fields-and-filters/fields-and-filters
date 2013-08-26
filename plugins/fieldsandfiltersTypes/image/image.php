@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     1.1.0
+ * @version     1.1.1
  * @package     fieldsandfilters.plugin
  * @subpackage  fieldsandfilters_field_type.image
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
