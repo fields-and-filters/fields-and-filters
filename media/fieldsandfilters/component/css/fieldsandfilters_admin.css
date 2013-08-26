@@ -1,4 +1,4 @@
-/* -- ICONS STYLES ----------------------------- */
+/* -- ICONS STYLES -- */
 .icon-48-fieldsandfilters     { background-image: url(../images/icons/icon-48-fieldsandfilters.png); }
 .icon-48-fields               { background-image: url(../images/icons/icon-48-fields.png); }
 .icon-48-add-field            { background-image: url(../images/icons/icon-48-add-field.png); }
@@ -7,7 +7,7 @@
 .icon-48-elements             { background-image: url(../images/icons/icon-48-elements.png); }
 .icon-48-element              { background-image: url(../images/icons/icon-48-element.png); }
 
-/* -- CONTROL PANEL STYLES ----------------------------- */
+/* -- CONTROL PANEL STYLES -- */
 .cpanel-block {
       display: inline-block;
       width: 100%;
@@ -81,3 +81,13 @@
 	margin: 0 auto;
 	padding: 10px 0;
 }
+
+/* ---------------------------- Joomla 2.5 ----------------------------*/
+/* -- ICONS STYLES -- */
+.icon-32-notice               { background-image: url(../images/icons/icon-32-notice.png); }
+.icon-32-dashboard            { background-image: url(../images/icons/icon-32-notice.png); }
+.icon-32-star                 { background-image: url(../images/icons/icon-32-deny.png); }
+.icon-32-star-empty           { background-image: url(../images/icons/icon-32-remove.png); }
+.jgrid span.onlyadmin         { background-image: url(../images/icons/icon-16-notice.png); }
+.jgrid span.required          { background-image: url(../images/icons/icon-16-deny.png); }
+.jgrid span.unrequired        { background-image: url(../images/icons/icon-16-remove.png); }

@@ -25,6 +25,8 @@ class FieldsandfiltersViewPlugins extends JViewLegacy
 	 */
 	public function display( $tpl = null )
 	{
+		$tpl = is_null( $tpl ) && !FieldsandfiltersFactory::isVersion() ? '2.5' : $tpl;
+		
 		switch( $this->getLayout() )
 		{
 			case 'types':

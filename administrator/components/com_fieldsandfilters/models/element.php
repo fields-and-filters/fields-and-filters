@@ -100,7 +100,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 		$this->setState( 'element.item_id',	$itemID );
 
 		// Get the form.
-		$form = $this->loadForm( 'com_fieldsandfilters.element', 'element', array('control' => 'jform', 'load_data' => $loadData ) );
+		$form = $this->loadForm( 'com_fieldsandfilters.element', 'element', array( 'control' => 'jform', 'load_data' => $loadData ) );
 		if( empty( $form ) )
 		{
 			return false;

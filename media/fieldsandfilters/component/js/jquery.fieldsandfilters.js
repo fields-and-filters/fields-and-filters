@@ -170,20 +170,16 @@ $.extend( $fn, {
 			break;
 			case 'get':
 			default:
+				var url;
 				keys = this.get( options, 'pagination', [] );
 				keys = $.isArray( keys ) ? keys : [keys];
 				$pagination.on( 'click', this.get( options, 'selector', 'a' ), function( event ){
 					event.preventDefault();
-					var object = $.parseJSON(
-						    '{"' + decodeURI( $( this ).prop( 'search' )
-							.replace( /^\?/g, '' )
-							.replace( /&/g, '","' )
-							.replace( /=/g, '":"' ) ) + '"}'
-					);
+					url = $( this ).prop( 'search' );					
 					$.map( keys, function( key ){
-						$fn.set( ( '$request.' + key ), $fn.get( object, key, 0 ) )
+						$fn.set( ( '$request.' + key ), $fn.getURLParameter( url, key, 0 ) );
 					});
-					
+										
 					$fn.ajax();
 					
 					return false;
@@ -340,7 +336,14 @@ $.extend( $fn, {
 $.extend( $fn, {
 	requestID : function( createNew )
 	{
-		return ( createNew ? this.set( '$request.requestID', +new Date() ) : this.def( '$request.requestID', +new Date() ) );
+		var newID = (+new Date()).toString(32).toUpperCase();;
+		return ( createNew ? this.set( '$request.requestID', newID ) : this.def( '$request.requestID', newID ) );
+	},
+	
+	getURLParameter: function( url, name, def )
+	{
+		def = def || null;
+		return decodeURIComponent( ( new RegExp( '[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)' ).exec( url )||[,""])[1].replace( /\+/g, '%20' ) ) || def;
 	},
 	
 	token : function( newToken )

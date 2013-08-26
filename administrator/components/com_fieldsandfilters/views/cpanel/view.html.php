@@ -22,7 +22,7 @@ class FieldsandfiltersViewCpanel extends JViewLegacy
 	 * 
 	 * @since	1.0.0
 	 */
-	public function display($tpl = null)
+	public function display( $tpl = null )
 	{
 		$option = JFactory::getApplication()->input->get( 'option' );
 		
