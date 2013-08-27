@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     1.1.0
+ * @version     1.1.1
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
@@ -25,6 +25,8 @@ class FieldsandfiltersViewPlugins extends JViewLegacy
 	 */
 	public function display( $tpl = null )
 	{
+		$tpl = is_null( $tpl ) && !FieldsandfiltersFactory::isVersion() ? '2.5' : $tpl;
+		
 		switch( $this->getLayout() )
 		{
 			case 'types':

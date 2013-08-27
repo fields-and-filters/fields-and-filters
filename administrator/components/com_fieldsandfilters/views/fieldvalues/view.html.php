@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     1.1.0
+ * @version     1.1.1
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
@@ -40,9 +40,17 @@ class FieldsandfiltersViewFieldvalues extends JViewLegacy
 		FieldsandfiltersFactory::getHelper()->addSubmenu( JFactory::getApplication()->input->getCmd( 'view', '' ) );
 		
 		$this->addToolbar();
-		$this->sidebar = JHtmlSidebar::render();
 		
-		parent::display($tpl);
+		if( FieldsandfiltersFactory::isVersion() )
+		{
+			$this->sidebar = JHtmlSidebar::render();
+		}
+		else if( is_null( $tpl ) )
+		{
+			$tpl = '2.5';
+		}
+		
+		parent::display( $tpl );
 	}
 
 	/**
@@ -58,19 +66,22 @@ class FieldsandfiltersViewFieldvalues extends JViewLegacy
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_FIELDVALUES' ), 'field-values.png' );
 		
-		JHtmlSidebar::setAction( 'index.php?option=com_fieldsandfilters&view=fieldvalues' );
+		if( FieldsandfiltersFactory::isVersion() )
+		{
+			JHtmlSidebar::setAction( 'index.php?option=com_fieldsandfilters&view=fieldvalues' );
+			
+			JHtmlSidebar::addFilter(
+				null,
+				'filter_field_id',
+				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.fieldsOptions' ), 'value', 'text', $this->state->get( 'filter.field_id' ), false )
+			);
 		
-		JHtmlSidebar::addFilter(
-			null,
-			'filter_field_id',
-			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.fieldsOptions' ), 'value', 'text', $this->state->get( 'filter.field_id' ), false )
-		);
-		
-		JHtmlSidebar::addFilter(
-			JText::_( 'JOPTION_SELECT_PUBLISHED' ),
-			'filter_published',
-			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions', array( 'adminonly' => false ) ), 'value', 'text', $this->state->get( 'filter.state' ), false )
-		);
+			JHtmlSidebar::addFilter(
+				JText::_( 'JOPTION_SELECT_PUBLISHED' ),
+				'filter_published',
+				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions', array( 'adminonly' => false ) ), 'value', 'text', $this->state->get( 'filter.state' ), false )
+			);
+		}
 		
 		if( $canDo->get( 'core.create' ) )
 		{

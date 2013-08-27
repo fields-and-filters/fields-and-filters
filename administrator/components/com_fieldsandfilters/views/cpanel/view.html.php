@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     1.1.0
+ * @version     1.1.1
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
@@ -22,7 +22,7 @@ class FieldsandfiltersViewCpanel extends JViewLegacy
 	 * 
 	 * @since	1.0.0
 	 */
-	public function display($tpl = null)
+	public function display( $tpl = null )
 	{
 		$option = JFactory::getApplication()->input->get( 'option' );
 		

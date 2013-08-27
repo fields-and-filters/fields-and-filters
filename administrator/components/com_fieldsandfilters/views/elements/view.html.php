@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     1.1.0
+ * @version     1.1.1
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
@@ -40,9 +40,17 @@ class FieldsandfiltersViewElements extends JViewLegacy
 		FieldsandfiltersFactory::getHelper()->addSubmenu( JFactory::getApplication()->input->getCmd( 'view', '' ) );
 		
 		$this->addToolbar();
-		$this->sidebar = JHtmlSidebar::render();
 		
-		parent::display($tpl);
+		if( FieldsandfiltersFactory::isVersion() )
+		{
+			$this->sidebar = JHtmlSidebar::render();
+		}
+		else if( is_null( $tpl ) )
+		{
+			$tpl = '2.5';
+		}
+		
+		parent::display( $tpl );
 	}
 
 	/**
@@ -58,25 +66,28 @@ class FieldsandfiltersViewElements extends JViewLegacy
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_ELEMENTS' ), 'elements.png' );
 		
-		JHtmlSidebar::setAction( 'index.php?option=com_fieldsandfilters&view=elements' );
-		
-		JHtmlSidebar::addFilter(
-			JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
-			'filter_extension_type_id',
-			JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
-		);
-		
-		if( is_array( $filtersOptions = $this->state->get( 'filters.options' ) ) )
+		if( FieldsandfiltersFactory::isVersion() )
 		{
-			foreach( $filtersOptions AS $name => &$filter )
+			JHtmlSidebar::setAction( 'index.php?option=com_fieldsandfilters&view=elements' );
+			
+			JHtmlSidebar::addFilter(
+				JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
+				'filter_extension_type_id',
+				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
+			);
+			
+			if( is_array( $filtersOptions = $this->state->get( 'filters.options' ) ) )
 			{
-				$filter = !is_array( $filter ) ? (array) $filter : $filter;
-				
-				JHtmlSidebar::addFilter(
-					JArrayHelper::getValue( $filter, 'label' ),
-					( 'filter_' . $name ),
-					JHtml::_( 'select.options', JArrayHelper::getValue( $filter, 'options', array(), 'array' ), 'value', 'text', $this->state->get( 'filter.' . $name ), false )
-				);
+				foreach( $filtersOptions AS $name => &$filter )
+				{
+					$filter = !is_array( $filter ) ? (array) $filter : $filter;
+					
+					JHtmlSidebar::addFilter(
+						JArrayHelper::getValue( $filter, 'label' ),
+						( 'filter_' . $name ),
+						JHtml::_( 'select.options', JArrayHelper::getValue( $filter, 'options', array(), 'array' ), 'value', 'text', $this->state->get( 'filter.' . $name ), false )
+					);
+				}
 			}
 		}
 		
