@@ -50,6 +50,10 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 				'Itemid'	=> $jinput->get( 'Itemid', 0, 'int' )
 		);
 		
+		/* [TEST] */
+		$request['context'] = $context;
+		/* [TEST] */
+		
 		$request = array_merge( $request, (array) get_object_vars( $filtersRequest ) );
 		
 		$options = array(

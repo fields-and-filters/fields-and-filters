@@ -670,10 +670,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	 */
 	public function onFieldsandfiltersPrepareFiltersHTML( $context, $fieldsID = null, $getAllextensions = true, $params = false, $ordering = 'ordering' )
 	{
-		if( $context != 'com_content.category' )
+		/* [TEST] */
+		if( !( ( $isCategory = $context == 'com_content.category' ) || ( $isArchive = $context == 'com_content.archive' ) ) )
 		{
 			return;
 		}
+		/* @end [TEST] */
 		
 		$app 	= JFactory::getApplication();
 		$jinput = $app->input;
@@ -683,19 +685,25 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
 		$extensionContent 	= $pluginExtensionsHelper->getExtensionsByName( $this->_name )->get( $this->_name );
 		
-		if( !$id || !$extensionContent )
+		/* [TEST] */
+		if( ( $isCategory && !$id ) || !$extensionContent )
 		{
 			return;
 		}
+		/* @end [TEST] */
 		
 		// add model path
-		$prefix = get_class( $this );
+		$prefix 	= get_class( $this );
+		
 		JModelLegacy::addIncludePath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $prefix . 'Model' ) );
 		
-		if( !( $model = JModelLegacy::getInstance( 'category', ( $prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
+		/* [TEST] */
+		$typeName 	= trim( strstr($context, '.'), '.'); // [TODO] test speed
+		if( !( $model = JModelLegacy::getInstance( $typeName, ( $prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
 		{
 			return;
 		}
+		/* @end [TEST] */
 		
 		$itemsID = $model->getContentItemsID();
 		
@@ -705,7 +713,10 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		// Load Filters Helper
-		$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extensionContent->extension_type_id, $fieldsID, $itemsID );
+		/* [TEST] */
+		// [TODO] check test status change in article element
+		$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extensionContent->extension_type_id, $fieldsID, $itemsID, array( 1, 2 ) );
+		/* @end [TEST] */
 		
 		if( empty( $counts ) )
 		{
@@ -782,10 +793,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	 */
 	public function onFieldsandfiltersRequestJSON( $context )
 	{
+		/* [TEST] */
 		if( $context != 'com_fieldsandfilters.filters.content' )
 		{
 			return;
 		}
+		/* @end [TEST] */
 		
 		$app 		= JFactory::getApplication();
 		$jinput 	= $app->input;
@@ -793,13 +806,23 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$basePath	= JPATH_SITE . '/components/com_content';
 		$id 		= $jinput->get( 'id', 0, 'int' );
 		
+		/* [TEST] */
+		$context = $jinput->get( 'context' );
+		if( !( ( $isCategory = $context == 'com_content.category' ) || ( $isArchive = $context == 'com_content.archive' ) ) )
+		{
+			return;
+		}
+		/* @end [TEST] */
+		
 		// Load PluginExtensions Helper
                 $extension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByName( $this->_name )->get( $this->_name );
 		
-                if( !$id || !$extension )
+		/* [TEST] */
+                if( ( $isCategory && !$id ) || !$extension )
                 {
                         return false;
                 }
+		/* @end [TEST] */
 		
 		// Include dependancies
 		JLoader::import( 'com_content.helpers.route', JPATH_SITE . '/components' );
@@ -813,15 +836,21 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		// load view
-		if( !( $view = $controller->getView( 'category', 'html', '', array( 'base_path' => $basePath, 'layout' => $jinput->get( 'layout', 'default' ) ) ) ) )
+		/* [TEST] */
+		$typeName 	= trim( strstr($context, '.'), '.'); // [TODO] test speed
+		if( !( $view = $controller->getView( $typeName, 'html', '', array( 'base_path' => $basePath, 'layout' => $jinput->get( 'layout', 'default' ) ) ) ) )
 		{
 			return false;
 		}
+		/* @end [TEST] */
 		
 		// For joomla 2.5 && Key Reference
 		if( !FieldsandfiltersFactory::isVersion() )
 		{
-			$view->addTemplatePath( JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_content/category' );
+			/* [TEST] */
+			$view->addTemplatePath( JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_content/' . $typeName );
+			/* @end [TEST] */
+			
 		}
 		
 		$fieldsandfilters = $jinput->get( 'fieldsandfilters', array(), 'array' );
@@ -844,16 +873,21 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$extensionsParams->set( 'plugin.value', $this->params->get( 'comparison_between_values_filters' ) );
 			$betweenValues = $extensionsHelper->getExtensionsParam( 'comparison_between_values_filters', $extensionsParams, 'OR' );
 			
-			$itemsID = $filtersSiteHelper->getItemsIDByFilters( $extension->extension_type_id, $fieldsandfilters, 1, $betweenFilters, $betweenValues );
+			/* [TEST] */
+			$itemsID = $filtersSiteHelper->getItemsIDByFilters( $extension->extension_type_id, $fieldsandfilters, array( 1, 2 ), $betweenFilters, $betweenValues );
+			/* @end [TEST] */
 		}
 		else
 		{
 			$itemsID = $filtersSiteHelper->getSimpleItemsID( false );
 		}
 		
+		
 		// set new jinput values
 		$jinput->set( 'option', 'com_content' );
-		$jinput->set( 'view', 'category' );
+		/* [TEST] */
+		$jinput->set( 'view', $typeName );
+		/* @end [TEST] */
 		// $jinput->set( 'layout', 'blog' );
 		$jinput->set( 'id', $jinput->get( 'id', 0, 'int' ) );
 		
@@ -861,10 +895,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$prefix = get_class( $this );
 		$controller->addModelPath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $prefix . 'Model' ) );
 		
-		if( !( $model = $controller->getModel( 'category', ( $prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
+		/* [TEST] */
+		if( !( $model = $controller->getModel( $typeName, ( $prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
 		{
 			return false;
 		}
+		/* @end [TEST] */
 		
 		// set module to view
 		$view->setModel( $model, true );
@@ -905,7 +941,9 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( !empty( $itemsID ) && !empty( $fieldsID ) && !$emptyItemsID  )
 		{
 			// Load Filters Helper
-			$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extension->extension_type_id, $fieldsID, $itemsID );
+			/* [TEST] */
+			$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extension->extension_type_id, $fieldsID, $itemsID, array( 1, 2 ) );
+			/* @end [TEST] */
 			
 			$jregistry->set( 'filters.counts', $counts );
 		}
