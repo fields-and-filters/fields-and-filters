@@ -484,7 +484,10 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		// Load Elements Helper
-		$elementsID = FieldsandfiltersFactory::getElements()->getElementsByIDColumn( 'element_id', $extensionContent->extension_type_id, $pks, $this->_states, false );
+		/* [TODO] Buxfix - not change status */
+		/* [TEST] */
+		$elementsID = FieldsandfiltersFactory::getElements()->getElementsByItemIDColumn( 'element_id', $extensionContent->extension_type_id, $pks, $this->_states, false );
+		/* @end [TEST] */
 		
 		if( empty( $elementsID ) )
 		{
@@ -671,6 +674,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	public function onFieldsandfiltersPrepareFiltersHTML( $context, $fieldsID = null, $getAllextensions = true, $params = false, $ordering = 'ordering' )
 	{
 		/* [TEST] */
+		$isCategory = $isArchive = false;
 		if( !( ( $isCategory = $context == 'com_content.category' ) || ( $isArchive = $context == 'com_content.archive' ) ) )
 		{
 			return;
@@ -715,7 +719,13 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// Load Filters Helper
 		/* [TEST] */
 		// [TODO] check test status change in article element
-		$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extensionContent->extension_type_id, $fieldsID, $itemsID, array( 1, 2 ) );
+		$state 	= 1;
+		if( $isArchive )
+		{
+			$state = 2;
+		}
+		
+		$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extensionContent->extension_type_id, $fieldsID, $itemsID, $state );
 		/* @end [TEST] */
 		
 		if( empty( $counts ) )
@@ -785,6 +795,27 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$jregistry->set( 'filters.pagination', array( 'limitstart' => 0 ) );
 		}
 		
+		/* [TEST] */
+		if( $isArchive )
+		{
+			$selector = $this->params->get('selector_content_archive_form', '#adminForm' );
+			$script = array( $jregistry->get( 'filters.script', '') );
+			$script[] = 'jQuery(document).ready(function($){';
+			$script[] = '	$.fieldsandfilters.onSerialize = function(data){';
+			$script[] = '		$("' . $selector . '").each( function(){';
+			$script[] = '			$.each($(this).serializeArray(), function(k, obj){';
+			$script[] = '				if( $.inArray( obj.name, ["month", "year", "limit"] ) != -1 && obj.value ){';
+			$script[] = '					data[obj.name] = obj.value;';
+			$script[] = '				}';
+			$script[] = '			});';
+			$script[] = '		});';
+			$script[] = '	};';
+			$script[] = '});';
+			
+			$jregistry->set( 'filters.script', implode( "\n", $script ) );
+		}
+		/* @end [TEST] */
+		
 		return implode( "\n", $templateFields );
 	}
 	
@@ -808,6 +839,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		/* [TEST] */
 		$context = $jinput->get( 'context' );
+		$isCategory = $isArchive = false;
 		if( !( ( $isCategory = $context == 'com_content.category' ) || ( $isArchive = $context == 'com_content.archive' ) ) )
 		{
 			return;
@@ -856,6 +888,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$fieldsandfilters = $jinput->get( 'fieldsandfilters', array(), 'array' );
 		
 		// Load FiltersSite Helper
+		$state 	= 1;
+		if( $isArchive )
+		{
+			$state = 2;
+		}
+		
 		$filtersSiteHelper = FieldsandfiltersFactory::getFiltersSite();
 		if( !empty( $fieldsandfilters ) )
 		{
@@ -874,7 +912,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$betweenValues = $extensionsHelper->getExtensionsParam( 'comparison_between_values_filters', $extensionsParams, 'OR' );
 			
 			/* [TEST] */
-			$itemsID = $filtersSiteHelper->getItemsIDByFilters( $extension->extension_type_id, $fieldsandfilters, array( 1, 2 ), $betweenFilters, $betweenValues );
+			$itemsID = $filtersSiteHelper->getItemsIDByFilters( $extension->extension_type_id, $fieldsandfilters, $state, $betweenFilters, $betweenValues );
 			/* @end [TEST] */
 		}
 		else
@@ -929,10 +967,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			
 			ob_end_clean();
 		}
-		else
-		{
-			$body = JText::_( 'PLG_FAF_ES_CT_ERROR_NOT_MATCH_TO_FILTERS' );
-		}
 		
 		$itemsID 	= $model->getState( 'fieldsandfilters.itemsID', array() );
 		$fieldsID 	= $jinput->get( 'fields', array(), 'array' );
@@ -942,15 +976,16 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			// Load Filters Helper
 			/* [TEST] */
-			$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extension->extension_type_id, $fieldsID, $itemsID, array( 1, 2 ) );
+			$counts = (array) FieldsandfiltersFactory::getFiltersSite()->getFiltersValuesCount( $extension->extension_type_id, $fieldsID, $itemsID, $state );
 			/* @end [TEST] */
 			
 			$jregistry->set( 'filters.counts', $counts );
 		}
-		else if( $emptyItemsID )
+		else if( $emptyItemsID || empty( $itemsID ) )
 		{
 			// [TODO] when is empty display all fields with 0 counts or display special buttons to reset filters
-			$jregistry->set( 'filters.empty', $emptyItemsID );
+			$body = JText::_( 'PLG_FAF_ES_CT_ERROR_NOT_MATCH_TO_FILTERS' );
+			$jregistry->set( 'filters.empty', true );
 		}
 		
 		$document->setBuffer( $body, array( 'type' => 'component', 'name' => 'fieldsandfilters', 'title' => null ) );
@@ -961,7 +996,19 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$js[] = '	$("' . $this->params->get( 'selector_pagination_filters', '.pagination' ) . '").fieldsandfilters("pagination"'
 						. ( $app->getCfg( 'sef', 0 ) ? ',{pagination: "start"}' : '' )
 						. ');';
+			if( $isArchive )
+			{
+				$selector = $this->params->get('selector_content_archive_form', '#adminForm' );
+				$js[] = '	$("' . $selector . '").on( "submit", function(event){';
+				$js[] = '		event.preventDefault();';
+				$js[] = '		$($.fieldsandfilters.selector("form") + ":first").trigger( "submit" );';
+				$js[] = '		return false;';
+				$js[] = '	});';
+			}
+			
 			$js[] = '});';
+			
+			
 			
 			$document->addScriptDeclaration( implode( "\n", $js ) );
 		}
