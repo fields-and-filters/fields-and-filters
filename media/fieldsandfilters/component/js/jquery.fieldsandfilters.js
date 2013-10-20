@@ -379,12 +379,18 @@ $.extend( $fn, {
 			}
 			
 			$fn.set( '$data', {} );
-			$.extend( true, this.get( '$data', {} ), this.serialize() );
+			$.extend( true, this.get( '$data', {} ), serialize );
 			this.set( data, 'module', $fn.get( options, 'module', null ) );
 		}
 		
 		$.extend( true, data, this.get( '$data', {} ), this.get( '$request', {} ) );
 		this.set( data, $fn.token(), 1  );
+		
+		/* [TEST] */
+		if($.isFunction($fn.onBeforeSend)){
+			$fn.onBeforeSend.call(this, data, $form);
+		}
+		/* @end [TEST] */
 		
 		// start loading data
 		this.loading();
@@ -626,6 +632,12 @@ $.extend( $fn, {
 				$fn.set( obj, el.name, el.value );
 			}
 		});
+		
+		/* [TEST] */
+		if($.isFunction($fn.onSerialize)){
+			$fn.onSerialize.call(this, obj, $form);
+		}
+		/* @end [TEST] */
 		
 		return obj;
 	}
