@@ -52,7 +52,7 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		
 		/* [TEST] */
 		$request['context'] = $context;
-		/* [TEST] */
+		/* @end [TEST] */
 		
 		$request = array_merge( $request, (array) get_object_vars( $filtersRequest ) );
 		
@@ -120,7 +120,17 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		$script[]       = '     $( "#faf-form-' . $module->id . '" ).fieldsandfilters(' .  $options . ');';
 		$script[]       = '});';
 		
-		JFactory::getDocument()->addScriptDeclaration( implode( "\n", $script ) );
+		/* [TEST] */
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration( implode( "\n", $script ) );
+		
+		if( $script = $jregistry->get( 'filters.script' ) )
+		{
+			$document->addScriptDeclaration( $script );
+		}
+		/* @end [TEST] */
+		
+		
 		
 		require JModuleHelper::getLayoutPath( 'mod_fieldsandfilters', $params->get( 'layout', 'default' ) );
 	}
