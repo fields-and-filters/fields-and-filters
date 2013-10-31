@@ -111,6 +111,8 @@ class FieldsandfiltersFieldsSiteHelper
 	{
 		$interpolation = $interpolation ? $interpolation : FieldsandfiltersFactory::getExtensions()->getPluginParams( 'system', 'fieldsandfilters' )->get( 'interpolation', '#{%s}' );
 		
+		// test new methods, what method is fasters
+		
 		if( strpos( $interpolation, '%s' ) !== false )
 		{
 			$regex = '/' . sprintf( $interpolation, '(.*?)' ) . '/i';
