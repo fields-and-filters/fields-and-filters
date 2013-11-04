@@ -111,7 +111,9 @@ class FieldsandfiltersFactory
 	}
 	
 	/**
-	 * @since       1.1.0
+	 * Get version.
+	 *
+	 * @since   1.1.0
 	 */
         public static function isVersion( $operator = '>=', $need = 3.0, $version = JVERSION )
         {
@@ -127,8 +129,11 @@ class FieldsandfiltersFactory
         }
 	
 	/**
-        * @since       1.1.0
-        */
+	 * Get dispatcher object.
+	 *
+	 * @see     JEventDispatcher or JDispatcher
+	 * @since   1.1.0
+	 */
 	public static function getDispatcher()
 	{
 		if( !self::$dispatcher )
