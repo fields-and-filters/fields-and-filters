@@ -10,9 +10,6 @@
 
 defined('_JEXEC') or die;
 
-// Load the Fieldsandfilters Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
  * Checkbox type fild
  * @package     fieldsandfilters.plugin
@@ -26,6 +23,15 @@ class plgSystemFieldsandfilters extends JPlugin
 	 * @since	1.0.0
 	 */
 	protected $_folder_plugin_extensions = 'fieldsandfiltersExtensions';
+
+	/**
+         * @since       1.2.0
+         */
+	public function onAfterInitialise()
+	{
+		JLoader::registerPrefix( 'Kextensions', JPATH_LIBRARIES . '/kextensions' );
+		JLoader::registerPrefix( 'Fieldsandfilters', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
+	}
 	
 	/**
 	 * Fieldsandfilters before save content method
@@ -191,7 +197,7 @@ class plgSystemFieldsandfilters extends JPlugin
 	 * @param	string	The context of the content being passed to the plugin.
 	 * @param	object	The article object.  Note $article->text is also available
 	 * @param	object	The article params
-	 * @param	int		The 'page' number
+	 * @param	int	The 'page' number
 	 *
 	 * @return	void
 	 * @since       1.1.0
