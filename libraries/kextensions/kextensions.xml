@@ -21,13 +21,6 @@
 		<folder>xml</folder>
 	</files>
 	<languages>
-		<language tag="en-GB">language/en-GB.plg_fieldsandfiltersTypes_checkboxlist.ini</language>
-		<language tag="en-GB">language/en-GB.plg_fieldsandfiltersTypes_checkboxlist.sys.ini</language>
+		<language tag="en-GB">en-GB.lib_kextensions.ini</language>
 	</languages>
-	<!--<config>
-		<fields name="params">
-			<fieldset name="basic">
-			</fieldset>
-		</fields>
-	</config>-->
 </extension>
