@@ -7,7 +7,6 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-
 // No direct access
 defined('_JEXEC') or die;
 

@@ -181,12 +181,29 @@ class FieldsandfiltersFactory
 	 */
         public static function __callStatic( $name, $arguments = array() )
         {
+		static $instances = array();
+		$name = strtolower( $name );
+		
 		switch( $name )
 		{
-			case 'getPluginExtensions':
+			case 'getfieldssites':
+				if( !isset( $instances[$name] ) )
+				{
+					$instances[$name] =  new FieldsandfiltersFieldsHelper;
+				}
+				return $instances[$name];
+			break;
+			case 'getfilterssites':
+				if( !isset( $instances[$name] ) )
+				{
+					$instances[$name] =  new FieldsandfiltersFiltersHelper;
+				}
+				return $instances[$name];
+			break;
+			case 'getpluginextensions':
 				return self::getExtensions();
 			break;
-			case 'getPluginTypes':
+			case 'getplugintypes':
 				return self::getTypes();
 			break;
 			default:
