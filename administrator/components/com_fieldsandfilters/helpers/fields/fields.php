@@ -19,7 +19,7 @@ JLoader::import( 'fieldsandfilters.buffer.values', JPATH_ADMINISTRATOR . '/compo
  * @package     com_fieldsandfilters
  * @since       1.1.0
  */
-class FieldsandfiltersFieldsHelper extends FieldsandfiltersBufferValuesHelper
+class FieldsandfiltersFields extends FieldsandfiltersBufferValuesHelper
 {
 	/**
          * An array of names that don't exists

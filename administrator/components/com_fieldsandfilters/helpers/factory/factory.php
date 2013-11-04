@@ -16,99 +16,94 @@ defined('_JEXEC') or die;
  */
 class FieldsandfiltersFactory
 {
-	/**
-	 * @since       1.1.0
+        /**
+	 * @var    FieldsandfiltersFields
+	 * @since  1.2.0
 	 */
-        protected static $instances = array();
-        
+	public static $fields = null;
+	
 	/**
-	 * @since       1.1.0
+	 * @var    FieldsandfiltersElements
+	 * @since  1.2.0
 	 */
-        protected static $path = '/components/com_fieldsandfilters/helpers';
-        
+	public static $elements = null;
+	
 	/**
-	 * @since       1.0.0
+	 * @var    FieldsandfiltersExtensions
+	 * @since  1.2.0
 	 */
-	public static function getPluginHelper( $type, $name, $helper = 'helper' )
+	public static $extensions = null;
+	
+	/**
+	 * @var    FieldsandfiltersTypes
+	 * @since  1.2.0
+	 */
+	public static $types = null;
+	
+	/**
+	 * Get a fields object.
+	 *
+	 * @see     FieldsandfiltersFields
+	 * @since   1.2.0
+	 */
+	public static function getFields()
 	{
-		$key = strtolower( $type . $name . $helper );
-		if( !array_key_exists( $key, self::$instances ) )
+		if( !self::$fields )
 		{
-			$class = 'plg' . ucfirst( $type ) . ucfirst( $name ) . ucfirst( $helper );
-			if( JLoader::import( ( $type . '.' . $name . '.' . $helper ), JPATH_PLUGINS ) && class_exists( $class ) )
-			{
-				if( method_exists( $class, 'getInstance' ) )
-				{
-					$instance = call_user_func_array( array( $class, 'getInstance' ), array() );
-				}
-				else
-				{
-					$instance = new $class;
-				}
-				
-				self::$instances[$key] = $instance;
-			}
-			else
-			{
-				throw new InvalidArgumentException( 'Method not exists ' . $name );
-				return false;
-			}
+			self::$fields = FieldsandfiltersFields::getInstance();
 		}
-		return self::$instances[$key];
+		
+		return self::$fields;
 	}
 	
-        /**
-	 * @since       1.1.0
+	/**
+	 * Get a elements object.
+	 *
+	 * @see     FieldsandfiltersElements
+	 * @since   1.2.0
 	 */
-        public static function __callStatic( $name, $arguments = array() )
-        {
-                $hash = md5( $name . serialize( $arguments ) );
-                if( !array_key_exists( $hash, self::$instances ) )
+	public static function getElements()
+	{
+		if( !self::$elements )
 		{
-                        if( substr( $name, 0, 3 ) == 'get' )
-                        {
-                                $file           = substr( $name, 3 );
-                                $class          = 'Fieldsandfilters' . ( ( strpos( $file, 'Helper' ) === 0 ) ? $file : $file . 'Helper' );
-                                $instance       = false;
-                                
-                                if( substr( $name, -4 ) == 'Site' )
-                                {
-                                        $path =  JPATH_SITE . self::$path;
-                                }
-                                else
-                                {
-                                        $path =  JPATH_ADMINISTRATOR . self::$path;
-                                }
-                                
-                                if( JLoader::import( 'fieldsandfilters.' . strtolower( $file ), $path ) && class_exists( $class ) )
-                                {
-                                        if( method_exists( $class, 'getInstance' ) )
-                                        {
-                                                $instance = call_user_func_array( array( $class, 'getInstance' ), $arguments );
-                                        }
-                                        else
-                                        {
-                                                $instance = new $class;
-                                        }
-                                        
-                                        self::$instances[$hash] = $instance;
-                                }
-                                else
-                                {
-                                        throw new InvalidArgumentException( 'Method not exists ' . $name );
-                                        return false;
-                                }
-                        }
-                        else
-                        {
-                                throw new InvalidArgumentException( 'Method not exists ' . $name );
-                                return false;
-                        }
+			self::$elements = FieldsandfiltersElements::getInstance();
 		}
-                
-                return self::$instances[$hash];
-        }
-        
+		
+		return self::$elements;
+	}
+	
+	/**
+	 * Get a extensions object.
+	 *
+	 * @see     FieldsandfiltersExtensions
+	 * @since   1.2.0
+	 */
+	public static function getExtensions()
+	{
+		if( !self::$extensions )
+		{
+			self::$extensions = FieldsandfiltersExtensions::getInstance();
+		}
+		
+		return self::$extensions;
+	}
+	
+	/**
+	 * Get a types object.
+	 *
+	 * @see     FieldsandfiltersTypes
+	 * @since   1.2.0
+	 */
+	public static function getTypes()
+	{
+		if( !self::$types )
+		{
+			self::$types = FieldsandfiltersTypes::getInstance();
+		}
+		
+		return self::$types;
+	}
+	
 	/**
 	 * @since       1.1.0
 	 */
@@ -146,4 +141,57 @@ class FieldsandfiltersFactory
 		
 		return $_dispatcher;
 	}
+	
+	
+	/**
+	 * @since       1.0.0
+	 * @deprecated  1.2.0
+	 */
+	public static function getPluginHelper( $type, $name, $helper = 'helper' )
+	{
+		$key = strtolower( $type . $name . $helper );
+		if( !array_key_exists( $key, self::$instances ) )
+		{
+			$class = 'plg' . ucfirst( $type ) . ucfirst( $name ) . ucfirst( $helper );
+			if( JLoader::import( ( $type . '.' . $name . '.' . $helper ), JPATH_PLUGINS ) && class_exists( $class ) )
+			{
+				if( method_exists( $class, 'getInstance' ) )
+				{
+					$instance = call_user_func_array( array( $class, 'getInstance' ), array() );
+				}
+				else
+				{
+					$instance = new $class;
+				}
+				
+				self::$instances[$key] = $instance;
+			}
+			else
+			{
+				throw new InvalidArgumentException( 'Method not exists ' . $name );
+				return false;
+			}
+		}
+		return self::$instances[$key];
+	}
+	
+	/**
+	 * @since       1.1.0
+	 * @deprecated  1.2.0
+	 */
+        public static function __callStatic( $name, $arguments = array() )
+        {
+		switch( $name )
+		{
+			case 'getPluginExtensions':
+				return self::getExtensions();
+			break;
+			case 'getPluginTypes':
+				return self::getTypes();
+			break;
+			default:
+				throw new InvalidArgumentException( 'Method not exists ' . $name );
+			break;
+		}
+        }
 }
