@@ -19,28 +19,16 @@ JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/
 class FieldsandfiltersFieldsSiteHelper
 {
 	/**
-	 * Simple syntax - #{field_id,item_id-option}
+	 * Simple syntax - #{field_id,item_id-option,context}
 	 * @since       1.2.0
 	 **/
 	const SYNTAX_SIMPLE = 1;
 	
 	/**
-	 * Simple syntax + context - #{field_id,item_id-option,context}
+	 * Simple syntax + params - #{field_id,item_id-option,context,{params}}
 	 * @since       1.2.0
 	 **/
-	const SYNTAX_CONTEXT = 2;
-	
-	/**
-	 * Simple syntax + params - #{field_id,item_id-option,{params}}
-	 * @since       1.2.0
-	 **/
-	const SYNTAX_PARAMS = 3;
-	
-	/**
-	 * Simple syntax + context + params - #{field_id,item_id-option,context,{params}}
-	 * @since       1.2.0
-	 **/
-	const SYNTAX_CONTEXT_PARAMS = 4;
+	const SYNTAX_EXTENDED = 2;
 	
 	/**
 	 * Old syntax - #{field_id,item_id,option}
@@ -154,7 +142,7 @@ class FieldsandfiltersFieldsSiteHelper
 	/**
 	 * @since       1.2.0
 	 **/
-	public static function preparationContent( &$text, $context = '', $option = null, $itemID = null, $excluded = array(), $syntax = null, $syntaxType = null )
+	public static function preparationContent( &$text, $context = '', $option = null, $itemID = null, $excluded = array(), $syntax = null, $syntaxType = 3 )
 	{
 		$syntax 	= $syntax ? $syntax : FieldsandfiltersFactory::getExtensions()->getPluginParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
 		$syntaxType 	= $syntaxType ? $syntaxType : FieldsandfiltersFactory::getExtensions()->getPluginParams( 'system', 'fieldsandfilters' )->get( 'syntax_type', self::SYNTAX_SIMPLE );
@@ -173,32 +161,15 @@ class FieldsandfiltersFieldsSiteHelper
 			/* @deprecated  1.2.0 */
 			if( $syntaxType == self::SYNTAX_OLD )
 			{
-				$regexp = '(?P<field_id>\d+)(?:,(?P<item_id>\d+)|)(?:,(?P<option>[\w.-]+)|)';
+				$regex = '(?P<field_id>\d+)(?:,(?P<item_id>\d+)|)(?:,(?P<option>[\w.-]+)|)';
 			}
 			/* @end deprecated  1.2.0 */
 			else
 			{
-				$regexp = '(?P<field_id>\d+)(?:,(?P<item_id>\d+|)(?:-(?P<option>[\w.-]+)|)|)';
-			
-				switch( $syntaxType )
-				{
-					case self::SYNTAX_CONTEXT:
-						$regexp .= '(?:,(?P<context>[\w.-]+)|)';
-					break;
-					case self::SYNTAX_PARAMS:
-						$regex .= '(?:,(?P<params>{.*?})|)';
-					break;
-					case self::SYNTAX_CONTEXT_PARAMS:
-						$regex .= '(?:,(?P<context>[^{.*?}][\w.-]+)|)(?:,(?P<params>{.*?})|)';
-					break;
-					case self::SYNTAX_SIMPLE:
-					default:
-						$syntaxType = self::SYNTAX_SIMPLE;
-					break;
-				}
+				$regex = '(?P<field_id>\d+)(?:,(?P<item_id>\d+|)(?:-(?P<option>[\w.-]+)|)|)(?:,(?P<context>[\w.-]+)|)(?:,(?P<params>{.*?})|)';
 			}
 			
-			$regex = '/' . sprintf( $syntax, $regexp ) . '/i';
+			$regex = '/' . sprintf( $syntax, $regex ) . '/i';
 			
 			// Find all instances of plugin and put in $matches for loadposition
 			// $matches[0] is full pattern match
@@ -217,7 +188,7 @@ class FieldsandfiltersFieldsSiteHelper
 			$getAllextensions 	= true;
 			$isExcluded		= !empty( $excluded ) && is_array( $excluded );
 			$excludes		= array();
-			$isParams		= $syntaxType == self::SYNTAX_PARAMS || $syntaxType == self::SYNTAX_CONTEXT_PARAMS;
+			$isExtended		= $syntaxType == self::SYNTAX_EXTENDED;
 			
 			foreach( $matches as $match )
 			{
@@ -254,7 +225,7 @@ class FieldsandfiltersFieldsSiteHelper
 						'fields_id'	=> array()
 					);
 					
-					if( $isParams )
+					if( $isExtended )
 					{
 						$combinations[$key]['elements'] = array();
 					}
@@ -265,7 +236,7 @@ class FieldsandfiltersFieldsSiteHelper
 				}
 				
 				/* params */
-				if( $isParams )
+				if( $isExtended )
 				{
 					$keyElement = $params = null;
 					if( !empty( $match['params'] ) )
@@ -295,10 +266,9 @@ class FieldsandfiltersFieldsSiteHelper
 				}
 				else
 				{
-					$combinations[$key]['matches'][$fieldID] = $match[0];
+					$combinations[$key]['matches'][$fieldID][] = $match[0];
 				}
 				
-								
 				if( !in_array( $fieldID, $combinations[$key]['fields_id'] ) )
 				{
 					$combinations[$key]['fields_id'][] = $fieldID;
@@ -311,7 +281,7 @@ class FieldsandfiltersFieldsSiteHelper
 				{
 					$object = self::getFieldsByItemID( $combination['option'], $combination['item_id'], $combination['fields_id'], $getAllextensions );
 					
-					if( $isParams )
+					if( $isExtended )
 					{
 						$isFields	= $object->fields->getProperties(true);
 						$isFields 	= !empty( $isFields );
@@ -338,9 +308,9 @@ class FieldsandfiltersFieldsSiteHelper
 								}
 							}
 							
-							$fieldsLayouts = self::getFieldsLayouts( $object, false, 'field_id' );
+							$fieldsLayouts = self::getFieldsLayouts( $_object, $element['params'], 'field_id' );
 							
-							foreach( $combination['matches'] AS $fieldID => &$match )
+							foreach( $element['matches'] AS $fieldID => &$match )
 							{
 								$text = str_replace( $match, addcslashes( $fieldsLayouts->get( $fieldID, '' ), '\\$' ), $text );
 							}
@@ -348,9 +318,9 @@ class FieldsandfiltersFieldsSiteHelper
 					}
 					else
 					{
-						$fieldsLayouts = self::getFieldsLayouts( $_object, $element['params'], 'field_id' );
-							
-						foreach( $element['matches'] AS $fieldID => &$match )
+						$fieldsLayouts = self::getFieldsLayouts( $object, null, 'field_id' );
+						
+						foreach( $combination['matches'] AS $fieldID => &$match )
 						{
 							$text = str_replace( $match, addcslashes( $fieldsLayouts->get( $fieldID, '' ), '\\$' ), $text );
 						}
