@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="library" version="2.5" method="upgrade">
+	<name>lib_kextensions</name>
+	<creationDate>2013-08-27</creationDate>
+	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
+	<license>GNU General Public License version 3 or later; see License.txt</license>
+	<author>KES - Kulka Tomasz</author>
+	<authorEmail>kes@kextensions.com</authorEmail>
+	<authorUrl>http://www.kextensions.com</authorUrl>
+	<version>1.0.0</version>
+	<description>LIB_KEXTENSIONS_XML_DESCRIPTION</description>
+	<files>
+		<filename>index.html</filename>
+		<folder>array</folder>
+		<folder>buffer</folder>
+		<folder>extensions</folder>
+		<folder>file</folder>
+		<folder>log</folder>
+		<folder>module</folder>
+		<folder>user</folder>
+		<folder>xml</folder>
+	</files>
+	<languages>
+		<language tag="en-GB">language/en-GB.plg_fieldsandfiltersTypes_checkboxlist.ini</language>
+		<language tag="en-GB">language/en-GB.plg_fieldsandfiltersTypes_checkboxlist.sys.ini</language>
+	</languages>
+	<!--<config>
+		<fields name="params">
+			<fieldset name="basic">
+			</fieldset>
+		</fields>
+	</config>-->
+</extension>
