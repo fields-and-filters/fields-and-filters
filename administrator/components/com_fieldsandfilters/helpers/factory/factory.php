@@ -41,6 +41,12 @@ class FieldsandfiltersFactory
 	public static $types = null;
 	
 	/**
+	 * @var    JEventDispatcher or JDispatcher
+	 * @since  1.1.0
+	 */
+	public static $dispatcher = null;
+	
+	/**
 	 * Get a fields object.
 	 *
 	 * @see     FieldsandfiltersFields
@@ -125,21 +131,19 @@ class FieldsandfiltersFactory
         */
 	public static function getDispatcher()
 	{
-		static $_dispatcher;
-		
-		if( is_null( $_dispatcher ) )
+		if( !self::$dispatcher )
 		{
 			if( self::isVersion() )
 			{
-				$_dispatcher = JEventDispatcher::getInstance();
+				self::$dispatcher = JEventDispatcher::getInstance();
 			}
 			else
 			{
-				$_dispatcher = JDispatcher::getInstance();
+				self::$dispatcher = JDispatcher::getInstance();
 			}
 		}
 		
-		return $_dispatcher;
+		return self::$dispatcher;
 	}
 	
 	
