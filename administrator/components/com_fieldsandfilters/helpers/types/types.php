@@ -10,16 +10,13 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Load the BufferCore Helper
-JLoader::import( 'fieldsandfilters.buffer.core', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
- * FieldsandfiltersPluginTypesHelper
+ * FieldsandfiltersTypes
  *
  * @package     com_fieldsandfilters
  * @since       1.0.0
  */
-class FieldsandfiltersTypes extends FieldsandfiltersBufferCoreHelper
+class FieldsandfiltersTypes extends KextensionsBufferCore
 {
 	protected $_plugins_folder 	= 'fieldsandfiltersTypes';
 	
@@ -72,7 +69,7 @@ class FieldsandfiltersTypes extends FieldsandfiltersBufferCoreHelper
 					
 					if( $data->xml )
 					{
-						FieldsandfiltersFactory::getXML()->getPluginOptionsForms( $elements->get( $pluginType->name ), array() );
+						KextensionsXML::getXML()->getPluginOptionsForms( $elements->get( $pluginType->name ), array() );
 					}  
 				}
 			}
@@ -87,7 +84,7 @@ class FieldsandfiltersTypes extends FieldsandfiltersBufferCoreHelper
                         
                         while( $element = array_shift( $elements ) )
                         { 
-                                FieldsandfiltersFactory::getXML()->getPluginOptionsForms( $element, array() );
+                                KextensionsXML::getXML()->getPluginOptionsForms( $element, array() );
                         }
                 }
 		
@@ -221,7 +218,7 @@ class FieldsandfiltersTypes extends FieldsandfiltersBufferCoreHelper
 		{
 			if( $flatten || $isExcluded )
 			{
-				$modes = FieldsandfiltersFactory::getArray()->flatten( $modes );
+				$modes = KextensionsArray::getArray()->flatten( $modes );
 			}
 			
 			if( $isExcluded )

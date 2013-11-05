@@ -10,9 +10,6 @@
 // no direct access
 defined('_JEXEC') or die;
 
-// Load the Factory Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
  * @package		fieldsandfilters.administrator
  * @subpackage		com_fieldsandfilters
@@ -159,20 +156,17 @@ abstract class JHtmlFieldsandfilters
 	{
 		$options 	= array();
 		
-		if( $pluginTypes = get_object_vars( FieldsandfiltersFactory::getPluginTypes()->getTypes() ) )
+		if( $types = get_object_vars( FieldsandfiltersFactory::getTypes()->getTypes() ) )
 		{
-			// Load Extensions Helper
-			$extensionsHelper = FieldsandfiltersFactory::getExtensions();
-			
-			while( $pluginType = array_shift( $pluginTypes ) )
+			while( $type = array_shift( $types ) )
 			{
-				if( !in_array( $pluginType->name, $excluded ) )
+				if( !in_array( $type->name, $excluded ) )
 				{
 					// load plugin language
-					$extension = 'plg_' . $pluginType->type . '_' . $pluginType->name;
-					$extensionsHelper->loadLanguage( $extension, JPATH_ADMINISTRATOR );
+					$extension = 'plg_' . $type->type . '_' . $type->name;
+					KextensionsLanguage::load( $extension, JPATH_ADMINISTRATOR );
 					
-					$options[] = JHtml::_( 'select.option', $pluginType->name, JText::_( strtoupper( $extension ) ) );
+					$options[] = JHtml::_( 'select.option', $type->name, JText::_( strtoupper( $extension ) ) );
 				}
 			}
 		}
@@ -190,27 +184,24 @@ abstract class JHtmlFieldsandfilters
 	{
 		$options 	= array();
 		
-		if( $pluginExtensions = get_object_vars( FieldsandfiltersFactory::getPluginExtensions()->getExtensions() ) )
+		if( $extensions = get_object_vars( FieldsandfiltersFactory::getPluginExtensions()->getExtensions() ) )
 		{
-			// Load Extensions Helper
-			$extensionsHelper = FieldsandfiltersFactory::getExtensions();
-			
-			while( $pluginExtension = array_shift( $pluginExtensions ) )
+			while( $extension = array_shift( $extensions ) )
 			{
-				if( !in_array( $pluginExtension->name, $excluded ) )
+				if( !in_array( $extension->name, $excluded ) )
 				{
 					// load plugin language
-					if( $pluginExtension->name != 'allextensions' )
+					if( $extension->name != 'allextensions' )
 					{
-						$extension = 'plg_' . $pluginExtension->type . '_' . $pluginExtension->name;
-						$extensionsHelper->loadLanguage( $extension, JPATH_ADMINISTRATOR );
+						$extension = 'plg_' . $extension->type . '_' . $extension->name;
+						KextensionsLanguage::load( $extension, JPATH_ADMINISTRATOR );
 					}
 					else
 					{
-						$extension = $pluginExtension->type . '_' . $pluginExtension->name;
+						$extension = $extension->type . '_' . $extension->name;
 					}
 					
-					$options[] = JHtml::_( 'select.option', $pluginExtension->extension_type_id, JText::_( strtoupper( $extension ) ) );
+					$options[] = JHtml::_( 'select.option', $extension->extension_type_id, JText::_( strtoupper( $extension ) ) );
 				}
 			}
 		}
@@ -228,11 +219,11 @@ abstract class JHtmlFieldsandfilters
 	{
 		$options 	= array();
 		
-		// Load pluginExtensions Helper
-		$extenionsID = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsColumn( 'extension_type_id' );
+		// Load Extensions Helper
+		$extenionsID = FieldsandfiltersFactory::getExtensions()->getExtensionsColumn( 'extension_type_id' );
 		
-		// Load PluginTypes Helper
-		$modes =  FieldsandfiltersFactory::getPluginTypes()->getModes( $modes, array(), true );
+		// Load Types Helper
+		$modes =  FieldsandfiltersFactory::getTypes()->getModes( $modes, array(), true );
 		
 		// Load Fields Helper
 		$fieldsHelper = FieldsandfiltersFactory::getFields();
@@ -267,7 +258,7 @@ abstract class JHtmlFieldsandfilters
 	{
 		$options 	= array();
 		
-		$extenionsID 	= FieldsandfiltersFactory::getPluginExtensions()->getExtensionsColumn( 'extension_type_id' );
+		$extenionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsColumn( 'extension_type_id' );
 		$field 		= FieldsandfiltersFactory::getFields()->getFieldsByID( $extenionsID, $fieldID, $state, true );
 		
 		if( ( $field = $field->get( $fieldID ) ) && ( $values = $field->values->getProperties( true ) ) )

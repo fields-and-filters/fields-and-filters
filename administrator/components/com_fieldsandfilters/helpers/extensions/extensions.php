@@ -10,16 +10,13 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Load the BufferCore Helper
-JLoader::import( 'fieldsandfilters.buffer.core', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
- * FieldsandfiltersPluginExtensionsHelper
+ * FieldsandfiltersExtensions
  *
  * @package     com_fieldsandfilters
  * @since       1.1.0
  */
-class FieldsandfiltersExtensions extends FieldsandfiltersBufferCoreHelper
+class FieldsandfiltersExtensions extends KextensionsBufferCore
 {
 	protected $_plugins_folder 	= 'fieldsandfiltersExtensions';
         protected $_extension_default   = 'allextensions';
@@ -54,7 +51,7 @@ class FieldsandfiltersExtensions extends FieldsandfiltersBufferCoreHelper
 					
 					if( $data->xml )
 					{
-						FieldsandfiltersFactory::getXML()->getPluginOptionsForms( $elements->get( $pluginExtension->name ), array() );
+						KextensionsXML::getPluginOptionsForms( $elements->get( $pluginExtension->name ), array() );
 					}  
 				}
 			}
@@ -69,7 +66,7 @@ class FieldsandfiltersExtensions extends FieldsandfiltersBufferCoreHelper
                         
                         while( $element = array_shift( $elements ) )
                         {
-                                FieldsandfiltersFactory::getXML()->getPluginOptionsForms( $element, array() );
+                                KextensionsXML::getPluginOptionsForms( $element, array() );
                         }
                 }
                 

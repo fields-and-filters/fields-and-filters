@@ -10,9 +10,6 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Load the Factory Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
 * @since       1.0.0
 */
@@ -44,18 +41,18 @@ class FieldsandfiltersFieldsHelper
 		$app = JFactory::getApplication();
 		
 		// Load PluginExtensions Helper
-		$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
+		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 		
 		if( is_null( $option ) )
 		{
 			$option = $app->input->get( 'option' );
 		}
 		
-		$extensionsID = (array) $pluginExtensionsHelper->getExtensionsIDByOption( $option );
+		$extensionsID = (array) $extensionsHelper->getExtensionsIDByOption( $option );
 		
 		if( $getAllextensions )
 		{
-			$extensionsID = array_merge( $extensionsID, (array) $pluginExtensionsHelper->getExtensionsByNameColumn( 'extension_type_id', 'allextensions' ) );
+			$extensionsID = array_merge( $extensionsID, (array) $extensionsHelper->getExtensionsByNameColumn( 'extension_type_id', 'allextensions' ) );
 		}
 		
 		if( empty( $extensionsID ) )
@@ -144,8 +141,9 @@ class FieldsandfiltersFieldsHelper
 	 **/
 	public static function preparationContent( &$text, $context = '', $option = null, $itemID = null, $excluded = array(), $syntax = null, $syntaxType = 3 )
 	{
-		$syntax 	= $syntax ? $syntax : FieldsandfiltersFactory::getExtensions()->getPluginParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
-		$syntaxType 	= $syntaxType ? $syntaxType : FieldsandfiltersFactory::getExtensions()->getPluginParams( 'system', 'fieldsandfilters' )->get( 'syntax_type', self::SYNTAX_SIMPLE );
+		$pluginParams 	= KextensionsPlugin::getParams( 'system', 'fieldsandfilters' );
+		$syntax 	= $syntax ? $syntax : $pluginParams->get( 'syntax', '#{%s}' );
+		$syntaxType 	= $syntaxType ? $syntaxType : $pluginParams->get( 'syntax_type', self::SYNTAX_SIMPLE );
 		// [TODO] change interpolation to syntax
 		
 		if( strpos( $syntax, '%s' ) !== false )
@@ -183,7 +181,7 @@ class FieldsandfiltersFieldsHelper
 			$jinput			= JFactory::getApplication()->input;
 			$itemID			= ( $itemID = (int) $itemID ) ? $itemID : $jinput->get( 'id', 0, 'int' );
 			$option			= $option ? $option : $jinput->get( 'option' );
-			$extensionsOptions 	= FieldsandfiltersFactory::getPluginExtensions()->getExtenionsOptions();
+			$extensionsOptions 	= FieldsandfiltersFactory::getExtensions()->getExtenionsOptions();
 			$combinations 		= array();
 			$getAllextensions 	= true;
 			$isExcluded		= !empty( $excluded ) && is_array( $excluded );
@@ -290,7 +288,7 @@ class FieldsandfiltersFieldsHelper
 						{
 							if( !$isFields )
 							{
-								$excludes = array_merge( $excludes, FieldsandfiltersFactory::getArray()->flatten( $element['matches'] ) );
+								$excludes = array_merge( $excludes, KextensionsArray::flatten( $element['matches'] ) );
 								continue;
 							}
 							

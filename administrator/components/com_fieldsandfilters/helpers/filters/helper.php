@@ -10,13 +10,12 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Load the Factory Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
-* @since       1.0.0
-*/
-class FieldsandfiltersFiltersHelper
+ * FieldsandfiltersFilters
+ * 
+ * @since       1.0.0
+ */
+class FieldsandfiltersFilters
 {
 	/**
 	* @since       1.0.0

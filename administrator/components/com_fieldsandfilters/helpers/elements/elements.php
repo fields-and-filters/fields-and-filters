@@ -10,16 +10,13 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Load the BufferValues Helper
-JLoader::import( 'fieldsandfilters.buffer.values', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
- * FieldsandfiltersElementsHelper
+ * FieldsandfiltersElements
  *
  * @package     com_fieldsandfilters
  * @since       1.1.0
  */
-class FieldsandfiltersElements extends FieldsandfiltersBufferValuesHelper
+class FieldsandfiltersElements extends KextensionsBufferValues
 {
 	/**
          * An array of names that don't exists
@@ -174,7 +171,7 @@ class FieldsandfiltersElements extends FieldsandfiltersBufferValuesHelper
 		if( $this->method == 'getElementsByItemID' )
 		{
 			// Get elements id from elements where is items id
-			$this->vars->elementsItemsID = FieldsandfiltersFactory::getArray()->getColumn( $data->get( 'elements', new stdClass ), 'item_id', 'element_id' );
+			$this->vars->elementsItemsID = KextensionsArray::getColumn( $data->get( 'elements', new stdClass ), 'item_id', 'element_id' );
 		}
 	}
 	

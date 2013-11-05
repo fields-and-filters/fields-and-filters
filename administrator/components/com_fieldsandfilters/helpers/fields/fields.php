@@ -10,16 +10,13 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Load the BufferValues Helper
-JLoader::import( 'fieldsandfilters.buffer.values', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
  * FieldsandfiltersFieldsHelper
  *
  * @package     com_fieldsandfilters
  * @since       1.1.0
  */
-class FieldsandfiltersFields extends FieldsandfiltersBufferValuesHelper
+class FieldsandfiltersFields extends KextensionsBufferValues
 {
 	/**
          * An array of names that don't exists
@@ -96,10 +93,10 @@ class FieldsandfiltersFields extends FieldsandfiltersBufferValuesHelper
 	{
 		parent::__construct( $debug );
 		
-		$pluginTypesHelper =  FieldsandfiltersFactory::getPluginTypes();
+		$typesHelper =  FieldsandfiltersFactory::getTypes();
 		
-		$this->_valuesModes = (array) $pluginTypesHelper->getMode( 'filter' );
-		$this->_staticModes = (array) $pluginTypesHelper->getMode( 'static' );
+		$this->_valuesModes = (array) $typesHelper->getMode( 'filter' );
+		$this->_staticModes = (array) $typesHelper->getMode( 'static' );
 	}
 	
 	/**
