@@ -111,7 +111,11 @@ class FieldsandfiltersFactory
 	}
 	
 	/**
-	 * Get version.
+	 * Get version compare.
+	 *
+	 * @param   string   $operator		The possible operators are: <, lt, <=, le, >, gt, >=, ge, ==, =, eq, !=, <>, ne respectively. Default: >=
+	 * @param   string   $need		First version number. Default: 3.0
+	 * @param   string   $version		Second version number. . Default: JVERSION
 	 *
 	 * @since   1.1.0
 	 */
