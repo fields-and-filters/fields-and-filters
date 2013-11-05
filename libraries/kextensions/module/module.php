@@ -1,23 +1,23 @@
 <?php
 /**
- * @version     1.1.1
- * @package     com_fieldsandfilters
+ * @version     1.0.0
+ * @package     lib_kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
+
 defined( 'JPATH_PLATFORM' ) or die;
 
 /**
- * FieldsandfiltersMoudleHelper
+ * KextensionsModule
  *
- * @package     com_fieldsandfilters
- * @since       1.1.0
+ * @since       1.0.0
  */
-class FieldsandfiltersModuleHelper extends JModuleHelper
+class KextensionsModule extends JModuleHelper
 {
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	public static function &getModuleByID( $id )
 	{
@@ -44,23 +44,23 @@ class FieldsandfiltersModuleHelper extends JModuleHelper
 	}
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
-        public static function getModuleParams( $id )
+        public static function getParams( $id )
         {
-                static $_params;
+                static $params;
                 
-                if( !isset( $_params[$id] ) )
+                if( !isset( $params[$id] ) )
                 {
-                        $params = new JRegistry();
+                        $registry = new JRegistry();
                         if( $module = self::getModuleByID( $id ) )
                         {
-                                $params->loadString($module->params);
+                                $registry->loadString( $module->params );
                         }
                         
-                        $_params[$id] = $params;
+                        $params[$id] = $registry;
                 }
                 
-                return $_params[$id];
+                return $params[$id];
         }
 }

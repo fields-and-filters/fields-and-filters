@@ -19,7 +19,6 @@ JLoader::import( 'fieldsandfilters.buffer.core', JPATH_ADMINISTRATOR . '/compone
  * @package     com_fieldsandfilters
  * @since       1.1.0
  */
-
 class FieldsandfiltersExtensions extends FieldsandfiltersBufferCoreHelper
 {
 	protected $_plugins_folder 	= 'fieldsandfiltersExtensions';

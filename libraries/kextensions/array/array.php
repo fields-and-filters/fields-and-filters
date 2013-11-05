@@ -1,29 +1,33 @@
 <?php
 /**
- * @version     1.1.1
- * @package     com_fieldsandfilters
+ * @version     1.0.0
+ * @package     lib_kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-
+// No direct access
 defined('JPATH_PLATFORM') or die;
 
 /**
- * FieldsandfiltersArrayHelper is an array utility class for doing all sorts of odds and ends with arrays.
+ * KextensionsArray is an array utility class for doing all sorts of odds and ends with arrays.
+ *
+ * @since       1.0.0
  */
-class FieldsandfiltersArrayHelper
+class KextensionsArray
 {
         /**
 	 * Flattens a multidimensional array into a single array.
 	 *
 	 * @param   	array  		$array   	Array data
 	 * 
-	 * @since       1.0.0
 	 * $myArray = array(1,2,3, array(4,5, array(6,7)), array(array(array(8))));
-	 * FieldsandfiltersArrayHelper::flatten(myArray); // array(1,2,3,4,5,6,7,8)
+	 * FieldsandfiltersArrayHelper::flatten(myArray); // array(1,2,3,4,5,6,7,8
+	 *
+	 * @return 	array 		Flatten array
 	 * 
+	 * @since       1.0.0
 	 */
 	static function flatten( $array )
         {
@@ -41,12 +45,13 @@ class FieldsandfiltersArrayHelper
                 return $flatten;
         }
         
-        /** Extracts a column from an array of arrays or objects
+        /**
+	 * Extracts a column from an array of arrays or objects
 	 *
-	 * @param   array   &$array  The source array
-	 * @param   string  $index   The index of the column or name of object property
+	 * @param   	array  		&$array  	The source array
+	 * @param   	string  	$index   	The index of the column or name of object property
 	 *
-	 * @return  array  Column of values from the source array
+	 * @return  	array  		Column of values from the source array
 	 *
 	 * @since       1.0.0
 	 */
@@ -99,14 +104,16 @@ class FieldsandfiltersArrayHelper
 		return $result;
 	}
         
-        /** Check $keys if exists in $array, yes add array to key
-         * @param   array   &$array     The source array
-	 * @param   array  $keys       The array of keys
+        /**
+	 * Check $keys if exists in $array, yes add array to key
+	 * 
+         * @param   	array   	&$array     	The source array
+	 * @param   	array   	$keys       	The array of keys
 	 *
-	 * @return  array  array merge keys values from $array
+	 * @return  	array  		array merge keys values from $array
 	 *
 	 * @since       1.0.0
-	 **/
+	 */
         
         public static function fromArray( &$array, $keys )
         {
@@ -133,13 +140,15 @@ class FieldsandfiltersArrayHelper
                 return $_array;
         }
         
-        /** Add array 
-         * @param   array   &$source     The source array
-	 * @param   array   $keys       The array of keys
-	 * @param   array   &$array      The add array
+        /**
+	 * Add array
+	 * 
+         * @param   	array   	&$source     	The source array
+	 * @param   	array   	$keys       	The array of keys
+	 * @param   	array   	&$array      	The add array
 	 *
 	 * @since       1.0.0
-	 **/
+	 */
         public static function setArrays( &$source, $keys, &$array )
         {
                 if( is_array( $array ) && is_array( $keys ) && is_array( $array ) )
@@ -155,9 +164,11 @@ class FieldsandfiltersArrayHelper
                 }
         }
         
-        /** Unset keys from array
-         * @param   array   &$source     The source array
-	 * @param   array   $keys       The array of keys
+        /**
+	 * Unset keys from array
+	 * 
+         * @param   	array   	&$source     	The source array
+	 * @param   	array   	$keys       	The array of keys
 	 *
 	 * @since       1.0.0
 	 **/
@@ -189,12 +200,12 @@ class FieldsandfiltersArrayHelper
         /**
 	 * Pivots an array to create a reverse lookup of an array of scalars, arrays or objects.
 	 *
-	 * @param   array   $source  The source array.
-	 * @param   string  $key     Where the elements of the source array are objects or arrays, the key to pivot on.
+	 * @param   	array   	$source  	The source array.
+	 * @param   	string  	$key     	Where the elements of the source array are objects or arrays, the key to pivot on.
 	 *
-	 * @return  array  An array of arrays pivoted either on the value of the keys, or an individual key of an object or array.
+	 * @return  	array  		An array of arrays pivoted either on the value of the keys, or an individual key of an object or array.
 	 *
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	public static function pivot($source, $key = null)
 	{
@@ -295,7 +306,17 @@ class FieldsandfiltersArrayHelper
 	}
 	
 	/**
-	 * @since       1.1.0
+	 * Get empty slot object
+	 *
+	 * @param   	object   	$object  	The source object.
+	 * @param   	string  	$ordering     	The key to test is empty
+	 * @param	string		$path		Only for JRegistry instanceof
+	 *
+	 * @return  	string  	this or next empty key
+	 *
+	 * @since       1.0.0
+	 *
+	 * // getEmptyKey [TODO]
 	 */
 	static function getEmptySlotObject( $object, $ordering, $path = 'form.fields.' )
 	{	
@@ -321,6 +342,13 @@ class FieldsandfiltersArrayHelper
 	}
 	
 	/**
+	 * Check for Intersect
+	 * 
+	 * @param   	array   	$a	First association array
+	 * @param   	array  		$b     	Second array
+	 *
+	 * @return	boolean
+	 * 
 	 * @since       1.1.0
 	 */
 	protected static function checkForIntersect( $a, $b )

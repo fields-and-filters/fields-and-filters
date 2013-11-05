@@ -1,38 +1,37 @@
 <?php
 /**
- * @version     1.1.1
- * @package     com_fieldsandfilters
+ * @version     1.0.0
+ * @package     lib_kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-// No direct access
-defined( '_JEXEC' ) or die;
+defined( 'JPATH_PLATFORM' ) or die;
 
-jimport( 'joomla.filesystem.file' );
+jimport('joomla.filesystem.path');
 
 /**
- * Fieldsandfilters Log.
- * @since       1.1.0
+ * KextensionsLog.
+ * @since       1.0.0
  */
-class FieldsandfiltersLogHelper
+class KextensionsLog
 {
         /**
 	 * Options array for the JLog instance.
 	 * @var    array
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected $options = array();
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected $data = null;
         
         /**
 	 * @var    string  The full filesystem path for the log file.
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected $path;
         
@@ -41,7 +40,7 @@ class FieldsandfiltersLogHelper
         /**
 	 * The global JLog instance.
 	 * @var    JLog
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected static $_instances = array();
         
@@ -50,7 +49,7 @@ class FieldsandfiltersLogHelper
 	 *
 	 * @param   array  &$options  Log object options.
 	 *
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	public function __construct(array &$options)
 	{
@@ -58,19 +57,19 @@ class FieldsandfiltersLogHelper
 		$this->options = &$options;
                 
                 // The name of the text file defaults to 'error.php' if not explicitly given.
-		if (empty($this->options['text_file']))
+		if( empty( $this->options['text_file'] ) )
 		{
-			$this->options['text_file'] = 'fieldsandfilters.php';
+			$this->options['text_file'] = 'kextensions.php';
 		}
                 
 		// The name of the text file path defaults to that which is set in configuration if not explicitly given.
-		if (empty($this->options['text_file_path']))
+		if( empty( $this->options['text_file_path'] ) )
 		{
 			$this->options['text_file_path'] = JFactory::getConfig()->get('log_path');
 		}
                 
 		// False to treat the log file as a php file.
-		if (empty($this->options['text_file_no_php']))
+		if( empty( $this->options['text_file_no_php'] ) )
 		{
 			$this->options['text_file_no_php'] = false;
 		}
@@ -91,7 +90,7 @@ class FieldsandfiltersLogHelper
 	}
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         public static function getInstance( array $options  )
 	{
@@ -100,14 +99,14 @@ class FieldsandfiltersLogHelper
 		// Only create the object if it doesn't exist.
 		if( empty( self::$_instances[$signature] ) )
 		{
-			self::$_instances[$signature] = new FieldsandfiltersLog( $options );
+			self::$_instances[$signature] = new KextensionsLog( $options );
 		}
 
 		return self::$_instances[$signature];
 	}
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         public static function getEntries( $options )
         {
@@ -116,7 +115,7 @@ class FieldsandfiltersLogHelper
         }
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         public function getData()
         {
@@ -124,7 +123,7 @@ class FieldsandfiltersLogHelper
         }
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         public function doSave()
         {
@@ -132,7 +131,7 @@ class FieldsandfiltersLogHelper
         }
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         public function isSave()
         {
@@ -140,7 +139,7 @@ class FieldsandfiltersLogHelper
         }
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         public function save()
         {
@@ -161,7 +160,7 @@ class FieldsandfiltersLogHelper
 	 *
 	 * @return  string  The log file header
 	 *
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected function _generateFileHeader()
 	{
@@ -184,7 +183,7 @@ class FieldsandfiltersLogHelper
 	}
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected static function _getString( $path )
         {
@@ -204,7 +203,7 @@ class FieldsandfiltersLogHelper
         }
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         public function __destruct()
         {

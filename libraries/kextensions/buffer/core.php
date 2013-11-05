@@ -1,31 +1,27 @@
 <?php
 /**
- * @version     1.1.1
- * @package     com_fieldsandfilters
+ * @version     1.0.0
+ * @package     lib_kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
 // No direct access
-defined('_JEXEC') or die;
-
-// Load the Factory Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
+defined( 'JPATH_PLATFORM' ) or die;
 
 /**
- * FieldsandfiltersCacheHelper.
- *
- * @package     com_fieldsandfilters
- * @since       1.1.0
+ * KextensionsBufferCore.
+ * 
+ * @since       1.0.0
  */
-abstract class FieldsandfiltersBufferCoreHelper
+abstract class KextensionsBufferCore
 {
         /**
          * The elements instance.
          * 
 	 * @var    $_instances
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected static $_instances = array();
         
@@ -33,7 +29,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 	 * Database Connector
 	 *
 	 * @var    object
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected $_db;
 	
@@ -41,7 +37,7 @@ abstract class FieldsandfiltersBufferCoreHelper
          * All cache object elements and values
          * 
 	 * @var    object.
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected $_data;
         
@@ -49,7 +45,7 @@ abstract class FieldsandfiltersBufferCoreHelper
          * Cache column elements and values
          * 
 	 * @var    object.
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected $_columns = array();
         
@@ -57,7 +53,7 @@ abstract class FieldsandfiltersBufferCoreHelper
          * Cache pivot elements and values
          * 
 	 * @var    object.
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected $_pivots = array();
         
@@ -65,7 +61,7 @@ abstract class FieldsandfiltersBufferCoreHelper
          * An array of names that don't exists
          * 
 	 * @var    array 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected $_not;
         
@@ -73,7 +69,7 @@ abstract class FieldsandfiltersBufferCoreHelper
          * Cache name methods
          * 
 	 * @var    object.
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected $_methods = array();
         
@@ -81,7 +77,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 	 * Temp varibles for method and query
 	 *
 	 * @var    object
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected $vars;
         
@@ -89,7 +85,7 @@ abstract class FieldsandfiltersBufferCoreHelper
          * Temp varibles elements and values when method in running
          * 
 	 * @var    object.
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected $buffer;
         
@@ -97,7 +93,7 @@ abstract class FieldsandfiltersBufferCoreHelper
          * Cache name method
          * 
 	 * @var    object.
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected $method;
         
@@ -105,14 +101,14 @@ abstract class FieldsandfiltersBufferCoreHelper
          * The array types
          * 
 	 * @var    array  
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected $types = array();
         
         /**
          * The array/null of elements or items id 
 	 * @var    null/array 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected $elements = array();
         
@@ -122,7 +118,7 @@ abstract class FieldsandfiltersBufferCoreHelper
          * The array/null of states
          * 
 	 * @var    null/array  
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected $states = array();
         
@@ -130,7 +126,7 @@ abstract class FieldsandfiltersBufferCoreHelper
          * The array configuration
          * 
 	 * @var    array  
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected $config;
 	
@@ -138,14 +134,14 @@ abstract class FieldsandfiltersBufferCoreHelper
          * The information on whether the reset variables
          * 
 	 * @var    boolean 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected $reset = true;
         
         /**
 	 * Constructor
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	public function __construct( $debug = null )
 	{
@@ -158,13 +154,13 @@ abstract class FieldsandfiltersBufferCoreHelper
 	}
         
         /**
-	 * Returns a reference to the global FieldsandfiltersElementsHelper object, only creating it if it doesn't already exist.
+	 * Returns a reference to the global KextensionsBuffer object, only creating it if it doesn't already exist.
 	 *
-	 * This method must be invoked as: $fafe = FieldsandfiltersElementsHelper::getInstance();
+	 * This method must be invoked as: $kes = KextensionsBuffer::getInstance();
 	 *
-	 * @return  FieldsandfiltersElementsHelper
+	 * @return  KextensionsBuffer Instance
 	 *
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	public static function getInstance( $debug = false )
 	{
@@ -185,7 +181,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 	 *
 	 * @return	instance of date type
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function &_getData( $name )
         {
@@ -215,7 +211,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 	 *
 	 * @return  boolean
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 **/
 	protected function _checkArgs( $types, $elements = null, $states = null )
 	{        
@@ -259,7 +255,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 	 * @param	array       	&$arg	        check if elements in array are the string or numeric
 	 * @param	stirng       	$name		name of type or element
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 **/
         protected function _checkArg( &$arg, $name )
         {
@@ -282,7 +278,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 	 * @param	array  		$elements		elements ( e.g., element_id, item_id, field_id  )
 	 * @param	string  	&$notType	        key name in array $this->_not
 	 *
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 **/
 	protected function _setNot( $elements, $notName = 'elements' )
 	{
@@ -298,7 +294,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 				
                                 // Get not Elements and set new elements
 				$_not = $data->get( $notType, array() );
-				FieldsandfiltersFactory::getArray()->setArrays( $_not, $this->states, $elements );
+				KextensionsArray::setArrays( $_not, $this->states, $elements );
 				$data->set( $notType, $_not );
                                 
                                 next( $this->types );
@@ -314,7 +310,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 	 * @param	int/string  		type		types ( e.g., extension_type_id )
 	 * @param	array  	                $states	        states
 	 *
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 **/
 	protected function _unsetNot( $type, $states )
 	{
@@ -330,7 +326,7 @@ abstract class FieldsandfiltersBufferCoreHelper
                         if( !empty( $dataNot ) )
                         {
                                 // unset elements from form cahce date
-                                $data->set( $not, FieldsandfiltersFactory::getArray()->unsetKyes( $notBuffer, $states ) );
+                                $data->set( $not, KextensionsArray::unsetKyes( $notBuffer, $states ) );
                         }
                         
                         next( $this->_not );
@@ -342,7 +338,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 	 * 
 	 * @param	boolean 	$reset		reset arguments if you need
 	 *
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 **/
 	protected function _resetArgs( $reset = null )
 	{
@@ -364,7 +360,7 @@ abstract class FieldsandfiltersBufferCoreHelper
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _returnBuffer( $reset = null )
         {
@@ -381,7 +377,7 @@ abstract class FieldsandfiltersBufferCoreHelper
 	 *
 	 * return       boolean
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 **/
         protected function _isMethod( $name )
         {
@@ -394,7 +390,7 @@ abstract class FieldsandfiltersBufferCoreHelper
         }
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 **/
         protected function _getBufferPivot()
         {                
@@ -411,7 +407,7 @@ abstract class FieldsandfiltersBufferCoreHelper
                                 $buffer = call_user_func_array( array( $this, $this->method ), $arguments );
                                 
                                 $this->_pivots[$hash] = new JObject();
-                                $this->_pivots[$hash]->elements = new JObject( FieldsandfiltersFactory::getArray()->pivot( (array) get_object_vars( $buffer ), $pivot ) );
+                                $this->_pivots[$hash]->elements = new JObject( KextensionsArray::pivot( (array) get_object_vars( $buffer ), $pivot ) );
                                 $this->_pivots[$hash]->_pivot =  $pivot;
                                 
                                 unset( $buffer );
@@ -423,10 +419,9 @@ abstract class FieldsandfiltersBufferCoreHelper
                 }
                 elseif( $this->_pivots[$hash] && $this->_pivots[$hash]->_pivot != $pivot )
                 {
-                        $arrayHelper = FieldsandfiltersFactory::getArray();
                         $buffer = (array) get_objectvars( $this->_pivots[$hash]->elements );
                         
-                        $this->_pivots[$hash]->elements = new JObject( $arrayHelper->pivot( $arrayHelper->flatten( $buffer ), $pivot ) );
+                        $this->_pivots[$hash]->elements = new JObject( KextensionsArray::pivot( KextensionsArray::flatten( $buffer ), $pivot ) );
                         $this->_pivots[$hash]->_pivot =  $pivot;
                 }
                 else
@@ -439,7 +434,7 @@ abstract class FieldsandfiltersBufferCoreHelper
         }
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 **/
         protected function _getBufferColumn()
         {
@@ -454,7 +449,7 @@ abstract class FieldsandfiltersBufferCoreHelper
                         if(  $this->_isMethod( $this->method ) && is_string( $column ) )
                         {
                                 $buffer = call_user_func_array( array( $this, $this->method ), $arguments );
-                                $this->_columns[$hash] = FieldsandfiltersFactory::getArray()->getColumn( $buffer, $column);
+                                $this->_columns[$hash] = KextensionsArray::getColumn( $buffer, $column);
                                 
                                 unset( $buffer );
                         }
@@ -473,7 +468,7 @@ abstract class FieldsandfiltersBufferCoreHelper
         }
         
         /**
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 **/
         public function __call( $name, $arguments = array() )
         {

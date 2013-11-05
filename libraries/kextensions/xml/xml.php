@@ -1,7 +1,7 @@
 <?php
 /**
- * @version     1.1.1
- * @package     com_fieldsandfilters
+ * @version     1.0.0
+ * @package     lib_kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
@@ -10,12 +10,11 @@
 defined( 'JPATH_PLATFORM' ) or die;
 
 /**
- * FieldsandfiltersXMLHelper
+ * KextensionsXML
  *
- * @package     com_fieldsandfilters
  * @since       1.0.0
  */
-class FieldsandfiltersXMLHelper
+class KextensionsXML
 {
         /**
 	 * Adds a new child SimpleXMLElement node to the source.

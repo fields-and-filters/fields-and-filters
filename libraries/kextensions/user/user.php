@@ -1,25 +1,25 @@
 <?php
 /**
- * @version     1.1.1
- * @package     com_fieldsandfilters
+ * @version     1.0.0
+ * @package     lib_kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-// No direct access
-defined( '_JEXEC' ) or die;
+defined( 'JPATH_PLATFORM' ) or die;
 
 /**
- * Fieldsandfilters User.
- * @since       1.1.0
+ * KextensionsUser
+ *
+ * @since       1.0.0
  */
-class FieldsandfiltersUserHelper
+class KextensionsUser
 {
         /**
-        * @since       1.1.0
+        * @since       1.0.0
         */
-        public static function getUserIP()
+        public static function getIP()
 	{
 		static $ip;
 		

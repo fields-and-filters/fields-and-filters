@@ -1,22 +1,22 @@
 <?php
 /**
- * @version     1.1.1
- * @package     com_fieldsandfilters
+ * @version     1.0.0
+ * @package     lib_kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-// No direct access
-defined( '_JEXEC' ) or die;
+defined( 'JPATH_PLATFORM' ) or die;
 
-jimport( 'joomla.filesystem.file' );
+jimport('joomla.filesystem.path');
 
 /**
- * Fieldsandfilters File.
+ * KextensionsFile.
+ * 
  * @since       1.1.0
  */
-class FieldsandfiltersFileHelper
+class KextensionsFile
 {
 	/**
         * @since       1.1.0

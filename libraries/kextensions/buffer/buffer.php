@@ -1,29 +1,25 @@
 <?php
 /**
- * @version     1.1.1
- * @package     com_fieldsandfilters
+ * @version     1.0.0
+ * @package     lib_kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
 // No direct access
-defined('_JEXEC') or die;
-
-// Load the BufferCore Helper
-JLoader::import( 'fieldsandfilters.buffer.core', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
+defined( 'JPATH_PLATFORM' ) or die;
 
 /**
- * FieldsandfiltersCacheHelper.
+ * KextensionsBuffer.
  *
- * @package     com_fieldsandfilters
- * @since       1.1.0
+ * @since       1.0.0
  */
-abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHelper
+abstract class KextensionsBuffer extends KextensionsBufferCore
 {
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _prepareVars()
         {
@@ -34,7 +30,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
                 
                 if( !isset( $this->vars->typeName, $this->vars->elementName ) )
                 {
-                        JLog::add( 'Not isset vars typeName or elementName', JLog::ERROR, 'Fieldsandfilters' );
+                        JLog::add( 'Not isset vars typeName or elementName', JLog::ERROR, 'Kextensions' );
                         return false;
                 }
                 
@@ -45,7 +41,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _searchData()
         {
@@ -59,7 +55,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _beforeQuery( $type )
         {
@@ -91,7 +87,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _beforeQueryElements( $type )
         {
@@ -123,7 +119,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
                 }
                 
 		$_notElements 	= $data->get( $this->_not[$notName], array() );
-		$_notElements 	= FieldsandfiltersFactory::getArray()->fromArray( $_notElements, $_states );
+		$_notElements 	= KextensionsArray::fromArray( $_notElements, $_states );
 		
                 // before search elements
                 $this->_beforeSearchElements( $data );
@@ -153,13 +149,13 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _beforeSearchElements( $data ){}
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _searchElements( &$data, $elementID, &$_elementsID, &$_notElements )
         {
@@ -191,7 +187,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _testQueryVars()
         {
@@ -200,7 +196,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _getQuery()
         {
@@ -211,7 +207,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _setData( &$_element )
         {
@@ -220,7 +216,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _afterQuery()
         {
@@ -244,7 +240,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected function _prepareBuffer()
         {
@@ -270,7 +266,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
                         }
                         catch( RuntimeException $e )
                         {
-                                JLog::add( $e->getMessage(), JLog::ERROR, 'Fieldsandfilters' );
+                                JLog::add( $e->getMessage(), JLog::ERROR, 'Kextensions' );
                         }
 		}
                 
@@ -285,7 +281,7 @@ abstract class FieldsandfiltersBufferHelper extends FieldsandfiltersBufferCoreHe
 	 * Method to get the Elements that reflect extensions type id and states
 	 *
 	 * @return	object		empty or array object elements
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _getBuffer()
         {

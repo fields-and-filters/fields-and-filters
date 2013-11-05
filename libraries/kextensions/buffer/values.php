@@ -1,25 +1,21 @@
 <?php
 /**
- * @version     1.1.1
- * @package     com_fieldsandfilters
+ * @version     1.0.0
+ * @package     lib_kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
 // No direct access
-defined('_JEXEC') or die;
-
-// Load the Buffer Helper
-JLoader::import( 'fieldsandfilters.buffer.buffer', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
+defined( 'JPATH_PLATFORM' ) or die;
 
 /**
- * FieldsandfiltersCacheHelper.
- *
- * @package     com_fieldsandfilters
+ * KextensionsBufferValues.
+ * 
  * @since       1.0.0
  */
-abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBufferHelper
+abstract class KextensionsBufferValues extends KextensionsBuffer
 {
         protected $methodValues = null;
         
@@ -30,7 +26,7 @@ abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBuffer
 	 * @param	int/array/null		$states		        intiger or array of states
 	 *
 	 * @return	object		empty or array object elements
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
 	protected function _prepareBuffer()
         {
@@ -62,7 +58,7 @@ abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBuffer
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _getBufferValues()
         {
@@ -92,7 +88,7 @@ abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBuffer
                         }
                         catch( RuntimeException $e )
                         {
-                                JLog::add( $e->getMessage(), JLog::ERROR, 'Fieldsandfilters' );
+                                JLog::add( $e->getMessage(), JLog::ERROR, 'Kextensions' );
                         } 	
 		}
                 
@@ -118,13 +114,13 @@ abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBuffer
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _prepareVarsValues()
         {
                 if( !isset( $this->vars->valuesName ) )
                 {
-                        JLog::add( 'Not isset vars valuesName', JLog::ERROR, 'Fieldsandfilters' );
+                        JLog::add( 'Not isset vars valuesName', JLog::ERROR, 'Kextensions' );
                         return false;  
                 }
                 
@@ -137,7 +133,7 @@ abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBuffer
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _searchValuesElements()
         {
@@ -153,7 +149,7 @@ abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBuffer
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _searchValuesElement( &$element )
         {
@@ -180,7 +176,7 @@ abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBuffer
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _testQueryVarsValues()
         {
@@ -189,7 +185,7 @@ abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBuffer
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _getQueryValues()
         {
@@ -200,7 +196,7 @@ abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBuffer
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _setDataValue( &$_value )
         {
@@ -216,7 +212,7 @@ abstract class FieldsandfiltersBufferValuesHelper extends FieldsandfiltersBuffer
         
         /**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.0.0
 	 */
         protected function _addValue( &$value ){}
 }
