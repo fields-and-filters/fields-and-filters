@@ -193,15 +193,15 @@ abstract class JHtmlFieldsandfilters
 					// load plugin language
 					if( $extension->name != 'allextensions' )
 					{
-						$extension = 'plg_' . $extension->type . '_' . $extension->name;
-						KextensionsLanguage::load( $extension, JPATH_ADMINISTRATOR );
+						$extensionName = 'plg_' . $extension->type . '_' . $extension->name;
+						KextensionsLanguage::load( $extensionName, JPATH_ADMINISTRATOR );
 					}
 					else
 					{
-						$extension = $extension->type . '_' . $extension->name;
+						$extensionName = $extension->type . '_' . $extension->name;
 					}
 					
-					$options[] = JHtml::_( 'select.option', $extension->extension_type_id, JText::_( strtoupper( $extension ) ) );
+					$options[] = JHtml::_( 'select.option', $extension->extension_type_id, JText::_( strtoupper( $extensionName ) ) );
 				}
 			}
 		}

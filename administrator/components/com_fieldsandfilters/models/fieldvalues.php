@@ -18,7 +18,7 @@ if( !FieldsandfiltersFactory::isVersion() )
  * Methods supporting a list of Fieldsandfilters records.
  * @since	1.1.0
  */
-class FieldsandfiltersModelfieldvalues extends JModelList
+class FieldsandfiltersModelFieldvalues extends JModelList
 {
 	/**
 	 * Constructor.
@@ -78,10 +78,10 @@ class FieldsandfiltersModelfieldvalues extends JModelList
 			if( !( $fieldID = $app->getUserState( $this->context . '.filter.field_id' ) ) )
 			{
 				// Load pluginTypes Helper
-				$filterMode 	= FieldsandfiltersFactory::getPluginTypes()->getMode( 'filter' );
+				$filterMode 	= FieldsandfiltersFactory::getTypes()->getMode( 'filter' );
 				
 				// Load pluginExtensions Helper
-				$extensionsID 	= FieldsandfiltersFactory::getPluginExtensions()->getExtensionsColumn( 'extension_type_id' );
+				$extensionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsColumn( 'extension_type_id' );
 				
 				// Load Fields Helper
 				$fieldsID 	= FieldsandfiltersFactory::getFields()->getFieldsByModeIDColumn( 'field_id', $extensionsID, $filterMode, array( 1, -1 ) );

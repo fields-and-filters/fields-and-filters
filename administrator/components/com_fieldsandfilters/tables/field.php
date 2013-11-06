@@ -89,7 +89,7 @@ class FieldsandfiltersTableField extends JTable {
 	 */
 	public function check()
 	{
-		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
+		$typesHelper = FieldsandfiltersFactory::getTypes();
 		
 		//If there is an ordering column and this is a new row then get the next ordering value
 		if( $this->field_id == 0 )
@@ -98,7 +98,7 @@ class FieldsandfiltersTableField extends JTable {
 		}
 		
 		// Check for exist mode field
-		if( !in_array( $this->mode, (array) $pluginTypesHelper->getModes( null, array(), true ) ) )
+		if( !in_array( $this->mode, (array) $typesHelper->getModes( null, array(), true ) ) )
 		{
 			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_MODE' ) );
 			return false;
@@ -117,7 +117,7 @@ class FieldsandfiltersTableField extends JTable {
 			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_TYPE' ) );
 			return false;
 		}
-		elseif( !$pluginTypesHelper->getTypes()->get( $this->field_type ) )
+		elseif( !$typesHelper->getTypes()->get( $this->field_type ) )
 		{
 			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_TYPE_NOT_EXISTS', $this->field_type ) );
 			return false;
@@ -129,14 +129,14 @@ class FieldsandfiltersTableField extends JTable {
 			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_EXTENSION_TYPE_ID' ) );
 			return false;
 		}
-		elseif( !FieldsandfiltersFactory::getPluginExtensions()->getExtensionsPivot( 'extension_type_id' )->get( $this->extension_type_id ) )
+		elseif( !FieldsandfiltersFactory::getExtensions()->getExtensionsPivot( 'extension_type_id' )->get( $this->extension_type_id ) )
 		{
 			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_EXTENSION_TYPE_ID_NOT_EXISTS', $this->extension_type_id ) );
 			return false;
 		}
 		
 		// Check mode field
-		if( in_array( $this->mode, (array) $pluginTypesHelper->getMode( 'filter' ) ) )
+		if( in_array( $this->mode, (array) $typesHelper->getMode( 'filter' ) ) )
 		{
 			// Check for a field alias
 			if( trim( $this->field_alias ) == '' )
@@ -170,7 +170,7 @@ class FieldsandfiltersTableField extends JTable {
 	public function store( $updateNulls = false )
 	{
 		// Check mode field
-		if( in_array( $this->mode, (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'filter' ) ) )
+		if( in_array( $this->mode, (array) FieldsandfiltersFactory::getTypes()->getMode( 'filter' ) ) )
 		{
 			// Verify that the alias is unique
 			$table = JTable::getInstance( 'Field', 'FieldsandfiltersTable' );

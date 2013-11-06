@@ -11,17 +11,13 @@
 defined( '_JEXEC' ) or die;
 
 JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html' );
-		
-
-// Load Extensions Helper
-$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 
 // Load PluginTypes Helper
-$pluginTypesHelper 	= FieldsandfiltersFactory::getPluginTypes();
-$valuesMode		= (array) $pluginTypesHelper->getMode( 'filter' );
+$typesHelper 		= FieldsandfiltersFactory::getTypes();
+$valuesMode		= (array) $typesHelper->getMode( 'filter' );
 
 // Load PluginExtensions Helper
-$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
+$extensionsHelper 	= FieldsandfiltersFactory::getExtensions();
 
 JHtml::_( 'behavior.tooltip' );
 JHTML::_( 'script','system/multiselect.js', false, true );
@@ -219,10 +215,10 @@ $required = array(
 				</td>
 				
 				<td class="center">
-					<?php if( $type = $pluginTypesHelper->getTypes( true )->get( $item->field_type ) ) : ?>
+					<?php if( $type = $typesHelper->getTypes( true )->get( $item->field_type ) ) : ?>
 						<?php
-							$extensionsHelper->loadLanguage( 'plg_' . $type->type . '_' . $type->name );
-							$typeName 	= $pluginTypesHelper->getModeName( $item->mode, 'type' );
+							KextensionsLanguage::load( 'plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR );
+							$typeName 	= $typesHelper->getModeName( $item->mode, 'type' );
 							$typeForm	= $type->forms->get( $typeName, new JObject );
 							
 							if( isset( $typeForm->group->title ) )
@@ -241,12 +237,12 @@ $required = array(
 				</td>
 				
 				<td class="center">
-					<?php if( $extension = $pluginExtensionsHelper->getExtensionsPivot( 'extension_type_id', true )->get( (int) $item->extension_type_id ) ) : ?>
+					<?php if( $extension = $extensionsHelper->getExtensionsPivot( 'extension_type_id', true )->get( (int) $item->extension_type_id ) ) : ?>
 						<?php
 						// load plugin language
 							if( $extension->name != 'allextensions' )
 							{
-								$extensionsHelper->loadLanguage( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR  );
+								KextensionsLanguage::load( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR );
 							}
 							$extensionForm = $extension->forms->get( 'extension', new JObject );
 						?>

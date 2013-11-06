@@ -54,7 +54,7 @@ class FieldsandfiltersViewElement extends JViewLegacy
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_ELEMENT' ), 'element.png' );
 		
-		$canDo = FieldsandfiltersFactory::getHelper()->getActions();
+		$canDo = FieldsandfiltersHelper::getActions();
 		
 		// If not checked out, can save the item.
 		if( $canDo->get('core.edit') || $canDo->get('core.create' ) )

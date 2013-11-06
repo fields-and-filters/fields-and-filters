@@ -14,7 +14,7 @@ defined( '_JEXEC' ) or die;
 JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html'  );
 
 // Load PluginExtensions Helper
-$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
+$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 
 JHtml::_( 'behavior.tooltip' );
 JHTML::_( 'script','system/multiselect.js',false,true );
@@ -152,7 +152,7 @@ $saveOrder	= $listOrder == 'e.ordering';
 				</td>
 				<?php endif; ?>
 				<td>
-					<?php if( $extension = $pluginExtensionsHelper->getExtensionsPivot( 'extension_type_id', true )->get( (int) $this->state->get( 'filter.extension_type_id', 0 ) ) ) : ?>
+					<?php if( $extension = $extensionsHelper->getExtensionsPivot( 'extension_type_id', true )->get( (int) $this->state->get( 'filter.extension_type_id', 0 ) ) ) : ?>
 						<?php echo JText::_( $extension->forms->extension->title ); ?>
 					<?php else: ?>
 						<?php echo JText::_( 'JUNDEFINED' ); ?>

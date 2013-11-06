@@ -16,7 +16,7 @@ defined( '_JEXEC' ) or die;
 class FieldsandfiltersViewPlugins extends JViewLegacy
 {
 	// Array of plugin types or groups plugin types
-	protected $_plugins = null;
+	protected $plugins = null;
 	
 	/**
 	 * Display the view
@@ -31,16 +31,16 @@ class FieldsandfiltersViewPlugins extends JViewLegacy
 		{
 			case 'types':
 				// Load PluginTypes Helper - getTypesGroup
-				$this->_plugins = FieldsandfiltersFactory::getPluginTypes()->getTypesGroup();
+				$this->plugins = FieldsandfiltersFactory::getTypes()->getTypesGroup();
 			break;
 			case 'extensions':
 				// Load PluginExtensions Helper - 
-				$this->_plugins = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsGroup();
+				$this->plugins = FieldsandfiltersFactory::getExtensions()->getExtensionsGroup();
 				
 			break;
 		}
 		
-		if( is_null( $this->_plugins ) )
+		if( is_null( $this->plugins ) )
 		{
 			echo JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_PLUGINS_TPL', $this->getLayout() );
 			return false;

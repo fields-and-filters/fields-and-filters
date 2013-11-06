@@ -19,7 +19,7 @@ if( !FieldsandfiltersFactory::isVersion() )
  * Fieldsandfilters model.
  * @since       1.1.0
  */
-class FieldsandfiltersModelelement extends JModelAdmin
+class FieldsandfiltersModelElement extends JModelAdmin
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.
@@ -146,7 +146,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 				ksort( $fieldsForm );
 				
 				// Load the XML Helper:
-				FieldsandfiltersFactory::getXML()->setFields( $fieldsetForm , $fieldsForm );
+				KextensionsXML::setFields( $fieldsetForm , $fieldsForm );
 				
 				unset( $fieldsForm );
 				
@@ -189,13 +189,13 @@ class FieldsandfiltersModelelement extends JModelAdmin
 			if( $extensionTypeID )
 			{
 				// Load PluginExtensions Helper
-				$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
+				$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 				
-				if( $extensionName = $this->getState( 'element.extension_name', ( ( $pluginExtension = $pluginExtensionsHelper->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID )->get( $extensionTypeID ) ) ? $pluginExtension->name : null ) ) )
+				if( $extensionName = $this->getState( 'element.extension_name', ( ( $pluginExtension = $extensionsHelper->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID )->get( $extensionTypeID ) ) ? $pluginExtension->name : null ) ) )
 				{
 					JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 					
-					$extensionsTypeID = $pluginExtensionsHelper->getExtensionsByNameColumn( 'extension_type_id', array( 'allextensions', $extensionName ) );
+					$extensionsTypeID = $extensionsHelper->getExtensionsByNameColumn( 'extension_type_id', array( 'allextensions', $extensionName ) );
 					
 					$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFields', array( ( $this->option . '.' . $this->name . '.' . $extensionName ), $extensionsTypeID ) );
 					
@@ -358,7 +358,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 		if( is_numeric( $extensionTypeID ) )
 		{
 			// Load PluginExtensions Helper
-			if( $extensionTypeID && ( $pluginExtension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID, true )->get( $extensionTypeID ) ) )
+			if( $extensionTypeID && ( $pluginExtension = FieldsandfiltersFactory::getExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID, true )->get( $extensionTypeID ) ) )
 			{
 				$this->setState( 'element.extension_name', $pluginExtension->name );
 				$this->setState( 'element.extension_title', $pluginExtension->forms->get( 'extension', new JObject )->get( 'title', new JObject ) );
@@ -451,7 +451,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 			}
 			
 			// Load PluginExtensions Helper
-			$extensionName = ( $extension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
+			$extensionName = ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
 			
 			$context = $this->option . '.' . $this->name . '.' . $extensionName;
 			
@@ -501,12 +501,12 @@ class FieldsandfiltersModelelement extends JModelAdmin
 				$connections 	= $tableFields->get( 'connections', new JObject );
 				
 				// Load PluginTypes Helper
-				$pluginTypesHelper 	= FieldsandfiltersFactory::getPluginTypes();
-				$filterMode 		= (array) $pluginTypesHelper->getMode( 'filter', array() );
-				$otherMode		= (array) $pluginTypesHelper->getModes( null, array(), true, $filterMode );
+				$typesHelper 		= FieldsandfiltersFactory::getTypes();
+				$filterMode 		= (array) $typesHelper->getMode( 'filter', array() );
+				$otherMode		= (array) $typesHelper->getModes( null, array(), true, $filterMode );
 				
 				// Load Array Helper
-				$fields = FieldsandfiltersFactory::getArray()->flatten( get_object_vars( $fields ) );
+				$fields 		= KextensionsArray::flatten( get_object_vars( $fields ) );
 				
 				while( $field = array_shift( $fields ) )
 				{
@@ -624,7 +624,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 		JPluginHelper::importPlugin( 'content' );
 		
 		// Load PluginExtensions Helper
-		$pluginExtensionsHelper = FieldsandfiltersFactory::getPluginExtensions();
+		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 		
 		// Iterate the items to delete each one.
 		foreach( $pks as $i => $pk )
@@ -633,7 +633,7 @@ class FieldsandfiltersModelelement extends JModelAdmin
 			{
 				if( $this->canDelete( $table ) )
 				{
-					$extensionName = ( $extension = $pluginExtensionsHelper->getExtensionsByIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
+					$extensionName = ( $extension = $extensionsHelper->getExtensionsByIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
 					
 					$context = $this->option . '.' . $this->name . '.' .  $extensionName;
 					

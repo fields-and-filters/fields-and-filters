@@ -15,9 +15,6 @@ $app			= JFactory::getApplication();
 $recordId		= $app->input->get( 'recordId', 0, 'int' );
 $tmpl 			= $app->input->get( 'tmpl', '', 'cmd' );
 
-// Load Extensions Helper
-$extensionsHelper 	= FieldsandfiltersFactory::getExtensions();
-
 // Import CSS
 JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
 ?>
@@ -50,10 +47,10 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 </header>
 
 <?php echo JHtml::_( 'sliders.start' ); ?>
-	<?php foreach( $this->_plugins->toObject() AS $nameGroup => $pluginTypes ) : ?>
+	<?php foreach( $this->plugins->toObject() AS $nameGroup => $pluginTypes ) : ?>
 		<?php
 			$pluginType = current( $pluginTypes );
-			$extensionsHelper->loadLanguage( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
+			KextensionsLanguage::load( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
 			$group = $pluginType->forms->get( $nameGroup )->group;
 			echo JHtml::_( 'sliders.panel', JText::_( $group->title ), 'type' . $nameGroup );
 		?>
@@ -61,7 +58,7 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 		<?php foreach( $pluginTypes AS &$type ): ?>
 			<?php
 				if( $pluginType != $type ):
-					$extensionsHelper->loadLanguage( 'plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR );
+					KextensionsLanguage::load( 'plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR );
 				endif;
 				
 				$form = $type->forms->get( $nameGroup );

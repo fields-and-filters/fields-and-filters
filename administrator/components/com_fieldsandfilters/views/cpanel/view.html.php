@@ -79,7 +79,7 @@ class FieldsandfiltersViewCpanel extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		$canDo = FieldsandfiltersFactory::getHelper()->getActions();
+		$canDo = FieldsandfiltersHelper::getActions();
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS' ), 'fieldsandfilters.png' );
 		

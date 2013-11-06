@@ -19,7 +19,7 @@ if( !FieldsandfiltersFactory::isVersion() )
  *
  * @since       1.0.0
  */
-class FieldsandfiltersModelfields extends JModelList
+class FieldsandfiltersModelFields extends JModelList
 {
 
 	/**

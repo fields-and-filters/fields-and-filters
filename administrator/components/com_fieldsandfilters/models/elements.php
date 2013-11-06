@@ -18,7 +18,7 @@ if( !FieldsandfiltersFactory::isVersion() )
  * Methods supporting a list of Fieldsandfilters records.
  * @since       1.1.0
  */
-class FieldsandfiltersModelelements extends JModelList
+class FieldsandfiltersModelElements extends JModelList
 {
 	/**
 	 * Constructor.
@@ -68,15 +68,15 @@ class FieldsandfiltersModelelements extends JModelList
 		$params = JComponentHelper::getParams( 'com_fieldsandfilters' );
 		$this->setState( 'params', $params );
 		
-		if( $extensionTypeId && ( $pluginExtension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeId )->get( $extensionTypeId ) ) )
+		if( $extensionTypeId && ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeId )->get( $extensionTypeId ) ) )
 		{
 			// Include the content plugins for the on delete events.
 			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 			
 			// Trigger the onContentBeforeDelete event.
-			FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPopulateState', array( ( $this->context . '.' . $pluginExtension->name ), $this->state, &$this->filter_fields ) );
+			FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPopulateState', array( ( $this->context . '.' . $extension->name ), $this->state, &$this->filter_fields ) );
 			
-			$this->setState( 'elements.extension_name', $pluginExtension->name );
+			$this->setState( 'elements.extension_name', $extension->name );
 		}
 		
 		$this->setState( 'filter.extension_type_id', $extensionTypeId );

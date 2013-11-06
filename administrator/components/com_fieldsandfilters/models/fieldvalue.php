@@ -19,7 +19,7 @@ if( !FieldsandfiltersFactory::isVersion() )
  * Fieldsandfilters model.
  * @since	1.0.0
  */
-class FieldsandfiltersModelfieldvalue extends JModelAdmin
+class FieldsandfiltersModelFieldvalue extends JModelAdmin
 {
 	/**
 	 * @var		string	The prefix to use with controller messages.

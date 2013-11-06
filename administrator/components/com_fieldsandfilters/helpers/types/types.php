@@ -69,7 +69,7 @@ class FieldsandfiltersTypes extends KextensionsBufferCore
 					
 					if( $data->xml )
 					{
-						KextensionsXML::getXML()->getPluginOptionsForms( $elements->get( $pluginType->name ), array() );
+						FieldsandfiltersXML::getPluginOptionsForms( $elements->get( $pluginType->name ), array() );
 					}  
 				}
 			}
@@ -84,7 +84,7 @@ class FieldsandfiltersTypes extends KextensionsBufferCore
                         
                         while( $element = array_shift( $elements ) )
                         { 
-                                KextensionsXML::getXML()->getPluginOptionsForms( $element, array() );
+                                FieldsandfiltersXML::getPluginOptionsForms( $element, array() );
                         }
                 }
 		

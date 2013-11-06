@@ -36,7 +36,7 @@ class FieldsandfiltersViewFields extends JViewLegacy
 			throw new Exception( implode( "\n", $errors ) );
 		}
 		
-		FieldsandfiltersFactory::getHelper()->addSubmenu( JFactory::getApplication()->input->getCmd( 'view', '' ) );
+		FieldsandfiltersHelper::addSubmenu( JFactory::getApplication()->input->getCmd( 'view', '' ) );
 		
 		$this->addToolbar();
 		
@@ -61,7 +61,7 @@ class FieldsandfiltersViewFields extends JViewLegacy
 	{
 		JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html' );
 		
-		$canDo = FieldsandfiltersFactory::getHelper()->getActions();
+		$canDo = FieldsandfiltersHelper::getActions();
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_FIELDS' ), 'fields.png' );
 		

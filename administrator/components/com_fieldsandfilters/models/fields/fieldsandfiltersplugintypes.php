@@ -11,9 +11,6 @@ defined('JPATH_BASE') or die;
 
 JFormHelper::loadFieldClass( 'list' );
 
-// Load the Factory Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
  * Form Field class for the Joomla Platform.
  *
@@ -49,14 +46,14 @@ class JFormFieldFieldsandfiltersPluginTypes extends JFormFieldList
 		$recordId	= (int) $this->form->getValue( 'field_id', 0 );
 		$mode		= (int) $this->form->getValue( 'mode', 0 );
 		
-		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
+		$typesHelper = FieldsandfiltersFactory::getTypes();
 		
-		if( $mode && ( $pluginType = $pluginTypesHelper->getTypes( true )->get( $this->value ) ) )
+		if( $mode && ( $pluginType = $typesHelper->getTypes( true )->get( $this->value ) ) )
 		{
 			// Load Extensions Helper
-			FieldsandfiltersFactory::getExtensions()->loadLanguage( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
+			KextensionsLanguage::load( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
 			
-			$typeName 	= $pluginTypesHelper->getModeName( $mode, 'type' );
+			$typeName 	= $typesHelper->getModeName( $mode, 'type' );
 			$typeForm	= $pluginType->forms->get( $typeName, new JObject );
 			
 			if( isset( $typeForm->group->title ) )

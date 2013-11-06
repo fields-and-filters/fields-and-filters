@@ -15,9 +15,6 @@ $app			= JFactory::getApplication();
 $recordId		= $app->input->get( 'recordId', 0, 'int' );
 $tmpl 			= $app->input->get( 'tmpl', '', 'cmd' );
 
-// Load Extensions Helper
-$extensionsHelper 	= FieldsandfiltersFactory::getExtensions();
-
 // Import CSS
 JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
 ?>
@@ -49,11 +46,11 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css',
 	</div>
 </header>
 
-<?php foreach( $this->_plugins->toObject() AS $nameGroup => $pluginExtensions ) : ?>
+<?php foreach( $this->plugins->toObject() AS $nameGroup => $pluginExtensions ) : ?>
 	<ul class="nav nav-tabs nav-stacked">
 	<?php foreach( $pluginExtensions AS &$extension ): ?>
 		<?php
-			$extensionsHelper->loadLanguage( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR );
+			KextensionsLanguage::load( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR );
 			$form = $extension->forms->get( $nameGroup );
 		?>
 		<li>

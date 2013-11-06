@@ -62,7 +62,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 			$extension 	= 'plg_' . $pluginType . '_' . $pluginName;
 			
 			// Load language file
-			FieldsandfiltersFactory::getExtensions()->loadLanguage( $extension, JPATH_ADMINISTRATOR );
+			KextensionsLanguage::load( $extension, JPATH_ADMINISTRATOR );
 			
 			
 			
@@ -129,7 +129,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 				foreach( $templates as $template )
 				{
 					// Load language file
-					FieldsandfiltersFactory::getExtensions()->loadLanguage( 'tpl_' . $template->element, JPATH_SITE );
+					KextensionsLanguage::load( 'tpl_' . $template->element, JPATH_SITE );
 					
 					$template_path = JPath::clean( JPATH_SITE . '/templates/' . $template->element . '/html/' . $extension );
 

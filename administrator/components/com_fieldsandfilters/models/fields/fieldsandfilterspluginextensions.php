@@ -11,9 +11,6 @@ defined('JPATH_BASE') or die;
 
 JFormHelper::loadFieldClass( 'list' );
 
-// Load the Factory Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
  * Form Field class for the Joomla Platform.
  *
@@ -48,12 +45,12 @@ class JFormFieldFieldsandfiltersPluginExtensions extends JFormFieldList
 		$recordId	= (int) $this->form->getValue( 'field_id', 0 );
 		$typeExtension	= 'extension';
 		
-		if( $pluginExtension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsPivot( 'extension_type_id', true )->get( $this->value ) )
+		if( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsPivot( 'extension_type_id', true )->get( $this->value ) )
 		{
 			// Load Extensions Helper
-			FieldsandfiltersFactory::getExtensions()->loadLanguage( 'plg_' . $pluginExtension->type . '_' . $pluginExtension->name, JPATH_ADMINISTRATOR );
+			KextensionsLanguage::load( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR );
 			
-			$extensionForm = $pluginExtension->forms->get( $typeExtension, new JObject );
+			$extensionForm = $extension->forms->get( $typeExtension, new JObject );
 			
 			/*
 			if( isset( $extensionForm->group->title ) )
