@@ -82,33 +82,6 @@ class KextensionsXML
 	/**
 	 * Adds a new options SimpleXMLElement node to the source.
 	 *
-	 * @param   SimpleXMLElement  $source  The source element on which to append.
-	 * @param   SimpleXMLElement  $new     The new element to append.
-	 *
-	 * @return  void
-	 *
-	 * @since   1.0.0
-	 */
-	public static function mergeOptionsNode( SimpleXMLElement $source, SimpleXMLElement $new )
-	{
-		if( isset( $new->option ) )
-		{
-			// Update the options of the child node.
-			foreach( $new->option AS $option )
-			{
-				$newOption = $source->addChild( 'option', (string) $option[0] );
-				$newOption->addAttribute( 'value', (string) $option['value'] );
-			}
-			
-			return true;
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Adds a new options SimpleXMLElement node to the source.
-	 *
 	 * @param   SimpleXMLElement  	$source  	The source element on which to append.
 	 * @param   array	  	$options     	The associative array of options.
 	 *

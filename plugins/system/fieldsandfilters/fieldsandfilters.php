@@ -129,6 +129,7 @@ class plgSystemFieldsandfilters extends JPlugin
 		}
 		
 		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		
 		// Trigger the onFinderBeforeSave event.
 		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareForm', array( $form, $data ) );

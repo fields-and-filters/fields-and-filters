@@ -13,18 +13,19 @@
 			<![CDATA[PLG_FIELDSANDFILTERS_FORM_GROUP_CONTENTS_DESC]]>
 		</message>
 	</group>
-
-	<!-- Add fields to the properties variables for the plugin extension. -->
-	<fields name="properties">
-		<fieldset name="properties">
+	
+	<!-- Add fields to the parameters object for the plugin extension. -->
+	<fields name="params">
+		<fieldset name="extension">
 			<field
 				name="location"
 				type="list"
-				label="PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_LBL"
-				description="PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_DESC"
+				label="PLG_FAF_ES_CT_FORM_PARAMS_EXTENSIONS_LOCATION_LBL"
+				description="PLG_FAF_ES_CT_FORM_PARAMS_EXTENSIONS_LOCATION_DESC"
 				multiple="true"
 				
 			>
+				<option value="onSyntax">COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_TYPE_OPTION_ONLY_SYNTAX</option>
 				<option value="onContentAfterTitleCategory">PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_AFTER_TITLE_CATEGORY</option>
 				<option value="onContentBeforeDisplayCategory">PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_BEFORE_CONTENT_CATEGORY</option>
 				<option value="onContentAfterDisplayCategory">PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_AFTER_CONTENT_CATEGORY</option>
@@ -37,20 +38,4 @@
 			</field>
 		</fieldset>
 	</fields>
-	
-	<!-- Add fields to the parameters object for the plugin extension. -->
-	<!-- 
-	<fields name="params">
-		<fieldset name="extension">
-			<field name="test" type="list"
-				label="TEST_LBL"
-				description="TEST_DESC"
-			>
-				<option value="">TEST_OPTION</option>
-				<option value="0">TEST_OPTION_0</option>
-				<option value="1">TEST_OPTION_1</option>
-			</field>
-		</fieldset>
-	</fields>
-	-->
 </pluginExtension>

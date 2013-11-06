@@ -152,7 +152,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 	 * @since       1.1.0
 	 * @throws	Exception if there is an error in the form event.
 	 */
-	protected function preprocessForm( JForm $form, $data, $group = 'fieldsandfilters' )
+	protected function preprocessForm( JForm $form, $data, $group = 'content' )
 	{
 		$typesHelper = FieldsandfiltersFactory::getTypes();
 		
@@ -233,32 +233,20 @@ class FieldsandfiltersModelField extends JModelAdmin
 					
 					if( $pluginForm = simplexml_load_file( $filePath ) )
 					{
+						// get plugin type properties field and set to $form fields properties
+						if( $pluginFieldsProperties = $pluginForm->xpath('//fields[@name="properties"]') )
+						{
+							$pluginFieldsProperties = $pluginFieldsProperties[0]->xpath('descendant::field');
+							
+							$form->setFields( $pluginFieldsProperties, 'properties' );
+						}
+						
 						// get plugin extenion params fieldset and set to $form fields params.extension
 						if( $pluginFieldsParams = $pluginForm->xpath('//fields[@name="params"]') )
 						{
 							$pluginFieldsParams = $pluginFieldsParams[0]->xpath('descendant::fieldset');
 							
 							$form->setFields( $pluginFieldsParams, 'params.extension' );
-						}
-						
-						// get plugin extenion properties field and set to $form fields properties
-						if( ( $pluginFieldsParams = $pluginForm->xpath( '//fields[@name="properties"]' ) ) && ( $modelForm = simplexml_load_file( JPATH_COMPONENT_ADMINISTRATOR . '/models/forms/' . $this->name . '.xml' ) ) )
-						{
-							$fieldset = new SimpleXMLElement( '<fieldset/>' );
-							$fieldset->addAttribute( 'name', 'extension' );
-							
-							if( ( $pluginFieldLocation = $pluginFieldsParams[0]->xpath( 'descendant::field[@name="location"]' ) ) && ( $modelFormLocation = $modelForm->xpath( 'fields[@name="params"]/fields[@name="extension"]//field[@name="location"]' ) ) )
-							{
-								$modelFormLocation = $modelFormLocation[0];
-								
-								// Add options to model Form Location node [TODO] delete
-								KextensionsXML::mergeOptionsNode( $modelFormLocation, $pluginFieldLocation[0] );
-								
-								// Add model Form Location node to fieldset
-								KextensionsXML::setFields( $fieldset, $modelFormLocation );
-							}
-							
-							$form->setField( $fieldset, 'params.extension' );
 						}
 					}
 				}
