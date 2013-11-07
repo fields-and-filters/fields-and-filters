@@ -106,7 +106,7 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 			
 			// Trigger the onFieldsandfiltersPrepareFormField event.
-			$options = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPreparePluginExtensionsHelper', array( 'pluginextensions.options', $data->elements ) );			
+			$options = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareExtensionsHelper', array( 'pluginextensions.options', $data->elements ) );			
 		}
 		
 		return $this->_getData( 'options' )->elements;
