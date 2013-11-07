@@ -94,7 +94,7 @@ class KextensionsForm
 		return false;
 	}
 	
-	public function getFields( $sort = null )
+	public function getFields( $sort = null, $sort_flags = SORT_NUMERIC )
 	{
 		$sort = !is_null( $sort ) ? $sort : 'ksort';
 		
@@ -103,13 +103,13 @@ class KextensionsForm
 		// Check for a callback sort.
 		if( strpos( $sort, '::' ) !== false && is_callable( explode( '::', $sort ) ) )
 		{
-			$fields = call_user_func( explode( '::', $sort ), $fields );
+			call_user_func_array( explode( '::', $sort ), array( &$fields, $sort_flags ) );
 		}
 
 		// Filter using a callback function if specified.
 		elseif( function_exists( $sort ) )
 		{
-			$fields = call_user_func( $sort, $fields );
+			call_user_func_array( $sort, array( &$fields, $sort_flags ) );
 		}
 		
 		return $fields;
