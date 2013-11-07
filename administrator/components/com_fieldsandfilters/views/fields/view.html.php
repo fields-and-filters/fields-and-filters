@@ -18,6 +18,9 @@ class FieldsandfiltersViewFields extends JViewLegacy
 	protected $items;
 	protected $pagination;
 	protected $state;
+	
+	public $filterForm;
+	public $activeFilters;
 
 	/**
 	 * Display the view
@@ -29,7 +32,13 @@ class FieldsandfiltersViewFields extends JViewLegacy
 		$this->state		= $this->get( 'State' );
 		$this->items		= $this->get( 'Items' );
 		$this->pagination	= $this->get( 'Pagination' );
-
+		
+		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
+		{
+			$this->filterForm    	= $this->get( 'FilterForm' );
+			$this->activeFilters 	= $this->get( 'ActiveFilters' );
+		}
+		
 		// Check for errors.
 		if( count( $errors = $this->get( 'Errors' ) ) )
 		{
@@ -43,6 +52,11 @@ class FieldsandfiltersViewFields extends JViewLegacy
 		if( FieldsandfiltersFactory::isVersion() )
 		{
 			$this->sidebar = JHtmlSidebar::render();
+			
+			if( is_null( $tpl ) && FieldsandfiltersFactory::isVersion( '<', 3.2  ) )
+			{
+				$tpl = '3.1';
+			}
 		}
 		else if( is_null( $tpl ) )
 		{
@@ -65,7 +79,7 @@ class FieldsandfiltersViewFields extends JViewLegacy
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_FIELDS' ), 'fields.png' );
 		
-		if( FieldsandfiltersFactory::isVersion() )
+		if( FieldsandfiltersFactory::isVersion( '<', 3.2 ) )
 		{
 			JHtmlSidebar::setAction( 'index.php?option=com_fieldsandfilters&view=fields' );
 			
@@ -78,15 +92,16 @@ class FieldsandfiltersViewFields extends JViewLegacy
 			JHtmlSidebar::addFilter(
 				JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
 				'filter_extension_type_id',
-				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
+				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.extensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
 			);
 			
 			JHtmlSidebar::addFilter(
 				JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE' ),
 				'filter_type',
-				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginTypesOptions' ), 'value', 'text', $this->state->get( 'filter.type' ), false )
+				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.typesOptions' ), 'value', 'text', $this->state->get( 'filter.type' ), false )
 			);
 			
+			/*
 			JHtmlSidebar::addFilter(
 				JText::_( 'JOPTION_SELECT_ACCESS' ),
 				'filter_access',
@@ -98,6 +113,7 @@ class FieldsandfiltersViewFields extends JViewLegacy
 				'filter_language',
 				JHtml::_( 'select.options', JHtml::_( 'contentlanguage.existing' ), 'value', 'text', $this->state->get( 'filter.language' ), false )
 			);
+			*/
 		}
 		
 		if( $canDo->get( 'core.create' ) )

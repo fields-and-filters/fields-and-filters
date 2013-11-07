@@ -105,12 +105,12 @@ $required = array(
 			
 			<select name="filter_extension_type_id" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' );?></option>
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ) );?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.extensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ) );?>
 			</select>
 
 			<select name="filter_type" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE' );?></option>
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginTypesOptions' ), 'value', 'text', $this->state->get( 'filter.type' ) );?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.typesOptions' ), 'value', 'text', $this->state->get( 'filter.type' ) );?>
 			</select>
 			
 			<?php /*

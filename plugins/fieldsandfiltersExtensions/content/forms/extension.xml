@@ -18,12 +18,14 @@
 	<fields name="params">
 		<fieldset name="extension">
 			<field
-				name="location"
+			       name="location"
 				type="list"
+				size="10"
+				class="inputbox"
+				default="onSyntax"
 				label="PLG_FAF_ES_CT_FORM_PARAMS_EXTENSIONS_LOCATION_LBL"
 				description="PLG_FAF_ES_CT_FORM_PARAMS_EXTENSIONS_LOCATION_DESC"
-				multiple="true"
-				
+				multiple="true"	
 			>
 				<option value="onSyntax">COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_TYPE_OPTION_ONLY_SYNTAX</option>
 				<option value="onContentAfterTitleCategory">PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_AFTER_TITLE_CATEGORY</option>

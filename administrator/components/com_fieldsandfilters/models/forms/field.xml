@@ -32,7 +32,7 @@
 		/>
 		<field
 			name="field_type"
-			type="fieldsandfiltersPluginTypes"
+			type="Modal_FieldsandfiltersTypes"
 			size="40"
 			class="inputbox input-medium"
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_FIELD_TYPE"
@@ -42,7 +42,7 @@
 		/>
 		<field
 			name="extension_type_id"
-			type="fieldsandfiltersPluginExtensions"
+			type="Modal_FieldsandfiltersExtensions"
 			size="40"
 			class="inputbox input-medium"
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_EXTENSION_TYPE_ID"

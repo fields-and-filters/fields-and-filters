@@ -31,7 +31,16 @@ abstract class JHtmlFieldsandfilters
 	public static function dropdownRequired( $checkboxId, $prefix = '' )
 	{
 		$task = $prefix . 'required';
-		JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );
+		
+		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
+		{
+			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM' ), 'required', $checkboxId, $task );
+		}
+		else
+		{
+			JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );
+		}
+		
 		return;
 	}
 
@@ -48,7 +57,15 @@ abstract class JHtmlFieldsandfilters
 	public static function dropdownUnrequired( $checkboxId, $prefix = '' )
 	{
 		$task = $prefix . 'unrequired';
-		JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );
+		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
+		{
+			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM' ), 'unrequired', $checkboxId, $task );
+		}
+		else
+		{
+			JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );
+		}
+		
 		return;
 	}
 	
@@ -65,7 +82,15 @@ abstract class JHtmlFieldsandfilters
 	public static function dropdownOnlyAdmin( $checkboxId, $prefix = '' )
 	{
 		$task = $prefix . 'onlyadmin';
-		JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_ONLYADMIN' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );
+		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
+		{
+			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_ONLYADMIN' ), 'admin', $checkboxId, $task );
+		}
+		else
+		{
+			JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_ONLYADMIN' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );
+		}
+		
 		return;
 	}
 	
@@ -152,7 +177,7 @@ abstract class JHtmlFieldsandfilters
 	 * @return	array	array associate value and text
 	 * @since       1.1.0
 	 */
-	public static function pluginTypesOptions( $excluded = array() )
+	public static function typesOptions( $excluded = array() )
 	{
 		$options 	= array();
 		
@@ -180,7 +205,7 @@ abstract class JHtmlFieldsandfilters
 	 * @return	array	array associate value and text
 	 * @since       1.1.0
 	 */
-	public static function pluginExtensionsOptions( $excluded = array() )
+	public static function extensionsOptions( $excluded = array() )
 	{
 		$options 	= array();
 		

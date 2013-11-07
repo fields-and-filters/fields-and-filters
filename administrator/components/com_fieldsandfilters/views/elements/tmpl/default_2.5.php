@@ -45,7 +45,7 @@ $saveOrder	= $listOrder == 'e.ordering';
 		<div class='filter-select fltrt'>
 			<select name="filter_extension_type_id" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION'  );?></option>
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.pluginExtensionsOptions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' )  );?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.extensionsOptions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' )  );?>
 			</select>
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'JOPTION_SELECT_PUBLISHED' );?></option>
