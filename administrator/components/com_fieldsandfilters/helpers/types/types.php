@@ -218,7 +218,7 @@ class FieldsandfiltersTypes extends KextensionsBufferCore
 		{
 			if( $flatten || $isExcluded )
 			{
-				$modes = KextensionsArray::getArray()->flatten( $modes );
+				$modes = KextensionsArray::flatten( $modes );
 			}
 			
 			if( $isExcluded )
