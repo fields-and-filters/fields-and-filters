@@ -34,7 +34,7 @@ abstract class JHtmlFieldsandfilters
 		
 		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
 		{
-			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM' ), 'required', $checkboxId, $task );
+			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM' ), 'star', $checkboxId, $task );
 		}
 		else
 		{
@@ -59,7 +59,7 @@ abstract class JHtmlFieldsandfilters
 		$task = $prefix . 'unrequired';
 		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
 		{
-			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM' ), 'unrequired', $checkboxId, $task );
+			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM' ), 'star-empty', $checkboxId, $task );
 		}
 		else
 		{
@@ -84,7 +84,7 @@ abstract class JHtmlFieldsandfilters
 		$task = $prefix . 'onlyadmin';
 		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
 		{
-			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_ONLYADMIN' ), 'admin', $checkboxId, $task );
+			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_ONLYADMIN' ), 'dashboard', $checkboxId, $task );
 		}
 		else
 		{

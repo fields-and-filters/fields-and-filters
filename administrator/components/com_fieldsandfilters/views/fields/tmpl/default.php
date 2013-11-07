@@ -154,13 +154,13 @@ if( $saveOrder )
 										JHtml::_( 'fieldsandfilters.dropdownOnlyAdmin', 'cb' . $i, 'fields.' );
 									endif;
 									
-									JHtml::_( 'dropdown.divider' );
+									JHtml::_( 'actionsdropdown.divider' );
 									
 									$action = $item->required ? 'Unrequired' : 'Required';
 									JHtml::_( 'fieldsandfilters.dropdown' . $action, 'cb' . $i, 'fields.' );
 									
 									// Render dropdown list
-									echo JHtml::_( 'dropdown.render' );
+									echo JHtml::_( 'actionsdropdown.render' );
 								?>
 							</div>
 						</td>
@@ -176,11 +176,11 @@ if( $saveOrder )
 								<?php endif; ?>
 								
 								<?php if( in_array( $item->mode, $valuesMode ) ) : ?>
-								<a href="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&view=fieldvalues&id=' . (int) $item->field_id ); ?>">
-									<?php echo JText::_( 'COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES' ); ?>
-								</a>
+								<?php echo JText::sprintf( 'JGLOBAL_LIST_ALIAS', $this->escape( $item->field_alias ) ); ?>
 								<p class="smallsub">
-									<?php echo JText::sprintf( 'JGLOBAL_LIST_ALIAS', $this->escape( $item->field_alias ) ); ?>
+									<a class="badge badge-info" href="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&view=fieldvalues&id=' . (int) $item->field_id ); ?>">
+										<?php echo JText::_( 'COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES' ); ?>
+									</a>
 								</p>
 								<?php endif; ?>
 							</div>
