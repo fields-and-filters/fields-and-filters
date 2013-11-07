@@ -14,12 +14,12 @@ jimport('joomla.filesystem.path');
 /**
  * KextensionsFile.
  * 
- * @since       1.1.0
+ * @since       1.0.0
  */
 class KextensionsFile
 {
 	/**
-        * @since       1.1.0
+        * @since       1.0.0
         */
         protected static $_mime_types = array(
                                 'txt' => 'text/plain',
