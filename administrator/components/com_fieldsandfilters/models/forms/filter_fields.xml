@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="filter">
+		<field
+			name="search"
+			type="text"
+			label="COM_CONTENT_FILTER_SEARCH_DESC"
+			hint="JSEARCH_FILTER"
+		/>
+		<field
+			name="published"
+			type="fieldsandfiltersStatus"
+			label="COM_FIELDSANDFILTERS_FILTER_PUBLISHED"
+			description="COM_FIELDSANDFILTERSFILTER_PUBLISHED_DESC"
+			onchange="this.form.submit();"
+			>
+			<option value="">JOPTION_SELECT_PUBLISHED</option>
+		</field>
+		<field
+			name="extension_type_id"
+			type="fieldsandfiltersExtensions"
+			label="COM_FIELDSANDFILTERS_FILTER_EXTENSION"
+			description="COM_FIELDSANDFILTERS_FILTER_EXTENSION_DESC"
+			onchange="this.form.submit();"
+		>
+			<option value="">COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION</option>
+		</field>
+		<field
+			name="type"
+			type="fieldsandfiltersTypes"
+			label="COM_FIELDSANDFILTERS_FILTER_TYPE"
+			description="COM_FIELDSANDFILTERS_FILTER_TYPE_DESC"
+			onchange="this.form.submit();"
+		>
+			<option value="">COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE</option>
+		</field>
+	</fields>
+	<!--
+			'f.required' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_REQUIRED' ),
+			// 'f.language' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_LANGUAGE' ),
+			'f.ordering' 		=> JText::_( 'JGRID_HEADING_ORDERING' ),
+			'f.field_id' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_FIELD_ID' )
+	-->
+	
+	<fields name="list">
+		<field
+			name="fullordering"
+			type="list"
+			label="COM_CONTENT_LIST_FULL_ORDERING"
+			description="COM_CONTENT_LIST_FULL_ORDERING_DESC"
+			onchange="this.form.submit();"
+			default="a.title ASC"
+		>
+			<option value="">JGLOBAL_SORT_BY</option>
+			<option value="f.ordering ASC">JGRID_HEADING_ORDERING_ASC</option>
+			<option value="f.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>
+			<option value="f.state ASC">JSTATUS_ASC</option>
+			<option value="f.state DESC">JSTATUS_DESC</option>
+			<option value="f.field_name ASC">COM_FIELDSANDFILTERS_FIELD_NAME_ASC</option>
+			<option value="f.field_name DESC">COM_FIELDSANDFILTERS_FIELD_NAME_DESC</option>
+			<option value="f.field_type ASC">COM_FIELDSANDFILTERS_TYPE_ASC</option>
+			<option value="f.field_type DESC">COM_FIELDSANDFILTERS_TYPE_DESC</option>			
+			<option value="f.extension_type_id ASC">COM_FIELDSANDFILTERS_EXTENSION_ASC</option>
+			<option value="f.extension_type_id DESC">COM_FIELDSANDFILTERS_EXTENSION_DESC</option>
+			<option value="f.required ASC">COM_FIELDSANDFILTERS_REQUIRED_ASC</option>
+			<option value="f.required DESC">COM_FIELDSANDFILTERS_REQUIRED_DESC</option>
+			<option value="f.field_id ASC">COM_FIELDSANDFILTERS_FIELD_ID_ASC</option>
+			<option value="f.field_id DESC">COM_FIELDSANDFILTERS_FIELD_ID_DESC</option>
+		</field>
+		<field
+			name="limit"
+			type="limitbox"
+			class="inputbox input-mini"
+			default="25"
+			label="COM_CONTENT_LIST_LIMIT"
+			description="COM_CONTENT_LIST_LIMIT_DESC"
+			onchange="this.form.submit();"
+		/>
+	</fields>
+</form>
