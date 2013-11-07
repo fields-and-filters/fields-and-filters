@@ -35,21 +35,15 @@
 			<option value="">COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE</option>
 		</field>
 	</fields>
-	<!--
-			'f.required' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_REQUIRED' ),
-			// 'f.language' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_LANGUAGE' ),
-			'f.ordering' 		=> JText::_( 'JGRID_HEADING_ORDERING' ),
-			'f.field_id' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_FIELD_ID' )
-	-->
 	
 	<fields name="list">
 		<field
 			name="fullordering"
 			type="list"
-			label="COM_CONTENT_LIST_FULL_ORDERING"
-			description="COM_CONTENT_LIST_FULL_ORDERING_DESC"
+			label="COM_FIELDSANDFILTERS_LIST_FULL_ORDERING"
+			description="COM_FIELDSANDFILTERS_LIST_FULL_ORDERING_DESC"
 			onchange="this.form.submit();"
-			default="a.title ASC"
+			default="f.field_name ASC"
 		>
 			<option value="">JGLOBAL_SORT_BY</option>
 			<option value="f.ordering ASC">JGRID_HEADING_ORDERING_ASC</option>
