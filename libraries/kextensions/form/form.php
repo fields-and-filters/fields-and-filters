@@ -51,7 +51,15 @@ class KextensionsForm
 	 */
 	protected $fields = array();
 	
-	public function __construct( $config = array() )
+	/**
+	 * Method to instantiate the form object.
+	 *
+	 * @param   string  $name     The name of the form.
+	 * @param   array   $options  An array of form options.
+	 *
+	 * @since   1.0.0
+	 */
+	public function __construct( $name, $config = array() )
 	{
 		// Set the name for the form.
 		$this->name = $name;
@@ -80,7 +88,7 @@ class KextensionsForm
 	/**
 	 * Getter for the form data
 	 *
-	 * @return   JRegistry  Object with the data
+	 * @return   JRegistry/boolean  Object with the data or if empty return false;
 	 *
 	 * @since    1.0.0
 	 */
@@ -94,11 +102,25 @@ class KextensionsForm
 		return false;
 	}
 	
+	/**
+	 * Getter for the form fields
+	 *
+	 * @param	string		$sort		Name function/method name for a callback
+	 * @param	init		$sort_flags	You may modify the behavior of the sort using the optional parameter
+	 * 
+	 * @return   	array/boolean  	Object with the data or if empty return false;
+	 *
+	 * @since    1.0.0
+	 */
 	public function getFields( $sort = null, $sort_flags = SORT_NUMERIC )
 	{
-		$sort = !is_null( $sort ) ? $sort : 'ksort';
+		$sort 	= !is_null( $sort ) ? $sort : 'ksort';
+		$fields	= $this->fields;
 		
-		$fields = $this->fields;
+		if( empty( $fields ) )
+		{
+			return false;
+		}
 		
 		// Check for a callback sort.
 		if( strpos( $sort, '::' ) !== false && is_callable( explode( '::', $sort ) ) )
@@ -106,7 +128,7 @@ class KextensionsForm
 			call_user_func_array( explode( '::', $sort ), array( &$fields, $sort_flags ) );
 		}
 
-		// Filter using a callback function if specified.
+		// Sort using a callback function if specified.
 		elseif( function_exists( $sort ) )
 		{
 			call_user_func_array( $sort, array( &$fields, $sort_flags ) );
@@ -149,29 +171,22 @@ class KextensionsForm
 	/**
 	 * Method to set a field XML element.
 	 *
-	 * @param   mix			$name	  The name of field
-	 * @param   SimpleXMLElement  	$element  The XML element object representation of the form field.
+	 * @param   mix			$name	  	The name of field
+	 * @param   SimpleXMLElement  	$element  	The XML element object representation of the form field.
+	 * @param   boolean  		$increment  	Increment name if exists. If false this will overwrite old value
 	 *
 	 * @since   1.0.0
 	 */
-	public function setField( $name, $value )
+	public function setField( $name, SimpleXMLElement $element, $increment = true )
 	{
-		if( $value instanceof SimpleXMLElement )
+		if( $increment )
 		{
-			if( is_numeric( $name ) )
+			while( array_key_exists( $name, $this->$name ) )
 			{
-				while( array_key_exists( $name, $this->$name ) )
-				{
-					$name++;
-				};
-			}
-			
-			$this->$name = $value;
-			
-			return true;
-			
+				$name = is_numeric( $name ) ? $name + 1 : JString::increment( $name, 'dash' );
+			};
 		}
 		
-		return false;
+		$this->$name = $element;
 	}
 }
