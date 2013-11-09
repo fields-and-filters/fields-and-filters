@@ -41,7 +41,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	public function __construct( &$subject, $config )
 	{
 		parent::__construct( $subject, $config );
-		$this->loadLanguage();
+		
+		if( JFactory::getApplication()->isAdmin() )
+		{
+			// load plugin language
+			KextensionsLanguage::load( 'plg_' . $this->_type . '_' . $this->_name, JPATH_ADMINISTRATOR );
+		}
 	}
 	
 	/**
@@ -916,30 +921,5 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			
 			$document->addScriptDeclaration( implode( "\n", $js ) );
 		}
-	}
-	
-	/**
-	 * Loads the plugin language file
-	 *
-	 * @param   string  $extension  The extension for which a language file should be loaded
-	 * @param   string  $basePath   The basepath to use
-	 *
-	 * @return  boolean  True, if the file has successfully loaded.
-	 *
-	 * @since       1.0.0
-	 */
-	public function loadLanguage( $extension = '', $basePath = JPATH_ADMINISTRATOR )
-	{
-		if( empty( $extension ) )
-		{
-			$extension = 'plg_' . $this->_type . '_' . $this->_name;
-		}
-		
-		$lang = JFactory::getLanguage();
-		
-		return $lang->load( $extension, $basePath, null, false, false )
-			|| $lang->load( $extension, JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name, null, false, false )
-			|| $lang->load( $extension , $basePath, $lang->getDefault(), false, false )
-			|| $lang->load( $extension, JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name, $lang->getDefault(), false, false );
 	}
 }
