@@ -145,8 +145,15 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function onFieldsandfiltersPrepareFields( $context, $extensionsTypeID )
+	public function onFieldsandfiltersPrepareFields( $context, $fieldsForm, $extensionsTypeID  )
 	{
+		// Check we have a xml element
+		if( !( $fieldsForm instanceof KextensionsFormElement ) )
+		{
+			$this->_subject->setError( 'JERROR_NOT_A_FORM' );
+			return false;
+		}
+		
 		if( empty( $extensionsTypeID ) || !in_array( $context, array( $this->_context, 'com_fieldsandfilters.element.content' ) ) )
 		{
 			return true;
@@ -174,7 +181,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$fields = $fieldsHelper->getFieldsByModeIDPivot( 'field_type', $extensionsTypeID, $othersMode, array( 1, -1 ), 'both' );
 		}
 		
-		JRegistry::getInstance( 'fieldsandfilters' )->set( 'fields', $fields );
+		$fieldsForm->setElements( $fields );
 	}
 	
 	/**
@@ -215,14 +222,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			return false;
 		}
 		
-		$formName = $form->getName();
-		
-		if( $formName != $this->_context )
+		if( $form->getName() != $this->_context )
 		{
 			return true;
 		}
 		
-		// Load PluginExtensions Helper
+		// Load Extensions Helper
 		$extensions = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( array( 'allextensions', $this->_name ) );
 		
 		if( !( $extensionContent = $extensions->get( $this->_name ) ) )
@@ -239,78 +244,68 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$elementModel->setState( 'element.extension_type_id', $extensionContent->extension_type_id );
 		
-		// Load Extensions Helper
+		// Load Extension Language
 		KextensionsLanguage::load( 'com_fieldsandfilters', JPATH_ADMINISTRATOR );
 		
-		$jregistry = JRegistry::getInstance( 'fieldsandfilters' );
+		$fieldsForm = $elementModel->prepareFieldsForm();
 		
-		if( !( $elementModel->prepareFields() && ( $fields = $jregistry->get( 'fields' ) ) ) )
+		if( !$fieldsForm instanceof KextensionsFormElement )
 		{
 			return true;
 		}
 		
+		$fieldsForm->setPath( 'attribs.fieldsandfilters' );
+		
+		$fieldsetXML =  new SimpleXMLElement( '<fieldset />' );
+		$fieldsetXML->addAttribute( 'name', 'fieldsandfilters' );
+		$fieldsetXML->addAttribute( 'label', 'COM_FIELDSANDFILTERS' );
+		// $fieldsetForm->addAttribute( 'description', 'COM_FIELDSANDFILTERS_FIELDSET_DESC' );
+		
+		$fielsXML = $fieldsetXML->addChild( 'fields' );
+		$fielsXML->addAttribute( 'name', 'fieldsandfilters' );
+		
 		if( !empty( $data ) )
 		{
-			$data = is_object( $data ) ? $data : new JObject( $data );
+			$data = (object) $data;
 			$elementModel->setState( 'element.item_id', $data->id );
-			$registry = new JRegistry( $data->attribs  );
-			$registry->set( 'fieldsandfilters.fields', $elementModel->getItem()->get( 'fields', new JObject ) );
-			$data->attribs = $registry->toArray();
-			unset( $registry );
+			$itemFields = $elementModel->getItem()->get( 'fields', new JObject );
 		}
 		
-		$elementsForm = new JXMLElement( '<fields />' );
-		$elementsForm->addAttribute( 'name', 'attribs' );
-		
-		$fafForm = $elementsForm->addChild( 'fields' );
-		$fafForm->addAttribute( 'name', 'fieldsandfilters' );
-		
-		$fields = $fafForm->addChild( 'fields' );
-		$fields->addAttribute( 'name', 'fields' );
-		
-		$fieldsetForm = $fields->addChild( 'fieldset' );
-		$fieldsetForm->addAttribute( 'name', 'fields' );
-		$fieldsetForm->addAttribute( 'label', 'COM_FIELDSANDFILTERS' );
-		// $fieldsetForm->addAttribute( 'description', 'COM_MENUS_ITEM_ASSOCIATIONS_FIELDSET_DESC' );
+		$isNew = !(boolean) $elementModel->getState( 'element.element_id', 0 );
 		
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		
 		// Trigger the onFieldsandfiltersPrepareFormField event.
-		FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFormField', array( !(boolean) $elementModel->getState( 'element.element_id', 0 ) ) );
+		FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFormField', array( $fieldsForm, $isNew ) );
 		
-		if( $fieldsForm = $jregistry->get( 'form.fields' ) )
+		if( $fieldsFormXML = $fieldsForm->getFields() )
 		{
-			$fieldsForm = get_object_vars( $fieldsForm );
+			// Load the XML Helper
+			KextensionsXML::setFields( $fielsXML , $fieldsFormXML );
 			
-			ksort( $fieldsForm );
-			
-			// Load the XML Helper [TODO] change
-			KextensionsXML::setFields( $fieldsetForm , $fieldsForm );
-			
-			unset( $fieldsForm );
+			$form->setField( $fieldsetXML, 'attribs' );
 			
 			// For joomla 2.5 && Key Reference
 			if( !FieldsandfiltersFactory::isVersion() )
 			{
-				$fieldsetJ25 = $fields->addChild( 'fieldset' );
-				$fieldsetJ25->addAttribute( 'name', 'key_reference' );
-				$fieldsetJ25->addAttribute( 'label', 'Key Reference' );	
+				$fieldsetXML = new SimpleXMLElement( '<fieldset />' );
+				$fieldsetXML->addAttribute( 'name', 'key_reference' );
+				$fieldsetXML->addAttribute( 'label', 'Key Reference' );
+				
+				$form->setField( $fieldsetXML, 'attribs' );
 			}
-			$form->setFields( $elementsForm, 'attribs' );
 			
-			if( $defaultForm = $jregistry->get( 'form.default' ) )
+			if( $default = $fieldsForm->getData() )
 			{
-				foreach( $defaultForm AS $fieldID => $default )
-				{
-					if( $defaultName = $default->get( 'name' ) )
-					{
-						$form->setValue( $fieldID, 'attribs.fieldsandfilters.fields.' . $defaultName, $default->get( 'default' ) );
-					}
-					else
-					{
-						$form->setValue( $fieldID, 'attribs.fieldsandfilters.fields', $default->get( 'default' ) );
-					}
-				}
+				$form->bind( $default );
+			}
+			
+			if( !$isNew )
+			{
+				$attribs    = new JRegistry();
+				$attribs->set( 'attribs.fieldsandfilters.fields', $itemFields );
+				
+				$form->bind( $attribs );
 			}
 		}
 		
