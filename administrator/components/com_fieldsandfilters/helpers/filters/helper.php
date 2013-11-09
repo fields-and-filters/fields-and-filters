@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  * 
  * @since       1.0.0
  */
-class FieldsandfiltersFilters
+class FieldsandfiltersFiltersHelper
 {
 	/**
 	* @since       1.0.0

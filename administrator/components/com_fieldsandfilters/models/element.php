@@ -28,6 +28,12 @@ class FieldsandfiltersModelElement extends JModelAdmin
 	protected $text_prefix = 'COM_FIELDSANDFILTERS';
 	
 	/**
+	 * Feilds Form cache.
+	 * @since       1.0.0
+	 */
+	protected $fieldsFrom = array();
+	
+	/**
 	 * Item cache.
 	 * @since       1.0.0
 	 */
@@ -177,14 +183,13 @@ class FieldsandfiltersModelElement extends JModelAdmin
 	/**
 	 * @since       1.1.0
 	 **/
-	public function prepareFields( $extensionTypeID = null )
+	public function prepareFieldsForm( $extensionTypeID = null )
 	{
 		$extensionTypeID 	= ( !empty( $extensionTypeID ) ) ? (int) $extensionTypeID : (int) $this->getState( 'element.extension_type_id' );
 		
-		$store = md5( __METHOD__ . $extensionTypeID );
-		if( !isset( $this->_cache[$store] ) )
+		if( !isset( $this->fieldsFrom[$extensionTypeID] ) )
 		{
-			$return = false;
+			$fieldsForm = false;
 			
 			if( $extensionTypeID )
 			{
@@ -195,21 +200,19 @@ class FieldsandfiltersModelElement extends JModelAdmin
 				{
 					JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 					
-					$extensionsTypeID = $extensionsHelper->getExtensionsByNameColumn( 'extension_type_id', array( 'allextensions', $extensionName ) );
+					$name			= $this->option . '.' . $this->name;
+					$context 		= $name . '.' . $extensionName;
+					$fieldsForm 		= new KextensionsFormElement( $name );
+					$extensionsTypeID 	= $extensionsHelper->getExtensionsByNameColumn( 'extension_type_id', array( 'allextensions', $extensionName ) );
 					
-					$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFields', array( ( $this->option . '.' . $this->name . '.' . $extensionName ), $extensionsTypeID ) );
-					
-					if( !in_array( false, $result, true ) )
-					{
-						$return = true;
-					}
+					$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFields', array( $context, $fieldsForm, $extensionsTypeID ) );
 				}
 			}
 			
-			$this->_cache[$store] = $return;
+			$this->fieldsFrom[$extensionTypeID] = $fieldsForm;
 		}
 		
-		return $this->_cache[$store];
+		return $this->fieldsFrom[$extensionTypeID];
 	}
 
 	/**
@@ -251,7 +254,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 				);
 		}
 		
-		$store = md5( __METHOD__ . serialize( $row ) );
+		$store = md5( serialize( $row ) );
 		if( !isset( $this->_cache[$store] ) )
 		{
 			$isNew = true;
@@ -285,9 +288,6 @@ class FieldsandfiltersModelElement extends JModelAdmin
 				$this->setExtensionState( $table->extension_type_id  );
 			}
 			
-			// prepare fields
-			$this->prepareFields( $table->extension_type_id );
-			
 			// Convert to the JObject before adding other data.
 			$properties = $table->getProperties( true );
 			
@@ -297,11 +297,10 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			{
 				// Include the fieldsandfiltersExtensions plugins for the on prepare item events.
 				JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
-				
 				// Trigger the onFieldsandfiltersPrepareElement event.
 				$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareElement', array( ( $this->option . '.' . $this->name . '.' . $extensionName ), &$item, $isNew, $this->state ) );
-				JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 				
+				JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 				// Trigger the onPrepareItem event.
 				$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareElementFields', array( ( $this->option . '.' . $this->name ), &$item, $isNew, $this->state ) );
 				

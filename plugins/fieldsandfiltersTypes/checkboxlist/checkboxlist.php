@@ -82,6 +82,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 						$element->addAttribute( 'name', 'description_spacer_' . $field->field_id );
 						$element->addAttribute( 'label', $field->description );
 						$element->addAttribute( 'translate_label', 'false' );
+						$element->addAttribute( 'fieldset', $fieldset );
 						
 						$element = $root->addChild( 'field'  );
 						$element->addAttribute( 'fieldset', $fieldset );

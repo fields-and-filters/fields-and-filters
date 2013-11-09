@@ -316,7 +316,6 @@ class KextensionsArray
 	 *
 	 * @since       1.0.0
 	 *
-	 * // getEmptyKey [TODO]
 	 */
 	static function getEmptySlotObject( $object, $ordering, $path = 'form.fields.' )
 	{	
@@ -336,7 +335,6 @@ class KextensionsArray
 				self::getEmptySlotObject( $object, ++$ordering, $path );
 			}
 		}
-		
 		
 		return $ordering;
 	}
