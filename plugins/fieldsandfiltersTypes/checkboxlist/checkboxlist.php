@@ -10,9 +10,6 @@
 
 defined('_JEXEC') or die;
 
-// Load the Factory Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
  * Checkboxlist type fild
  * @package     fieldsandfilters.plugin
@@ -29,10 +26,15 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	 * @param       array   $config  An array that holds the plugin configuration
 	 * @since	1.0.0
 	 */
-	public function __construct(& $subject, $config)
+	public function __construct( &$subject, $config )
 	{
-		parent::__construct($subject, $config);
-		$this->loadLanguage();
+		parent::__construct( $subject, $config );
+		
+		if( JFactory::getApplication()->isAdmin() )
+		{
+			// load plugin language
+			KextensionsLanguage::load( 'plg_' . $this->_type . '_' . $this->_name, JPATH_ADMINISTRATOR );
+		}
 	}
 	
 	/**
@@ -42,25 +44,25 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	 * @return	boolean
 	 * @since	1.1.0
 	 */
-	public function onFieldsandfiltersPrepareFormField( $isNew = false )
+	public function onFieldsandfiltersPrepareFormField( $fieldsForm, $isNew = false, $fieldset = 'fieldsandfilters' )
 	{
-		$jregistry = JRegistry::getInstance( 'fieldsandfilters' );
+		if( !$fieldsForm instanceof KextensionsFormElement )
+		{
+			return true;
+		}
 		
-		if( !( $fields = $jregistry->get( 'fields.' . $this->_name ) ) )
+		if( !( $fields = $fieldsForm->getElement( $this->_name ) ) )
 		{
 			return true;
 		}
 		
 		JForm::addFieldPath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/models/fields' );
 		
-		// Load Array Helper
-		$arrayHelper 	= FieldsandfiltersFactory::getArray();
-		
-		$fields 	= is_array( $fields ) ? $fields : array( $fields );
+		$fields = is_array( $fields ) ? $fields : array( $fields );
 		
 		while( $field = array_shift( $fields ) )
 		{
-			$root = new JXMLElement( '<fields />' );
+			$root = new SimpleXMLElement( '<fields />' );
 			$root->addAttribute( 'name', 'connections' );
 			
 			if( !empty( $field->description ) && $field->params->get( 'base.admin_enabled_description', 0 ) )
@@ -71,6 +73,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 						$element = $root->addChild( 'field'  );
 						$element->addAttribute( 'description', $field->description );
 						$element->addAttribute( 'translate_description', 'false' );
+						$element->addAttribute( 'fieldset', $fieldset );
 					break;
 					case 'description':
 					default:
@@ -81,12 +84,14 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 						$element->addAttribute( 'translate_label', 'false' );
 						
 						$element = $root->addChild( 'field'  );
+						$element->addAttribute( 'fieldset', $fieldset );
 					break;
 				}
 			}
 			else
 			{
 				$element = $root->addChild( 'field'  );
+				$element->addAttribute( 'fieldset', $fieldset );
 			}
 			
 			$label = '<strong>' . $field->field_name . '</strong> {' . $field->field_id . '}';
@@ -111,7 +116,6 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				$element->addAttribute( 'required', 'true' );
 			}
 			
-			
 			// FieldsandfiltersFieldValues
 			$values = $field->values->getProperties();
 			
@@ -128,7 +132,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 					$default = array_unique( (array) $default );
 					JArrayHelper::toInteger( $default );
 					
-					$jregistry->set( 'form.default.' . $field->field_id, new JObject( array( 'name' => 'connections', 'default' => $default ) ) );
+					$fieldsForm->setData( 'connections.' . $field->field_id, $default );
 				}
 			}
 			
@@ -137,10 +141,9 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			$element->addAttribute( 'type', 'spacer' );
 			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->field_id );
 			$element->addAttribute( 'hr', 'true' );
+			$element->addAttribute( 'fieldset', $fieldset );
 			
-			$jregistry->set( 'form.fields.' . $arrayHelper->getEmptySlotObject( $jregistry, $field->ordering ), $root );
-			
-			unset( $element );
+			$fieldsForm->setField( $field->ordering, $root );
 		}
 		
 		return true;
@@ -149,7 +152,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	/**
 	 * @since	1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML( $templateFields, $fields, $element, $params = false, $ordering = 'ordering' )
+	public function getFieldsandfiltersFieldsHTML( $layoutFields, $fields, $element, $params = false, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -158,17 +161,8 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		
 		$fields = is_array( $fields ) ? $fields : array( $fields );
 		
-		// Load Extensions Helper
-		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
-		
-		// Load Array Helper
-		$arrayHelper = FieldsandfiltersFactory::getArray();
-		
-		// Load Plugin Types Helper
-		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
-		
-		// Load Fields Site Helper
-		$fieldsSiteHelper = FieldsandfiltersFactory::getFieldsSite();
+		// Load Types Helper
+		$typesHelper = FieldsandfiltersFactory::getTypes();
 		
 		$variables 		= new JObject;
 		$variables->type	= $this->_type;
@@ -180,7 +174,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		
 		while( $field = array_shift( $fields ) )
 		{
-			$modeName 	= $pluginTypesHelper->getModeName( $field->mode );
+			$modeName 	= $typesHelper->getModeName( $field->mode );
 			$isStaticMode 	= (  $modeName == 'static' );
 			
 			if( ( $isStaticMode && empty( $field->connections ) ) || ( $modeName == 'field' && ( !isset( $element->connections ) || !property_exists( $element->connections, $field->field_id ) ) ) )
@@ -199,7 +193,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			
 			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
 			{
-				$fieldsSiteHelper->preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
+				FieldsandfiltersFieldsHelper::preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
 			}
 			
 			$layoutField = $field->params->get( 'type.field_layout' );
@@ -213,8 +207,8 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			
 			$variables->field = $field;
 			
-			$template = $extensionsHelper->loadPluginTemplate( $variables, $layoutField );
-			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->$ordering, false ), $template );
+			$layout = KextensionsPlugin::renderLayout( $variables, $layoutField );
+			$layoutFields->set( KextensionsArray::getEmptySlotObject( $layoutFields, $field->$ordering, false ), $layout );
 			
 			if( $isParams )
 			{
@@ -229,7 +223,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	/**
 	 * @since	1.1.0
 	 */
-	public function getFieldsandfiltersFiltersHTML( $templateFields, $fields, $params = false, $ordering = 'ordering' )
+	public function getFieldsandfiltersFiltersHTML( $layoutFields, $fields, $params = false, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -237,15 +231,6 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		}
 		
 		$fields = is_array( $fields ) ? $fields : array( $fields );
-		
-		// Load Extensions Helper
-		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
-		
-		// Load Array Helper
-		$arrayHelper = FieldsandfiltersFactory::getArray();
-		
-		// Load Fields Site Helper
-		$fieldsSiteHelper = FieldsandfiltersFactory::getFieldsSite();
 		
 		$variables 		= new JObject;
 		$variables->type	= $this->_type;
@@ -267,7 +252,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			
 			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
 			{
-				$fieldsSiteHelper->preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
+				FieldsandfiltersFieldsHelper::preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
 			}
 			
 			$layoutFilter = $field->params->get( 'type.filter_layout' );
@@ -281,8 +266,8 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			
 			$variables->field = $field;
 			
-			$template = $extensionsHelper->loadPluginTemplate( $variables, $layoutFilter );
-			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->$ordering, false ), $template );
+			$layout = KextensionsPlugin::renderLayout( $variables, $layoutField );
+			$layoutFields->set( KextensionsArray::getEmptySlotObject( $layoutFields, $field->$ordering, false ), $layout );
 			
 			if( $isParams )
 			{
@@ -292,30 +277,5 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		}
 		
 		unset( $variables );
-	}
-	
-	/**
-	 * Loads the plugin language file
-	 *
-	 * @param   string  $extension  The extension for which a language file should be loaded
-	 * @param   string  $basePath   The basepath to use
-	 *
-	 * @return  boolean  True, if the file has successfully loaded.
-	 *
-	 * @since       1.0.0
-	 */
-	public function loadLanguage( $extension = '', $basePath = JPATH_ADMINISTRATOR )
-	{
-		if( empty( $extension ) )
-		{
-			$extension = 'plg_' . $this->_type . '_' . $this->_name;
-		}
-		
-		$lang = JFactory::getLanguage();
-		
-		return $lang->load( $extension, $basePath, null, false, false )
-			|| $lang->load( $extension, JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name, null, false, false )
-			|| $lang->load( $extension , $basePath, $lang->getDefault(), false, false )
-			|| $lang->load( $extension, JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name, $lang->getDefault(), false, false );
 	}
 }
