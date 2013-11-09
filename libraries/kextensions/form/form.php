@@ -181,12 +181,12 @@ class KextensionsForm
 	{
 		if( $increment )
 		{
-			while( array_key_exists( $name, $this->$name ) )
+			while( array_key_exists( $name, $this->fields ) )
 			{
 				$name = is_numeric( $name ) ? $name + 1 : JString::increment( $name, 'dash' );
 			};
 		}
 		
-		$this->$name = $element;
+		$this->fields['$name'] = $element;
 	}
 }
