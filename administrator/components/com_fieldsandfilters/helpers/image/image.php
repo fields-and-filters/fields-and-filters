@@ -18,7 +18,7 @@ KextensionsLanguage::load( 'com_fieldsandfilters' );
  * Image Helper
  * @since       1.0.0
  */
-class FieldsandfiltersImage extends Kextensions
+class FieldsandfiltersImage
 {
 	/**
 	* @since       1.0.0
@@ -45,7 +45,15 @@ class FieldsandfiltersImage extends Kextensions
 	{
 		$jroot 	= JPATH_ROOT . '/';
 		
-		$jimage = new FieldsandfiltersImage();
+		if( FieldsandfiltersFactory::isVersion( '>=', 3.2  ) )
+		{
+			$jimage = new JImage();
+		}
+		else
+		{
+			$jimage = new KextensionsJoomlaImage();
+		}
+		
 		$jimage->loadFile( JPath::clean( $jroot . $jobject->get( 'path' ) ) );
 		
 		if( !$jimage->isLoaded() )
@@ -74,44 +82,46 @@ class FieldsandfiltersImage extends Kextensions
 			{
 				throw new UnexpectedValueException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_UNEXPECTED_VALUE_WIDTH_OR_HEIGHT', $name ) );
 			}
-			
-			// Generate cropping image
-			if( $method == 4 )
-			{
-				$jimage->crop( $width, $height, null, null, false );
-				
-			}
-			// Generate resizing image
 			else
 			{
-				$jimage->resize( $width, $height, false, $method );
-			}
-			
-			// Parent image properties
-			$properties 	= $jimage::getImageFileProperties( $jimage->getPath() );
-			$quality 	= (int) $jobject->get( 'quality', 75 );
-			$quality 	= (int) min( max( $quality, 0 ), 100 );
-			
-			if( $properties->type == IMAGETYPE_PNG )
-			{
-				$quality = max( floor( ( $quality - 1 ) / 10 ), 0 );
-				$quality = (int) JArrayHelper::getValue( self::$quality_png, $quality, 0 );
-			}
-			
-			if( !( $name = $jobject->get( 'name' ) ) )
-			{
-				$name = self::createNameImage( $jobject );
-			}
-			
-			$imagePath = JPath::clean( $folder . '/' . JFile::makeSafe( $name ) ) ;
-			
-			// Save image file to disk
-			$jimage->toFile( $imagePath, $properties->type, array( 'quality' => $quality ) );
-			
-			if( is_file( $imagePath ) )
-			{
-				$jobject->src = $imagePath;
-				$return = true;
+				// Generate cropping image
+				if( $method == 4 )
+				{
+					$jimage->crop( $width, $height, null, null, false );
+					
+				}
+				// Generate resizing image
+				else
+				{
+					$jimage->resize( $width, $height, false, $method );
+				}
+				
+				// Parent image properties
+				$properties 	= $jimage::getImageFileProperties( $jimage->getPath() );
+				$quality 	= (int) $jobject->get( 'quality', 75 );
+				$quality 	= (int) min( max( $quality, 0 ), 100 );
+				
+				if( $properties->type == IMAGETYPE_PNG )
+				{
+					$quality = max( floor( ( $quality - 1 ) / 10 ), 0 );
+					$quality = (int) JArrayHelper::getValue( self::$quality_png, $quality, 0 );
+				}
+				
+				if( !( $name = $jobject->get( 'name' ) ) )
+				{
+					$name = self::createNameImage( $jobject );
+				}
+				
+				$imagePath = JPath::clean( $folder . '/' . JFile::makeSafe( $name ) ) ;
+				
+				// Save image file to disk
+				$jimage->toFile( $imagePath, $properties->type, array( 'quality' => $quality ) );
+				
+				if( is_file( $imagePath ) )
+				{
+					$object->set( 'src', $imagePath );
+					$return = true;
+				}
 			}
 		}
 		

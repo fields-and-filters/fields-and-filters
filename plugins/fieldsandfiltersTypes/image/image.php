@@ -306,9 +306,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 								JFile::delete( $srcOld );
 							}
 							
-							if( FieldsandfiltersImage::createImage( $field->field_name, $imageInfo ) )
+							if( FieldsandfiltersImage::createImage( $field->field_name, $imageInfo ) && ( $src = $imageInfo->get( 'src' ) ) )
 							{
-								$_data->set( 'src', str_replace( JPath::clean( $jroot ), '', $imageInfo->src ) );
+								$_data->set( 'src', str_replace( JPath::clean( $jroot ), '', $src ) );
 								
 								$app->enqueueMessage(  JText::sprintf( 'COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->field_name ) );
 							}
@@ -343,9 +343,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 								JFile::delete( $srcOld );
 							}
 							
-							if( FieldsandfiltersImage::createImage( ( $field->field_name . ' Thumbs' ), $imageInfo ) )
+							if( FieldsandfiltersImage::createImage( ( $field->field_name . ' Thumbs' ), $imageInfo ) && ( $src = $imageInfo->get( 'src' ) ) )
 							{
-								$_data->set( 'src_thumb', str_replace( JPath::clean( $jroot ), '', $imageInfo->src ) );
+								$_data->set( 'src_thumb', str_replace( JPath::clean( $jroot ), '', $src ) );
 								
 								$app->enqueueMessage( JText::sprintf( 'COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->field_name . ' Thumb' ) );
 							}
@@ -665,10 +665,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		$info->method 		= (int) $method;
 		$info->quality		= (int) $field->params->def( 'type.quality' . $paramSuffix, $this->params->get( 'quality' . $paramSuffix, 0 ) );
 		
-		if( $name && !empty( $name ) )
-		{
-			$info->name = FieldsandfiltersImage::createNameImage( $imageInfo );
-		}
+		$info->name 		= !empty( $name ) ? $name : FieldsandfiltersImage::createNameImage( $imageInfo );
 		
 		return $info;
 	}

@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Image
  * @since       11.3
  */
-class Kextensions extends JImage
+class KextensionsJoomlaImage extends JImage
 {
 	/**
 	 * @const  integer
