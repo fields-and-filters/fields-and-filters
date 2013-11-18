@@ -19,23 +19,18 @@ KextensionsLanguage::load( 'com_fieldsandfilters' );
  * @since       1.0.0
  */
 class FieldsandfiltersImage
-{
+{       
 	/**
 	* @since       1.0.0
 	*/
-	protected static $quality_png = array( 0 => 9, 1 => 8, 2 => 7, 3 => 6, 4 => 5, 5 => 4, 6 => 3, 7 => 2, 8 => 1, 9 => 0 );
-        
-	/**
-	* @since       1.0.0
-	*/
-        protected static $cache_folder = 'cache/fieldsandfilters';
+        protected static $cache_folder = 'fieldsandfilters';
         
 	/**
 	* @since       1.0.0
 	*/
         public static function getCacheFolder()
         {
-                return self::$cache_folder;
+                return JPATH_CACHE . '/' . self::$cache_folder;
         }
         
 	/**
@@ -43,18 +38,16 @@ class FieldsandfiltersImage
 	*/
         public static function createImage( $name, JObject $jobject )
 	{
-		$jroot 	= JPATH_ROOT . '/';
-		
 		if( FieldsandfiltersFactory::isVersion( '>=', 3.2  ) )
 		{
 			$jimage = new JImage();
 		}
 		else
 		{
-			$jimage = new KextensionsJoomlaImage();
+			$jimage = new KextensionsJoomlaImageImage();
 		}
 		
-		$jimage->loadFile( JPath::clean( $jroot . $jobject->get( 'path' ) ) );
+		$jimage->loadFile( JPath::clean( JPATH_CACHE . '/' . $jobject->get( 'path' ) ) );
 		
 		if( !$jimage->isLoaded() )
 		{
@@ -63,7 +56,7 @@ class FieldsandfiltersImage
 		}
 		
 		// If the parent folder doesn't exist we must create it
-		$folder = JPath::clean( $jroot . self::$cache_folder . '/' . $jobject->get( 'folder' ) );
+		$folder = JPath::clean( self::getCacheFolder() . '/' . $jobject->get( 'folder' ) );
 		
 		if( !( $isFolder = is_dir( $folder ) ) )
 		{
@@ -84,16 +77,24 @@ class FieldsandfiltersImage
 			}
 			else
 			{
-				// Generate cropping image
-				if( $method == 4 )
+				switch( $method )
 				{
-					$jimage->crop( $width, $height, null, null, false );
-					
-				}
-				// Generate resizing image
-				else
-				{
-					$jimage->resize( $width, $height, false, $method );
+					// Generate cropping resize image
+					case $jimage::CROP_RESIZE:
+						$jimage->crop( $width, $height, null, null, false );
+					break;
+					// Generate cropping image
+					case $jimage::CROP:
+						$jimage->crop( $width, $height, null, null, false );
+					break;
+					// Generate resizing image
+					case $jimage::SCALE_FILL:
+					case $jimage::SCALE_INSIDE:
+					case $jimage::SCALE_OUTSIDE:
+					case $jimage::SCALE_FIT:
+					default:
+						$jimage->resize( $width, $height, false, $method );
+					break;
 				}
 				
 				// Parent image properties
@@ -103,8 +104,8 @@ class FieldsandfiltersImage
 				
 				if( $properties->type == IMAGETYPE_PNG )
 				{
-					$quality = max( floor( ( $quality - 1 ) / 10 ), 0 );
-					$quality = (int) JArrayHelper::getValue( self::$quality_png, $quality, 0 );
+					$quality = (int) min( max( floor( $quality / 10 ), 0 ), 9 );
+					$quality = abs( 9 - $quality );
 				}
 				
 				if( !( $name = $jobject->get( 'name' ) ) )

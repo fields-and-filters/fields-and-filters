@@ -139,12 +139,10 @@ class FieldsandfiltersFieldsHelper
 	/**
 	 * @since       1.2.0
 	 **/
-	public static function preparationContent( &$text, $context = '', $option = null, $itemID = null, $excluded = array(), $syntax = null, $syntaxType = 3 )
+	public static function preparationContent( &$text, $context = '', $option = null, $itemID = null, $excluded = array(), $syntax = null, $syntaxType = 1 )
 	{
-		$pluginParams 	= KextensionsPlugin::getParams( 'system', 'fieldsandfilters' );
-		$syntax 	= $syntax ? $syntax : $pluginParams->get( 'syntax', '#{%s}' );
-		$syntaxType 	= $syntaxType ? $syntaxType : $pluginParams->get( 'syntax_type', self::SYNTAX_SIMPLE );
-		// [TODO] change interpolation to syntax
+		$syntax 	= $syntax ? $syntax : KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
+		$syntaxType 	= $syntaxType ? $syntaxType : KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax_type', self::SYNTAX_SIMPLE );
 		
 		if( strpos( $syntax, '%s' ) !== false )
 		{

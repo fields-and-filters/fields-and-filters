@@ -15,7 +15,7 @@ JHtml::_( 'behavior.tooltip' );
 JHTML::_( 'script','system/multiselect.js', false, true );
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
+JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 
 $app		= JFactory::getApplication();
 $user		= JFactory::getUser();
@@ -36,11 +36,11 @@ $saveOrder	= $listOrder == 'fv.ordering';
 		
 		<div class='filter-select fltrt'>
 			<select name="filter_field_id" class="inputbox" onchange="this.form.submit()">
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.fieldsOptions' ), 'value', 'text', $this->state->get( 'filter.field_id' ), false );?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.fields' ), 'value', 'text', $this->state->get( 'filter.field_id' ), false );?>
 			</select>
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'JOPTION_SELECT_PUBLISHED' );?></option>
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions', array( 'adminonly' => false ) ), "value", "text", $this->state->get( 'filter.state' ), true );?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.states', array( 'adminonly' => false ) ), "value", "text", $this->state->get( 'filter.state' ), true );?>
 			</select>
 		</div>
 	</fieldset>

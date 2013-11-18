@@ -48,6 +48,8 @@
 				<option value="2">PLG_FAF_TS_IE_FORM_SCALE_INSIDE</option>
 				<option value="3">PLG_FAF_TS_IE_FORM_SCALE_OUTSIDE</option>
 				<option value="4">PLG_FAF_TS_IE_FORM_CROP</option>
+				<option value="5">PLG_FAF_TS_IE_FORM_CROP_RESIZE</option>
+				<option value="6">PLG_FAF_TS_IE_FORM_SCALE_FIT</option>
 			</field>
 			
 			<field
@@ -112,6 +114,8 @@
 				<option value="2">PLG_FAF_TS_IE_FORM_SCALE_INSIDE</option>
 				<option value="3">PLG_FAF_TS_IE_FORM_SCALE_OUTSIDE</option>
 				<option value="4">PLG_FAF_TS_IE_FORM_CROP</option>
+				<option value="5">PLG_FAF_TS_IE_FORM_CROP_RESIZE</option>
+				<option value="6">PLG_FAF_TS_IE_FORM_SCALE_FIT</option>
 			</field>
 			
 			<field

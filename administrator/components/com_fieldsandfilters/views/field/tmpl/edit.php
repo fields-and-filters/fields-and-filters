@@ -16,7 +16,7 @@ JHtml::_( 'behavior.keepalive' );
 JHtml::_( 'formbehavior.chosen', 'select' );
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
+JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 ?>
 <script type="text/javascript">
 	Joomla.submitbutton = function( task, type )

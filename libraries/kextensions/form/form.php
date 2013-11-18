@@ -187,6 +187,6 @@ class KextensionsForm
 			};
 		}
 		
-		$this->fields['$name'] = $element;
+		$this->fields[$name] = $element;
 	}
 }

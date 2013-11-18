@@ -17,7 +17,7 @@ JHtml::_( 'dropdown.init' );
 JHtml::_( 'formbehavior.chosen', 'select' );
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
+JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 
 $app		= JFactory::getApplication();
 $user		= JFactory::getUser();

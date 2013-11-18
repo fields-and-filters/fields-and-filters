@@ -16,7 +16,7 @@ $recordId		= $app->input->get( 'recordId', 0, 'int' );
 $tmpl 			= $app->input->get( 'tmpl', '', 'cmd' );
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
+JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 ?>
 
 <script type="text/javascript">

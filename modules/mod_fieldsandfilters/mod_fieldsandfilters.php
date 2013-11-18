@@ -89,28 +89,14 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		// Import JS
 		if( FieldsandfiltersFactory::isVersion() )
 		{
-			JHtml::_( 'jquery.framework' );
-			
 			$options = JHtml::getJSObject( $options );
 		}
 		else
-		{
-			if( $params->get( 'load_jquery', 1 ) )
-			{
-				JHtml::_( 'script', 'fieldsandfilters/component/jquery-1.10.2.min.js', false, true );
-			}
-			
-			if( $params->get( 'load_noconflict', 1 ) )
-			{
-				$script[] = 'jQuery.noConflict();';
-			}
-			
-			JHtml::addIncludePath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers/html' );
-			
-			$options = JHtml::_( 'fieldsandfilters_25.getJSObject', $options );
+		{	
+			$options = JHtml::_( 'FieldsandfiltersHtml.joomla.getJSObject', $options );
 		}
 		
-		JHtml::_( 'script', 'fieldsandfilters/component/jquery.fieldsandfilters.js', false, true );
+		JHtml::_( 'FieldsandfiltersHtml.filters.framework' );
 		
 		$script[]       = 'jQuery(document).ready(function($) {';
 		$script[]       = '     $( "#faf-form-' . $module->id . '" ).fieldsandfilters(' .  $options . ');';

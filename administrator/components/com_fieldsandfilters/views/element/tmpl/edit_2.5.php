@@ -15,7 +15,7 @@ JHtml::_( 'behavior.formvalidation' );
 JHtml::_( 'behavior.keepalive' );
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
+JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 ?>
 
 <script type="text/javascript">

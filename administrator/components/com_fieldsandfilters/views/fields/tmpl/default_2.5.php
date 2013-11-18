@@ -10,8 +10,6 @@
 // no direct access
 defined( '_JEXEC' ) or die;
 
-JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html' );
-
 // Load PluginTypes Helper
 $typesHelper 		= FieldsandfiltersFactory::getTypes();
 $valuesMode		= (array) $typesHelper->getMode( 'filter' );
@@ -23,7 +21,7 @@ JHtml::_( 'behavior.tooltip' );
 JHTML::_( 'script','system/multiselect.js', false, true );
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
+JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 
 $app		= JFactory::getApplication();
 $user		= JFactory::getUser();
@@ -100,17 +98,17 @@ $required = array(
 		<div class="filter-select fltrt">
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'JOPTION_SELECT_PUBLISHED' );?></option>
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions' ), 'value', 'text', $this->state->get( 'filter.published' ), true);?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.states' ), 'value', 'text', $this->state->get( 'filter.published' ), true);?>
 			</select>
 			
 			<select name="filter_extension_type_id" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' );?></option>
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.extensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ) );?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.extensions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ) );?>
 			</select>
 
 			<select name="filter_type" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE' );?></option>
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.typesOptions' ), 'value', 'text', $this->state->get( 'filter.type' ) );?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.types' ), 'value', 'text', $this->state->get( 'filter.type' ) );?>
 			</select>
 			
 			<?php /*

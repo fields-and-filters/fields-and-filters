@@ -23,7 +23,7 @@ JHtml::_( 'dropdown.init' );
 JHtml::_( 'formbehavior.chosen', 'select' );
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
+JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 
 $app		= JFactory::getApplication();
 $user		= JFactory::getUser();
@@ -143,7 +143,7 @@ if( $saveOrder )
 						<td class="center">
 							<div class="btn-group">
 								<?php echo JHtml::_( 'jgrid.published', $item->state, $i, 'fields.', $canChange, 'cb' ); ?>
-								<?php echo JHtml::_( 'fieldsandfilters.required', $item->required, $i, 'fields.', $canChange ); ?>
+								<?php echo JHtml::_( 'FieldsandfiltersHtml.grid.required', $item->required, $i, 'fields.', $canChange ); ?>
 								
 								<?php
 									// Create dropdown items
@@ -151,13 +151,13 @@ if( $saveOrder )
 									JHtml::_( 'actionsdropdown.' . $action, 'cb' . $i, 'fields' );
 									
 									if( $item->state != -1 ) :
-										JHtml::_( 'fieldsandfilters.dropdownOnlyAdmin', 'cb' . $i, 'fields.' );
+										JHtml::_( 'FieldsandfiltersHtml.dropdown.onlyAdmin', 'cb' . $i, 'fields.' );
 									endif;
 									
 									JHtml::_( 'actionsdropdown.divider' );
 									
-									$action = $item->required ? 'Unrequired' : 'Required';
-									JHtml::_( 'fieldsandfilters.dropdown' . $action, 'cb' . $i, 'fields.' );
+									$action = $item->required ? 'unrequired' : 'required';
+									JHtml::_( 'FieldsandfiltersHtml.dropdown.' . $action, 'cb' . $i, 'fields.' );
 									
 									// Render dropdown list
 									echo JHtml::_( 'actionsdropdown.render' );

@@ -104,9 +104,7 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 			{
 				$script[] = 'jQuery.noConflict();';
 			}
-			
-			JHtml::addIncludePath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers/html' );
-			
+						
 			$options = JHtml::_( 'fieldsandfilters_25.getJSObject', $options );
 		}
 		

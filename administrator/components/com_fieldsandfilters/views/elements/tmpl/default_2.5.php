@@ -11,8 +11,6 @@
 // no direct access
 defined( '_JEXEC' ) or die;
 
-JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html'  );
-
 // Load PluginExtensions Helper
 $extensionsHelper = FieldsandfiltersFactory::getExtensions();
 
@@ -20,7 +18,7 @@ JHtml::_( 'behavior.tooltip' );
 JHTML::_( 'script','system/multiselect.js',false,true );
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
+JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 
 $app		= JFactory::getApplication();
 $user		= JFactory::getUser( );
@@ -45,11 +43,11 @@ $saveOrder	= $listOrder == 'e.ordering';
 		<div class='filter-select fltrt'>
 			<select name="filter_extension_type_id" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION'  );?></option>
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.extensionsOptions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' )  );?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.extensions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' )  );?>
 			</select>
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'JOPTION_SELECT_PUBLISHED' );?></option>
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions' ), 'value', 'text', $this->state->get( 'filter.state' ), true);?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.states' ), 'value', 'text', $this->state->get( 'filter.state' ), true);?>
 			</select>
 			
 			<?php if( is_array( $filtersOptions = $this->state->get( 'filters.options' ) ) ) : ?>

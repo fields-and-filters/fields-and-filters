@@ -11,8 +11,6 @@ defined('JPATH_BASE') or die;
 
 JFormHelper::loadFieldClass( 'checkboxes' );
 
-JHtml::addIncludePath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers/html' );
-
 /**
  * Form Field class for the Joomla Platform.
  *
@@ -47,7 +45,7 @@ class JFormFieldFieldsandfiltersFieldValues extends JFormFieldCheckboxes
 		
 		if( $fieldID = (int) $this->form->getValue( $field ) )
 		{
-			$options = JHtml::_( 'fieldsandfilters.fieldValuesOptions', $fieldID, $states );
+			$options = JHtml::_( 'FieldsandfiltersHtml.options.fieldValues', $fieldID, $states );
 			
 			// Load the plugin extension.
 			if( empty( $options ) )

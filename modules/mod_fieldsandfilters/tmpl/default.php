@@ -10,8 +10,6 @@
 
 defined( '_JEXEC' ) or die;
 
-// Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters.css', array(), true );
 $isReset = $params->get( 'show_reset', 0 );
 ?>
 	

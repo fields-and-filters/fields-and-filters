@@ -113,32 +113,6 @@
 					<option value="AND">COM_FIELDSANDFILTERS_AND</option>
 				</field>
 			</fieldset>
-			<fieldset name="javascript">
-				<field
-					name="load_jquery"
-					type="radio"
-					class="inputbox"
-					label="MOD_FIELDSANDFILTERS_LOAD_JQUERY_LBL"
-					description="MOD_FIELDSANDFILTERS_LOAD_JQUERY_DESC"
-					default="1"
-					filter="int"
-				>
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-				</field>
-				<field
-					name="load_noconflict"
-					type="radio"
-					class="inputbox"
-					label="MOD_FIELDSANDFILTERS_LOAD_NOCONFLICT_LBL"
-					description="MOD_FIELDSANDFILTERS_LOAD_NOCONFLICT_DESC"
-					default="1"
-					filter="int"
-				>
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-				</field>
-			</fieldset>
 			<fieldset name="advanced">
 				<field
 					name="layout"

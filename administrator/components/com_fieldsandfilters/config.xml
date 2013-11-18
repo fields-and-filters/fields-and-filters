@@ -101,6 +101,47 @@
 				<option value="OR">COM_FIELDSANDFILTERS_OR</option>
 				<option value="AND">COM_FIELDSANDFILTERS_AND</option>
 			</field>
+			<field
+				name="loading_background_filters"
+				type="filelist"
+				class="inputbox"
+				label="COM_FIELDSANDFILTERS_LOADING_BACKGROUND_FILTERS_LBL"
+				description="COM_FIELDSANDFILTERS_LOADING_BACKGROUND_FILTERS_DESC"
+				stripext="1"
+				directory="media/fieldsandfilters/filters/css/"
+				default="loading-balls"
+				hide_default="1"
+				filter="^loading\-.*\.css$"
+				size="10"
+			>
+			</field>
+	</fieldset>
+	<fieldset name="javascript">
+		<field
+			name="load_noconflict_javascript"
+			type="radio"
+			class="inputbox"
+			label="COM_FIELDSANDFILTERS_LOAD_NOCONFLICT_JAVASCRIPT_LBL"
+			description="COM_FIELDSANDFILTERS_LOAD_NOCONFLICT_JAVASCRIPT_DESC"
+			default="1"
+			filter="int"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field
+			name="load_jquery_javascript"
+			type="radio"
+			class="inputbox"
+			label="COM_FIELDSANDFILTERS_LOAD_JQUERY_JAVASCRIPT_LBL"
+			description="COM_FIELDSANDFILTERS_LOAD_JQUERY_JAVASCRIPT_DESC"
+			default="1"
+			filter="int"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		
 	</fieldset>
 
 	<fieldset

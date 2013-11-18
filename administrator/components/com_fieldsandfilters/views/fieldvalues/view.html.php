@@ -59,9 +59,7 @@ class FieldsandfiltersViewFieldvalues extends JViewLegacy
 	 * @since	1.1.0
 	 */
 	protected function addToolbar()
-	{
-		JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html' );
-		
+	{		
 		$canDo = FieldsandfiltersHelper::getActions();
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_FIELDVALUES' ), 'field-values.png' );
@@ -73,13 +71,13 @@ class FieldsandfiltersViewFieldvalues extends JViewLegacy
 			JHtmlSidebar::addFilter(
 				null,
 				'filter_field_id',
-				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.fieldsOptions' ), 'value', 'text', $this->state->get( 'filter.field_id' ), false )
+				JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.fields' ), 'value', 'text', $this->state->get( 'filter.field_id' ), false )
 			);
 		
 			JHtmlSidebar::addFilter(
 				JText::_( 'JOPTION_SELECT_PUBLISHED' ),
 				'filter_published',
-				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions', array( 'adminonly' => false ) ), 'value', 'text', $this->state->get( 'filter.state' ), false )
+				JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.states', array( 'adminonly' => false ) ), 'value', 'text', $this->state->get( 'filter.state' ), false )
 			);
 		}
 		

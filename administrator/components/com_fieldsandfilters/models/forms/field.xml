@@ -41,12 +41,12 @@
 			filter="safehtml"
 		/>
 		<field
-			name="extension_type_id"
+			name="content_type_id"
 			type="Modal_FieldsandfiltersExtensions"
 			size="40"
 			class="inputbox input-medium"
-			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_EXTENSION_TYPE_ID"
-			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_EXTENSION_TYPE_ID"
+			label="COM_FIELDSANDFILTERS_FIELD_FORM_CONTENT_TYPE_ID_LBL"
+			description="COM_FIELDSANDFILTERS_FIELD_FORM_CONTENT_TYPE_ID_DESC"
 			required="true"
 			filter="intval"
 		/>

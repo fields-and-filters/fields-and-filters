@@ -73,8 +73,6 @@ class FieldsandfiltersViewFields extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html' );
-		
 		$canDo = FieldsandfiltersHelper::getActions();
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_FIELDS' ), 'fields.png' );
@@ -86,19 +84,19 @@ class FieldsandfiltersViewFields extends JViewLegacy
 			JHtmlSidebar::addFilter(
 				JText::_( 'JOPTION_SELECT_PUBLISHED' ),
 				'filter_published',
-				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.publishedOptions' ), 'value', 'text', $this->state->get( 'filter.state' ), false )
+				JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.states' ), 'value', 'text', $this->state->get( 'filter.state' ), false )
 			);
 			
 			JHtmlSidebar::addFilter(
 				JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
 				'filter_extension_type_id',
-				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.extensionsOptions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
+				JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.extensions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
 			);
 			
 			JHtmlSidebar::addFilter(
 				JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE' ),
 				'filter_type',
-				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.typesOptions' ), 'value', 'text', $this->state->get( 'filter.type' ), false )
+				JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.types' ), 'value', 'text', $this->state->get( 'filter.type' ), false )
 			);
 			
 			/*

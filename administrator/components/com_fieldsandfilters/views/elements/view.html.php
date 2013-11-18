@@ -59,9 +59,7 @@ class FieldsandfiltersViewElements extends JViewLegacy
 	 * @since	1.1.0
 	 */
 	protected function addToolbar()
-	{
-		JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html' );
-		
+	{		
 		$canDo = FieldsandfiltersHelper::getActions();
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_ELEMENTS' ), 'elements.png' );
@@ -73,7 +71,7 @@ class FieldsandfiltersViewElements extends JViewLegacy
 			JHtmlSidebar::addFilter(
 				JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
 				'filter_extension_type_id',
-				JHtml::_( 'select.options', JHtml::_( 'fieldsandfilters.extensionsOptions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
+				JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.extensions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
 			);
 			
 			if( is_array( $filtersOptions = $this->state->get( 'filters.options' ) ) )

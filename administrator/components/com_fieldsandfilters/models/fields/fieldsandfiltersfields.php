@@ -11,8 +11,6 @@ defined( 'JPATH_BASE' ) or die;
 
 JFormHelper::loadFieldClass( 'list' );
 
-JHtml::addIncludePath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers/html' );
-
 /**
  * Form Field class for the Joomla Platform.
  *
@@ -121,7 +119,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 		$states 	= $this->element['states'] ? JArrayHelper::toInteger( explode( ',', (string) $this->element['states'] ) ) : 1;
 		$modes 		= $this->element['modes'] ? array_map( 'trim', explode( ',', (string) $this->element['modes'] ) ) : null;
 		
-		$options 	= JHtml::_( 'fieldsandfilters.fieldsOptions', $modes, $states );
+		$options 	= JHtml::_( 'FieldsandfiltersHtml.options.fields', $modes, $states );
 		
 		// Load the plugin extension.
 		if( !empty( $options ) )

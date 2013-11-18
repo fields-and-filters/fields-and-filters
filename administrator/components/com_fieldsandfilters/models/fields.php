@@ -71,7 +71,7 @@ class FieldsandfiltersModelFields extends JModelList
 		$search = $app->getUserStateFromRequest( $this->context . '.filter.search', 'filter_search' );
 		$this->setState( 'filter.search', $search );
 		
-		$published = $app->getUserStateFromRequest( $this->context . '.filter.published', 'filter_published', '', 'string' );
+		$published = $app->getUserStateFromRequest( $this->context . '.filter.state', 'filter_state', '', 'string' );
 		$this->setState( 'filter.state', $published );
 		
 		$extensionTypeId = $app->getUserStateFromRequest( $this->context . '.filter.extension_type_id', 'filter_extension_type_id', '', 'string' );

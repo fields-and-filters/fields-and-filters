@@ -11,8 +11,6 @@ defined('JPATH_BASE') or die;
 
 JFormHelper::loadFieldClass('list');
 
-JHtml::addIncludePath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers/html' );
-
 /**
  * Form Field class for the Joomla Platform.
  *
@@ -41,7 +39,7 @@ class JFormFieldFieldsandfiltersTypes extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		$options = JHtml::_( 'fieldsandfilters.typesOptions' );
+		$options = JHtml::_( 'FieldsandfiltersHtml.options.types' );
 
 		// Merge any additional options in the XML definition.
 		$options = array_merge( parent::getOptions(), $options );

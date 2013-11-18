@@ -195,6 +195,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
 			{
 				FieldsandfiltersFieldsHelper::preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
+				// [TODO] do poprawy nie ta metoda i nie ma context
 			}
 			
 			$layoutField = $field->params->get( 'type.field_layout' );

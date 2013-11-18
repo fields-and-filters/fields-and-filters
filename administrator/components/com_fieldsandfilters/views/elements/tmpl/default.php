@@ -11,8 +11,6 @@
 // no direct access
 defined( '_JEXEC' ) or die;
 
-JHtml::addIncludePath( JPATH_COMPONENT_ADMINISTRATOR . '/helpers/html'  );
-
 // Load PluginExtensions Helper
 $extensionsHelper = FieldsandfiltersFactory::getExtensions();
 
@@ -22,7 +20,7 @@ JHtml::_( 'dropdown.init' );
 JHtml::_( 'formbehavior.chosen', 'select' );
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
+JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 
 $app		= JFactory::getApplication();
 $user		= JFactory::getUser( );

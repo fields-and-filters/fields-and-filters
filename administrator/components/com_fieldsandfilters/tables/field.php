@@ -12,9 +12,87 @@ defined('_JEXEC') or die;
 
 /**
  * field Table class
- * @since       1.1.0
+ * @since       1.0.0
  */
-class FieldsandfiltersTableField extends JTable {
+class FieldsandfiltersTableField extends JTable
+{
+	/**
+	 * Field ID
+	 * @since       1.2.0
+	 */
+	public $field_id;
+	
+	/**
+	 * Field Name
+	 * @since       1.2.0
+	 */
+	public $field_name;
+	
+	/**
+	 * Field Alias
+	 * @since       1.2.0
+	 */
+	public $field_alias;
+	
+	/**
+	 * Field Type
+	 * @since       1.2.0
+	 */
+	public $field_type;
+	
+	/**
+	 * Extension Type ID
+	 * @since       1.2.0
+	 */
+	public $extension_type_id;
+	
+	/**
+	 * Mode
+	 * @since       1.2.0
+	 */
+	public $mode;
+	
+	/**
+	 * Description
+	 * @since       1.2.0
+	 */
+	public $description;
+	
+	/**
+	 * Ordering
+	 * @since       1.2.0
+	 */
+	public $ordering;
+	
+	/**
+	 * State
+	 * @since       1.2.0
+	 */
+	public $state;
+	
+	/**
+	 * Required
+	 * @since       1.2.0
+	 */
+	public $required;
+	
+	/**
+	 * Access
+	 * @since       1.2.0
+	 */
+	public $access;
+	
+	/**
+	 * Language
+	 * @since       1.2.0
+	 */
+	public $language;
+	
+	/**
+	 * Params
+	 * @since       1.2.0
+	 */
+	public $params;
 
 	/**
 	 * Constructor

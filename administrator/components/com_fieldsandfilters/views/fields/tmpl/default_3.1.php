@@ -23,7 +23,7 @@ JHtml::_( 'dropdown.init' );
 JHtml::_( 'formbehavior.chosen', 'select' );
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/component/fieldsandfilters_admin.css', array(), true );
+JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 
 $app		= JFactory::getApplication();
 $user		= JFactory::getUser();
@@ -172,7 +172,7 @@ $sortFields 	= $this->getSortFields();
 					<td class="center">
 						<div class="btn-group">
 							<?php echo JHtml::_( 'jgrid.published', $item->state, $i, 'fields.', $canChange, 'cb' ); ?>
-							<?php echo JHtml::_( 'fieldsandfilters.required', $item->required, $i, 'fields.', $canChange ); ?>
+							<?php echo JHtml::_( 'FieldsandfiltersHtml.grid.required', $item->required, $i, 'fields.', $canChange ); ?>
 						</div>
 					</td>
 					<td class="nowrap has-context">
@@ -197,22 +197,17 @@ $sortFields 	= $this->getSortFields();
 								JHtml::_( 'dropdown.edit', $item->field_id, 'field.' );
 								JHtml::_( 'dropdown.divider' );
 								
-								if( $item->state ) :
-									JHtml::_( 'dropdown.unpublish', 'cb' . $i, 'fields.' );
-								else :
-									JHtml::_( 'dropdown.publish', 'cb' . $i, 'fields.' );
-								endif;
+								$action = $item->state ? 'unpublish' : 'publish';
+								JHtml::_( 'actionsdropdown.' . $action, 'cb' . $i, 'fields' );
+								
 								if( $item->state != -1 ) :
-									JHtml::_( 'fieldsandfilters.dropdownOnlyAdmin', 'cb' . $i, 'fields.' );
+									JHtml::_( 'FieldsandfiltersHtml.dropdown.onlyAdmin', 'cb' . $i, 'fields.' );
 								endif;
 								
 								JHtml::_( 'dropdown.divider' );
 								
-								if( $item->required ) :
-									JHtml::_( 'fieldsandfilters.dropdownUnrequired', 'cb' . $i, 'fields.' );
-								else :
-									JHtml::_( 'fieldsandfilters.dropdownRequired', 'cb' . $i, 'fields.' );
-								endif;
+								$action = $item->required ? 'unrequired' : 'required';
+								JHtml::_( 'FieldsandfiltersHtml.dropdown.' . $action, 'cb' . $i, 'fields.' );
 								
 								// Render dropdown list
 								echo JHtml::_( 'dropdown.render' );

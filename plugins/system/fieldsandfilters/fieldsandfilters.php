@@ -112,7 +112,7 @@ class plgSystemFieldsandfilters extends JPlugin
 		return true;
 	}
 	
-		/**
+	/**
 	 * @param	JForm	$form	The form to be altered.
 	 * @param	array	$data	The associated data for the form.
 	 *
@@ -142,25 +142,31 @@ class plgSystemFieldsandfilters extends JPlugin
 		return true;
 	}
 	
+	/**
+	 * @param	string	The context of the content being passed to the plugin.
+	 * @param	object	The article object.  Note $article->text is also available
+	 * @param	object	The article params
+	 * @param	int	The 'page' number
+	 *
+	 * @return	void
+	 * @since       1.1.0
+	 */
 	public function onContentPrepare( $context, $row, $params, $page = 0 )
 	{
 		// Don't run this plugin when the content is being indexed
-		if( $context == 'com_finder.indexer' )
+		if( $context == 'com_finder.indexer' || !$this->params->get( 'prepare_content', 1 ) || !( $syntax = $this->params->get( 'syntax', '#{%s}' ) ) || !property_exists( $row, 'text' ) )
 		{
 			return true;
 		}
 		
-		if( $this->params->get( 'prepare_content', 1 ) && ( $interpolation = $this->params->get( 'interpolation', '#{%s}' ) ) && property_exists( $row, 'text' ) )
-		{
-			FieldsandfiltersFactory::getFieldsSite()->preparationConetent( $row->text, null, ( property_exists( $row, 'id' ) ? $row->id : null ), $interpolation );
-		}
+		FieldsandfiltersFieldsHelper::preparationContent( $row->text, $context, null, ( property_exists( $row, 'id' ) ? $row->id : null ), array(), $syntax, $this->params->get( 'syntax_type', FieldsandfiltersFieldsHelper::SYNTAX_SIMPLE ) );
 	}
 	
 	/**
 	 * @param	string	The context of the content being passed to the plugin.
 	 * @param	object	The article object.  Note $article->text is also available
 	 * @param	object	The article params
-	 * @param	int		The 'page' number
+	 * @param	int	The 'page' number
 	 *
 	 * @return	void
 	 * @since       1.1.0
@@ -179,7 +185,7 @@ class plgSystemFieldsandfilters extends JPlugin
 	 * @param	string	The context of the content being passed to the plugin.
 	 * @param	object	The article object.  Note $article->text is also available
 	 * @param	object	The article params
-	 * @param	int		The 'page' number
+	 * @param	int	The 'page' number
 	 *
 	 * @return	void
 	 * @since       1.1.0
@@ -211,5 +217,22 @@ class plgSystemFieldsandfilters extends JPlugin
 		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentAfterDisplay', array( $context, &$row, &$params, $page = 0 ) );
 		
 		return ( !empty( $results ) ? trim( implode( "\n", $results ) ) : null );
+	}
+	
+	/**
+	 * @since       1.2.0
+	 */
+	public function onAfterRender()
+	{
+		if( JFactory::getApplication()->isAdmin() || !$this->params->get( 'prepare_after_render', 0 ) && !( $syntax = $this->params->get( 'syntax', '#{%s}' ) ) )
+		{
+			return;
+		}
+		
+		$buffer = JResponse::getBody();
+		
+		FieldsandfiltersFieldsHelper::preparationContent( $buffer, 'system', null, null, array(), $syntax, $this->params->get( 'syntax_type', FieldsandfiltersFieldsHelper::SYNTAX_SIMPLE ) );
+	
+		JResponse::setBody( $buffer );
 	}
 }

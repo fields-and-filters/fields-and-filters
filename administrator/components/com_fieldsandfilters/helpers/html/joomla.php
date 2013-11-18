@@ -14,9 +14,9 @@ defined('_JEXEC') or die;
  * @package		fieldsandfilters.administrator
  * @subpackage		com_fieldsandfilters
  *
- * @since       1.1.0
+ * @since       1.2.0
  */
-abstract class JHtmlFieldsandfilters_25
+abstract class FieldsandfiltersHtmlJoomla
 {
 	/**
 	 * Internal method to get a JavaScript object notation string from an array
