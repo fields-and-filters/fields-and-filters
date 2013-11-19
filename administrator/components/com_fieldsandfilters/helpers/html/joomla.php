@@ -19,6 +19,12 @@ defined('_JEXEC') or die;
 abstract class FieldsandfiltersHtmlJoomla
 {
 	/**
+	 * @var    array  Array containing information for loaded files
+	 * @since  1.2.0
+	 */
+	protected static $loaded = array();
+	
+	/**
 	 * Internal method to get a JavaScript object notation string from an array
 	 *
 	 * @param   array  $array  The array to convert to JavaScript object notation
@@ -70,5 +76,38 @@ abstract class FieldsandfiltersHtmlJoomla
 		}
 		
 		return '{' . implode(',', $elements) . '}';
+	}
+	
+	/**
+	 * Method to load the jQuery JavaScript framework into the document head
+	 *
+	 * If debugging mode is on an uncompressed version of jQuery is included for easier debugging.
+	 *
+	 * @param   boolean  $noConflict  True to load jQuery in noConflict mode [optional]
+	 * @param   mixed    $debug       Is debugging mode on? [optional]
+	 *
+	 * @return  void
+	 *
+	 * @since   1.2.0
+	 */
+	public static function jquery( $noConflict = true )
+	{
+		// Only load once
+		if( !empty( static::$loaded[__METHOD__] ) )
+		{
+			return;
+		}
+
+		JHtml::_( 'script', 'fieldsandfilters/core/jquery-1.10.2.min.js', false, true, false, false, false );
+
+		// Check if we are loading in noConflict
+		if( $noConflict )
+		{
+			JHtml::_( 'script', 'fieldsandfilters/core/jquery-noconflict.js', false, true, false, false, false );
+		}
+
+		static::$loaded[__METHOD__] = true;
+
+		return;
 	}
 }

@@ -127,40 +127,13 @@ $contentType = (array) $contentType;
 // Get a db connection.
 $db = JFactory::getDbo();
 
-// Create a new query object.
-$queryInsert = $db->getQuery(true);
-
-$contentTypeKey = array_keys( $contentType );
-
-$contentTypeValues = array_map( array( $db, 'quote'), array_values( $contentType ) );
-
 // Prepare the insert query.
-
-    // ->columns( $db->quoteName( $contentTypeKey ) )
-    // ->values( implode( ',', $contentTypeValues ) );
-
-
-    
-$queryCheck = $db->getQuery(true)
-	->select( '*' )
-	->from( $db->quoteName( '#__content_types' ) )
-	->where( $db->quoteName( 'type_alias' ) . ' = ' . $db->quote( 'com_fieldsandfilters.field' ) )
-	;
-
-$queryValues = $db->getQuery(true)
-	->select( $contentTypeValues );
-
-$subquery = $db->getQuery(true)
-	->select('*')
-	->from( (string) $queryValues )
-	->where( 'NOT EXISTS (' . (string) $queryCheck . ' )');
-
-$queryInsert
+$queryInsert = $db->getQuery(true)
 	->insert( $db->quoteName( '#__content_types' ) )
-	->columns( $db->quoteName( $contentTypeKey ) )
-	->columns( (string) $subquery );
+	->columns( $db->quoteName( array_keys( $contentType ) ) )
+	->values( implode( ', ', $db->quote( array_values( $contentType ), false ) ) );
 	
-echo $subquery->dump();
+echo $queryInsert->dump();
 
 
 //exit;

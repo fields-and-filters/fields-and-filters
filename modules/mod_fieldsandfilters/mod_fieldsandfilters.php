@@ -86,7 +86,9 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 			$options['fn'] = $fn;
 		}
 		
-		// Import JS
+		// Import JS && CSS
+		JHtml::_( 'FieldsandfiltersHtml.filters.framework' );
+		
 		if( FieldsandfiltersFactory::isVersion() )
 		{
 			$options = JHtml::getJSObject( $options );
@@ -95,8 +97,6 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		{	
 			$options = JHtml::_( 'FieldsandfiltersHtml.joomla.getJSObject', $options );
 		}
-		
-		JHtml::_( 'FieldsandfiltersHtml.filters.framework' );
 		
 		$script[]       = 'jQuery(document).ready(function($) {';
 		$script[]       = '     $( "#faf-form-' . $module->id . '" ).fieldsandfilters(' .  $options . ');';

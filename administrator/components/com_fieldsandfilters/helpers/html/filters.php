@@ -63,19 +63,11 @@ class FieldsandfiltersHtmlFilters
 		// Import JS
 		if( FieldsandfiltersFactory::isVersion() )
 		{
-			JHtml::_( 'jquery.framework', (boolean)  $params->get( 'load_noconflict_javascript', 1 ) );
+			JHtml::_( 'jquery.framework', (boolean) $params->get( 'load_noconflict_javascript', 1 ) );
 		}
 		else
 		{
-			if( $params->get( 'load_jquery_javascript', 1 ) )
-			{
-				JHtml::_( 'script', 'fieldsandfilters/core/jquery-1.10.2.min.js', false, true, false, false, false );
-			}
-			
-			if( $params->get( 'load_noconflict_javascript', 1 ) )
-			{
-				JHtml::_( 'script', 'fieldsandfilters/core/jquery-noconflict.js', false, true, false, false, false );
-			}
+			JHtml::_( 'FieldsandfiltersHtml.joomla.jquery', (boolean) $params->get( 'load_noconflict_javascript', 1 ) );
 		}
 		
 		JHtml::_( 'script', 'fieldsandfilters/core/jquery.fieldsandfilters.js', false, true, false, false, $debug );
