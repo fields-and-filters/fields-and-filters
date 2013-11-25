@@ -18,7 +18,41 @@ defined('_JEXEC') or die;
  */
 class FieldsandfiltersTypes extends KextensionsBufferCore
 {
-	protected $_plugins_folder 	= 'fieldsandfiltersTypes';
+	protected $helper;
+	
+	protected function createHelper( $type, $adapter )
+	{
+		if( !class_exists( 'FieldsandfiltersInstallerScript' ) )
+		{
+			JLoader::import( 'administrator.helpers.installer.script', $adapter->getParent()->getPath('source') );
+			
+			if( !class_exists( 'FieldsandfiltersInstallerScript' ) )
+			{
+				// Extension uninstalled error
+				$msg = JText::_( 'COM_FIELDSANDFILTERS_ERROR_FIELDSANDFILTERS_INSTALLER_HELPER_NOT_EXISTS' );
+				JFactory::getApplication()->enqueueMessage( 'FieldsandfiltersInstallerScript class not exists', 'error' );
+				
+				return false;
+			}
+		}
+		
+		if( !$this->helper instanceof FieldsandfiltersInstallerScript )
+		{
+			$this->helper = new FieldsandfiltersInstallerScript( $type, $adapter );
+			$this->helper->setContentType( self::prepareContentType() );
+		}
+		else
+		{
+			$this->helper->setType( $type );
+		}
+		
+		return true;
+	}
+	
+	protected function getHelper()
+	{
+		return $this->helper;
+	}
 	
 	/**
 	 * Constructor

@@ -15,7 +15,8 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', a
 
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/fieldsandfilters.script.php';
 
-com_fieldsandfiltersInstallerScript::_changePlugins();
+com_fieldsandfiltersInstallerScript::_checkContentType();
+
 
 exit;
 ?>

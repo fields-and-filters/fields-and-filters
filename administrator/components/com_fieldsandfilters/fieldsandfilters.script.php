@@ -9,14 +9,16 @@
 
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
- 
+
+JLoader::import( 'joomla.filesystem.path' );
+JLoader::import( 'joomla.filesystem.folder' );
+
 /**
  * Script file of FieldsAndFilters Installer component
  */
 class com_fieldsandfiltersInstallerScript
 {
-	protected $adapter;
-	protected $type;
+	protected $helper;
 	
 	protected $_extensions = array(
 			'plg_system_fieldsandfilters',
@@ -28,34 +30,56 @@ class com_fieldsandfiltersInstallerScript
 			'mod_fieldsandfilters'
 	);
 	
-        /**
-         * Method to install the extension
-         * $adapter is the class calling this method
-         *
-         * @return void
-         */
-	/*
-        public function install( $adapter ) 
-        {
-		$this->_checkTypeContent();
-                return $this->_addExtensions( $adapter );
-        }
-	*/
 	/**
-         * Method to update the extension
+         * Method to run before an install/update/uninstall method
          * $adapter is the class calling this method
+         * $type is the type of change (install, update or discover_install)
          *
          * @return void
          */
-	/*
-        public function update( $adapter ) 
+        function preflight( $type, $adapter ) 
         {
-		$this->_checkTypeContent();
-		return $this->_addExtensions( $adapter );
+		if( !$this->createHelper( $type, $adapter ) )
+		{
+			return;
+		}
+		
+		$helper = $this->getHelper( $type, $adapter );
+		
+		if( $type == 'update' && version_compare( $helper->getOldVersion(), 1.2, '<' ) )
+		{
+			self::changePlugins( 'fieldsandfiltersExtensions' );
+			self::changePlugins( 'fieldsandfiltersTypes' );
+			
+			self::changeModules( 'mod_fieldsandfilters', 'mod_fieldsandfilters_filters' );
+
+		}
+	}
+	
+	/**
+         * Method to run after an install/update/uninstall method
+         * $adapter is the class calling this method
+         * $type is the type of change (install, update or discover_install)
+         *
+         * @return void
+         */
+        function postflight( $type, $adapter ) 
+        {
+		if( !$this->createHelper( $type, $adapter ) )
+		{
+			return;
+		}
+		
+		$helper = $this->getHelper( $type, $adapter );
+		
+		if( $type == 'install' || ( $type == 'update' && version_compare( $helper->getOldVersion(), 1.2, '<' ) ) )
+		{
+			$helper->checkContentType( 'allextensions', 'com_fieldsandfilters.field' );
+			return $this->addExtensions();
+		}
+		
+		return true;
         }
-	*/
-	
-	
 	
 	/**
          * Method to uninstall the extension
@@ -111,7 +135,7 @@ class com_fieldsandfiltersInstallerScript
 			}
 			else
 			{
-				// Extension uninstalled sucessfully
+				// Extension uninstalled error
 				$msg = JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_UNINSTALL_EXTENSION', $extension );
 				$app->enqueueMessage( $msg, 'error' );
 			}
@@ -120,87 +144,44 @@ class com_fieldsandfiltersInstallerScript
 		return true;
         }
 	
-	 /**
-         * Method to run before an install/update/uninstall method
-         * $adapter is the class calling this method
-         * $type is the type of change (install, update or discover_install)
-         *
-         * @return void
-         */
-        function preflight( $type, $adapter ) 
-        {
-		$this->adapter = $adapter;
-		$this->type = $type;
-		
-		if( $type == 'update' && version_compare( $this->_getOldVersion(), 1.2, '<' ) )
+	protected function createHelper( $type, $adapter )
+	{
+		if( !class_exists( 'FieldsandfiltersInstallerScript' ) )
 		{
-			self::_changePlugins('fieldsandfiltersExtensions');
-			self::_changePlugins('fieldsandfiltersTypes');
+			JLoader::import( 'administrator.helpers.installer.script', $adapter->getParent()->getPath('source') );
+			
+			if( !class_exists( 'FieldsandfiltersInstallerScript' ) )
+			{
+				// FieldsandfiltersInstallerScript error
+				JFactory::getApplication()->enqueueMessage( 'FieldsandfiltersInstallerScript class not exists', 'error' );
+			}
 		}
-	}
-	
-	
-	
-	/**
-         * Method to run after an install/update/uninstall method
-         * $adapter is the class calling this method
-         * $type is the type of change (install, update or discover_install)
-         *
-         * @return void
-         */
-        function postflight($type, $adapter) 
-        {
-		$this->adapter = $adapter;
-		$this->type = $type;
 		
-		if( $type == 'install' || ( $type == 'update' && version_compare( $this->_getOldVersion(), 1.2, '<' ) ) )
+		if( !$this->helper instanceof FieldsandfiltersInstallerScript )
 		{
-			$this->_checkContentType();
-			return $this->_addExtensions();
+			$this->helper = new FieldsandfiltersInstallerScript( $type, $adapter );
+			$this->helper->setContentType( self::prepareContentType() );
+		}
+		else
+		{
+			$this->helper->setType( $type );
 		}
 		
 		return true;
-        }
-	
-	protected function _getVersion()
-	{
-		static $version;
-		
-		if( is_null( $version ) && $this->adapter instanceof JAdapterInstance )
-		{
-			$version = (float) $this->adapter->getParent()->manifest['version'];
-		}
-		
-		return $version;
 	}
 	
-	protected function _getOldVersion()
+	protected function getHelper()
 	{
-		static $oldVersion;
-		
-		if( is_null( $oldVersion ) && $this->adapter instanceof JAdapterInstance )
-		{
-			// load problem
-			$table = JTable::getInstance('extension');
-			
-			$version = $this->_getVersion();
-			if( $table->load( array( 'element' => $this->adapter->get('element'), 'type' => 'component' ) ) )
-			{
-				$manifestCache = new JRegistry( $table->manifest_cache );
-				$version = ( $manifestCache->get('version') ) ? (float) $manifestCache->get('version') : $version;
-			}
-			
-			$oldVersion = $version;
-		}
-		
-		return $oldVersion;
+		return $this->helper;
 	}
 	
-	protected function _addExtensions()
+	protected function addExtensions()
 	{
+		$helper = $this->getHelper( $type, $adapter );
+		
 		// Get an installer instance
 		$app	        = JFactory::getApplication();
-		$parent		= $this->adapter->getParent();
+		$parent		= $helper->getAdapter()->getParent();
 		$manifest	= $parent->getManifest();
 		
 		if( $manifest->administration->files )
@@ -223,7 +204,7 @@ class com_fieldsandfiltersInstallerScript
 		$extensionsPath = $adminPath . '/extensions';
 		
 		// Load language
-		$this->adapter->loadLanguage( $adminPath );
+		$helper->getAdapter()->loadLanguage( $adminPath );
 		
 		if( !is_dir( $extensionsPath ) || empty( $this->_extensions ) || !is_array( $this->_extensions ) )
 		{
@@ -288,35 +269,7 @@ class com_fieldsandfiltersInstallerScript
 		return true;
 	}
 	
-	protected function _checkContentType()
-	{
-		$db = JFactory::getDbo();
-		$query = $db->getQuery(true);
-		$query->select( $db->quoteName( 'type_alias' ) );
-		$query->from( $db->quoteName( '#__content_types' ) );
-		$query->where( $db->quoteName( 'type_alias' ) . '=' . $db->quote( 'com_fieldsandfilters.field' ) );
-                
-		if( !$db->setQuery( $query )->loadResult() )
-		{
-			$columns 	= $db->getTableColumns( '#__content_types' );
-			$contentType 	= array_intersect_key( self::_prepareContentType(), $columns );
-			
-                        $query->clear();
-			$query->insert( $db->quoteName( '#__content_types' ) );
-			$query->columns( $db->quoteName( array_keys( $contentType ) ) );
-			$query->values( implode( ', ', $db->quote( array_values( $contentType ), false ) ) );
-			$db->setQuery( $query );
-			$db->execute();
-		}
-		
-		if( $this->type == 'update' && version_compare( $this->_getOldVersion(), 1.2, '<' ) ) // [TODO] version
-		{
-			self::_updateContentType( 'allextensions', 'com_fieldsandfilters.field' );
-			// $this->updateContentType( 'content', 'com_content.article' ); <- [TODO] to musi isc do pluginu, ponieważ jeszcze nie mamy dodanej content type
-		}
-	}
-	
-	protected static function _prepareContentType()
+	protected static function prepareContentType()
 	{
 		$contentType = new stdClass();
 		$contentType->type_title = 'Fieldsandfilters Field';
@@ -398,57 +351,8 @@ class com_fieldsandfiltersInstallerScript
 		return (array) $contentType;
 	}
 	
-	protected function _updateContentType( $extensionTypeName, $contentTypeName )
+	protected static function changePlugins( $folder )
 	{
-		$db = JFactory::getDbo();	
-		$query = $db->getQuery( true );
-		
-		// get Content Type ID
-		$query->select( $db->quoteName( 'type_id' ) );
-		$query->from( $db->quoteName( '#__content_types' ) );
-		$query->where( $db->quoteName( 'type_alias' ) . ' = ' . $db->quote( $contentTypeName ) );
-		
-		$contentTypeID = (int) $db->setQuery( $query )->loadResult();
-		
-		$query->clear();
-		
-		if( !$contentTypeID )
-		{
-			return;
-		}
-		
-		// get Extension Type ID
-		$query->clear();
-		$query->select( $db->quoteName( 'extension_type_id' ) );
-		$query->from( $db->quoteName( '#__fieldsandfilters_extensions_type' ) );
-		$query->where( $db->quoteName( 'extension_name' ) . ' = ' . $db->quote( $extensionTypeName ) );
-		
-		$extensionTypeID = (int) $db->setQuery( $query )->loadResult();
-		
-		$query->clear();
-		
-		if( !$extensionTypeID )
-		{
-			return;
-		}
-		
-		// update old extension type id
-		$query->update( array(
-			$db->quoteName( '#__fieldsandfilters_connections' ),
-			$db->quoteName( '#__fieldsandfilters_data' ),
-			$db->quoteName( '#__fieldsandfilters_elements' ),
-			$db->quoteName( '#__fieldsandfilters_fields' )
-		) );
-		$query->set( 'content_type_id = ' . (int) $contentTypeID );
-		$query->where( 'content_type_id = ' . (int) $extensionTypeID );
-		
-		$db->setQuery( $query )->execute();
-	}
-	
-	protected static function _changePlugins( $folder )
-	{
-		jimport('joomla.filesystem.folder');
-		
 		$db = JFactory::getDbo();
 		$query = $db->getQuery( true );
 		$query->select( '*' );
@@ -456,7 +360,7 @@ class com_fieldsandfiltersInstallerScript
 		$query->where( $db->quoteName( 'folder' ) . ' = ' . $db->quote( $folder ) );
 		$query->where( $db->quoteName( 'type' ) . ' = ' . $db->quote( 'plugin' ) );
 		
-		$plugins = $db->setQuery( $query )->loadObjectList();
+		$plugins = (array) $db->setQuery( $query )->loadObjectList();
 		
 		while( $plugin = array_shift( $plugins ) )
 		{
@@ -468,25 +372,144 @@ class com_fieldsandfiltersInstallerScript
 		
 		$langs = JLanguage::getKnownLanguages(JPATH_ADMINISTRATOR);
 		
+		// change language name files to lower case
 		foreach( $langs AS $lang )
 		{
 			$path = JPATH_ADMINISTRATOR . '/language/' . $lang['tag'] . '/';
-			$filter = '^' . $lang['tag'] . '.plg_' . $folder . '_(.*).ini$'; 
+			$filter = '^' . $lang['tag'] . '\.plg_' . $folder . '_(.*)\.ini$'; 
 			$files = JFolder::files( $path, $filter );
 			
 			foreach( $files AS $file )
 			{
 				$newFile = strtolower( $file );
-				rename( $path . $file, $path . $newFile );
+				@rename( $path . $file, $path . $newFile );
 			}
 		}
 		
-		$path = JPATH_PLUGINS . '/' . $folder;
+		// change plugin folder name to lower case
+		$path = JPath::clean( JPATH_PLUGINS . '/' . $folder );
 		if( is_dir( $path ) )
 		{
-			$newPath = JPATH_PLUGINS . '/' . strtolower( $folder );
-			rename( $path, $newPath );
+			$newPath = JPath::clean( JPATH_PLUGINS . '/' . strtolower( $folder ) );
+			@rename( $path, $newPath );
 		}
 		
+		// change plugin folder ane to lowe case in templates
+		$templates = self::getTempaltes();
+		
+		if( !empty( $templates ) )
+		{
+			foreach( $templates as $template )
+			{
+				$path = JPath::clean( JPATH_SITE . '/templates/' . $template->element . '/html/' );
+				$filter = '^plg_' . $folder . '_(.*)$';
+				
+				if( is_dir( $path ) && ( $files = JFolder::folders( $path, $filter ) ) )
+				{
+					foreach( $files as $file )
+					{
+						$newFile = strtolower( $file );
+						@rename( $path . $file, $path . $newFile );
+					}
+				}
+			}
+		}
+	}
+	
+	protected static function changeModules( $old_module, $new_module )
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery( true );
+		$query->select( '*' );
+		$query->from( $db->quoteName( '#__extensions' ) );
+		$query->where( $db->quoteName( 'type' ) . ' = ' . $db->quote( 'module' ) );
+		$query->where( $db->quoteName( 'element' ) . ' = ' . $db->quote( $old_module ) );
+		
+		$modules = (array) $db->setQuery( $query )->loadObjectList();
+		
+		while( $module = array_shift( $modules ) )
+		{
+			$module->name = $new_module;
+			$module->element = $new_module;
+			
+			$db->updateObject( '#__extensions', $module, 'extension_id' );
+		}
+		
+		$langs = JLanguage::getKnownLanguages(JPATH_SITE);
+		
+		// change language name files to lower case
+		foreach( $langs AS $lang )
+		{
+			$path = JPATH_SITE . '/language/' . $lang['tag'] . '/';
+			$filter = '^' . $lang['tag'] . '\.' . $old_module . '\.ini$'; 
+			$files = JFolder::files( $path, $filter );
+			
+			foreach( $files AS $file )
+			{
+				$newFile = str_replace( $old_module, $new_module, $file );
+				@rename( $path . $file, $path . $newFile );
+			}
+		}
+		
+		// change plugin folder name to lower case
+		$path = JPath::clean( JPATH_SITE . '/modules/' . $old_module . '/' );
+		
+		if( is_dir( $path ) )
+		{
+			$filter = '^' . $old_module . '\.(php|xml)$'; 
+			$files = JFolder::files( $path, $filter );
+			
+			foreach( $files AS $file )
+			{
+				$newFile = str_replace( $old_module, $new_module, $file );
+				@rename( $path . $file, $path . $newFile );
+			}
+			
+			$newPath = JPath::clean( JPATH_SITE . '/modules/' . $new_module );
+			@rename( $path, $newPath );
+		}
+		
+		// change plugin folder ane to lowe case in templates
+		$templates = self::getTempaltes();
+		
+		if( !empty( $templates ) )
+		{
+			foreach( $templates as $template )
+			{
+				$path = JPath::clean( JPATH_SITE . '/templates/' . $template->element . '/html/' . $old_module );
+				
+				// change plugin folder name to lower case
+				if( is_dir( $path ) )
+				{
+					$newPath = JPath::clean( JPATH_SITE . '/templates/' . $template->element . '/html/' . $new_module );
+					@rename( $path, $newPath );
+				}
+			}
+		}
+		
+	}
+	
+	protected static function getTempaltes()
+	{
+		static $templates;
+		
+		if( is_null( $templates ) )
+		{
+			$db = JFactory::getDbo();
+			// Build the query.
+			$query = $db->getQuery( true );
+			$query->select( array(
+				       $db->quoteName( 'element' ),
+				       $db->quoteName( 'name' )
+				) )
+				->from( $db->quoteName( '#__extensions', 'e' ) )
+				->where( $db->quoteName( 'e.client_id' ) . ' = ' . 0 )
+				->where( $db->quoteName( 'e.type' ) . ' = ' . $db->quote( 'template' ) )
+				->where( $db->quoteName( 'e.enabled' ) . ' = 1');
+			
+			$templates = (array) $db->setQuery($query)->loadObjectList( 'element' );
+		}
+		
+		return $templates;
 	}
 }
