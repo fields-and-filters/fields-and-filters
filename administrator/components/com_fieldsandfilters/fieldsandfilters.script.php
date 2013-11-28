@@ -44,7 +44,7 @@ class com_fieldsandfiltersInstallerScript
 			return;
 		}
 		
-		$helper = $this->getHelper( $type, $adapter );
+		$helper = $this->getHelper();
 		
 		if( $type == 'update' && version_compare( $helper->getOldVersion(), 1.2, '<' ) )
 		{
@@ -70,11 +70,11 @@ class com_fieldsandfiltersInstallerScript
 			return;
 		}
 		
-		$helper = $this->getHelper( $type, $adapter );
+		$helper = $this->getHelper();
 		
-		if( $type == 'install' || ( $type == 'update' && version_compare( $helper->getOldVersion(), 1.2, '<' ) ) )
+		if( $type == 'install' || ( $type == 'update' ) )
 		{
-			$helper->checkContentType( 'allextensions', 'com_fieldsandfilters.field' );
+			$helper->checkContentType();
 			return $this->addExtensions();
 		}
 		
@@ -146,21 +146,48 @@ class com_fieldsandfiltersInstallerScript
 	
 	protected function createHelper( $type, $adapter )
 	{
-		if( !class_exists( 'FieldsandfiltersInstallerScript' ) )
+		if( !( self::loadClass( 'script', $adapter ) && self::loadClass( 'contenttype', $adapter ) ) )
 		{
-			JLoader::import( 'administrator.helpers.installer.script', $adapter->getParent()->getPath('source') );
-			
-			if( !class_exists( 'FieldsandfiltersInstallerScript' ) )
-			{
-				// FieldsandfiltersInstallerScript error
-				JFactory::getApplication()->enqueueMessage( 'FieldsandfiltersInstallerScript class not exists', 'error' );
-			}
+			return false;
 		}
 		
 		if( !$this->helper instanceof FieldsandfiltersInstallerScript )
 		{
-			$this->helper = new FieldsandfiltersInstallerScript( $type, $adapter );
-			$this->helper->setContentType( self::prepareContentType() );
+			$this->helper 	= new FieldsandfiltersInstallerScript( $type, $adapter, 'allextensions' );
+			if( $type = 'uninstall' )
+			{
+				$contentType 	= $this->helper->getContentType()
+					->set( 'type_title', 'Fieldsandfilters Field' )
+					->set( 'type_alias', 'com_fieldsandfilters.field' )
+					->set( 'table.special', array(
+						'dbtable' => '#__fieldsandfilters_fields',
+						'key'     => 'field_id',
+						'type'    => 'Field',
+						'prefix'  => 'FieldsandfiltersTable',
+					) )
+					->set( 'table.common', new stdClass )
+					->set( 'field_mappings.common', array(
+						'core_content_item_id'	=> 'field_id',
+						'core_title'		=> 'field_name',
+						'core_state'		=> 'state',
+						'core_alias'		=> 'field_alias',
+						'core_body'		=> 'description',
+						'core_access'		=> 'access',
+						'core_params'		=> 'params',
+						'core_language'		=> 'language',
+						'core_ordering'		=> 'ordering'
+					) )
+					->set( 'field_mappings.special', array(
+						'field_type'		=> 'field_type',
+						'content_type_id'	=> 'content_type_id',
+						'mode'			=> 'mode',
+						'required'		=> 'required'
+					) )
+					->set( 'content_history_options.formFile', 'administrator/components/com_fieldsandfilters/models/forms/field.xml' )
+					->addHistoryOptions( 'hideFields', 'mode' )
+					->addHistoryOptions( 'convertToInt', array( 'content_type_id', 'mode', 'ordering', 'state', 'required' ) )
+					->addDisplayLookup( 'content_type_id', '#__content_types', 'type_id', 'type_title' );
+			}
 		}
 		else
 		{
@@ -177,7 +204,7 @@ class com_fieldsandfiltersInstallerScript
 	
 	protected function addExtensions()
 	{
-		$helper = $this->getHelper( $type, $adapter );
+		$helper = $this->getHelper();
 		
 		// Get an installer instance
 		$app	        = JFactory::getApplication();
@@ -269,96 +296,37 @@ class com_fieldsandfiltersInstallerScript
 		return true;
 	}
 	
-	protected static function prepareContentType()
+	protected static function loadInstallClass( $class, $adapter )
 	{
-		$contentType = new stdClass();
-		$contentType->type_title = 'Fieldsandfilters Field';
-		$contentType->type_alias = 'com_fieldsandfilters.field';
-		$contentType->table = json_encode(
-			array(
-				'special' => array(
-					'dbtable' => '#__fieldsandfilters_fields',
-					'key'     => 'field_id',
-					'type'    => 'Field',
-					'prefix'  => 'FieldsandfiltersTable',
-					'config'  => 'array()'
-				),
-				'common' => array()
-			)
-		);
+		$installerClass = 'FieldsandfiltersInstaller' . ucfirs( $class );
+		if( !class_exists( $installerClass ) )
+		{
+			$path = 'administrator.helpers.installer.' . strtolower( $class );
+			JLoader::import( $path, $adapter->getParent()->getPath('source') );
+			
+			if( !class_exists( $installerClass ) )
+			{
+				// FieldsandfiltersInstallerScript error
+				JFactory::getApplication()->enqueueMessage( $installerClass . ' class not exists', 'error' );
+				return false;
+			}
+		}
 		
-		$contentType->rules = '';
-		
-		$contentType->field_mappings = json_encode(
-			array(
-				'common' => array(
-					'core_content_item_id'	=> 'field_id',
-					'core_title'		=> 'field_name',
-					'core_state'		=> 'state',
-					'core_alias'		=> 'field_alias',
-					'core_created_time'	=> 'null', // null
-					'core_modified_time'	=> 'null', // null
-					'core_body'		=> 'description',
-					'core_hits'		=> 'null', // null
-					'core_publish_up'	=> 'null', // null
-					'core_publish_down'	=> 'null', // null
-					'core_access'		=> 'access',
-					'core_params'		=> 'params',
-					'core_featured'		=> 'null', // null
-					'core_metadata'		=> 'null', // null
-					'core_language'		=> 'language',
-					'core_images'		=> 'null', // null
-					'core_urls'		=> 'null', // null
-					'core_version'		=> 'null', // null
-					'core_ordering'		=> 'ordering',
-					'core_metakey'		=> 'null', // null
-					'core_metadesc'		=> 'null', // null
-					'core_catid'		=> 'null', // null
-					'core_xreference'	=> 'null', // null
-					'asset_id'		=> 'null' // null
-				),
-				'special' => array(
-					'field_type'		=> 'field_type',
-					'content_type_id'	=> 'content_type_id',
-					'mode'			=> 'mode',
-					'required'		=> 'required'
-				)
-			)
-		);
-		
-		$contentType->router = '';
-		
-		$contentType->content_history_options = json_encode(
-			array(
-				'formFile' 		=> 'administrator/components/com_fieldsandfilters/models/forms/field.xml',
-				'hideFields' 		=> array( 'mode' ),
-				'ignoreChanges' 	=> array(),
-				'convertToInt'		=> array( 'content_type_id', 'mode', 'ordering', 'state', 'required' ),
-				'displayLookup'		=> array(
-					array(
-						'sourceColumn'		=> 'content_type_id',
-						'targetTable'		=> '#__content_types',
-						'targetColumn'		=> 'type_id',
-						'displayColumn'		=> 'type_title'
-					)
-				)
-				
-				
-				
-			)
-		);
-		
-		return (array) $contentType;
+		return true;
 	}
 	
 	protected static function changePlugins( $folder )
 	{
 		$db = JFactory::getDbo();
-		$query = $db->getQuery( true );
-		$query->select( '*' );
-		$query->from( $db->quoteName( '#__extensions' ) );
-		$query->where( $db->quoteName( 'folder' ) . ' = ' . $db->quote( $folder ) );
-		$query->where( $db->quoteName( 'type' ) . ' = ' . $db->quote( 'plugin' ) );
+		
+		// change folder and name plugins in table extensions
+		$query = $db->getQuery( true )
+			->select( '*' )
+			->from( $db->quoteName( '#__extensions' ) )
+			->where( array(
+				$db->quoteName( 'folder' ) . ' = ' . $db->quote( $folder ),
+				$db->quoteName( 'type' ) . ' = ' . $db->quote( 'plugin' )
+			) );
 		
 		$plugins = (array) $db->setQuery( $query )->loadObjectList();
 		
@@ -419,11 +387,15 @@ class com_fieldsandfiltersInstallerScript
 	protected static function changeModules( $old_module, $new_module )
 	{
 		$db = JFactory::getDbo();
-		$query = $db->getQuery( true );
-		$query->select( '*' );
-		$query->from( $db->quoteName( '#__extensions' ) );
-		$query->where( $db->quoteName( 'type' ) . ' = ' . $db->quote( 'module' ) );
-		$query->where( $db->quoteName( 'element' ) . ' = ' . $db->quote( $old_module ) );
+		
+		// change name modules in table extensions
+		$query = $db->getQuery( true )
+			->select( '*' )
+			->from( $db->quoteName( '#__extensions' ) )
+			->where( array(
+				$db->quoteName( 'type' ) . ' = ' . $db->quote( 'module' ),
+				$db->quoteName( 'element' ) . ' = ' . $db->quote( $old_module )
+			) );
 		
 		$modules = (array) $db->setQuery( $query )->loadObjectList();
 		
@@ -434,6 +406,15 @@ class com_fieldsandfiltersInstallerScript
 			
 			$db->updateObject( '#__extensions', $module, 'extension_id' );
 		}
+		
+		$query->clear();
+		
+		// change name modules in table modules
+		$query->update( $db->quoteName( '#__modules' ) )
+			->set( $db->quoteName('module') . ' = ' . $db->quote( $new_module ) )
+			->where( $db->quotename('module') . ' = ' . $db->quote( $old_module ) );
+			
+		$db->setQuery( $query )->execute();
 		
 		$langs = JLanguage::getKnownLanguages(JPATH_SITE);
 		
