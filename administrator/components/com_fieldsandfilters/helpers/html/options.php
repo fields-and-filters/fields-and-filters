@@ -105,7 +105,7 @@ class FieldsandfiltersHtmlOptions
 						$extensionName = $extension->type . '_' . $extension->name;
 					}
 					
-					$options[] = JHtml::_( 'select.option', $extension->extension_type_id, JText::_( strtoupper( $extensionName ) ) );
+					$options[] = JHtml::_( 'select.option', $extension->content_type_id, JText::_( strtoupper( $extensionName ) ) );
 				}
 			}
 		}
@@ -124,7 +124,7 @@ class FieldsandfiltersHtmlOptions
 		$options 	= array();
 		
 		// Load Extensions Helper
-		$extenionsID = FieldsandfiltersFactory::getExtensions()->getExtensionsColumn( 'extension_type_id' );
+		$extenionsID = FieldsandfiltersFactory::getExtensions()->getExtensionsColumn( 'content_type_id' );
 		
 		// Load Types Helper
 		$modes =  FieldsandfiltersFactory::getTypes()->getModes( $modes, array(), true );
@@ -162,7 +162,7 @@ class FieldsandfiltersHtmlOptions
 	{
 		$options 	= array();
 		
-		$extenionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsColumn( 'extension_type_id' );
+		$extenionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsColumn( 'content_type_id' );
 		$field 		= FieldsandfiltersFactory::getFields()->getFieldsByID( $extenionsID, $fieldID, $state, true );
 		
 		if( ( $field = $field->get( $fieldID ) ) && ( $values = $field->values->getProperties( true ) ) )

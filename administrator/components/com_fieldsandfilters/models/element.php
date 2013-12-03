@@ -196,7 +196,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 				// Load PluginExtensions Helper
 				$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 				
-				if( $extensionName = $this->getState( 'element.extension_name', ( ( $pluginExtension = $extensionsHelper->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID )->get( $extensionTypeID ) ) ? $pluginExtension->name : null ) ) )
+				if( $extensionName = $this->getState( 'element.extension_name', ( ( $pluginExtension = $extensionsHelper->getExtensionsByTypeIDPivot( 'extension_type_id', $extensionTypeID )->get( $extensionTypeID ) ) ? $pluginExtension->name : null ) ) )
 				{
 					JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 					
@@ -357,7 +357,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 		if( is_numeric( $extensionTypeID ) )
 		{
 			// Load PluginExtensions Helper
-			if( $extensionTypeID && ( $pluginExtension = FieldsandfiltersFactory::getExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID, true )->get( $extensionTypeID ) ) )
+			if( $extensionTypeID && ( $pluginExtension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeIDPivot( 'extension_type_id', $extensionTypeID, true )->get( $extensionTypeID ) ) )
 			{
 				$this->setState( 'element.extension_name', $pluginExtension->name );
 				$this->setState( 'element.extension_title', $pluginExtension->forms->get( 'extension', new JObject )->get( 'title', new JObject ) );
@@ -450,7 +450,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			}
 			
 			// Load PluginExtensions Helper
-			$extensionName = ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
+			$extensionName = ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
 			
 			$context = $this->option . '.' . $this->name . '.' . $extensionName;
 			
@@ -632,7 +632,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			{
 				if( $this->canDelete( $table ) )
 				{
-					$extensionName = ( $extension = $extensionsHelper->getExtensionsByIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
+					$extensionName = ( $extension = $extensionsHelper->getExtensionsByTypeIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
 					
 					$context = $this->option . '.' . $this->name . '.' .  $extensionName;
 					

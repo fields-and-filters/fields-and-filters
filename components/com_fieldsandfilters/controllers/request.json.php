@@ -51,7 +51,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		}
                 
                 // Load PluginExtensions Helper
-                $extensions = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID );
+                $extensions = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByTypeIDPivot( 'extension_type_id', $extensionTypeID );
                 
                 if( !( $extension =  $extensions->get( $extensionTypeID ) ) )
                 {
@@ -110,7 +110,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		}
                 
                 // Load PluginExtensions Helper
-                if( !( $extension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID )->get( $extensionTypeID ) ) )
+                if( !( $extension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByTypeIDPivot( 'extension_type_id', $extensionTypeID )->get( $extensionTypeID ) ) )
 		{
 			$this->sendResponse( new Exception( JText::_( 'COM_FILEDSANDFILTERS_FILTERS_ERROR_EXTENSION_NOT_EXISTS' ), 403 ) );
 		}

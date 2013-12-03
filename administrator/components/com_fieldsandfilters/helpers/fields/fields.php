@@ -136,7 +136,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	 */
 	protected function _prepareVars()
 	{
-		$this->vars->typeName 		= 'extension_type_id';
+		$this->vars->typeName 		= 'content_type_id';
 		$this->vars->elementName 	= 'field_id';
 		
 		if( $this->method == 'getFieldsByID' )
@@ -225,7 +225,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		$query->select( '*' )
 			->from( $this->_db->quoteName( '#__fieldsandfilters_fields' ) )
 			->where( $this->_db->quoteName( 'state' ) . ' IN (' . implode( ',', $this->vars->states ) . ')' )		// Fiels where states
-			->where( $this->_db->quoteName( 'extension_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' ); 	// Fields where extensions type id
+			->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' ); 	// Fields where extensions type id
 		
 		if( $this->method == 'getFieldsByID' )
 		{
@@ -254,7 +254,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	 */
 	protected function _setData( &$_field )
         {
-		$this->_getData( $_field->extension_type_id )->elements->set( $_field->field_id, $_field );
+		$this->_getData( $_field->content_type_id )->elements->set( $_field->field_id, $_field );
 		$_field->params = new JRegistry( $_field->params );
 		$_field->location = (array) $_field->params->get( 'extension.location', $this->_extension_locatnion_default );
 		
@@ -347,7 +347,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		{
 			$query->from( $this->_db->quoteName( '#__fieldsandfilters_data' ) );
 			$query->where( $this->_db->quoteName( 'element_id' ) . ' = ' .  0 );
-			$query->where( $this->_db->quoteName( 'extension_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' );
+			$query->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' );
 		}
 				
 		return $query;

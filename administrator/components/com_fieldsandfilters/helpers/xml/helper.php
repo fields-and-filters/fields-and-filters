@@ -10,13 +10,15 @@
 // no direct access
 defined('_JEXEC') or die;
 
+jimport( 'joomla.filesystem.folder' );
+
 /**
  * @package		fieldsandfilters.administrator
  * @subpackage		com_fieldsandfilters
  *
  * @since       1.2.0
  */
-class FieldsandfiltersXML
+class FieldsandfiltersXmlHelper
 {	
 	/**
 	 * Method to get the options type form xml.
@@ -29,16 +31,14 @@ class FieldsandfiltersXML
 	 */
 	public static function getPluginOptionsForms( $element, $config = array() )
 	{
-		jimport( 'joomla.filesystem.folder' );
-		
 		// Get the params file path plugin.
-		if( property_exists( $element, 'forms_dir' ) )
+		if( $element->get( 'type' ) == 'com_fieldsandfilters' )
 		{
-			$formsDir = $element->forms_dir;
+			$formsDir = JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/models/forms/allextensions';
 		}
 		else
 		{
-			$formsDir = JPATH_PLUGINS . '/' . $element->type . '/' . $element->name . '/forms';
+			$formsDir = JPATH_PLUGINS . "/{$element->type}/{$element->name}/forms";
 		}
 		
                 $formsDir = JPath::clean( $formsDir );  

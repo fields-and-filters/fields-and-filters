@@ -68,7 +68,7 @@ class FieldsandfiltersModelElements extends JModelList
 		$params = JComponentHelper::getParams( 'com_fieldsandfilters' );
 		$this->setState( 'params', $params );
 		
-		if( $extensionTypeId && ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeId )->get( $extensionTypeId ) ) )
+		if( $extensionTypeId && ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeIDPivot( 'extension_type_id', $extensionTypeId )->get( $extensionTypeId ) ) )
 		{
 			// Include the content plugins for the on delete events.
 			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );

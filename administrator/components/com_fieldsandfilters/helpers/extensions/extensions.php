@@ -18,71 +18,75 @@ defined('_JEXEC') or die;
  */
 class FieldsandfiltersExtensions extends KextensionsBufferCore
 {
-	protected $_plugins_folder 	= 'fieldsandfiltersExtensions';
-        protected $_extension_default   = 'allextensions';
+	/**
+	 * @since       1.2.0
+	 **/
+	const EXTENSION_DEFAULT = 'allextensions';
+	
+	/**
+	 * @since       1.2.0
+	 **/
+	const PLUGIN_FOLDER = 'fieldsandfiltersextensions';
 	
 	/**
 	 * @since       1.1.0
 	**/
 	public function getExtensions( $withXML = false )
 	{
-                if( !property_exists( $this->_data, $this->_plugins_folder ) )
+                if( !property_exists( $this->_data, $this::PLUGIN_FOLDER ) )
                 {
-                        $data           = $this->_getData( $this->_plugins_folder );
-                        $elements       = $data->elements;
-                        
-                        $data->set( 'xml', (boolean) $withXML );
-                        
-                        $pluginsExtensions = $this->_db->setQuery( $this->_getQuery() )->loadObjectList();
+			$data		= $this->_getData( $this::PLUGIN_FOLDER );
+                        $elements 	= $data->elements;
 			
-			if( !empty( $pluginsExtensions ) )
+			$default 			= new JObject;
+			$default->id			= $this::EXTENSION_DEFAULT;
+			$default->name 			= $default->id;
+			$default->type			= 'com_fieldsandfilters';
+			$default->content_type_alias 	= 'com_fieldsandfilters.' . $default->id;
+			$default->option		= 'com_fieldsandfilters';
+			$default->forms			= JPATH_ADMINISTRATOR . "/components/{$default->option}/models/forms/allextensions";
+			
+			$data->elements->set( $default->id, $default );
+			
+			JPluginHelper::importPlugin( $this::PLUGIN_FOLDER );
+			// Trigger the onFieldsandfiltersPrepareFormField event.
+			JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareExtensions', array( $data->elements ) );	
+			
+			$typesAlias 	= KextensionsArray::getColumn( $data->elements, 'content_type_alias' );
+			$query		= $this->_getQuery( $typesAlias );
+                        $types 		= (array) $this->_db->setQuery( $query )->loadObjectList( 'type_alias' );
+			
+			$data->set( 'xml', (boolean) $withXML );
+			
+                        foreach( $data->elements AS &$element )
 			{
-				while( $pluginExtension = array_shift( $pluginsExtensions ) )
+				$element->content_type_id = (int) array_key_exists( $element->content_type_alias, $types ) ? $types[$element->content_type_alias]->type_id : 0;
+				
+				/* @deprecated  1.2.0 */
+				$element->extension_type_id = $element->content_type_id;
+				/* @end deprecated  1.2.0 */
+				
+				if( $data->xml )
 				{
-					if( $pluginExtension->name == $this->_extension_default )
-					{
-						$pluginExtension->type             = 'com_fieldsandfilters';
-						$pluginExtension->forms_dir        = JPATH_ADMINISTRATOR . '/components/' . $pluginExtension->type . '/models/forms/allextensions';
-						$pluginExtension->params           = '{}';
-					}
-					
-					
-					$elements->set( $pluginExtension->name, $pluginExtension );
-					
-					if( $data->xml )
-					{
-						FieldsandfiltersXML::getPluginOptionsForms( $elements->get( $pluginExtension->name ), array() );
-					}  
+					FieldsandfiltersXmlHelper::getPluginOptionsForms( $element );
 				}
 			}
                 }
-                elseif( $withXML && !$this->_getData( $this->_plugins_folder )->xml )
+                elseif( $withXML && !$this->_getData( $this::PLUGIN_FOLDER )->xml )
                 {
-                        $data = $this->_getData( $this->_plugins_folder );
+                        $data = $this->_getData( $this::PLUGIN_FOLDER );
                         
                         $data->set( 'xml', (boolean) $withXML );
-                        
-			$elements = get_object_vars( $data->elements );
-                        
-                        while( $element = array_shift( $elements ) )
-                        {
-                                FieldsandfiltersXML::getPluginOptionsForms( $element, array() );
+			     
+                        foreach( $data->elements AS &$element )
+			{
+                                FieldsandfiltersXmlHelper::getPluginOptionsForms( $element );
                         }
                 }
                 
-                return $this->_getData( $this->_plugins_folder )->elements;
+                return $this->_getData( $this::PLUGIN_FOLDER )->elements;
 	}
 	
-	/**
-	 * @since       1.1.0
-	**/
-        public function getExtensionsByID( $ids, $withXML = false )
-        {
-                $this->vars->elementName = 'extension_type_id';
-                
-                return $this->_getExtensionsBy( $ids, $withXML );     
-        }
-        
 	/**
 	 * @since       1.1.0
 	**/
@@ -95,76 +99,48 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
         }
 	
 	/**
-	 * @since       1.1.0
+	 * @since       1.2.0
 	**/
-	public function getExtenionsOptions()
-	{
-		if( !property_exists( $this->_data, 'options' ) )
-                {
-                        $data           = $this->_getData( 'options' );
-			
-			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
-			
-			// Trigger the onFieldsandfiltersPrepareFormField event.
-			$options = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareExtensionsHelper', array( 'pluginextensions.options', $data->elements ) );			
-		}
-		
-		return $this->_getData( 'options' )->elements;
-	}
+        public function getExtensionsByID( $ids, $withXML = false )
+        {
+                $this->vars->elementName = 'id';
+		$this->config->def( 'elementsString', true );
+                
+                return $this->_getExtensionsBy( $ids, $withXML );     
+        }
+	
 	
 	/**
 	 * @since       1.1.0
 	**/
-	public function getExtensionsNameByOption( $option, $default = null )
-	{
-		$_options = $this->getExtenionsOptions();
-		
-		if( is_string( $option ) )
-		{
-			return $_options->get( $option, $default );
-		}
-		else if( is_array( $option ) )
-		{
-			foreach( $option AS $item )
-			{
-				if( $name = $_options->get( $item ) )
-				{
-					$names[] = $name;
-				}
-			}
-			
-			return ( isset( $names ) ) ? $names : $default;
-		}
-		
-		return $default;
-	}
+        public function getExtensionsByTypeID( $ids, $withXML = false )
+        {
+                $this->vars->elementName = 'content_type_id';
+                
+                return $this->_getExtensionsBy( $ids, $withXML );     
+        }
+        
+	/**
+	 * @since       1.2.0
+	**/
+        public function getExtensionsByTypeAlias( $alias, $withXML = false )
+        {
+                $this->vars->elementName = 'content_type_alias';
+                $this->config->def( 'elementsString', true );
+                
+                return $this->_getExtensionsBy( $alias, $withXML );   
+        }
 	
 	/**
-	 * @since       1.1.0
+	 * @since       1.2.0
 	**/
-	public function getExtensionsIDByOption( $option, $default = null )
-	{
-		$_options = $this->getExtenionsOptions();
-		
-		if( is_string( $option ) && ( $name = $_options->get( $option ) ) )
-		{
-			return $this->getExtensionsByNameColumn( 'extension_type_id', $name );
-		}
-		else if( is_array( $option ) )
-		{
-			foreach( $option AS $item )
-			{
-				if( $name = $_options->get( $item ) )
-				{
-					$names[] = $name;
-				}
-			}
-			
-			return ( isset( $names ) ) ? $this->getExtensionsByName( 'extension_type_id', $names ) : $default;
-		}
-		
-		return $default;
-	}
+        public function getExtensionsByOption( $option, $withXML = false )
+        {
+                $this->vars->elementName = 'option';
+                $this->config->def( 'elementsString', true );
+                
+                return $this->_getExtensionsBy( $alias, $withXML );   
+        }
 	
 	/**
 	 * @since       1.1.0
@@ -197,31 +173,21 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	/**
 	 * @since       1.0.0
 	**/
-	protected function _getQuery()
+	protected function _getQuery( array $typesAlias = array() )
 	{
 		// Get db and query
-		$query = $this->_db->getQuery( true );
-			
-		$query->select( array(
-                                        $this->_db->quoteName( 'et.extension_type_id' ),
-                                        $this->_db->quoteName( 'e.folder', 'type' ),
-                                        $this->_db->quoteName( 'et.extension_name', 'name' ),
-					$this->_db->quoteName( 'e.params' )
+		$query = $this->_db->getQuery( true )
+			->select( array(
+                                        $this->_db->quoteName( 'type_id' ),
+                                        $this->_db->quoteName( 'type_alias' ),
                         ) )
-			->from( $this->_db->quoteName( '#__fieldsandfilters_extensions_type', 'et' ) )
-                        ->join( 'LEFT', $this->_db->quoteName( '#__extensions', 'e' ) . ' ON ' . $this->_db->quoteName( 'e.element' ) . ' = ' . $this->_db->quoteName( 'et.extension_name' ) )
-                        ->where( $this->_db->quoteName( 'et.extension_name' ) . ' = ' . $this->_db->quote( $this->_extension_default ), 'OR' ); 
-                        
-                $where = array(
-                               $this->_db->quoteName( 'e.type' ) . ' = ' . $this->_db->quote( 'plugin' ),                       // Extension mast by a plugin
-                               $this->_db->quoteName( 'e.folder' ) . ' = ' . $this->_db->quote( $this->_plugins_folder ),       // Extension where plugin folder
-                               $this->_db->quoteName( 'e.enabled' ) . ' = 1'                                                    // Extension where enabled
-                        );
-                        
-                $query->where( '(' . implode( ' AND ', $where ) . ')' );
+			->from( $this->_db->quoteName( '#__content_types' ) );
+                
+		if( !empty( $typesAlias ) )
+		{
+			$query->where( $this->_db->quoteName( 'type_alias' ) . ' IN (' . implode( ',', array_map( array( $this->_db, 'quote' ), $typesAlias ) ) . ')' );
+		}
 		
-		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
-                        
 		return $query;
 	}
 	
@@ -263,6 +229,12 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	 *
 	 * getExtensionsByNamePivot( $pivot, $names, $withXML = false )
 	 * getExtensionsByNameColumn( $column, $names, $withXML = false )
+	 * 
+	 * getExtensionsByTypeIDPivot( $pivot, $ids, $withXML = false )
+	 * getExtensionsByTypeIDColumn( $column, $ids, $withXML = false )
+	 * 
+	 * getExtensionsByTypeAliasPivot( $pivot, $alias, $withXML = false )
+	 * getExtensionsByTypeAliasColumn( $column, $alias, $withXML = false )
 	 *
 	 * @since       1.1.0
 	**/

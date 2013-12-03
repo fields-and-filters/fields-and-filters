@@ -19,16 +19,22 @@ JLoader::import( 'joomla.filesystem.folder' );
 class com_fieldsandfiltersInstallerScript
 {
 	protected $helper;
-	
-	protected $_extensions = array(
+
+	protected $extensions_queue = array(
 			'plg_system_fieldsandfilters',
 			'plg_fieldsandfiltersextensions_content',
 			'plg_fieldsandfilterstypes_checkboxlist',
 			'plg_fieldsandfilterstypes_image',
 			'plg_fieldsandfilterstypes_input',
 			'plg_fieldsandfilterstypes_textarea',
-			'mod_fieldsandfilters'
+			'mod_fieldsandfilters_filters'
 	);
+	// dodac tablice do usuniecai plikow
+	protected static $remove_folders = array(
+		'/administrator/components/com_fieldsandfilters/helpers',
+		'/components/com_fieldsandfilters/helpers'
+	);
+
 	
 	/**
          * Method to run before an install/update/uninstall method
@@ -48,11 +54,13 @@ class com_fieldsandfiltersInstallerScript
 		
 		if( $type == 'update' && version_compare( $helper->getOldVersion(), 1.2, '<' ) )
 		{
+			self::removeFolders();
+			
+			self::changeLayoutsPlugins( 'fieldsandfiltersTypes' );
 			self::changePlugins( 'fieldsandfiltersExtensions' );
 			self::changePlugins( 'fieldsandfiltersTypes' );
 			
 			self::changeModules( 'mod_fieldsandfilters', 'mod_fieldsandfilters_filters' );
-
 		}
 	}
 	
@@ -89,7 +97,7 @@ class com_fieldsandfiltersInstallerScript
          */
         public function uninstall( $adapter ) 
         {
-		if( empty( $this->_extensions ) || !is_array( $this->_extensions ) )
+		if( empty( $this->extensions_queue ) || !is_array( $this->extensions_queue ) )
 		{
 			return;
 		}
@@ -100,7 +108,7 @@ class com_fieldsandfiltersInstallerScript
 		$eid	= $app->input->get( 'cid', array(), 'array' );
 		JArrayHelper::toInteger( $eid, array() );
 		
-		while( $extension = array_shift( $this->_extensions ) )
+		while( $extension = array_shift( $this->extensions_queue ) )
 		{
 			$installer      = new JInstaller;
 			
@@ -233,14 +241,14 @@ class com_fieldsandfiltersInstallerScript
 		// Load language
 		$helper->getAdapter()->loadLanguage( $adminPath );
 		
-		if( !is_dir( $extensionsPath ) || empty( $this->_extensions ) || !is_array( $this->_extensions ) )
+		if( !is_dir( $extensionsPath ) || empty( $this->extensions_queue ) || !is_array( $this->extensions_queue ) )
 		{
 			$app->enqueueMessage( JText::_( 'COM_FIELDSANDFILTERS_ERROR_NOT_EXISTS_EXTENSIONS' ), 'error' );
 			return false;
 		}
 		
 		$table = JTable::getInstance( 'extension' );
-		while( $extension = array_shift( $this->_extensions ) )
+		while( $extension = array_shift( $this->extensions_queue ) )
 		{
 			$installer      = new JInstaller;
 			$extensionDir 	= $extensionsPath . '/' . $extension;
@@ -372,14 +380,62 @@ class com_fieldsandfiltersInstallerScript
 				$path = JPath::clean( JPATH_SITE . '/templates/' . $template->element . '/html/' );
 				$filter = '^plg_' . $folder . '_(.*)$';
 				
-				if( is_dir( $path ) && ( $files = JFolder::folders( $path, $filter ) ) )
+				if( is_dir( $path ) && ( $folders = JFolder::folders( $path, $filter ) ) )
 				{
-					foreach( $files as $file )
+					foreach( $folders as $folder )
 					{
-						$newFile = strtolower( $file );
-						@rename( $path . $file, $path . $newFile );
+						$newFolder = strtolower( $folder );
+						@rename( $path . $folder, $path . $newFolder );
 					}
 				}
+			}
+		}
+	}
+	
+	protected static function changeLayoutsPlugins( $folder )
+	{
+		$plugins = JFolder::folders( JPATH_PLUGINS . '/' . $folder );
+		
+		if( empty( $plugins ) )
+		{
+			return;
+		}
+		
+		$templates = self::getTempaltes();
+		
+		foreach( $plugins AS $plugin )
+		{
+			self::moveLayoutsPlugin( JPATH_PLUGINS . "/$folder/$plugin/tmpl" );
+			
+			if( empty( $templates ) )
+			{
+				continue;
+			}
+			
+			foreach( $templates as $template )
+			{
+				self::moveLayoutsPlugin( JPATH_SITE . "/templates/{$template->element}/html/plg_{$folder}_{$plugin}" );
+			}
+		}
+	}
+	
+	protected static function moveLayoutsPlugin( $path, $filter = '^(filter|field|static)-(.*)\.php$' )
+	{
+		$path = JPath::clean( $path );
+		if( is_dir( $path ) && ( $files = JFolder::files( $path, $filter ) ) && !empty( $files ) )
+		{
+			foreach( $files AS $file )
+			{
+				list( $folder, $name ) = explode( '-', $file, 2 );
+				
+				$pathFolder = JPath::clean( $path . "/$folder" );
+				
+				if( !( is_dir( $pathFolder ) || JFolder::create( $pathFolder ) ) )
+				{
+					continue;
+				}
+				
+				JFile::move( $path . "/$file", $pathFolder . "/$name" );
 			}
 		}
 	}
@@ -422,7 +478,7 @@ class com_fieldsandfiltersInstallerScript
 		foreach( $langs AS $lang )
 		{
 			$path = JPATH_SITE . '/language/' . $lang['tag'] . '/';
-			$filter = '^' . $lang['tag'] . '\.' . $old_module . '\.ini$'; 
+			$filter = '^' . $lang['tag'] . '\.' . $old_module . '\.(sys.ini|ini)$'; 
 			$files = JFolder::files( $path, $filter );
 			
 			foreach( $files AS $file )
@@ -492,5 +548,20 @@ class com_fieldsandfiltersInstallerScript
 		}
 		
 		return $templates;
+	}
+	
+	public static function removeFolders()
+	{
+		if( !empty( self::$remove_folders ) )
+		{
+			while( $folder = array_shift( self::$remove_folders ) )
+			{
+				$path = JPATH_ROOT . $folder;
+				if( is_dir( $path ) )
+				{
+					JFolder::delete($path);
+				}
+			}
+		}
 	}
 }

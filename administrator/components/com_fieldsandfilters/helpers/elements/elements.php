@@ -129,7 +129,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 	 */
 	protected function _prepareVars()
 	{
-		$this->vars->typeName 		= 'extension_type_id';
+		$this->vars->typeName 		= 'content_type_id';
 		$this->vars->elementName 	= 'element_id';
 		
 		if( $this->method == 'getElementsByID' )
@@ -236,7 +236,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 		$query->select( '*' )
 			->from( $this->_db->quoteName( '#__fieldsandfilters_elements' ) )
 			->where( $this->_db->quoteName( 'state' ) . ' IN (' . implode( ',', $this->vars->states ) . ')' )	// Elements where states
-			->where( $this->_db->quoteName( 'extension_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' ); 	// Elements where extensions type id
+			->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' ); 	// Elements where extensions type id
 		
 		if( $this->method == 'getElementsByID' )
 		{
@@ -267,7 +267,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
         {
 		if( ( $byID = $this->method == 'getElementsByID' ) || ( $byItem = $this->method == 'getElementsByItemID' ) )
 		{
-			$this->_getData( $_element->extension_type_id )->elements->set( $_element->element_id, $_element );
+			$this->_getData( $_element->content_type_id )->elements->set( $_element->element_id, $_element );
 			$this->buffer->{$_element->element_id} = $_element;
 			
 			if( $byID )

@@ -64,7 +64,7 @@ class FieldsandfiltersFiltersHelper
 							'COUNT(' . $db->quoteName( 'c.field_value_id' ) . ') AS ' . $db->quoteName( 'field_value_count' ),
 					) )
 					->from( $db->quoteName( '#__fieldsandfilters_connections', 'c' ) )
-					->where( $db->quoteName( 'c.extension_type_id' ) . ' IN(' . implode( ',', $types ) . ')' );
+					->where( $db->quoteName( 'c.content_type_id' ) . ' IN(' . implode( ',', $types ) . ')' );
 				
 				if( !is_null( $filters ) )
 				{
@@ -188,7 +188,7 @@ class FieldsandfiltersFiltersHelper
 				
 				$query->where( $db->quoteName( 'e.state' ) . ' IN (' . implode( ',', $states ) . ')' );
 				
-				$query->where( $db->quoteName( 'e.extension_type_id' ) . ' IN(' . implode( ',', self::$types ) . ')' );
+				$query->where( $db->quoteName( 'e.content_type_id' ) . ' IN(' . implode( ',', self::$types ) . ')' );
 				
 				$result = $db->setQuery( $query )->loadColumn();
 				
@@ -251,7 +251,7 @@ class FieldsandfiltersFiltersHelper
 					$subQuery->clear( 'where' );
 					$subQuery->where( $db->quoteName( 'c.field_id' ) . ' = ' . $filter );
 					$subQuery->where( $db->quoteName( 'c.field_value_id' ) . ' IN(' . implode( ',', $filter_values ) . ')' );
-					$subQuery->where( $db->quoteName( 'c.extension_type_id' ) . ' IN(' . implode( ',', self::$types ) . ')' );
+					$subQuery->where( $db->quoteName( 'c.content_type_id' ) . ' IN(' . implode( ',', self::$types ) . ')' );
 					$unions[] = $subQuery->__toString();
 				}
 				
@@ -396,7 +396,7 @@ class FieldsandfiltersFiltersHelper
 							$where = true;
 							$subQuery->where( $db->quoteName( 'c.field_id' ) . ' = ' . $filter );
 							$subQuery->where( $db->quoteName( 'c.field_value_id' ) . ' = ' . $value );
-							$subQuery->where( $db->quoteName( 'c.extension_type_id' ) . ' IN(' . implode( ',', self::$types ) . ')' );
+							$subQuery->where( $db->quoteName( 'c.content_type_id' ) . ' IN(' . implode( ',', self::$types ) . ')' );
 						}
 						else
 						{

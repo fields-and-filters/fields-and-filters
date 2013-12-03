@@ -110,14 +110,17 @@ class FieldsandfiltersInstallerScript
 			
 			if( !empty( $columns ) )
 			{
-				$contentType = $contentType->toContentType( $columns );
+				$contentType = (array) $contentType->toContentType( $columns );
 				
-				$query->clear()
-					->insert( $db->quoteName( '#__content_types' ) )
-					->columns( $db->quoteName( array_keys( $contentType ) ) )
-					->values( implode( ', ', $db->quote( array_values( $contentType ), false ) ) );
-				
-				$db->setQuery( $query )->execute();
+				if( !empty( $contentType ) )
+				{
+					$query->clear()
+						->insert( $db->quoteName( '#__content_types' ) )
+						->columns( $db->quoteName( array_keys( $contentType ) ) )
+						->values( implode( ', ', $db->quote( array_values( $contentType ), false ) ) );
+					
+					$db->setQuery( $query )->execute();
+				}
 			}
 		}
 		

@@ -30,7 +30,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		if( ( $app->input->get( 'format' ) == 'raw' ) && $extensionID && $fieldID )
 		{
                         // Load PluginExtensions Helper
-                        if( !( $extension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByIDPivot( 'extension_type_id', $extensionTypeID )->get( $extensionTypeID ) ) )
+                        if( !( $extension = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsByTypeIDPivot( 'content_type_id', $extensionTypeID )->get( $extensionTypeID ) ) )
                         {
                                 // $app->enqueueMessage( JText::_( JText::_( 'COM_FILEDSANDFILTERS_FILTERS_ERROR_EXTENSION_NOT_EXISTS' ), 'error' ) );
                         }

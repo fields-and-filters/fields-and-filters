@@ -41,19 +41,21 @@ class FieldsandfiltersFieldsHelper
 		$app = JFactory::getApplication();
 		
 		// Load PluginExtensions Helper
-		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
+		$extensionsHelper 	= FieldsandfiltersFactory::getExtensions();
 		
 		if( is_null( $option ) )
 		{
 			$option = $app->input->get( 'option' );
 		}
 		
-		$extensionsID = (array) $extensionsHelper->getExtensionsIDByOption( $option );
+		$extensions[] = strtolower( $option );
 		
 		if( $getAllextensions )
 		{
-			$extensionsID = array_merge( $extensionsID, (array) $extensionsHelper->getExtensionsByNameColumn( 'extension_type_id', 'allextensions' ) );
+			$extensions[] = 'allextensions';
 		}
+		
+		$extensionsID = $extensionsHelper->getExtensionsColumn( 'content_type_id', $extensions );
 		
 		if( empty( $extensionsID ) )
 		{

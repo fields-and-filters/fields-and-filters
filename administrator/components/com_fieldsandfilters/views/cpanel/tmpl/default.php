@@ -13,12 +13,24 @@ defined( '_JEXEC' ) or die;
 // Import CSS
 JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
 
-require_once JPATH_COMPONENT_ADMINISTRATOR . '/fieldsandfilters.script.php';
+//$info = FieldsandfiltersExtensions::getInformation();
+//
+//echo '<pre>';
+//print_r(KextensionsArray::getColumn($info, 'type_alias'));
+//echo '</pre>';
 
-com_fieldsandfiltersInstallerScript::_checkContentType();
+require_once JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/fieldsandfilters.script.php';
 
+com_fieldsandfiltersInstallerScript::changeModules('mod_fieldsandfilters', 'mod_fieldsandfilters_filters');
 
 exit;
+
+echo '<pre>';
+print_r(FieldsandfiltersFactory::getExtensions()->getExtensionsByID(1));
+echo '</pre>';
+
+
+
 ?>
 <div class="span6">
 <?php if ( !empty( $this->buttons['base'] ) ) : ?>
