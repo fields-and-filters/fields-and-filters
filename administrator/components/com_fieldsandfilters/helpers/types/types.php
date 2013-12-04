@@ -18,6 +18,26 @@ defined('_JEXEC') or die;
  */
 class FieldsandfiltersTypes extends KextensionsBufferCore
 {
+	/**
+	 * @since       1.2.0
+	 **/
+	const MODE_NAME_TYPE = 1;
+	
+	/**
+	 * @since       1.2.0
+	 **/
+	const MODE_NAME_MODE = 2;
+	
+	/**
+	 * @since       1.2.0
+	 **/
+	const MODE_NAME_PATH = 3;
+	
+	/**
+	 * @since       1.2.0
+	 **/
+	const PLUGIN_FOLDER = 'fieldsandfilterstypes';
+	
 	protected $_plugins_folder 	= 'fieldsandfilterstypes';
 	
 	/**
@@ -52,9 +72,9 @@ class FieldsandfiltersTypes extends KextensionsBufferCore
 	**/
 	public function getTypes( $withXML = false )
 	{
-                if( !property_exists( $this->_data, $this->_plugins_folder ) )
+                if( !property_exists( $this->_data, self::PLUGIN_FOLDER ) )
                 {
-                        $data           = $this->_getData( $this->_plugins_folder );
+                        $data           = $this->_getData( self::PLUGIN_FOLDER );
                         $elements       = $data->elements;
                         
                         $data->set( 'xml', (boolean) $withXML );
@@ -74,9 +94,9 @@ class FieldsandfiltersTypes extends KextensionsBufferCore
 				}
 			}
                 }
-                elseif( $withXML && !$this->_getData( $this->_plugins_folder )->xml )
+                elseif( $withXML && !$this->_getData( self::PLUGIN_FOLDER )->xml )
                 {
-                        $data = $this->_getData( $this->_plugins_folder );
+                        $data = $this->_getData( self::PLUGIN_FOLDER );
                         
                         $data->set( 'xml', (boolean) $withXML );
                         
@@ -88,7 +108,7 @@ class FieldsandfiltersTypes extends KextensionsBufferCore
                         }
                 }
 		
-                return $this->_getData( $this->_plugins_folder )->elements;
+                return $this->_getData( self::PLUGIN_FOLDER )->elements;
 	}
 	
 	/**
@@ -237,7 +257,7 @@ class FieldsandfiltersTypes extends KextensionsBufferCore
 	/**
 	 * @since       1.0.0
 	**/
-	public function getModeName( $id, $name = 'type', $default = null )
+	public function getModeName( $id, $name = FieldsandfiltersTypes::MODE_NAME_TYPE, $default = null )
 	{
 		if( $id = (int) $id )
 		{
@@ -249,16 +269,13 @@ class FieldsandfiltersTypes extends KextensionsBufferCore
 				{
 					switch( $name )
 					{
-						case 1:
-						case 'type':
+						case self::MODE_NAME_TYPE:
 							return $typeName;
 						break;
-						case 2:
-						case 'mode':
+						case self::MODE_NAME_MODE:
 							return $modeName;
 						break;
-						case 3:
-						case 'path':
+						case self::MODE_NAME_PATH:
 							return ( $typeName . '.' . $modeName );
 						break;
 					}
@@ -287,7 +304,7 @@ class FieldsandfiltersTypes extends KextensionsBufferCore
 			->from( $this->_db->quoteName( '#__extensions' ) )                        
 			->where( array(
                                $this->_db->quoteName( 'type' ) . ' = ' . $this->_db->quote( 'plugin' ),                       // Extension mast by a plugin
-                               $this->_db->quoteName( 'folder' ) . ' = ' . $this->_db->quote( $this->_plugins_folder ),       // Extension where plugin folder
+                               $this->_db->quoteName( 'folder' ) . ' = ' . $this->_db->quote( self::PLUGIN_FOLDER ),       // Extension where plugin folder
                                $this->_db->quoteName( 'enabled' ) . ' = 1'                                                    // Extension where enabled
                         ) );
 		

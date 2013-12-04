@@ -52,10 +52,10 @@ class FieldsandfiltersFieldsHelper
 		
 		if( $getAllextensions )
 		{
-			$extensions[] = 'allextensions';
+			$extensions[] = FieldsandfiltersExtensions::EXTENSION_DEFAULT;
 		}
 		
-		$extensionsID = $extensionsHelper->getExtensionsColumn( 'content_type_id', $extensions );
+		$extensionsID = $extensionsHelper->getExtensionsByExtensionColumn( 'content_type_id', $extensions );
 		
 		if( empty( $extensionsID ) )
 		{

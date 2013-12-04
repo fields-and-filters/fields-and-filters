@@ -95,7 +95,7 @@ class FieldsandfiltersHtmlOptions
 				if( !in_array( $extension->name, $excluded ) )
 				{
 					// load plugin language
-					if( $extension->name != 'allextensions' )
+					if( $extension->name != FieldsandfiltersExtensions::EXTENSION_DEFAULT )
 					{
 						$extensionName = 'plg_' . $extension->type . '_' . $extension->name;
 						KextensionsLanguage::load( $extensionName, JPATH_ADMINISTRATOR );

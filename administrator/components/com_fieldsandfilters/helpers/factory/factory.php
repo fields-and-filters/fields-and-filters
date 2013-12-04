@@ -137,7 +137,9 @@ class FieldsandfiltersFactory
 	 *
 	 * @see     JEventDispatcher or JDispatcher
 	 * @since   1.1.0
+	 * @deprecated  1.2.0
 	 */
+	/*
 	public static function getDispatcher()
 	{
 		if( !self::$dispatcher )
@@ -154,12 +156,14 @@ class FieldsandfiltersFactory
 		
 		return self::$dispatcher;
 	}
+	*/
 	
 	
 	/**
 	 * @since       1.0.0
 	 * @deprecated  1.2.0
 	 */
+	/*
 	public static function getPluginHelper( $type, $name, $helper = 'helper' )
 	{
 		$key = strtolower( $type . $name . $helper );
@@ -187,11 +191,13 @@ class FieldsandfiltersFactory
 		}
 		return self::$instances[$key];
 	}
+	*/
 	
 	/**
 	 * @since       1.1.0
 	 * @deprecated  1.2.0
 	 */
+	/*
         public static function __callStatic( $name, $arguments = array() )
         {
 		static $instances = array();
@@ -224,4 +230,5 @@ class FieldsandfiltersFactory
 			break;
 		}
         }
+        */
 }

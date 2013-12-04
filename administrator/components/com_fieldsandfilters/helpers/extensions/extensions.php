@@ -33,22 +33,20 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	**/
 	public function getExtensions( $withXML = false )
 	{
-                if( !property_exists( $this->_data, $this::PLUGIN_FOLDER ) )
+                if( !property_exists( $this->_data, self::PLUGIN_FOLDER ) )
                 {
-			$data		= $this->_getData( $this::PLUGIN_FOLDER );
+			$data		= $this->_getData( self::PLUGIN_FOLDER );
                         $elements 	= $data->elements;
 			
 			$default 			= new JObject;
-			$default->id			= $this::EXTENSION_DEFAULT;
-			$default->name 			= $default->id;
+			$default->name 			= self::EXTENSION_DEFAULT;
 			$default->type			= 'com_fieldsandfilters';
-			$default->content_type_alias 	= 'com_fieldsandfilters.' . $default->id;
-			$default->option		= 'com_fieldsandfilters';
-			$default->forms			= JPATH_ADMINISTRATOR . "/components/{$default->option}/models/forms/allextensions";
+			$default->extension		= self::EXTENSION_DEFAULT;
+			$default->content_type_alias 	= 'com_fieldsandfilters.' . $extension->extension;
+						
+			$data->elements->set( $default->extension, $default );
 			
-			$data->elements->set( $default->id, $default );
-			
-			JPluginHelper::importPlugin( $this::PLUGIN_FOLDER );
+			JPluginHelper::importPlugin( self::PLUGIN_FOLDER );
 			// Trigger the onFieldsandfiltersPrepareFormField event.
 			JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareExtensions', array( $data->elements ) );	
 			
@@ -72,9 +70,9 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 				}
 			}
                 }
-                elseif( $withXML && !$this->_getData( $this::PLUGIN_FOLDER )->xml )
+                elseif( $withXML && !$this->_getData( self::PLUGIN_FOLDER )->xml )
                 {
-                        $data = $this->_getData( $this::PLUGIN_FOLDER );
+                        $data = $this->_getData( self::PLUGIN_FOLDER );
                         
                         $data->set( 'xml', (boolean) $withXML );
 			     
@@ -84,7 +82,7 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
                         }
                 }
                 
-                return $this->_getData( $this::PLUGIN_FOLDER )->elements;
+                return $this->_getData( self::PLUGIN_FOLDER )->elements;
 	}
 	
 	/**
@@ -101,12 +99,12 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	/**
 	 * @since       1.2.0
 	**/
-        public function getExtensionsByID( $ids, $withXML = false )
+        public function getExtensionsByExtension( $extensions, $withXML = false )
         {
-                $this->vars->elementName = 'id';
+                $this->vars->elementName = 'extension';
 		$this->config->def( 'elementsString', true );
                 
-                return $this->_getExtensionsBy( $ids, $withXML );     
+                return $this->_getExtensionsBy( $extensions, $withXML );     
         }
 	
 	

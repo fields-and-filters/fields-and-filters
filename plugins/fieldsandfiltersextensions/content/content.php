@@ -55,13 +55,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	public function onFieldsandfiltersPrepareExtensions( JObject $extensions )
 	{
 		$extension 			= new JObject;
-		$extension->id			= 'com_content';
 		$extension->name		= $this->_name;
 		$extension->type		= $this->_type;
+		$extension->extension		= 'com_content';
 		$extension->content_type_alias 	= 'com_content.article';
-		$extension->option		= 'com_content';
 		
-		$extensions->set( $extension->id,  $extension );
+		$extensions->set( $extension->extension,  $extension );
 	}
 	
 	/**

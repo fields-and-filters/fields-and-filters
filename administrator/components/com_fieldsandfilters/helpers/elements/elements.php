@@ -19,6 +19,21 @@ defined('_JEXEC') or die;
 class FieldsandfiltersElements extends KextensionsBufferValues
 {
 	/**
+	 * @since       1.2.0
+	 **/
+	const VALUES_CONNECTIONS = 1;
+	
+	/**
+	 * @since       1.2.0
+	 **/
+	const VALUES_DATA = 2;
+	
+	/**
+	 * @since       1.2.0
+	 **/
+	const VALUES_BOTH = 3;
+	
+	/**
          * An array of names that don't exists
          * 
 	 * @var    array 
@@ -107,16 +122,13 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 		{			
 			switch( $values )
 			{
-				case 1:
-				case 'connections':
+				case self::VALUES_CONNECTIONS:
 					$this->config->def( 'getValues', 'connections' );
 				break;
-				case 2:
-				case 'data':
+				case self::VALUES_DATA:
 					$this->config->def( 'getValues', 'data' );
 				break;
-				case 3:
-				case 'both':
+				case self::VALUES_BOTH:
 					$this->config->def( 'getValues', array( 'data', 'connections' ) );
 				break;
 			}

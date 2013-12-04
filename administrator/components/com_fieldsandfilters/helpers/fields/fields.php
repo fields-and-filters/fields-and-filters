@@ -19,6 +19,21 @@ defined('_JEXEC') or die;
 class FieldsandfiltersFields extends KextensionsBufferValues
 {
 	/**
+	 * @since       1.2.0
+	 **/
+	const VALUES_VALUES = 1;
+	
+	/**
+	 * @since       1.2.0
+	 **/
+	const VALUES_DATA = 2;
+	
+	/**
+	 * @since       1.2.0
+	 **/
+	const VALUES_BOTH = 3;
+	
+	/**
          * An array of names that don't exists
          * 
 	 * @var    array 
@@ -114,16 +129,13 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		{
 			switch( $values )
 			{
-				case 1:
-				case 'values':
+				case self::VALUES_VALUES:
 					$this->config->def( 'getValues', 'values' );
 				break;
-				case 2:
-				case 'data':
+				case self::VALUES_DATA:
 					$this->config->def( 'getValues', 'data' );
 				break;
-				case 3:
-				case 'both':
+				case self::VALUES_BOTH;
 					$this->config->def( 'getValues', array( 'values', 'data' ) );
 				break;
 			}
@@ -164,7 +176,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 				parent::_beforeQueryElements( $type );
 			break;
 			case 'getFieldsByModeID':
-				// Get extension type id from cache
+				// Get content type id from cache
 				$data  = $this->_getData( $type );
 				
 				// The difference states between argument states and cache states
@@ -183,13 +195,13 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 					// Add difference modes to query varible
 					$this->vars->modes += $_modes;
 					
-					// When the get modes of the need, then add modes to the cache extenion type, because we don't need them next time
+					// When the get modes of the need, then add modes to the cache content type, because we don't need them next time
 					$data->set( '__modes', array_merge( $dataModes, $_modes ) );
 					
 					// Get elements id from cache, because we don't need get that id's second time from database 
 					$this->vars->notElements = array_merge( $this->vars->notElements, array_keys( get_object_vars( $data->get( 'elements', new stdClass ) ) ) );
 					
-					// Add extension type id to query varible
+					// Add content type id to query varible
 					array_push( $this->vars->types, $type );
 				}
 			break;
@@ -225,7 +237,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		$query->select( '*' )
 			->from( $this->_db->quoteName( '#__fieldsandfilters_fields' ) )
 			->where( $this->_db->quoteName( 'state' ) . ' IN (' . implode( ',', $this->vars->states ) . ')' )		// Fiels where states
-			->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' ); 	// Fields where extensions type id
+			->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' ); 	// Fields where contents type id
 		
 		if( $this->method == 'getFieldsByID' )
 		{
