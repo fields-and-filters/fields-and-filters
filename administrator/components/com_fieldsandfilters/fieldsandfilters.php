@@ -11,11 +11,11 @@
 defined('_JEXEC') or die;
 
 // Access check.
-if( !JFactory::getUser()->authorise( 'core.manage', 'com_fieldsandfilters' ) ) 
+if (!JFactory::getUser()->authorise('core.manage', 'com_fieldsandfilters')) 
 {
-	throw new Exception( JText::_( 'JERROR_ALERTNOAUTHOR' ) );
+	throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
-$controller = JControllerLegacy::getInstance( 'Fieldsandfilters' );
-$controller->execute( JFactory::getApplication()->input->get( 'task' ) );
+$controller = JControllerLegacy::getInstance('Fieldsandfilters');
+$controller->execute(JFactory::getApplication()->input->get('task'));
 $controller->redirect();

@@ -20,10 +20,18 @@ class plgSystemFieldsandfilters extends JPlugin
 {
 	/**
 	 * @var		string	Folder plugin extensions types name.
-	 * @since	1.0.0
+	 * @since	1.0.0 [delete ?] [TODO] FieldsandfiltersExtesions::ExtensionDefault ?
 	 */
 	protected $_folder_plugin_extensions = 'fieldsandfiltersExtensions';
-
+	
+	/**
+	 * The application
+	 *
+	 * @var    JApplication
+	 * @since  1.5
+	 */
+	protected $app;
+	
 	/**
          * @since       1.2.0
          */
@@ -49,7 +57,7 @@ class plgSystemFieldsandfilters extends JPlugin
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		
 		// Trigger the onFinderBeforeSave event.
-		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersBeforeSave', array( $context, $article, $isNew ) );
+		$results = $this->app->triggerEvent( 'onFieldsandfiltersBeforeSave', array( $context, $article, $isNew ) );
 		
 		if( in_array( false, $results, true ) )
 		{
@@ -69,7 +77,7 @@ class plgSystemFieldsandfilters extends JPlugin
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		
 		// Trigger the onFinderBeforeSave event.
-		FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersAfterSave', array( $context, $item, $isNew ) );
+		$this->app->triggerEvent( 'onFieldsandfiltersAfterSave', array( $context, $item, $isNew ) );
 		
 		return true;
 
@@ -84,7 +92,7 @@ class plgSystemFieldsandfilters extends JPlugin
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		
 		// Trigger the onFinderBeforeSave event.
-		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersBeforeDelete', array( $context, $table ) );
+		$results = $this->app->triggerEvent( 'onFieldsandfiltersBeforeDelete', array( $context, $table ) );
 		
 		if( in_array( false, $results, true ) )
 		{
@@ -102,7 +110,7 @@ class plgSystemFieldsandfilters extends JPlugin
 		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 		
 		// Trigger the onFinderBeforeSave event.
-		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersChangeState', array( $context, $pks, $value ) );
+		$results = $this->app->triggerEvent( 'onFieldsandfiltersChangeState', array( $context, $pks, $value ) );
 		
 		if( in_array( false, $results, true ) )
 		{
@@ -132,7 +140,7 @@ class plgSystemFieldsandfilters extends JPlugin
 		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
 		
 		// Trigger the onFinderBeforeSave event.
-		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareForm', array( $form, $data ) );
+		$results = $this->app->triggerEvent( 'onFieldsandfiltersPrepareForm', array( $form, $data ) );
 		
 		if( in_array( false, $results, true ) )
 		{
@@ -176,7 +184,7 @@ class plgSystemFieldsandfilters extends JPlugin
 		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 		
 		// Trigger the onFieldsandfiltersContentAfterTitle event.
-		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentAfterTitle', array( $context, &$row, &$params, $page = 0 ) );
+		$results = $this->app->triggerEvent( 'onFieldsandfiltersContentAfterTitle', array( $context, &$row, &$params, $page = 0 ) );
 		
 		return ( !empty( $results ) ? trim( implode( "\n", $results ) ) : null );
 	}
@@ -195,7 +203,7 @@ class plgSystemFieldsandfilters extends JPlugin
 		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 		
 		// Trigger the onFinderBeforeSave event.
-		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentBeforeDisplay', array( $context, &$row, &$params, $page = 0 ) );
+		$results = $this->app->triggerEvent( 'onFieldsandfiltersContentBeforeDisplay', array( $context, &$row, &$params, $page = 0 ) );
 		
 		return ( !empty( $results ) ? trim( implode( "\n", $results ) ) : null );
 	}
@@ -214,7 +222,7 @@ class plgSystemFieldsandfilters extends JPlugin
 		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 		
 		// Trigger the onFinderBeforeSave event.
-		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentAfterDisplay', array( $context, &$row, &$params, $page = 0 ) );
+		$results = $this->app->triggerEvent( 'onFieldsandfiltersContentAfterDisplay', array( $context, &$row, &$params, $page = 0 ) );
 		
 		return ( !empty( $results ) ? trim( implode( "\n", $results ) ) : null );
 	}

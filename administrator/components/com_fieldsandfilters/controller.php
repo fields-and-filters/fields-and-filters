@@ -21,14 +21,14 @@ class FieldsandfiltersController extends JControllerLegacy
 	 * @return	JController		This object to support chaining.
 	 * @since	1.0.0
 	 */
-	public function display( $cachable = false, $urlparams = false )
+	public function display($cachable = false, $urlparams = false)
 	{
 		$jinput = JFactory::getApplication()->input;
 		
-		$view = $jinput->getCmd( 'view', 'cpanel' );
-		$jinput->set( 'view', $view );
+		$view = $jinput->getCmd('view', 'cpanel');
+		$jinput->set('view', $view);
 		
-		parent::display( $cachable, $urlparams );
+		parent::display($cachable, $urlparams);
 		return $this;
 	}
 }

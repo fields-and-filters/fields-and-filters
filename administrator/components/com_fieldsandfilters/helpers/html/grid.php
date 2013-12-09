@@ -23,6 +23,52 @@ abstract class FieldsandfiltersHtmlGrid
 	 * @param   int $i
 	 *
 	 * @since       1.0.0
+	 *
+	 * (task, text, title,html active class, HTML inactive class)
+	 */
+	public static function published($value = 0, $i, $prefix = '', $enabled = true, $checkbox = 'cb')
+	{
+		JHtml::_('bootstrap.tooltip');
+				
+		// Array of image, task, title, action
+		$states = array(
+			0 => array(
+				'publish',
+				'JUNPUBLISHED',
+				'JLIB_HTML_PUBLISH_ITEM',
+				'JUNPUBLISHED',
+				true,
+				'unpublish',
+				'unpublish',
+			),
+			1 => array(
+				'unpublish',
+				'JPUBLISHED',
+				'JLIB_HTML_UNPUBLISH_ITEM',
+				'JPUBLISHED',
+				true,
+				'publish',
+				'publish'
+			),
+			-1 => array(
+				'publish',
+				'COM_FIELDSANDFILTERS_HTML_ONLYADMIN',
+				'JLIB_HTML_PUBLISH_ITEM',
+				'COM_FIELDSANDFILTERS_HTML_ONLYADMIN',
+				true,
+				'dashboard',
+				'dashboard'
+			)
+		);
+		
+		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
+	}
+	
+	/**
+	 * @param   int $value	The state value
+	 * @param   int $i
+	 *
+	 * @since       1.0.0
 	 */
 	public static function required( $value = 0, $i, $prefix = '', $enabled = true, $checkbox = 'cb' )
 	{
@@ -49,7 +95,7 @@ abstract class FieldsandfiltersHtmlGrid
 		if( $enabled )
 		{
 			$html[]	= '<a href="#" class="btn btn-micro hasTooltip' . ( $value == 1 ? ' active' : '' ) . '" title="' . JText::_( $state[3] ) . '"';
-			$html[] = ' onclick="return listItemTask(\'' . $checkbox . $i . '\',\'' . $state[1] . '\')">';
+			$html[] = ' onclick="return listItemTask(\'' . $checkbox . $i . '\',\'' . $prefix . $state[1] . '\')">';
 			$html[] = '	<i class="icon-' . $state[0] . '"> </i>';
 			$html[] = '</a>';
 		}
@@ -59,7 +105,7 @@ abstract class FieldsandfiltersHtmlGrid
 			$html[] = '	<i class="icon-' . $state[0] . '"></i>';
 			$html[] = '</a>';
 		}
-
+		
 		return implode( "\n", $html );
 	}
 	
@@ -72,14 +118,14 @@ abstract class FieldsandfiltersHtmlGrid
 	 *
 	 * @since       1.1.0
 	 */
-	public static function buttons( $buttons )
+	public static function buttons($buttons)
 	{
 		$html = array();
-		foreach( $buttons as $button )
+		foreach ($buttons as $button)
 		{
-			$html[] =  self::button( $button );
+			$html[] =  self::button($button);
 		}
-		return implode( $html );
+		return implode($html);
 	}
 
 	/**
@@ -91,14 +137,14 @@ abstract class FieldsandfiltersHtmlGrid
 	 *
 	 * @since       1.0.0
 	 */
-	public static function button( $button )
+	public static function button($button)
 	{
 		$user = JFactory::getUser();
-		if( !empty( $button['access'] ) )
+		if (!empty($button['access']))
 		{
-			if( is_bool( $button['access'] ) )
+			if (is_bool($button['access']))
 			{
-				if( $button['access'] == false )
+				if ($button['access'] == false)
 				{
 					return '';
 				}
@@ -106,9 +152,9 @@ abstract class FieldsandfiltersHtmlGrid
 			else
 			{
 				// Take each pair of permission, context values.
-				for( $i = 0, $n = count( $button['access'] ); $i < $n; $i += 2 )
+				for ($i = 0, $n = count($button['access']); $i < $n; $i += 2)
 				{
-					if( !$user->authorise( $button['access'][$i], $button['access'][$i+1] ) )
+					if (!$user->authorise($button['access'][$i], $button['access'][$i+1]))
 					{
 						return '';
 					}
@@ -116,16 +162,16 @@ abstract class FieldsandfiltersHtmlGrid
 			}
 		}
 
-		$html[] = '<div class="icon"' . ( empty( $button['id'] ) ? '' : ( ' id="' . $button['id'] . '"' ) ) . '>';
+		$html[] = '<div class="icon"' . (empty($button['id']) ? '' : (' id="' . $button['id'] . '"')) . '>';
 		$html[] = '<a href="' . $button['link'] . '"';
-		$html[] = ( empty( $button['target'] ) ? '' : ( ' target="' . $button['target'] . '"' ) );
-		$html[] = ( empty( $button['onclick'] ) ? '' : ( ' onclick="' . $button['onclick'] . '"' ) );
-		$html[] = ( empty( $button['title'] ) ? '' : ( ' title="' . htmlspecialchars( $button['title'] ) . '"') );
+		$html[] = (empty($button['target']) ? '' : (' target="' . $button['target'] . '"'));
+		$html[] = (empty($button['onclick']) ? '' : (' onclick="' . $button['onclick'] . '"'));
+		$html[] = (empty($button['title']) ? '' : (' title="' . htmlspecialchars($button['title']) . '"'));
 		$html[] = '>';
-		$html[] = JHtml::_( 'image', empty( $button['image'] ) ? '' : $button['image'], empty( $button['alt'] ) ? null : htmlspecialchars( $button['alt'] ), null, empty( $button['relative'] ) ? false : (boolean) $button['relative'] );
-		$html[] = ( empty( $button['text'] ) ) ? '' : ( '<span>' . $button['text'] . '</span>' );
+		$html[] = JHtml::_('image', empty($button['image']) ? '' : $button['image'], empty($button['alt']) ? null : htmlspecialchars($button['alt']), null, empty($button['relative']) ? false : (boolean) $button['relative']);
+		$html[] = (empty($button['text'])) ? '' : ('<span>' . $button['text'] . '</span>');
 		$html[] = '</a>';
 		$html[] = '</div>';
-		return implode( $html );
+		return implode($html);
 	}
 }

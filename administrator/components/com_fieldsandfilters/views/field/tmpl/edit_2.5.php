@@ -61,8 +61,8 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', a
 					<?php echo $this->form->getInput( 'field_type' ); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel( 'extension_type_id' ); ?>
-					<?php echo $this->form->getInput( 'extension_type_id' ); ?>
+					<?php echo $this->form->getLabel( 'content_type_id' ); ?>
+					<?php echo $this->form->getInput( 'content_type_id' ); ?>
 				</li>
 				<li>
 					<?php echo $this->form->getLabel( 'state' ); ?>

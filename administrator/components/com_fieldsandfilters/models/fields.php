@@ -9,9 +9,9 @@
 
 defined('_JEXEC') or die;
 
-if( !FieldsandfiltersFactory::isVersion() )
+if (!FieldsandfiltersFactory::isVersion())
 {
-	jimport( 'joomla.application.component.modellist' );
+	jimport('joomla.application.component.modellist');
 }
 
 /**
@@ -30,9 +30,9 @@ class FieldsandfiltersModelFields extends JModelList
 	 * 
 	 * @since       1.0.0
 	 */
-	public function __construct( $config = array() )
+	public function __construct($config = array())
 	{
-		if( empty( $config['filter_fields'] ) )
+		if (empty($config['filter_fields']))
 		{
 			$config['filter_fields'] = array(
 						'field_id', 		'f.field_id',
@@ -51,7 +51,7 @@ class FieldsandfiltersModelFields extends JModelList
 			);
 		}
 		
-		parent::__construct( $config );
+		parent::__construct($config);
 	}
 
 
@@ -68,30 +68,30 @@ class FieldsandfiltersModelFields extends JModelList
 		$app = JFactory::getApplication('administrator');
 		
 		// Load the filter state.
-		$search = $app->getUserStateFromRequest( $this->context . '.filter.search', 'filter_search' );
-		$this->setState( 'filter.search', $search );
+		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
+		$this->setState('filter.search', $search);
 		
-		$published = $app->getUserStateFromRequest( $this->context . '.filter.state', 'filter_state', '', 'string' );
-		$this->setState( 'filter.state', $published );
+		$published = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_state', '', 'string');
+		$this->setState('filter.state', $published);
 		
-		$extensionTypeId = $app->getUserStateFromRequest( $this->context . '.filter.extension_type_id', 'filter_extension_type_id', '', 'string' );
-		$this->setState( 'filter.extension_type_id', $extensionTypeId );
+		$extensionTypeId = $app->getUserStateFromRequest($this->context . '.filter.extension_type_id', 'filter_extension_type_id', '', 'string');
+		$this->setState('filter.extension_type_id', $extensionTypeId);
 		
-		$type = $app->getUserStateFromRequest( $this->context . '.filter.type', 'filter_type', '', 'string' );
-		$this->setState( 'filter.type', $type );
+		$type = $app->getUserStateFromRequest($this->context . '.filter.type', 'filter_type', '', 'string');
+		$this->setState('filter.type', $type);
 		
-		$access = $app->getUserStateFromRequest( $this->context . '.filter.access', 'filter_access', '', 'string' );
-		$this->setState( 'filter.access', $access );
+		$access = $app->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', '', 'string');
+		$this->setState('filter.access', $access);
 		
-		$language = $app->getUserStateFromRequest( $this->context . '.filter.language', 'filter_language', '', 'string' );
-		$this->setState( 'filter.language', $language );
+		$language = $app->getUserStateFromRequest($this->context . '.filter.language', 'filter_language', '', 'string');
+		$this->setState('filter.language', $language);
 		
 		// Load the parameters.
-		$params = JComponentHelper::getParams( 'com_fieldsandfilters' );
-		$this->setState( 'params', $params );
+		$params = JComponentHelper::getParams('com_fieldsandfilters');
+		$this->setState('params', $params);
 
 		// List state information.
-		parent::populateState( 'f.field_name', 'asc' );
+		parent::populateState('f.field_name', 'asc');
 	}
 
 	/**
@@ -109,12 +109,12 @@ class FieldsandfiltersModelFields extends JModelList
 	protected function getStoreId($id = '')
 	{
 		// Compile the store id.
-		$id.= ':' . $this->getState( 'filter.search' );
-		$id.= ':' . $this->getState( 'filter.state' );
-		$id.= ':' . $this->getState( 'filter.extension_type_id' );
-		$id.= ':' . $this->getState( 'filter.type' );
-		$id.= ':' . $this->getState( 'filter.access' );
-		$id.= ':' . $this->getState( 'filter.language' );
+		$id.= ':' . $this->getState('filter.search');
+		$id.= ':' . $this->getState('filter.state');
+		$id.= ':' . $this->getState('filter.extension_type_id');
+		$id.= ':' . $this->getState('filter.type');
+		$id.= ':' . $this->getState('filter.access');
+		$id.= ':' . $this->getState('filter.language');
 
 		return parent::getStoreId($id);
 	}
@@ -139,78 +139,81 @@ class FieldsandfiltersModelFields extends JModelList
 				'f.*'
 			)
 		);
-		$query->from( $db->quoteName( '#__fieldsandfilters_fields', 'f' ) );
+		$query->from($db->quoteName('#__fieldsandfilters_fields', 'f'));
 		
+		/*
 		// Join over the language
-		$query->select( $db->quoteName( 'l.title', 'language_title' ) );
-		$query->join( 'LEFT', $db->quoteName( '#__languages', 'l' ).' ON ' . $db->quoteName( 'l.lang_code' ) . ' = ' . $db->quoteName( 'f.language' ) );
+		$query->select($db->quoteName('l.title', 'language_title'));
+		$query->join('LEFT', $db->quoteName('#__languages', 'l').' ON ' . $db->quoteName('l.lang_code') . ' = ' . $db->quoteName('f.language'));
 		
 		// Join over the user field 'access'
-		$query->select( $db->quoteName( 'a.name', 'access' ) );
-		$query->join( 'LEFT', $db->quoteName( '#__users' , 'a' ) . ' ON ' . $db->quoteName( 'a.id' ) . ' =  ' .$db->quoteName( 'f.access' ) );
+		$query->select($db->quoteName('u.name', 'access'));
+		$query->join('LEFT', $db->quoteName('#__users' , 'u') . ' ON ' . $db->quoteName('u.id') . ' =  ' .$db->quoteName('f.access'));
+		*/
 		
 		// Filter by search in title
-		$search = $this->getState( 'filter.search' );
-		if( !empty( $search ) )
+		$search = $this->getState('filter.search');
+		if (!empty($search))
 		{
-			if( stripos( $search, 'id:' ) === 0 )
+			if (stripos($search, 'id:') === 0)
 			{
-				$query->where( $db->quoteName( 'f.field_id' ) . ' = ' . (int) substr( $search, 3 ) );
+				$query->where($db->quoteName('f.field_id') . ' = ' . (int) substr($search, 3));
 			}
 			else
 			{
-				$search = $db->quote( '%' . $db->escape( $search, true ) . '%' );
+				$search = $db->quote('%' . $db->escape($search, true) . '%');
 				
 				$where = array(
-						( $db->quoteName( 'f.field_name' ) . ' LIKE ' . $search ),
-						( $db->quoteName( 'f.field_alias' ) . ' LIKE ' . $search )
+						($db->quoteName('f.field_name') . ' LIKE ' . $search),
+						($db->quoteName('f.field_alias') . ' LIKE ' . $search)
 					);
 				
-				$query->where( '( ' . implode( ' OR ', $where ) . ' )' );
+				$query->where('(' . implode(' OR ', $where) . ')');
 			}
 		}
 		
 		// Filter by published state
-		$state = $this->getState( 'filter.state' );
-		if( is_numeric( $state ) )
+		$state = $this->getState('filter.state');
+		if (is_numeric($state))
 		{
-			$query->where( $db->quoteName( 'f.state' ) . ' = ' . (int) $state );
+			$query->where($db->quoteName('f.state') . ' = ' . (int) $state);
 		}
 		
 		// Filter by extension type id
-		$extensionTypeID = $this->getState( 'filter.extension_type_id' );
-		if( is_numeric( $extensionTypeID ) )
+		$extensionTypeID = $this->getState('filter.extension_type_id');
+		if (is_numeric($extensionTypeID))
 		{
-			$query->where( $db->quoteName( 'f.extension_type_id' ) . ' = ' . (int) $extensionTypeID );
+			$query->where($db->quoteName('f.extension_type_id') . ' = ' . (int) $extensionTypeID);
 		}
 		
 		// Filter on the type.
-		if( $type = $this->getState( 'filter.type' ) )
+		if ($type = $this->getState('filter.type'))
 		{
-			$query->where( $db->quoteName( 'f.field_type' ) . ' = ' . $db->quote( $type ) );
+			$query->where($db->quoteName('f.field_type') . ' = ' . $db->quote($type));
 		}
 		
+		/*
 		// Filter by access level.
-		if( $access = $this->getState( 'filter.access' ) )
+		if ($access = $this->getState('filter.access'))
 		{
-			$query->where( $db->quoteName( 'f.access' ) . ' = ' . (int) $access );
+			$query->where($db->quoteName('f.access') . ' = ' . (int) $access);
 		}
 		
 		// Filter on the language.
-		if( $language = $this->getState( 'filter.language' ) )
+		if ($language = $this->getState('filter.language'))
 		{
-			$query->where( $db->quoteName( 'f.language' ) . ' = ' . $db->quote( $language ) );
+			$query->where($db->quoteName('f.language') . ' = ' . $db->quote($language));
 		}
-        
-		// Add the list ordering clause.
-		$orderCol	= $this->state->get( 'list.ordering' );
-		$orderDirn	= $this->state->get( 'list.direction' );
-		if( $orderCol && $orderDirn )
-		{
-			$query->order( $db->escape( $orderCol . ' ' . $orderDirn ) );
-		}
+		*/
 		
-		// echo nl2br( $query->dump() );
+		// Add the list ordering clause.
+		$orderCol	= $this->state->get('list.ordering', 'f.name');
+		$orderDirn	= $this->state->get('list.direction', 'ASC');
+		
+		if ($orderCol && $orderDirn)
+		{
+			$query->order($db->escape($orderCol . ' ' . $orderDirn));
+		}
 
 		return $query;
 	}

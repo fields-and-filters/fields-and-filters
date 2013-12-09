@@ -20,7 +20,7 @@ class FieldsandfiltersInstallerScript
 {
         protected $adapter;
 	protected $type;
-	protected $contentType;
+	protected $contentType = array();
 	protected $oldExtension;
 	
 	public function __construct( $type, JAdapterInstance $adapter, $oldExtensionType = null )
@@ -45,14 +45,14 @@ class FieldsandfiltersInstallerScript
 		return $this->adapter;
 	}
 	
-	public function getContentType()
+	public function getContentType( $name )
 	{
-		if( !$this->contentType instanceof FieldsandfiltersInstallerContenttype )
+		if( isset( $this->contentType[$name] ) && !$this->contentType[$name] instanceof FieldsandfiltersInstallerContenttype )
 		{
-			$this->contentType = new FieldsandfiltersInstallerContenttype;
+			$this->contentType[$name] = new FieldsandfiltersInstallerContenttype;
 		}
 		
-		return $this->contentType;
+		return $this->contentType[$name];
 	}
         
         public function getVersion()
@@ -89,10 +89,23 @@ class FieldsandfiltersInstallerScript
 		return $oldVersion;
 	}
         
-        protected function checkContentType()
+        protected function checkContentTypes()
 	{
-		$contentType = $this->getContentType();
+		$contentTypes = $this->getContentType();
 		
+		foreach( $contentTypes AS &$contentType )
+		{
+			self::checkContentType( $contentType );
+		}
+		
+		if( $this->type == 'update' && version_compare( $this->getOldVersion(), 1.2, '<' ) )
+		{
+			self::updateContentType();
+		}
+	}
+	
+	protected static function checkContentType( FieldsandfiltersInstallerContenttype $contentType )
+	{
 		if( !( $contentTypeAlias = $contentType->get( 'type_alias' ) ) )
 		{
 			return;
@@ -106,7 +119,7 @@ class FieldsandfiltersInstallerScript
                 
 		if( !$db->setQuery( $query )->loadResult() )
 		{
-			$columns = $db->getTableColumns( '#__content_types' );
+			$columns = array_keys( $db->getTableColumns( '#__content_types' ) );
 			
 			if( !empty( $columns ) )
 			{
@@ -122,11 +135,6 @@ class FieldsandfiltersInstallerScript
 					$db->setQuery( $query )->execute();
 				}
 			}
-		}
-		
-		if( $this->type == 'update' && version_compare( $this->getOldVersion(), 1.2, '<' ) )
-		{
-			self::updateContentType( 'allextensions', 'com_fieldsandfilters.field' );
 		}
 	}
         
@@ -166,16 +174,24 @@ class FieldsandfiltersInstallerScript
 		}
 		
 		// update old extension type id
+		$tables = array(
+			'#__fieldsandfilters_connections',
+			'#__fieldsandfilters_data',
+			'#__fieldsandfilters_elements',
+			'#__fieldsandfilters_fields'
+		);
+		
 		$query->clear()
-			->update( array(
-				$db->quoteName( '#__fieldsandfilters_connections' ),
-				$db->quoteName( '#__fieldsandfilters_data' ),
-				$db->quoteName( '#__fieldsandfilters_elements' ),
-				$db->quoteName( '#__fieldsandfilters_fields' )
-			) )
 			->set( 'content_type_id = ' . (int) $contentTypeID )
 			->where( 'content_type_id = ' . (int) $extensionTypeID );
 		
-		$db->setQuery( $query )->execute();
+		while ($table = array_shift($tables))
+		{
+			
+			$query->clear('update')
+				->update($db->quoteName($table));
+			
+			$db->setQuery( $query )->execute();
+		}
 	}
 }

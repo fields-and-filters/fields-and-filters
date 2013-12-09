@@ -30,10 +30,10 @@ class FieldsandfiltersInstallerContenttype
 				'config'  	=> 'array()',
 			),
 			'common' => array(
-				'dbtable'	=> '#__ucm_content',
-				'key' 		=> 'ucm_id',
-				'type' 		=> 'Corecontent',
-				'prefix' 	=> 'JTable',
+				'dbtable'	=> '', // '#__ucm_content'
+				'key' 		=> '', // 'ucm_id'
+				'type' 		=> '', // 'Corecontent'
+				'prefix' 	=> '', // JTable
 				'config' 	=> 'array()',
 		) ),
 		'rules' => '',

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<pluginType>
+<metadata>
 	<layout
 		title="PLG_FAF_TS_CBLT_FORM_TITLE"
 		option="PLG_FAF_TS_CBLT_FORM_OPTION"
@@ -8,76 +8,77 @@
 			<![CDATA[PLG_FAF_TS_CBLT_FORM_DESC]]>
 		</message>
 	</layout>
+	
 	<group type="filters" title="PLG_FIELDSANDFILTERS_FORM_GROUP_FILTERS_TITLE">
 		<message>
 			<![CDATA[PLG_FIELDSANDFILTERS_FORM_GROUP_FILTERS_DESC]]>
 		</message>
 	</group>
-
-	<!-- Add fields to the properties variables for the plugin type. -->
-	<fields name="properties">
-		<fieldset name="properties">
+	
+	<form>
+		<!-- Add fields to the properties variables for the plugin type. -->
+		<fields name="properties">
 			<field
 				name="mode"
 				type="hidden"
 				value="filter.multi"
 			/>
-		</fieldset>
-	</fields>
-	
-	<!-- Add fields to the parameters object for the plugin type. -->
-	<fields name="params">
-		<fieldset name="type" addfieldpath="/administrator/components/com_fieldsandfilters/models/fields">
-			<field
-				name="default"
-				type="fieldsandfiltersFieldValues"
-				label="PLG_FAF_TS_CBLT_FORM_DEFAULT_LBL"
-				description="PLG_FAF_TS_CBLT_FORM_DEFAULT_DESC"
-				default=""
-				field="field_id"
-				filter="int_array"
-				translate_options="false"
-			/>
-			<field
-				name="readonly"
-				type="radio"
-				class="btn-group"
-				label="PLG_FAF_TS_CBLT_FORM_READONLY_LBL"
-				description="PLG_FAF_TS_CBLT_FORM_READONLY_DESC"
-				default="0"
-			>
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-			<field
-				name="disabled"
-				type="radio"
-				class="btn-group"
-				label="PLG_FAF_TS_CBLT_FORM_DISABLED_LBL"
-				description="PLG_FAF_TS_CBLT_FORM_DISABLED_DESC"
-				default="0"
-			>
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-			<field
-				name="field_layout"
-				type="fieldsandfiltersPluginLayout"
-				mode="field"
-				plugin="fieldsandfiltersTypes"
-				key="field_type"
-				label="PLG_FAF_TS_CBLT_FORM_FIELD_LAYOUT_LBL"
-				description="PLG_FAF_TS_CBLT_FORM_FIELD_LAYOUT_DESC"
-			/>
-			<field
-				name="filter_layout"
-				type="fieldsandfiltersPluginLayout"
-				mode="filter"
-				plugin="fieldsandfiltersTypes"
-				key="field_type"
-				label="PLG_FAF_TS_CBLT_FORM_FILTER_LAYOUT_LBL"
-				description="PLG_FAF_TS_CBLT_FORM_FILTER_LAYOUT_DESC"
-			/>
-		</fieldset>
-	</fields>
-</pluginType>
+		</fields>
+		
+		<!-- Add fields to the parameters object for the plugin type. -->
+		<fields name="params">
+			<fieldset name="type" addfieldpath="/administrator/components/com_fieldsandfilters/models/fields">
+				<field
+					name="default"
+					type="fieldsandfiltersFieldValues"
+					label="PLG_FAF_TS_CBLT_FORM_DEFAULT_LBL"
+					description="PLG_FAF_TS_CBLT_FORM_DEFAULT_DESC"
+					default=""
+					field="field_id"
+					filter="int_array"
+					translate_options="false"
+				/>
+				<field
+					name="readonly"
+					type="radio"
+					class="btn-group"
+					label="PLG_FAF_TS_CBLT_FORM_READONLY_LBL"
+					description="PLG_FAF_TS_CBLT_FORM_READONLY_DESC"
+					default="0"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field
+					name="disabled"
+					type="radio"
+					class="btn-group"
+					label="PLG_FAF_TS_CBLT_FORM_DISABLED_LBL"
+					description="PLG_FAF_TS_CBLT_FORM_DISABLED_DESC"
+					default="0"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field
+					name="field_layout"
+					type="fieldsandfiltersPluginLayout"
+					mode="field"
+					plugin="fieldsandfiltersTypes"
+					key="field_type"
+					label="PLG_FAF_TS_CBLT_FORM_FIELD_LAYOUT_LBL"
+					description="PLG_FAF_TS_CBLT_FORM_FIELD_LAYOUT_DESC"
+				/>
+				<field
+					name="filter_layout"
+					type="fieldsandfiltersPluginLayout"
+					mode="filter"
+					plugin="fieldsandfiltersTypes"
+					key="field_type"
+					label="PLG_FAF_TS_CBLT_FORM_FILTER_LAYOUT_LBL"
+					description="PLG_FAF_TS_CBLT_FORM_FILTER_LAYOUT_DESC"
+				/>
+			</fieldset>
+		</fields>
+	</form>
+</metadata>

@@ -51,7 +51,7 @@ class JFormFieldModal_FieldsandfiltersTypes extends JFormField
 			// Load Extensions Helper
 			KextensionsLanguage::load( 'plg_' . $pluginType->type . '_' . $pluginType->name, JPATH_ADMINISTRATOR );
 			
-			$typeName 	= $typesHelper->getModeName( $mode, 'type' );
+			$typeName 	= $typesHelper->getModeName( $mode, FieldsandfiltersTypes::MODE_NAME_TYPE );
 			$typeForm	= $pluginType->forms->get( $typeName, new JObject );
 			
 			if( isset( $typeForm->group->title ) )

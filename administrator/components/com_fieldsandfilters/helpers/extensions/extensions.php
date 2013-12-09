@@ -42,8 +42,8 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 			$default->name 			= self::EXTENSION_DEFAULT;
 			$default->type			= 'com_fieldsandfilters';
 			$default->extension		= self::EXTENSION_DEFAULT;
-			$default->content_type_alias 	= 'com_fieldsandfilters.' . $extension->extension;
-						
+			$default->content_type_alias 	= 'com_fieldsandfilters.' . $default->extension;
+			
 			$data->elements->set( $default->extension, $default );
 			
 			JPluginHelper::importPlugin( self::PLUGIN_FOLDER );
@@ -61,12 +61,12 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 				$element->content_type_id = (int) array_key_exists( $element->content_type_alias, $types ) ? $types[$element->content_type_alias]->type_id : 0;
 				
 				/* @deprecated  1.2.0 */
-				$element->extension_type_id = $element->content_type_id;
+				// $element->extension_type_id = $element->content_type_id;
 				/* @end deprecated  1.2.0 */
 				
 				if( $data->xml )
 				{
-					FieldsandfiltersXmlHelper::getPluginOptionsForms( $element );
+					FieldsandfiltersXml::getPluginOptionsForms( $element );
 				}
 			}
                 }
@@ -78,7 +78,7 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 			     
                         foreach( $data->elements AS &$element )
 			{
-                                FieldsandfiltersXmlHelper::getPluginOptionsForms( $element );
+                                FieldsandfiltersXml::getPluginOptionsForms( $element );
                         }
                 }
                 
@@ -88,56 +88,56 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	/**
 	 * @since       1.1.0
 	**/
-        public function getExtensionsByName( $names, $withXML = false )
+        public function getExtensionsByName( $names, $defaultProperty = true, $withXML = false )
         {
                 $this->vars->elementName = 'name';
                 $this->config->def( 'elementsString', true );
                 
-                return $this->_getExtensionsBy( $names, $withXML );   
+                return $this->_getExtensionsBy( $names, $defaultProperty, $withXML );   
         }
 	
 	/**
 	 * @since       1.2.0
 	**/
-        public function getExtensionsByExtension( $extensions, $withXML = false )
+        public function getExtensionsByExtension( $extensions, $defaultProperty = true, $withXML = false )
         {
                 $this->vars->elementName = 'extension';
 		$this->config->def( 'elementsString', true );
                 
-                return $this->_getExtensionsBy( $extensions, $withXML );     
+                return $this->_getExtensionsBy( $extensions, $defaultProperty, $withXML );     
         }
 	
 	
 	/**
-	 * @since       1.1.0
+	 * @since       1.2.0
 	**/
-        public function getExtensionsByTypeID( $ids, $withXML = false )
+        public function getExtensionsByTypeID( $ids, $defaultProperty = true, $withXML = false )
         {
                 $this->vars->elementName = 'content_type_id';
                 
-                return $this->_getExtensionsBy( $ids, $withXML );     
+                return $this->_getExtensionsBy( $ids, $defaultProperty, $withXML );     
         }
         
 	/**
 	 * @since       1.2.0
 	**/
-        public function getExtensionsByTypeAlias( $alias, $withXML = false )
+        public function getExtensionsByTypeAlias( $alias, $defaultProperty = true, $withXML = false )
         {
                 $this->vars->elementName = 'content_type_alias';
                 $this->config->def( 'elementsString', true );
                 
-                return $this->_getExtensionsBy( $alias, $withXML );   
+                return $this->_getExtensionsBy( $alias, $defaultProperty, $withXML );   
         }
 	
 	/**
 	 * @since       1.2.0
 	**/
-        public function getExtensionsByOption( $option, $withXML = false )
+        public function getExtensionsByOption( $option, $defaultProperty = true, $withXML = false )
         {
                 $this->vars->elementName = 'option';
                 $this->config->def( 'elementsString', true );
                 
-                return $this->_getExtensionsBy( $alias, $withXML );   
+                return $this->_getExtensionsBy( $alias, $defaultProperty, $withXML );   
         }
 	
 	/**
@@ -192,7 +192,7 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	/**
 	 * @since       1.1.0
 	**/
-	protected function _getExtensionsBy( $elements, $withXML = false )
+	protected function _getExtensionsBy( $elements, $defaultProperty = true, $withXML = false )
         {
                 $elements = array_unique( (array) $elements );
                 
@@ -209,7 +209,8 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
                         {
                                 if( in_array( $extension->{$this->vars->elementName}, $elements ) )
                                 {
-                                        $this->buffer->set( $extension->name, $extension );
+					$property = $defaultProperty ? $this->vars->elementName : 'extension';
+                                        $this->buffer->set( $extension->$property,  $extension );
                                 }
                         }
                 }
@@ -222,17 +223,17 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	 * getExtensionsPivot( $pivot, $withXML = false )
 	 * getExtensionsColumn( $column, $withXML = false )
 	 *
-	 * getExtensionsByIDPivot( $pivot, $ids, $withXML = false )
-	 * getExtensionsByIDColumn( $column, $ids, $withXML = false )
+	 * getExtensionsByIDPivot( $pivot, $ids, $defaultProperty = true, $withXML = false )
+	 * getExtensionsByIDColumn( $column, $ids, $defaultProperty = true, $withXML = false )
 	 *
-	 * getExtensionsByNamePivot( $pivot, $names, $withXML = false )
-	 * getExtensionsByNameColumn( $column, $names, $withXML = false )
+	 * getExtensionsByNamePivot( $pivot, $names, $defaultProperty = true, $withXML = false )
+	 * getExtensionsByNameColumn( $column, $names, $defaultProperty = true, $withXML = false )
 	 * 
-	 * getExtensionsByTypeIDPivot( $pivot, $ids, $withXML = false )
-	 * getExtensionsByTypeIDColumn( $column, $ids, $withXML = false )
+	 * getExtensionsByTypeIDPivot( $pivot, $ids, $defaultProperty = true, $withXML = false )
+	 * getExtensionsByTypeIDColumn( $column, $ids, $defaultProperty = true, $withXML = false )
 	 * 
-	 * getExtensionsByTypeAliasPivot( $pivot, $alias, $withXML = false )
-	 * getExtensionsByTypeAliasColumn( $column, $alias, $withXML = false )
+	 * getExtensionsByTypeAliasPivot( $pivot, $alias, $defaultProperty = true, $withXML = false )
+	 * getExtensionsByTypeAliasColumn( $column, $alias, $defaultProperty = true, $withXML = false )
 	 *
 	 * @since       1.1.0
 	**/

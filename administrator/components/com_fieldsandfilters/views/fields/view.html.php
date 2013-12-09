@@ -15,11 +15,29 @@ defined('_JEXEC') or die;
  */
 class FieldsandfiltersViewFields extends JViewLegacy
 {
+	/**
+	 * @since	1.0.0
+	 */
 	protected $items;
+	
+	/**
+	 * @since	1.0.0
+	 */
 	protected $pagination;
+	
+	/**
+	 * @since	1.0.0
+	 */
 	protected $state;
 	
+	/**
+	 * @since	1.2.0
+	 */
 	public $filterForm;
+	
+	/**
+	 * @since	1.2.0
+	 */
 	public $activeFilters;
 
 	/**
@@ -27,43 +45,43 @@ class FieldsandfiltersViewFields extends JViewLegacy
 	 * 
 	 * @since	1.1.0
 	 */
-	public function display( $tpl = null )
+	public function display($tpl = null)
 	{
-		$this->state		= $this->get( 'State' );
-		$this->items		= $this->get( 'Items' );
-		$this->pagination	= $this->get( 'Pagination' );
+		$this->state		= $this->get('State');
+		$this->items		= $this->get('Items');
+		$this->pagination	= $this->get('Pagination');
 		
-		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
+		if (FieldsandfiltersFactory::isVersion('>=', 3.2))
 		{
-			$this->filterForm    	= $this->get( 'FilterForm' );
-			$this->activeFilters 	= $this->get( 'ActiveFilters' );
+			$this->filterForm    	= $this->get('FilterForm');
+			$this->activeFilters 	= $this->get('ActiveFilters');
 		}
 		
 		// Check for errors.
-		if( count( $errors = $this->get( 'Errors' ) ) )
+		if (count($errors = $this->get('Errors')))
 		{
-			throw new Exception( implode( "\n", $errors ) );
+			throw new Exception(implode("\n", $errors));
 		}
 		
-		FieldsandfiltersHelper::addSubmenu( JFactory::getApplication()->input->getCmd( 'view', '' ) );
+		FieldsandfiltersHelper::addSubmenu(JFactory::getApplication()->input->getCmd('view', ''));
 		
 		$this->addToolbar();
 		
-		if( FieldsandfiltersFactory::isVersion() )
+		if (FieldsandfiltersFactory::isVersion())
 		{
 			$this->sidebar = JHtmlSidebar::render();
 			
-			if( is_null( $tpl ) && FieldsandfiltersFactory::isVersion( '<', 3.2  ) )
+			if (is_null($tpl) && FieldsandfiltersFactory::isVersion('<', 3.2))
 			{
 				$tpl = '3.1';
 			}
 		}
-		else if( is_null( $tpl ) )
+		else if (is_null($tpl))
 		{
 			$tpl = '2.5';
 		}
 		
-		parent::display( $tpl );
+		parent::display($tpl);
 	}
 
 	/**
@@ -75,72 +93,72 @@ class FieldsandfiltersViewFields extends JViewLegacy
 	{
 		$canDo = FieldsandfiltersHelper::getActions();
 		
-		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_FIELDS' ), 'fields.png' );
+		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS_TITLE_FIELDS'), 'fields.png');
 		
-		if( FieldsandfiltersFactory::isVersion( '<', 3.2 ) )
+		if (FieldsandfiltersFactory::isVersion('<', 3.2))
 		{
-			JHtmlSidebar::setAction( 'index.php?option=com_fieldsandfilters&view=fields' );
+			JHtmlSidebar::setAction('index.php?option=com_fieldsandfilters&view=fields');
 			
 			JHtmlSidebar::addFilter(
-				JText::_( 'JOPTION_SELECT_PUBLISHED' ),
+				JText::_('JOPTION_SELECT_PUBLISHED'),
 				'filter_published',
-				JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.states' ), 'value', 'text', $this->state->get( 'filter.state' ), false )
+				JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.states'), 'value', 'text', $this->state->get('filter.state'), false)
 			);
 			
 			JHtmlSidebar::addFilter(
-				JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION' ),
+				JText::_('COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION'),
 				'filter_extension_type_id',
-				JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.extensions' ), 'value', 'text', $this->state->get( 'filter.extension_type_id' ), false )
+				JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.extensions'), 'value', 'text', $this->state->get('filter.extension_type_id'), false)
 			);
 			
 			JHtmlSidebar::addFilter(
-				JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE' ),
+				JText::_('COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE'),
 				'filter_type',
-				JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.types' ), 'value', 'text', $this->state->get( 'filter.type' ), false )
+				JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.types'), 'value', 'text', $this->state->get('filter.type'), false)
 			);
 			
 			/*
 			JHtmlSidebar::addFilter(
-				JText::_( 'JOPTION_SELECT_ACCESS' ),
+				JText::_('JOPTION_SELECT_ACCESS'),
 				'filter_access',
-				JHtml::_( 'select.options', JHtml::_( 'access.assetgroups' ), 'value', 'text', $this->state->get( 'filter.access' ), false )
+				JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'), false)
 			);
 			
 			JHtmlSidebar::addFilter(
-				JText::_( 'JOPTION_SELECT_LANGUAGE' ),
+				JText::_('JOPTION_SELECT_LANGUAGE'),
 				'filter_language',
-				JHtml::_( 'select.options', JHtml::_( 'contentlanguage.existing' ), 'value', 'text', $this->state->get( 'filter.language' ), false )
+				JHtml::_('select.options', JHtml::_('contentlanguage.existing'), 'value', 'text', $this->state->get('filter.language'), false)
 			);
 			*/
 		}
 		
-		if( $canDo->get( 'core.create' ) )
+		if ($canDo->get('core.create'))
 		{
-			JToolBarHelper::addNew( 'field.add','JTOOLBAR_NEW' );
+			JToolBarHelper::addNew('field.add','JTOOLBAR_NEW');
 		}
 	    
-		if( $canDo->get( 'core.edit' ) && isset( $this->items[0] ) )
+		if ($canDo->get('core.edit') && isset($this->items[0]))
 		{
-			JToolBarHelper::editList( 'field.edit','JTOOLBAR_EDIT' );
+			JToolBarHelper::editList('field.edit','JTOOLBAR_EDIT');
 		}
 		
-		if( $canDo->get( 'core.edit.state' ) )
+		if ($canDo->get('core.edit.state'))
 		{
 			JToolBarHelper::divider();
-			JToolBarHelper::custom( 'fields.publish', 'publish.png', 'publish_f2.png','JTOOLBAR_PUBLISH', true );
-			JToolBarHelper::custom( 'fields.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true );
-			JToolBarHelper::custom( 'fields.onlyadmin', 'dashboard.png', 'dashboard_f2.png', 'COM_FIELDSANDFILTERS_TOOLBAR_ONLYADMIN', true );
-			JToolBarHelper::deleteList( '', 'fields.delete','JTOOLBAR_DELETE' );
+			JToolBarHelper::custom('fields.publish', 'publish.png', 'publish_f2.png','JTOOLBAR_PUBLISH', true);
+			JToolBarHelper::custom('fields.unpublish', 'unpublish.png', 'unpublish_f2.png', 'JTOOLBAR_UNPUBLISH', true);
+			JToolBarHelper::custom('fields.onlyadmin', 'dashboard.png', 'dashboard_f2.png', 'COM_FIELDSANDFILTERS_TOOLBAR_ONLYADMIN', true);
+			JToolBarHelper::deleteList('', 'fields.delete','JTOOLBAR_DELETE');
 			
 			JToolBarHelper::divider();
-			JToolBarHelper::custom( 'fields.required', 'star.png', 'star_f2.png','COM_FIELDSANDFILTERS_TOOLBAR_REQUIRED', true );
-			JToolBarHelper::custom( 'fields.unrequired', 'star-empty.png', 'star-empty_f2.png', 'COM_FIELDSANDFILTERS_TOOLBAR_UNREQUIRED', true );
+			JToolBarHelper::custom('fields.required', 'star.png', 'star_f2.png','COM_FIELDSANDFILTERS_TOOLBAR_REQUIRED', true);
+			JToolBarHelper::custom('fields.unrequired', 'star-empty.png', 'star-empty_f2.png', 'COM_FIELDSANDFILTERS_TOOLBAR_UNREQUIRED', true);
 		}
 		
-		if( $canDo->get( 'core.admin' ) )
+		if ($canDo->get('core.admin'))
 		{
 			JToolBarHelper::divider();
-			JToolBarHelper::preferences( 'com_fieldsandfilters' );
+			JToolBarHelper::preferences('com_fieldsandfilters');
 		}
 	}
 	
@@ -154,14 +172,14 @@ class FieldsandfiltersViewFields extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'f.field_name' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_FIELD_NAME' ),
-			'f.state' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_STATUS' ),
-			'f.field_type' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_FIELD_TYPE' ),
-			'f.extension_type_id' 	=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_EXTENSION_TYPE' ),
-			'f.required' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_REQUIRED' ),
-			// 'f.language' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_LANGUAGE' ),
-			'f.ordering' 		=> JText::_( 'JGRID_HEADING_ORDERING' ),
-			'f.field_id' 		=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_FIELD_ID' )
+			'f.field_name' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_NAME'),
+			'f.state' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_STATUS'),
+			'f.field_type' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_TYPE'),
+			'f.extension_type_id' 	=> JText::_('COM_FIELDSANDFILTERS_FIELDS_EXTENSION_TYPE'),
+			'f.required' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_REQUIRED'),
+			// 'f.language' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_LANGUAGE'),
+			'f.ordering' 		=> JText::_('JGRID_HEADING_ORDERING'),
+			'f.field_id' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_ID')
 		);
 	}
 }

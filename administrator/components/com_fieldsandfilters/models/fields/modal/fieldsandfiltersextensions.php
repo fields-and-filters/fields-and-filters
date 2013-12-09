@@ -43,14 +43,13 @@ class JFormFieldModal_FieldsandfiltersExtensions extends JFormField
 		$recordId	= (int) $this->form->getValue( 'field_id', 0 );
 		$typeExtension	= 'extension';
 		
-		if( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsPivot( 'extension_type_id', true )->get( $this->value ) )
+		if( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsPivot( 'content_type_id', true )->get( $this->value ) )
 		{
 			// Load Extensions Helper
 			KextensionsLanguage::load( 'plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR );
 			
 			$extensionForm = $extension->forms->get( $typeExtension, new JObject );
 			
-			/*
 			if( isset( $extensionForm->group->title ) )
 			{
 				$value = JText::_( $extensionForm->title ) . ' [' . JText::_( $extensionForm->group->title ) . ']';
@@ -59,7 +58,6 @@ class JFormFieldModal_FieldsandfiltersExtensions extends JFormField
 			{
 				$value = JText::_( $extensionForm->title );
 			}
-			*/
 			
 			if( isset( $extensionForm->title ) )
 			{

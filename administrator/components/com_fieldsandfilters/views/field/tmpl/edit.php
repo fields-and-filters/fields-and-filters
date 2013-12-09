@@ -74,10 +74,10 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', a
 						</div>
 						<div class="control-group">
 							<div class="control-label">
-								<?php echo $this->form->getLabel( 'extension_type_id' ); ?>
+								<?php echo $this->form->getLabel( 'content_type_id' ); ?>
 							</div>
 							<div class="controls">
-								<?php echo $this->form->getInput( 'extension_type_id' ); ?>
+								<?php echo $this->form->getInput( 'content_type_id' ); ?>
 							</div>
 						</div>
 					</div>

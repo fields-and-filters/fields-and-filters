@@ -419,7 +419,7 @@ abstract class KextensionsBufferCore
                 }
                 elseif( $this->_pivots[$hash] && $this->_pivots[$hash]->_pivot != $pivot )
                 {
-                        $buffer = (array) get_objectvars( $this->_pivots[$hash]->elements );
+                        $buffer = (array) get_object_vars( $this->_pivots[$hash]->elements );
                         
                         $this->_pivots[$hash]->elements = new JObject( KextensionsArray::pivot( KextensionsArray::flatten( $buffer ), $pivot ) );
                         $this->_pivots[$hash]->_pivot =  $pivot;

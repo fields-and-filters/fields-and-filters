@@ -88,7 +88,7 @@ class FieldsandfiltersHtmlOptions
 	{
 		$options 	= array();
 		
-		if( $extensions = get_object_vars( FieldsandfiltersFactory::getPluginExtensions()->getExtensions() ) )
+		if( $extensions = get_object_vars( FieldsandfiltersFactory::getExtensions()->getExtensions() ) )
 		{
 			while( $extension = array_shift( $extensions ) )
 			{

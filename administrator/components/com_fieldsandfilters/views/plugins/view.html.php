@@ -8,7 +8,7 @@
  */
 
 // No direct access
-defined( '_JEXEC' ) or die;
+defined('_JEXEC') or die;
 
 /**
  * View class for a list of plugins types.
@@ -23,31 +23,30 @@ class FieldsandfiltersViewPlugins extends JViewLegacy
 	 * 
 	 * @since	1.1.0
 	 */
-	public function display( $tpl = null )
+	public function display($tpl = null)
 	{
-		$tpl = is_null( $tpl ) && !FieldsandfiltersFactory::isVersion() ? '2.5' : $tpl;
+		$tpl = is_null($tpl) && !FieldsandfiltersFactory::isVersion() ? '2.5' : $tpl;
 		
-		switch( $this->getLayout() )
+		switch ($this->getLayout())
 		{
 			case 'types':
 				// Load PluginTypes Helper - getTypesGroup
 				$this->plugins = FieldsandfiltersFactory::getTypes()->getTypesGroup();
-			break;
+				break;
 			case 'extensions':
 				// Load PluginExtensions Helper - 
 				$this->plugins = FieldsandfiltersFactory::getExtensions()->getExtensionsGroup();
-				
-			break;
+				break;
 		}
 		
-		if( is_null( $this->plugins ) )
+		if (is_null($this->plugins))
 		{
-			echo JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_PLUGINS_TPL', $this->getLayout() );
+			echo JText::sprintf('COM_FIELDSANDFILTERS_ERROR_NOT_PLUGINS_TPL', $this->getLayout());
 			return false;
 		}
 		
 		$this->addToolbar();
-		parent::display( $tpl );
+		parent::display($tpl);
 	}
 	
 	/**
@@ -57,6 +56,6 @@ class FieldsandfiltersViewPlugins extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_HEADER_PLUGIN_' . strtoupper( $this->getLayout() ) ) );
+		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS_HEADER_PLUGIN_' . strtoupper($this->getLayout())));
 	}
 }

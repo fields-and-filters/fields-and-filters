@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<params>
+<metadata>
 	<layout
 		title="PLG_FIELDSANDFILTERS_FORM_ALLEXTENSIONS_TITLE"
 		option="PLG_FIELDSANDFILTERS_FORM_ALLEXTENSIONS_OPTION"
@@ -16,23 +16,25 @@
 		</message>
 	</group>
 	
-	<!-- Add fields to the parameters object for the plugin extension. -->
-	<fields name="params">
-		<fieldset name="extension">
+	<form>
+		<!-- Add fields to the parameters object for the plugin extension. -->
+		<fields name="params">
 			<fieldset name="extension">
-				<field
-					name="location"
-					type="list"
-					size="10"
-					class="inputbox"
-					default="onSyntax"
-					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_LOCATION"
-					description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_EXTENSIONS_LOCATION"
-					multiple="true"
-				>
-					<option value="onSyntax">COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_TYPE_OPTION_ONLY_SYNTAX</option>
-				</field>
+				<fieldset name="extension">
+					<field
+						name="location"
+						type="list"
+						size="10"
+						class="inputbox"
+						default="onSyntax"
+						label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_LOCATION"
+						description="COM_FIELDSANDFILTERS_FORM_DESC_PARAMS_EXTENSIONS_LOCATION"
+						multiple="true"
+					>
+						<option value="onSyntax">COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_TYPE_OPTION_ONLY_SYNTAX</option>
+					</field>
+				</fieldset>
 			</fieldset>
-		</fieldset>
-	</fields>
-</params>
+		</fields>
+	</form>
+</metadata>

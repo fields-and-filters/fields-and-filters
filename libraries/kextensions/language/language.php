@@ -7,7 +7,7 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-defined( 'JPATH_PLATFORM' ) or die;
+defined('JPATH_PLATFORM') or die;
 
 /**
  * KextensionsLanguage
@@ -19,34 +19,33 @@ class KextensionsLanguage
 	/**
 	 * @since       1.0.0
 	 */
-	public static function load( $extension, $basePath = JPATH_BASE )
+	public static function load($extension, $basePath = JPATH_BASE)
 	{
-		$lang 		= JFactory::getLanguage();
-		$type 		= strtolower( substr( $extension, 0, 3 ) );
+		$lang 	= JFactory::getLanguage();
+		$type 	= strtolower(substr($extension, 0, 3));
 		
-		switch( $type )
+		switch ($type)
 		{
 			case 'com' :
 				$path = JPATH_BASE . '/components/' . $extension;
-			break;
+				break;
 			case 'mod' :
 				$path = JPATH_BASE . '/modules/' . $extension;
-			break;
+				break;
 			case 'plg' :
-				list( , $type, $name ) = explode( '_', $extension, 3 );
+				list(, $type, $name) = explode('_', $extension, 3);
 				$path = JPATH_PLUGINS . '/' . $type . '/' . $name;
-			break;
+				break;
 			case 'tpl' :
 				$path = JPATH_BASE . '/templates/' . $extension;
-			break;
+				break;
 			default :
 				return;
-			break;
 		}
 		
-		return $lang->load( $extension, $basePath, null, false, false )
-			|| $lang->load( $extension, $basePath, $lang->getDefault(), false, false )
-			|| $lang->load( $extension, $path, null, false, false )
-			|| $lang->load( $extension, $path, $lang->getDefault(), false, false );
+		return $lang->load($extension, $basePath, null, false, false)
+			|| $lang->load($extension, $basePath, $lang->getDefault(), false, false)
+			|| $lang->load($extension, $path, null, false, false)
+			|| $lang->load($extension, $path, $lang->getDefault(), false, false);
 	}
 }
