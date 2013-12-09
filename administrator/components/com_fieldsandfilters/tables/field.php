@@ -17,84 +17,6 @@ defined('_JEXEC') or die;
 class FieldsandfiltersTableField extends JTable
 {
 	/**
-	 * Field ID
-	 * @since       1.2.0
-	 */
-	public $field_id;
-	
-	/**
-	 * Field Name
-	 * @since       1.2.0
-	 */
-	public $field_name;
-	
-	/**
-	 * Field Alias
-	 * @since       1.2.0
-	 */
-	public $field_alias;
-	
-	/**
-	 * Field Type
-	 * @since       1.2.0
-	 */
-	public $field_type;
-	
-	/**
-	 * Extension Type ID
-	 * @since       1.2.0
-	 */
-	public $extension_type_id;
-	
-	/**
-	 * Mode
-	 * @since       1.2.0
-	 */
-	public $mode;
-	
-	/**
-	 * Description
-	 * @since       1.2.0
-	 */
-	public $description;
-	
-	/**
-	 * Ordering
-	 * @since       1.2.0
-	 */
-	public $ordering;
-	
-	/**
-	 * State
-	 * @since       1.2.0
-	 */
-	public $state;
-	
-	/**
-	 * Required
-	 * @since       1.2.0
-	 */
-	public $required;
-	
-	/**
-	 * Access
-	 * @since       1.2.0
-	 */
-	public $access;
-	
-	/**
-	 * Language
-	 * @since       1.2.0
-	 */
-	public $language;
-	
-	/**
-	 * Params
-	 * @since       1.2.0
-	 */
-	public $params;
-
-	/**
 	 * Constructor
 	 *
 	 * @param JDatabase A database connector object
@@ -175,44 +97,47 @@ class FieldsandfiltersTableField extends JTable
 			$this->ordering = self::getNextOrder();
 		}
 		
-		// Check for exist mode field
-		if( !in_array( $this->mode, (array) $typesHelper->getModes( null, array(), true ) ) )
-		{
-			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_MODE' ) );
-			return false;
-		}
-		
-		// Check for a field name.
-		if( trim( $this->field_name ) == '' )
-		{
-			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_NAME' ) );
-			return false;
-		}
-		
-		// Check for a field type.
-		if( trim( $this->field_type ) == '' )
-		{
-			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_TYPE' ) );
-			return false;
-		}
-		elseif( !$typesHelper->getTypes()->get( $this->field_type ) )
-		{
-			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_TYPE_NOT_EXISTS', $this->field_type ) );
-			return false;
-		}
-		
-		// Check for a field extension type id.
-		if( !$this->extension_type_id )
-		{
-			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_EXTENSION_TYPE_ID' ) );
-			return false;
-		}
-		elseif( !FieldsandfiltersFactory::getExtensions()->getExtensionsPivot( 'extension_type_id' )->get( $this->extension_type_id ) )
-		{
-			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_EXTENSION_TYPE_ID_NOT_EXISTS', $this->extension_type_id ) );
-			return false;
-		}
-		
+                try
+                {
+                        // Check for exist mode field
+                        if( !in_array( $this->mode, (array) $typesHelper->getModes( null, array(), true ) ) )
+                        {
+                                throw new RuntimeException( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_MODE' ) );
+                                return false;
+                        }
+                        
+                        // Check for a field name.
+                        if( trim( $this->field_name ) == '' )
+                        {
+                                throw new RuntimeException( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_NAME' ) );
+                        }
+                        
+                        // Check for a field type.
+                        if( trim( $this->field_type ) == '' )
+                        {
+                                throw new RuntimeException( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_TYPE' ) );
+                        }
+                        elseif( !$typesHelper->getTypes()->get( $this->field_type ) )
+                        {
+                               throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_TYPE_NOT_EXISTS', $this->field_type ) );
+                        }
+                        
+                        // Check for a field extension type id.
+                        if( !$this->content_type_id )
+                        {
+                                throw new RuntimeException( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_CONTENT_TYPE_ID' ) );
+                        }
+                        elseif( !FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID( $this->content_type_id )->get( $this->content_type_id ) )
+                        {
+                                throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_CONTENT_TYPE_ID_NOT_EXISTS', $this->content_type_id ) );
+                        }
+                }
+                catch (RuntimeException $e)
+                {
+                        $this->setError( $e->getMessage() );
+                        return false; 
+                }
+                
 		// Check mode field
 		if( in_array( $this->mode, (array) $typesHelper->getMode( 'filter' ) ) )
 		{
@@ -221,7 +146,7 @@ class FieldsandfiltersTableField extends JTable
 			{
 				$this->field_alias = $this->field_name;
 			}
-		       
+                        
 			$this->field_alias = JApplication::stringURLSafe( $this->field_alias );
 		       
 			if( trim( str_replace( '-', '', $this->field_alias ) ) == '' )
@@ -233,7 +158,6 @@ class FieldsandfiltersTableField extends JTable
 		{
 			$this->field_alias = '';
 		}
-		
 		return true;
 	}
 	
@@ -252,7 +176,7 @@ class FieldsandfiltersTableField extends JTable
 		{
 			// Verify that the alias is unique
 			$table = JTable::getInstance( 'Field', 'FieldsandfiltersTable' );
-			
+                        
 			if( $table->load( array( 'field_alias' => $this->field_alias ) ) && ( $table->field_id != $this->field_id || $this->field_id == 0 ) )
 			{
 				$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_ALIAS_EXISTS', $this->field_alias ) );
