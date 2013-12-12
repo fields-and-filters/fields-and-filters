@@ -101,9 +101,9 @@ $required = array(
 				<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.states'), 'value', 'text', $this->state->get('filter.published'), true);?>
 			</select>
 			
-			<select name="filter_extension_type_id" class="inputbox" onchange="this.form.submit()">
+			<select name="filter_content_type_id" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.extensions'), 'value', 'text', $this->state->get('filter.extension_type_id'));?>
+				<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.extensions'), 'value', 'text', $this->state->get('filter.content_type_id'));?>
 			</select>
 
 			<select name="filter_type" class="inputbox" onchange="this.form.submit()">
@@ -146,7 +146,7 @@ $required = array(
 				</th>
 				
 				<th class="center">
-					<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_EXTENSION_TYPE', 'f.extension_type_id', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_EXTENSION_TYPE', 'f.content_type_id', $listDirn, $listOrder); ?>
 				</th>
 				
 				<th class="center">

@@ -125,7 +125,7 @@ $sortFields 	= $this->getSortFields();
 					</th>
 					
 					<th class="center" class="hidden-phone">
-						<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_EXTENSION_TYPE', 'f.extension_type_id', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_EXTENSION_TYPE', 'f.content_type_id', $listDirn, $listOrder); ?>
 					</th>
 					
 					<?php /*

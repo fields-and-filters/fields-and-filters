@@ -17,7 +17,7 @@
 			<option value="">JOPTION_SELECT_PUBLISHED</option>
 		</field>
 		<field
-			name="extension_type_id"
+			name="content_type_id"
 			type="fieldsandfiltersExtensions"
 			label="COM_FIELDSANDFILTERS_FILTER_EXTENSION"
 			description="COM_FIELDSANDFILTERS_FILTER_EXTENSION_DESC"
@@ -54,8 +54,8 @@
 			<option value="f.field_name DESC">COM_FIELDSANDFILTERS_FIELD_NAME_DESC</option>
 			<option value="f.field_type ASC">COM_FIELDSANDFILTERS_TYPE_ASC</option>
 			<option value="f.field_type DESC">COM_FIELDSANDFILTERS_TYPE_DESC</option>			
-			<option value="f.extension_type_id ASC">COM_FIELDSANDFILTERS_EXTENSION_ASC</option>
-			<option value="f.extension_type_id DESC">COM_FIELDSANDFILTERS_EXTENSION_DESC</option>
+			<option value="f.content_type_id ASC">COM_FIELDSANDFILTERS_EXTENSION_ASC</option>
+			<option value="f.content_type_id DESC">COM_FIELDSANDFILTERS_EXTENSION_DESC</option>
 			<option value="f.required ASC">COM_FIELDSANDFILTERS_REQUIRED_ASC</option>
 			<option value="f.required DESC">COM_FIELDSANDFILTERS_REQUIRED_DESC</option>
 			<option value="f.field_id ASC">COM_FIELDSANDFILTERS_FIELD_ID_ASC</option>

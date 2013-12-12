@@ -39,7 +39,7 @@ class FieldsandfiltersModelFields extends JModelList
 						'field_name', 		'f.field_name',
 						'field_alias', 		'f.field_alias',
 						'field_type', 		'f.field_type',
-						'extension_type_id', 	'f.extension_type_id',
+						'content_type_id', 	'f.content_type_id',
 						'mode', 		'f.mode',
 						'description', 		'f.description',
 						'ordering', 		'f.ordering',
@@ -74,8 +74,8 @@ class FieldsandfiltersModelFields extends JModelList
 		$published = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_state', '', 'string');
 		$this->setState('filter.state', $published);
 		
-		$extensionTypeId = $app->getUserStateFromRequest($this->context . '.filter.extension_type_id', 'filter_extension_type_id', '', 'string');
-		$this->setState('filter.extension_type_id', $extensionTypeId);
+		$contentTypeID = $app->getUserStateFromRequest($this->context . '.filter.content_type_id', 'filter_content_type_id', '', 'string');
+		$this->setState('filter.content_type_id', $contentTypeID);
 		
 		$type = $app->getUserStateFromRequest($this->context . '.filter.type', 'filter_type', '', 'string');
 		$this->setState('filter.type', $type);
@@ -111,7 +111,7 @@ class FieldsandfiltersModelFields extends JModelList
 		// Compile the store id.
 		$id.= ':' . $this->getState('filter.search');
 		$id.= ':' . $this->getState('filter.state');
-		$id.= ':' . $this->getState('filter.extension_type_id');
+		$id.= ':' . $this->getState('filter.content_type_id');
 		$id.= ':' . $this->getState('filter.type');
 		$id.= ':' . $this->getState('filter.access');
 		$id.= ':' . $this->getState('filter.language');
@@ -179,11 +179,11 @@ class FieldsandfiltersModelFields extends JModelList
 			$query->where($db->quoteName('f.state') . ' = ' . (int) $state);
 		}
 		
-		// Filter by extension type id
-		$extensionTypeID = $this->getState('filter.extension_type_id');
-		if (is_numeric($extensionTypeID))
+		// Filter by content type id
+		$contentTypeID = $this->getState('filter.content_type_id');
+		if (is_numeric($contentTypeID))
 		{
-			$query->where($db->quoteName('f.extension_type_id') . ' = ' . (int) $extensionTypeID);
+			$query->where($db->quoteName('f.content_type_id') . ' = ' . (int) $contentTypeID);
 		}
 		
 		// Filter on the type.

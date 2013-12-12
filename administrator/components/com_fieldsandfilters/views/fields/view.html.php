@@ -107,8 +107,8 @@ class FieldsandfiltersViewFields extends JViewLegacy
 			
 			JHtmlSidebar::addFilter(
 				JText::_('COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION'),
-				'filter_extension_type_id',
-				JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.extensions'), 'value', 'text', $this->state->get('filter.extension_type_id'), false)
+				'filter_content_type_id',
+				JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.extensions'), 'value', 'text', $this->state->get('filter.content_type_id'), false)
 			);
 			
 			JHtmlSidebar::addFilter(
@@ -175,9 +175,9 @@ class FieldsandfiltersViewFields extends JViewLegacy
 			'f.field_name' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_NAME'),
 			'f.state' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_STATUS'),
 			'f.field_type' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_TYPE'),
-			'f.extension_type_id' 	=> JText::_('COM_FIELDSANDFILTERS_FIELDS_EXTENSION_TYPE'),
+			'f.content_type_id' 	=> JText::_('COM_FIELDSANDFILTERS_FIELDS_EXTENSION_TYPE'),
 			'f.required' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_REQUIRED'),
-			// 'f.language' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_LANGUAGE'),
+			// 'f.language' 	=> JText::_('COM_FIELDSANDFILTERS_FIELDS_LANGUAGE'),
 			'f.ordering' 		=> JText::_('JGRID_HEADING_ORDERING'),
 			'f.field_id' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_ID')
 		);

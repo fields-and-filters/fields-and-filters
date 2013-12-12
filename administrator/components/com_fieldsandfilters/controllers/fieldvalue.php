@@ -10,9 +10,9 @@
 // No direct access
 defined('_JEXEC') or die;
 
-if( !FieldsandfiltersFactory::isVersion() )
+if (!FieldsandfiltersFactory::isVersion())
 {
-	jimport( 'joomla.application.component.controllerform' );
+	jimport('joomla.application.component.controllerform');
 }
 
 /**
@@ -38,9 +38,9 @@ class FieldsandfiltersControllerFieldvalue extends JControllerForm
 	 *
 	 * @since	1.0.0
 	 */
-	public function save( $key = 'field_value_id', $urlVar = 'id' )
+	public function save($key = 'field_value_id', $urlVar = 'id')
 	{
-                parent::save( $key, $urlVar );       
+                parent::save($key, $urlVar);       
         }
         
         /**
@@ -54,9 +54,9 @@ class FieldsandfiltersControllerFieldvalue extends JControllerForm
 	 *
 	 * @since	1.0.0
 	 */
-	public function edit( $key = 'field_value_id', $urlVar = 'id' )
+	public function edit($key = 'field_value_id', $urlVar = 'id')
 	{                   
-                parent::edit( $key, $urlVar ); 
+                parent::edit($key, $urlVar); 
         }
 
 }
