@@ -168,7 +168,7 @@ class FieldsandfiltersInstallerScript
 		
 		$extensionTypeID = (int) $db->setQuery( $query )->loadResult();
 		
-		if( !$extensionTypeID )
+		if( !$extensionTypeID || $contentTypeID == $extensionTypeID )
 		{
 			return;
 		}

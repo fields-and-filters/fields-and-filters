@@ -8,137 +8,88 @@
  */
 
 // no direct access
-defined( '_JEXEC' ) or die;
+defined('_JEXEC') or die;
 
-JHtml::_( 'behavior.tooltip' );
-JHtml::_( 'behavior.formvalidation' );
-JHtml::_( 'behavior.keepalive' );
-JHtml::_( 'formbehavior.chosen', 'select' );
+JHtml::_('behavior.tooltip');
+JHtml::_('behavior.formvalidation');
+JHtml::_('behavior.keepalive');
+JHtml::_('formbehavior.chosen', 'select');
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
+JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true);
 ?>
 <script type="text/javascript">
-	Joomla.submitbutton = function( task, type )
+	Joomla.submitbutton = function(task, type)
 	{
-		if( task == 'field.setType' )
+		if (task == 'field.setType')
 		{
-			document.id( 'field-form' ).elements['jform[temp_type]'].value = type;
-			Joomla.submitform( 'field.setType', document.id( 'field-form' ) );
+			document.id('field-form').elements['jform[temp_type]'].value = type;
+			Joomla.submitform('field.setType', document.id('field-form'));
 		}
-		else if( task == 'field.setExtension' )
+		else if (task == 'field.setExtension')
 		{
-			document.id( 'field-form' ).elements['jform[temp_extension]'].value = type;
-			Joomla.submitform( 'field.setExtension', document.id( 'field-form' ) );
+			document.id('field-form').elements['jform[temp_extension]'].value = type;
+			Joomla.submitform('field.setExtension', document.id('field-form'));
 		}
-		else if( task == 'field.cancel' || document.formvalidator.isValid( document.id( 'field-form' ) ) )
+		else if (task == 'field.cancel' || document.formvalidator.isValid(document.id('field-form')))
 		{
-			Joomla.submitform( task, document.getElementById( 'field-form' ) );
+			Joomla.submitform(task, document.getElementById('field-form'));
 		}
 		else
 		{
-			alert( '<?php echo $this->escape( JText::_( 'JGLOBAL_VALIDATION_FORM_FAILED' ) );?>' );
+			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
 </script>
 
-<form action="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->field_id ); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate form-horizontal">
-	<fieldset>
-		<?php echo JHtml::_( 'bootstrap.startTabSet', 'myTab', array( 'active' => 'details' ) ); ?>
-			<?php echo JHtml::_( 'bootstrap.addTab', 'myTab', 'details', JText::_( 'COM_FIELDSANDFILTERS_DETAILS_FIELDSET_LABEL', true ) ); ?>
+<form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->field_id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
+	<div class="form-inline form-inline-header">
+		<?php
+		echo $this->form->getControlGroup('field_name');
+		echo $this->form->getControlGroup('field_alias');
+		?>
+	</div>
+	
+	<div class="form-horizontal">
+		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', JText::_('COM_FIELDSANDFILTERS_DETAILS_FIELDSET_LABEL', true)); ?>
 				<div class="row-fluid">
-					<div class="span6">
-						<div class="control-group">
-							<div class="control-label">
-								<?php echo $this->form->getLabel( 'field_name' ); ?>
-							</div>
-							<div class="controls">
-								<?php echo $this->form->getInput( 'field_name' ); ?>
-							</div>
-						</div>
-						<div class="control-group">
-							<div class="control-label">
-								<?php echo $this->form->getLabel( 'field_alias' ); ?>
-							</div>
-							<div class="controls">
-								<?php echo $this->form->getInput( 'field_alias' ); ?>
-							</div>
-						</div>
-						<div class="control-group">
-							<div class="control-label">
-								<?php echo $this->form->getLabel( 'field_type' ); ?>
-							</div>
-							<div class="controls">
-								<?php echo $this->form->getInput( 'field_type' ); ?>
-							</div>
-						</div>
-						<div class="control-group">
-							<div class="control-label">
-								<?php echo $this->form->getLabel( 'content_type_id' ); ?>
-							</div>
-							<div class="controls">
-								<?php echo $this->form->getInput( 'content_type_id' ); ?>
-							</div>
-						</div>
+					<div class="span9">
+						<?php
+							echo $this->form->getControlGroup('field_type');
+							echo $this->form->getControlGroup('content_type_id');
+						?>
 					</div>
-					<div class="span6">
-						<div class="control-group">
-							<div class="control-label">
-								<?php echo $this->form->getLabel( 'state' ); ?>
-							</div>
-							<div class="controls">
-								<?php echo $this->form->getInput( 'state' ); ?>
-							</div>
-						</div>
-						<div class="control-group">
-							<div class="control-label">
-								<?php echo $this->form->getLabel( 'required' ); ?>
-							</div>
-							<div class="controls">
-								<?php echo $this->form->getInput( 'required' ); ?>
-							</div>
-						</div>
-						<div class="control-group">
-							<div class="control-label">
-								<?php echo $this->form->getLabel( 'access' ); ?>
-							</div>
-							<div class="controls">
-								<?php echo $this->form->getInput( 'access' ); ?>
-							</div>
-						</div>
-						<div class="control-group">
-							<div class="control-label">
-								<?php echo $this->form->getLabel( 'language' ); ?>
-							</div>
-							<div class="controls">
-								<?php echo $this->form->getInput( 'language' ); ?>
-							</div>
-						</div>
-						<div class="control-group">
-							<div class="control-label">
-								<?php echo $this->form->getLabel( 'field_id' ); ?>
-							</div>
-							<div class="controls">
-								<?php echo $this->form->getInput( 'field_id' ); ?>
-							</div>
-						</div>
+					<div class="span3">
+						<?php
+						// Set main fields.
+						$this->fields = array(
+							'state',
+							'required',
+							'access',
+							// 'language',
+							'field_id'
+						);
+						
+						echo JLayoutHelper::render('joomla.edit.global', $this);
+						?>
 					</div>
 				</div>
 				<div class="control-group">
-					<?php echo $this->form->getLabel( 'description' ); ?>
-					<?php echo $this->form->getInput( 'description' ); ?>
+					<?php echo $this->form->getLabel('description'); ?>
+					<?php echo $this->form->getInput('description'); ?>
 				</div>
-			<?php echo JHtml::_( 'bootstrap.endTab' ); ?>
+			<?php echo JHtml::_('bootstrap.endTab'); ?>
 			
-			<?php echo $this->loadTemplate( 'values' ); ?>
-			<?php echo $this->loadTemplate( 'params' ); ?>
+			<?php echo $this->loadTemplate('values'); ?>
+			<?php echo $this->loadTemplate('params'); ?>
 			
-		<?php echo JHtml::_( 'bootstrap.endTabSet' ); ?>
-	</fieldset>
+		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+	</div>
     
 	<input type="hidden" id="jform_temp_type" name="jform[temp_type]" value="" />
 	<input type="hidden" id="jform_temp_extension" name="jform[temp_extension]" value="" />
 	<input type="hidden" name="task" value="" />
-	<?php echo $this->form->getInput( 'mode' ); ?>
-	<?php echo JHtml::_( 'form.token' ); ?>
+	<?php echo $this->form->getInput('mode'); ?>
+	<?php echo JHtml::_('form.token'); ?>
 </form>

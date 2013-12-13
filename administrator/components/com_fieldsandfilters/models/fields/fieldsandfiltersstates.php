@@ -40,6 +40,24 @@ class JFormFieldFieldsandfiltersStates extends JFormFieldList
 	protected function getOptions()
 	{
 		$options = JHtml::_( 'FieldsandfiltersHtml.options.states' );
+		
+		$exclude = (string) $this->element['exclude'];
+		
+		if( !empty( $exclude ) )
+		{
+			$exclude = explode(',', $exclude);
+			$exclude = array_map('intval', $exclude);
+			if(!empty($exclude))
+			{
+				foreach($options AS $key => $option)
+				{
+					if( in_array( $option->value, $exclude ) )
+					{
+						unset($options[$key]);
+					}
+				}
+			}
+		}
 
 		// Merge any additional options in the XML definition.
 		$options = array_merge( parent::getOptions(), $options );

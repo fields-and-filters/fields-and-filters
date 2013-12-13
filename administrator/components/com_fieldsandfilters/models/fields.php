@@ -83,8 +83,10 @@ class FieldsandfiltersModelFields extends JModelList
 		$access = $app->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', '', 'string');
 		$this->setState('filter.access', $access);
 		
+		/*
 		$language = $app->getUserStateFromRequest($this->context . '.filter.language', 'filter_language', '', 'string');
 		$this->setState('filter.language', $language);
+		*/
 		
 		// Load the parameters.
 		$params = JComponentHelper::getParams('com_fieldsandfilters');
@@ -114,7 +116,7 @@ class FieldsandfiltersModelFields extends JModelList
 		$id.= ':' . $this->getState('filter.content_type_id');
 		$id.= ':' . $this->getState('filter.type');
 		$id.= ':' . $this->getState('filter.access');
-		$id.= ':' . $this->getState('filter.language');
+		// $id.= ':' . $this->getState('filter.language');
 
 		return parent::getStoreId($id);
 	}

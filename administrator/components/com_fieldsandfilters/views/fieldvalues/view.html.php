@@ -16,9 +16,30 @@ defined('_JEXEC') or die;
  */
 class FieldsandfiltersViewFieldvalues extends JViewLegacy
 {
+	/**
+	 * @since	1.0.0
+	 */
 	protected $items;
+	
+	/**
+	 * @since	1.0.0
+	 */
 	protected $pagination;
+	
+	/**
+	 * @since	1.0.0
+	 */
 	protected $state;
+	
+	/**
+	 * @since	1.2.0
+	 */
+	public $filterForm;
+	
+	/**
+	 * @since	1.2.0
+	 */
+	public $activeFilters;
 
 	/**
 	 * Display the view
@@ -30,6 +51,12 @@ class FieldsandfiltersViewFieldvalues extends JViewLegacy
 		$this->state		= $this->get( 'State' );
 		$this->items		= $this->get( 'Items' );
 		$this->pagination	= $this->get( 'Pagination' );
+		
+		if (FieldsandfiltersFactory::isVersion('>=', 3.2))
+		{
+			$this->filterForm    	= $this->get('FilterForm');
+			$this->activeFilters 	= $this->get('ActiveFilters');
+		}
 		
 		// Check for errors.
 		if( count( $errors = $this->get( 'Errors' ) ) )
@@ -44,6 +71,11 @@ class FieldsandfiltersViewFieldvalues extends JViewLegacy
 		if( FieldsandfiltersFactory::isVersion() )
 		{
 			$this->sidebar = JHtmlSidebar::render();
+			
+			if (is_null($tpl) && FieldsandfiltersFactory::isVersion('<', 3.2))
+			{
+				$tpl = '3.1';
+			}
 		}
 		else if( is_null( $tpl ) )
 		{
@@ -64,7 +96,7 @@ class FieldsandfiltersViewFieldvalues extends JViewLegacy
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_FIELDVALUES' ), 'field-values.png' );
 		
-		if( FieldsandfiltersFactory::isVersion() )
+		if (FieldsandfiltersFactory::isVersion() && FieldsandfiltersFactory::isVersion('<', 3.2))
 		{
 			JHtmlSidebar::setAction( 'index.php?option=com_fieldsandfilters&view=fieldvalues' );
 			

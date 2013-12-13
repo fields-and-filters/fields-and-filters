@@ -252,7 +252,7 @@ $sortFields 	= $this->getSortFields();
 							// load plugin language
 								if ($extension->name != FieldsandfiltersExtensions::EXTENSION_DEFAULT)
 								{
-									KextensionsLanguage::load('plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR );
+									KextensionsLanguage::load('plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR);
 								}
 								$extensionForm = $extension->forms->get('extension', new JObject);
 							?>

@@ -95,7 +95,7 @@ class FieldsandfiltersViewFields extends JViewLegacy
 		
 		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS_TITLE_FIELDS'), 'fields.png');
 		
-		if (FieldsandfiltersFactory::isVersion('<', 3.2))
+		if (FieldsandfiltersFactory::isVersion() && FieldsandfiltersFactory::isVersion('<', 3.2))
 		{
 			JHtmlSidebar::setAction('index.php?option=com_fieldsandfilters&view=fields');
 			

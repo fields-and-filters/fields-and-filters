@@ -8,101 +8,101 @@
  */
 
 // no direct access
-defined( '_JEXEC' ) or die;
+defined('_JEXEC') or die;
 
-JHtml::_( 'behavior.tooltip' );
-JHtml::_( 'behavior.formvalidation' );
-JHtml::_( 'behavior.keepalive' );
+JHtml::_('behavior.tooltip');
+JHtml::_('behavior.formvalidation');
+JHtml::_('behavior.keepalive');
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
+JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true);
 ?>
 <script type="text/javascript">
-	Joomla.submitbutton = function( task, type )
+	Joomla.submitbutton = function(task, type)
 	{
-		if( task == 'field.setType' )
+		if (task == 'field.setType')
 		{
-			document.id( 'field-form' ).elements['jform[temp_type]'].value = type;
-			Joomla.submitform( 'field.setType', document.id( 'field-form' ) );
+			document.id('field-form').elements['jform[temp_type]'].value = type;
+			Joomla.submitform('field.setType', document.id('field-form'));
 		}
-		else if( task == 'field.setExtension' )
+		else if (task == 'field.setExtension')
 		{
-			document.id( 'field-form' ).elements['jform[temp_extension]'].value = type;
-			Joomla.submitform( 'field.setExtension', document.id( 'field-form' ) );
+			document.id('field-form').elements['jform[temp_extension]'].value = type;
+			Joomla.submitform('field.setExtension', document.id('field-form'));
 		}
-		else if( task == 'field.cancel' || document.formvalidator.isValid( document.id( 'field-form' ) ) )
+		else if (task == 'field.cancel' || document.formvalidator.isValid(document.id('field-form')))
 		{
-			Joomla.submitform( task, document.getElementById( 'field-form' ) );
+			Joomla.submitform(task, document.getElementById('field-form'));
 		}
 		else
 		{
-			alert( '<?php echo $this->escape( JText::_( 'JGLOBAL_VALIDATION_FORM_FAILED' ) );?>' );
+			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
 </script>
 
-<form action="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->field_id ); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate form-horizontal">
+<form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->field_id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate form-horizontal">
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
 			<legend>
-				<?php echo JText::_( 'COM_FIELDSANDFILTERS_LEGEND_FIELD' ); ?>
+				<?php echo JText::_('COM_FIELDSANDFILTERS_LEGEND_FIELD'); ?>
 			</legend>
 			<ul class="adminformlist">
 				<li>
-					<?php echo $this->form->getLabel( 'field_name' ); ?>
-					<?php echo $this->form->getInput( 'field_name' ); ?>
+					<?php echo $this->form->getLabel('field_name'); ?>
+					<?php echo $this->form->getInput('field_name'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel( 'field_alias' ); ?>
-					<?php echo $this->form->getInput( 'field_alias' ); ?>
+					<?php echo $this->form->getLabel('field_alias'); ?>
+					<?php echo $this->form->getInput('field_alias'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel( 'field_type' ); ?>
-					<?php echo $this->form->getInput( 'field_type' ); ?>
+					<?php echo $this->form->getLabel('field_type'); ?>
+					<?php echo $this->form->getInput('field_type'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel( 'content_type_id' ); ?>
-					<?php echo $this->form->getInput( 'content_type_id' ); ?>
+					<?php echo $this->form->getLabel('content_type_id'); ?>
+					<?php echo $this->form->getInput('content_type_id'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel( 'state' ); ?>
-					<?php echo $this->form->getInput( 'state' ); ?>
+					<?php echo $this->form->getLabel('state'); ?>
+					<?php echo $this->form->getInput('state'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel( 'required' ); ?>
-					<?php echo $this->form->getInput( 'required' ); ?>
+					<?php echo $this->form->getLabel('required'); ?>
+					<?php echo $this->form->getInput('required'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel( 'access' ); ?>
-					<?php echo $this->form->getInput( 'access' ); ?>
+					<?php echo $this->form->getLabel('access'); ?>
+					<?php echo $this->form->getInput('access'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel( 'language' ); ?>
-					<?php echo $this->form->getInput( 'language' ); ?>
+					<?php echo $this->form->getLabel('language'); ?>
+					<?php echo $this->form->getInput('language'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel( 'field_id' ); ?>
-					<?php echo $this->form->getInput( 'field_id' ); ?>
+					<?php echo $this->form->getLabel('field_id'); ?>
+					<?php echo $this->form->getInput('field_id'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel( 'description' ); ?>
+					<?php echo $this->form->getLabel('description'); ?>
 					<div class="clr"></div>
-					<?php echo $this->form->getInput( 'description' ); ?>
+					<?php echo $this->form->getInput('description'); ?>
 				</li>
 			</ul>
 		</fieldset>
 	</div>
 	
 	<div class="width-40 fltlft">
-		<?php echo JHtml::_( 'sliders.start', 'permissions-sliders-'.$this->item->field_id, array( 'useCookie' => 1 ) ); ?>
-			<?php echo $this->loadTemplate( 'values_2.5' ); ?>
-			<?php echo $this->loadTemplate( 'params_2.5' ); ?>
-		<?php echo JHtml::_( 'sliders.end' ); ?>
+		<?php echo JHtml::_('sliders.start', 'permissions-sliders-'.$this->item->field_id, array('useCookie' => 1)); ?>
+			<?php echo $this->loadTemplate('values_2.5'); ?>
+			<?php echo $this->loadTemplate('params_2.5'); ?>
+		<?php echo JHtml::_('sliders.end'); ?>
 	</div>
     
 	<input type="hidden" id="jform_temp_type" name="jform[temp_type]" value="" />
 	<input type="hidden" id="jform_temp_extension" name="jform[temp_extension]" value="" />
 	<input type="hidden" name="task" value="" />
-	<?php echo $this->form->getInput( 'mode' ); ?>
-	<?php echo JHtml::_( 'form.token' ); ?>
+	<?php echo $this->form->getInput('mode'); ?>
+	<?php echo JHtml::_('form.token'); ?>
 </form>

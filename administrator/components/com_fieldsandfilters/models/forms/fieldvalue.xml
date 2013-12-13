@@ -18,7 +18,7 @@
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD_VALUE"
 			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD_VALUE"
 			required="true"
-			class="inputbox"
+			class="inputbox input-xxlarge input-large-text"
 			filter="safehtml"
 			size="30"
 		/>
@@ -28,8 +28,8 @@
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD_VALUE_ALIAS"
 			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD_VALUE_ALIAS"
 			class="inputbox"
-			filter="raw"
-			size="30"
+			filter="safehtml"
+			size="40"
 		/>
 		<field
 			name="state"

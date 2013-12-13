@@ -114,7 +114,7 @@ if ($saveOrder)
 				<?php foreach ($this->items as $i => $item) :
 					$ordering	= ($listOrder == 'f.ordering');
 					$canCreate	= $user->authorise('core.create',		'com_fieldsandfilters');
-					$canEdit	= $user->authorise('core.edit',		'com_fieldsandfilters');
+					$canEdit	= $user->authorise('core.edit',			'com_fieldsandfilters');
 					$canCheckin	= $user->authorise('core.manage',		'com_fieldsandfilters');
 					$canChange	= $user->authorise('core.edit.state',		'com_fieldsandfilters');
 					?>
@@ -154,8 +154,8 @@ if ($saveOrder)
 									
 										JHtml::_('FieldsandfiltersHtml.dropdown.onlyAdmin', 'cb' . $i, 'fields.');
 									else :
-										JHtml::_('actionsdropdown.' . 'publish', 'cb' . $i, 'fields');
-										JHtml::_('actionsdropdown.' . 'unpublish', 'cb' . $i, 'fields');
+										JHtml::_('actionsdropdown.publish', 'cb' . $i, 'fields');
+										JHtml::_('actionsdropdown.unpublish', 'cb' . $i, 'fields');
 									endif;
 									
 									JHtml::_('actionsdropdown.divider');
@@ -181,9 +181,12 @@ if ($saveOrder)
 								
 								<?php if (in_array($item->mode, $valuesMode)) : ?>
 								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->field_alias)); ?>
-								<p class="smallsub">
-									<a class="badge badge-info" href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&id=' . (int) $item->field_id); ?>">
-										<?php echo JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES'); ?>
+								<div>
+									<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&id=' . (int) $item->field_id); ?>">
+										<span class="label label-info">
+											<i class="icon-list"></i>
+											<?php echo JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES'); ?>
+										</span>
 									</a>
 								</p>
 								<?php endif; ?>

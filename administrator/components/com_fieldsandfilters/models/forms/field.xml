@@ -17,7 +17,7 @@
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_FIELD_NAME"
 			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_FIELD_NAME"
 			required="true"
-			class="inputbox"
+			class="inputbox input-xxlarge input-large-text"
 			filter="safehtml"
 			size="40"
 		/>
@@ -29,6 +29,7 @@
 			class="inputbox"
 			filter="safehtml"
 			size="40"
+			hint="JFIELD_ALIAS_PLACEHOLDER"
 		/>
 		<field
 			name="field_type"
@@ -121,11 +122,12 @@
 		
 		<field
 		       name="state"
-		       type="radio"
+		       type="list"
 		       label="JSTATUS"
 		       description="JFIELD_PUBLISHED_DESC"
-		       class="btn-group"
+		       class="chzn-color-state"
 		       default="1"
+		       size="1"
 		       filter="intval"
 		>
 			<option value="1">JPUBLISHED</option>

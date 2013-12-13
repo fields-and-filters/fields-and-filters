@@ -32,14 +32,14 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		if( empty( $config['filter_fields'] ) )
 		{
 			$config['filter_fields'] = array(
-						'field_value_id', 	'fv.field_value_id',
-						'field_id', 		'fv.field_id',
-						'field_value',		'fv.field_value',
-						'field_value_alias', 	'fv.field_value_alias',
-						'ordering', 		'fv.ordering',
-						'state',		'fv.state',
-						'field_name',		'f.field_name',
-						'id'
+				'field_value_id', 	'fv.field_value_id',
+				'field_id', 		'fv.field_id',
+				'field_value',		'fv.field_value',
+				'field_value_alias', 	'fv.field_value_alias',
+				'ordering', 		'fv.ordering',
+				'state',		'fv.state',
+				'field_name',		'f.field_name',
+				'id'
 			);
 		}
 		
@@ -56,8 +56,8 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 	protected function populateState( $ordering = null, $direction = null )
 	{
 		// Initialise variables.
-		$app 	= JFactory::getApplication( 'administrator' );
-		$jinput = $app->input;   
+		$app 	= JFactory::getApplication();
+		
 		// Load the filter state.
 		$search = $app->getUserStateFromRequest( $this->context . '.filter.search', 'filter_search' );
 		$this->setState( 'filter.search', $search );
@@ -65,12 +65,12 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		$published = $app->getUserStateFromRequest( $this->context . '.filter.state', 'filter_published', '', 'string' );
 		$this->setState( 'filter.state', $published );
 		
-		if( $fieldID = $jinput->getInt( 'id', $app->getUserStateFromRequest( $this->context . '.filter.field_id', 'filter_field_id', 0, 'int' ) ) )
+		if( $fieldID = $app->input->getInt( 'id', $app->getUserStateFromRequest( $this->context . '.filter.field_id', 'filter_field_id', 0, 'int' ) ) )
 		{
 			if( $fieldID != $app->getUserState( $this->context . '.filter.field_id' ) )
 			{
 				$app->setUserState( $this->context . '.filter.field_id', $fieldID );
-				$jinput->set( 'limitstart', 0 );
+				$app->input->set( 'limitstart', 0 );
 			}
 		}
 		else
@@ -81,7 +81,7 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 				$filterMode 	= FieldsandfiltersFactory::getTypes()->getMode( 'filter' );
 				
 				// Load pluginExtensions Helper
-				$extensionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsColumn( 'extension_type_id' );
+				$extensionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID( 'content_type_id' );
 				
 				// Load Fields Helper
 				$fieldsID 	= FieldsandfiltersFactory::getFields()->getFieldsByModeIDColumn( 'field_id', $extensionsID, $filterMode, array( 1, -1 ) );
@@ -115,7 +115,7 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		// Compile the store id.
 		$id .= ':' . $this->getState( 'filter.search' );
 		$id .= ':' . $this->getState( 'filter.state' );
-		$id .= ':' . $this->getState( 'filter.id' );
+		$id .= ':' . $this->getState( 'filter.field_id' );
 	
 		return parent::getStoreId( $id );
 	}
@@ -181,8 +181,9 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		}
 		
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get( 'list.ordering' );
-		$orderDirn	= $this->state->get( 'list.direction' );
+		$orderCol	= $this->state->get( 'list.ordering', 'fv.field_value');
+		$orderDirn	= $this->state->get('list.direction', 'ASC');
+		
 		if( $orderCol && $orderDirn )
 		{
 		    $query->order( $db->escape( $orderCol . ' ' . $orderDirn ) );

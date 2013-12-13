@@ -102,14 +102,11 @@ class FieldsandfiltersModelField extends JModelAdmin
 		if (!in_array($form->getValue('mode', 0), (array) $typesHelper->getMode('filter')))
 		{
 			// Disable field for display.
-			$form->setFieldAttribute('field_alias', 'disabled', 'true');
+			$form->setFieldAttribute('field_alias', 'type', 'hidden');
 			
 			// Disable fields while saving.
 			// The controller has already verified this is a record you can edit.
 			$form->setFieldAttribute('field_alias', 'filter', 'unset');
-			
-			// Set disable class for field.
-			$form->setFieldAttribute('field_alias', 'class', 'disabled');
 			
 			if (trim($form->getValue('field_alias')) != '')
 			{
