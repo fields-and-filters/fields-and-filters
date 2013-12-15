@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 // Import CSS
 JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true);
-
+$html = JHtml::_('links.linksgroups', $this->buttons);
 //$info = FieldsandfiltersExtensions::getInformation();
 //
 //echo '<pre>';
@@ -58,35 +58,17 @@ require_once JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/fieldsandfi
 //exit;
 
 ?>
-<div class="span6">
-<?php if (!empty($this->buttons['base'])) : ?>
-	<div class="cpanel-block">
-		<h3><?php echo JText::_('COM_FIELDSANDFILTERS_HEADER_BASE'); ?></h3>
-		<div class="cpanel">
-			<?php echo JHtml::_('FieldsandfiltersHtml.grid.buttons', $this->buttons['base']); ?>
-		</div>
-	</div>
-<?php endif; ?>
 
-<?php if (!empty($this->buttons['modules'])) : ?>
-	<div class="cpanel-block">
-		<h3><?php echo JText::_('COM_FIELDSANDFILTERS_HEADER_MODULES'); ?></h3>
-		<div class="cpanel">
-			<?php echo JHtml::_('FieldsandfiltersHtml.grid.buttons', $this->buttons['modules']); ?>
-		</div>
+<div class="span3">
+	<div class="cpanel-links">
+		<?php if (!empty($html)) : ?>
+			<div class="sidebar-nav quick-icons">
+				<?php echo $html;?>
+			</div>
+		<?php endif;?>
 	</div>
-<?php endif; ?>
-
-<?php if (!empty($this->buttons['plugins'])) : ?>
-	<div class="cpanel-block">
-		<h3><?php echo JText::_('COM_FIELDSANDFILTERS_HEADER_PLUGINS'); ?></h3>
-		<div class="cpanel">
-			<?php echo JHtml::_('FieldsandfiltersHtml.grid.buttons', $this->buttons['plugins']); ?>
-		</div>
-	</div>
-<?php endif; ?>
 </div>
-<div class="span4">
+<div class="span9">
 	<h3><?php echo JText::_('COM_FIELDSANDFILTERS_HEADER_INFORMATION'); ?></h3>
 	<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 		<input type="hidden" name="cmd" value="_s-xclick" />

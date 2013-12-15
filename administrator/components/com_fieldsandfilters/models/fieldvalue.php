@@ -51,9 +51,6 @@ class FieldsandfiltersModelFieldvalue extends JModelAdmin
 	 */
 	public function getForm( $data = array(), $loadData = true )
 	{
-		// Initialise variables.
-		$app = JFactory::getApplication();
-
 		// Get the form.
 		$form = $this->loadForm( 'com_fieldsandfilters.fieldvalue', 'fieldvalue', array( 'control' => 'jform', 'load_data' => $loadData ) );
 		
@@ -81,6 +78,8 @@ class FieldsandfiltersModelFieldvalue extends JModelAdmin
 			$data = $this->getItem();
             
 		}
+		
+		$this->preprocessData('com_fieldsandfilters.fieldvalue', $data);
 		
 		return $data;
 	}
@@ -178,6 +177,7 @@ class FieldsandfiltersModelFieldvalue extends JModelAdmin
 		$table 		= $this->getTable();
 		$elementTable 	= $this->getTable( 'Element', 'FieldsandfiltersTable' );
 		$dispatcher	= FieldsandfiltersFactory::getDispatcher();
+		$context 	= $this->option . '.' . $this->name;
 		
 		// Include the content plugins for the on delete events.
 		JPluginHelper::importPlugin( 'content' );
@@ -189,8 +189,6 @@ class FieldsandfiltersModelFieldvalue extends JModelAdmin
 			{
 				if( $this->canDelete( $table ) )
 				{
-					$context = $this->option . '.' . $this->name;
-					
 					// Trigger the onContentBeforeDelete event.
 					$result = $dispatcher->trigger( $this->event_before_delete, array( $context, $table ) );
 					if( in_array( false, $result, true ) )

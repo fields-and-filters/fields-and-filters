@@ -168,7 +168,7 @@ abstract class FieldsandfiltersHtmlGrid
 		$html[] = (empty($button['onclick']) ? '' : (' onclick="' . $button['onclick'] . '"'));
 		$html[] = (empty($button['title']) ? '' : (' title="' . htmlspecialchars($button['title']) . '"'));
 		$html[] = '>';
-		$html[] = JHtml::_('image', empty($button['image']) ? '' : $button['image'], empty($button['alt']) ? null : htmlspecialchars($button['alt']), null, empty($button['relative']) ? false : (boolean) $button['relative']);
+		$html[] = JHtml::_('image', empty($button['icon']) ? '' : $button['icon'], empty($button['alt']) ? null : htmlspecialchars($button['alt']), null, empty($button['relative']) ? false : (boolean) $button['relative']);
 		$html[] = (empty($button['text'])) ? '' : ('<span>' . $button['text'] . '</span>');
 		$html[] = '</a>';
 		$html[] = '</div>';

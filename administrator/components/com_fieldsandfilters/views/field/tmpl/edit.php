@@ -54,30 +54,29 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'details', JText::_('COM_FIELDSANDFILTERS_DETAILS_FIELDSET_LABEL', true)); ?>
 				<div class="row-fluid">
-					<div class="span9">
+					<div class="span4">
 						<?php
-							echo $this->form->getControlGroup('field_type');
-							echo $this->form->getControlGroup('content_type_id');
+							// Set main fields.
+							$this->fields = array(
+								'field_type',
+								'content_type_id',
+								'state',
+								'required',
+								'access',
+								// 'language',
+								'field_id'
+							);
+							
+							echo JLayoutHelper::render('joomla.edit.global', $this);
 						?>
-					</div>
-					<div class="span3">
-						<?php
-						// Set main fields.
-						$this->fields = array(
-							'state',
-							'required',
-							'access',
-							// 'language',
-							'field_id'
-						);
 						
-						echo JLayoutHelper::render('joomla.edit.global', $this);
-						?>
 					</div>
-				</div>
-				<div class="control-group">
-					<?php echo $this->form->getLabel('description'); ?>
-					<?php echo $this->form->getInput('description'); ?>
+					<div class="span8">
+						<div class="control-group">
+							<?php echo $this->form->getLabel('description'); ?>
+							<?php echo $this->form->getInput('description'); ?>
+						</div>
+					</div>
 				</div>
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 			

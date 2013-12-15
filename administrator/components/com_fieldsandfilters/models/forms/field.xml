@@ -74,7 +74,7 @@
 			name="required"
 			type="radio"
 			size="1"
-			class="btn-group"
+			class="btn-group btn-group-yesno"
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_REQUIRED"
 			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_REQUIRED"
 			default="0"
