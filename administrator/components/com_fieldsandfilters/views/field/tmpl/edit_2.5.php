@@ -41,7 +41,7 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->field_id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate form-horizontal">
+<form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate form-horizontal">
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
 			<legend>
@@ -49,16 +49,16 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 			</legend>
 			<ul class="adminformlist">
 				<li>
-					<?php echo $this->form->getLabel('field_name'); ?>
-					<?php echo $this->form->getInput('field_name'); ?>
+					<?php echo $this->form->getLabel('name'); ?>
+					<?php echo $this->form->getInput('name'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel('field_alias'); ?>
-					<?php echo $this->form->getInput('field_alias'); ?>
+					<?php echo $this->form->getLabel('alias'); ?>
+					<?php echo $this->form->getInput('alias'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel('field_type'); ?>
-					<?php echo $this->form->getInput('field_type'); ?>
+					<?php echo $this->form->getLabel('type'); ?>
+					<?php echo $this->form->getInput('type'); ?>
 				</li>
 				<li>
 					<?php echo $this->form->getLabel('content_type_id'); ?>
@@ -81,8 +81,8 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 					<?php echo $this->form->getInput('language'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel('field_id'); ?>
-					<?php echo $this->form->getInput('field_id'); ?>
+					<?php echo $this->form->getLabel('id'); ?>
+					<?php echo $this->form->getInput('id'); ?>
 				</li>
 				<li>
 					<?php echo $this->form->getLabel('description'); ?>
@@ -94,7 +94,7 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 	</div>
 	
 	<div class="width-40 fltlft">
-		<?php echo JHtml::_('sliders.start', 'permissions-sliders-'.$this->item->field_id, array('useCookie' => 1)); ?>
+		<?php echo JHtml::_('sliders.start', 'permissions-sliders-'.$this->item->id, array('useCookie' => 1)); ?>
 			<?php echo $this->loadTemplate('values_2.5'); ?>
 			<?php echo $this->loadTemplate('params_2.5'); ?>
 		<?php echo JHtml::_('sliders.end'); ?>

@@ -116,7 +116,7 @@
 			>
 			</field>
 	</fieldset>
-	<fieldset name="javascript">
+	<fieldset name="other">
 		<field
 			name="load_noconflict_javascript"
 			type="radio"
@@ -141,7 +141,18 @@
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
-		
+		<field
+			name="use_old_structure"
+			type="radio"
+			class="inputbox"
+			label="COM_FIELDSANDFILTERS_USE_OLD_STRUCTURE_LBL"
+			description="COM_FIELDSANDFILTERS_USE_OLD_STRUCTURE_DESC"
+			default="0"
+			filter="int"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>	
 	</fieldset>
 
 	<fieldset

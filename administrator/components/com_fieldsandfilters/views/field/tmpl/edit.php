@@ -42,13 +42,8 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->field_id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
-	<div class="form-inline form-inline-header">
-		<?php
-		echo $this->form->getControlGroup('field_name');
-		echo $this->form->getControlGroup('field_alias');
-		?>
-	</div>
+<form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
+	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
 	
 	<div class="form-horizontal">
 		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'details')); ?>
@@ -58,13 +53,13 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 						<?php
 							// Set main fields.
 							$this->fields = array(
-								'field_type',
+								'type',
 								'content_type_id',
 								'state',
 								'required',
 								'access',
 								// 'language',
-								'field_id'
+								'id'
 							);
 							
 							echo JLayoutHelper::render('joomla.edit.global', $this);

@@ -134,7 +134,7 @@ $required = array(
 				</th>
 				
 				<th class='left'>
-					<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_NAME', 'f.field_name', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_NAME', 'f.name', $listDirn, $listOrder); ?>
 				</th>
 				
 				<td class="center">
@@ -142,7 +142,7 @@ $required = array(
 				</td>
 				
 				<th class="center">
-					<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_TYPE', 'f.field_type', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_TYPE', 'f.type', $listDirn, $listOrder); ?>
 				</th>
 				
 				<th class="center">
@@ -171,7 +171,7 @@ $required = array(
 				</th>
 				
 				<th width="1%" class="nowrap">
-					<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_ID', 'f.field_id', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_ID', 'f.id', $listDirn, $listOrder); ?>
 				</th>
 			</tr>
 		</thead>
@@ -185,35 +185,35 @@ $required = array(
 			?>
 			<tr class="row<?php echo $i % 2; ?>">
 				<td class="center">
-					<?php echo JHtml::_('grid.id', $i, $item->field_id); ?>
+					<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 				</td>
 				
 				<td>
 					<?php if ($canEdit) : ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&task=field.edit&id=' . (int) $item->field_id); ?>">
-							<?php echo $this->escape($item->field_name); ?>
+						<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&task=field.edit&id=' . (int) $item->id); ?>">
+							<?php echo $this->escape($item->name); ?>
 						</a>
 					<?php else : ?>
-						<?php echo $this->escape($item->field_name); ?>
+						<?php echo $this->escape($item->name); ?>
 					<?php endif; ?>
 					
 					<?php if (in_array($item->mode, $valuesMode)) : ?>
 					<p class="smallsub">
-						<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->field_alias)); ?>
+						<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
 					</p>
 					<?php endif; ?>
 				</td>
 				
 				<td class="center">
 					<?php if (in_array($item->mode, $valuesMode)) : ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&id=' . (int) $item->field_id); ?>">
+						<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&id=' . (int) $item->id); ?>">
 							<?php echo JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES'); ?>
 						</a>
 					<?php endif; ?>
 				</td>
 				
 				<td class="center">
-					<?php if ($type = $typesHelper->getTypes(true)->get($item->field_type)) : ?>
+					<?php if ($type = $typesHelper->getTypes(true)->get($item->type)) : ?>
 						<?php
 							KextensionsLanguage::load('plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR);
 							$typeName 	= $typesHelper->getModeName($item->mode, FieldsandfiltersTypes::MODE_NAME_TYPE);
@@ -295,7 +295,7 @@ $required = array(
 				</td>
 				
 				<td class="center">
-					<?php echo (int) $item->field_id; ?>
+					<?php echo (int) $item->id; ?>
 				</td>
 			</tr>
 			<?php endforeach; ?>

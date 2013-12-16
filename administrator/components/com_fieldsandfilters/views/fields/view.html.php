@@ -172,14 +172,14 @@ class FieldsandfiltersViewFields extends JViewLegacy
 	protected function getSortFields()
 	{
 		return array(
-			'f.field_name' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_NAME'),
+			'f.name' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_NAME'),
 			'f.state' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_STATUS'),
-			'f.field_type' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_TYPE'),
+			'f.type' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_TYPE'),
 			'f.content_type_id' 	=> JText::_('COM_FIELDSANDFILTERS_FIELDS_EXTENSION_TYPE'),
 			'f.required' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_REQUIRED'),
 			// 'f.language' 	=> JText::_('COM_FIELDSANDFILTERS_FIELDS_LANGUAGE'),
 			'f.ordering' 		=> JText::_('JGRID_HEADING_ORDERING'),
-			'f.field_id' 		=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_ID')
+			'f.id' 			=> JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_ID')
 		);
 	}
 }

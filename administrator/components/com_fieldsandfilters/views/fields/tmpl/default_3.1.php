@@ -113,7 +113,7 @@ $sortFields 	= $this->getSortFields();
 						<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_STATUS', 'f.state', $listDirn, $listOrder); ?>
 					</th>
 					<th>
-						<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_NAME', 'f.field_name', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_NAME', 'f.name', $listDirn, $listOrder); ?>
 					</th>
 					
 					<th class="center">
@@ -121,7 +121,7 @@ $sortFields 	= $this->getSortFields();
 					</th>
 					
 					<th class="center">
-						<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_TYPE', 'f.field_type', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_TYPE', 'f.type', $listDirn, $listOrder); ?>
 					</th>
 					
 					<th class="center" class="hidden-phone">
@@ -135,7 +135,7 @@ $sortFields 	= $this->getSortFields();
 					*/ ?>
 					
 					<th width="1%" class="nowrap hidden-phone">
-						<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_ID', 'f.field_id', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('grid.sort', 'COM_FIELDSANDFILTERS_FIELDS_FIELD_ID', 'f.id', $listDirn, $listOrder); ?>
 					</th>
 				</tr>
 			</thead>
@@ -168,7 +168,7 @@ $sortFields 	= $this->getSortFields();
 					<?php endif; ?>
 					</td>
 					<td class="center hidden-phone">
-						<?php echo JHtml::_('grid.id', $i, $item->field_id); ?>
+						<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 					</td>
 					<td class="center">
 						<div class="btn-group">
@@ -179,23 +179,23 @@ $sortFields 	= $this->getSortFields();
 					<td class="nowrap has-context">
 						<div class="pull-left">
 							<?php if ($canEdit) : ?>
-								<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&task=field.edit&id=' . (int) $item->field_id); ?>">
-									<?php echo $this->escape($item->field_name); ?>
+								<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&task=field.edit&id=' . (int) $item->id); ?>">
+									<?php echo $this->escape($item->name); ?>
 								</a>
 							<?php else : ?>
-								<?php echo $this->escape($item->field_name); ?>
+								<?php echo $this->escape($item->name); ?>
 							<?php endif; ?>
 							
 							<?php if (in_array($item->mode, $valuesMode)) : ?>
 							<p class="smallsub">
-								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->field_alias)); ?>
+								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
 							</p>
 							<?php endif; ?>
 						</div>
 						<div class="pull-left">
 							<?php
 								// Create dropdown items
-								JHtml::_('dropdown.edit', $item->field_id, 'field.');
+								JHtml::_('dropdown.edit', $item->id, 'field.');
 								JHtml::_('dropdown.divider');
 								
 								$action = $item->state ? 'unpublish' : 'publish';
@@ -218,14 +218,14 @@ $sortFields 	= $this->getSortFields();
 					
 					<td class="center">
 						<?php if (in_array($item->mode, $valuesMode)) : ?>
-							<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&id=' . (int) $item->field_id); ?>">
+							<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&id=' . (int) $item->id); ?>">
 								<?php echo JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES'); ?>
 							</a>
 						<?php endif; ?>
 					</td>
 					
 					<td class="center">
-						<?php if ($type = $typesHelper->getTypes(true)->get($item->field_type)) : ?>
+						<?php if ($type = $typesHelper->getTypes(true)->get($item->type)) : ?>
 							<?php
 								KextensionsLanguage::load('plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR);
 								$typeName 	= $typesHelper->getModeName($item->mode, FieldsandfiltersTypes::MODE_NAME_TYPE);
@@ -273,7 +273,7 @@ $sortFields 	= $this->getSortFields();
 					*/ ?>
 					
 					<td class="center hidden-phone">
-						<?php echo (int) $item->field_id; ?>
+						<?php echo (int) $item->id; ?>
 					</td>
 				</tr>
 				<?php endforeach; ?>

@@ -35,19 +35,19 @@ class FieldsandfiltersModelFields extends JModelList
 		if (empty($config['filter_fields']))
 		{
 			$config['filter_fields'] = array(
-						'field_id', 		'f.field_id',
-						'field_name', 		'f.field_name',
-						'field_alias', 		'f.field_alias',
-						'field_type', 		'f.field_type',
-						'content_type_id', 	'f.content_type_id',
-						'mode', 		'f.mode',
-						'description', 		'f.description',
-						'ordering', 		'f.ordering',
-						'state', 		'f.state',
-						'required', 		'f.required',
-						'access', 		'f.access',
-						'language', 		'f.language',
-						'params', 		'f.params',
+				'id', 			'f.id',
+				'name', 		'f.name',
+				'alias', 		'f.alias',
+				'type', 		'f.type',
+				'content_type_id', 	'f.content_type_id',
+				'mode', 		'f.mode',
+				'description', 		'f.description',
+				'ordering', 		'f.ordering',
+				'state', 		'f.state',
+				'required', 		'f.required',
+				'access', 		'f.access',
+				'language', 		'f.language',
+				'params', 		'f.params',
 			);
 		}
 		
@@ -65,7 +65,7 @@ class FieldsandfiltersModelFields extends JModelList
 	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
-		$app = JFactory::getApplication('administrator');
+		$app = JFactory::getApplication();
 		
 		// Load the filter state.
 		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
@@ -93,7 +93,7 @@ class FieldsandfiltersModelFields extends JModelList
 		$this->setState('params', $params);
 
 		// List state information.
-		parent::populateState('f.field_name', 'asc');
+		parent::populateState('f.name', 'asc');
 	}
 
 	/**
@@ -159,15 +159,15 @@ class FieldsandfiltersModelFields extends JModelList
 		{
 			if (stripos($search, 'id:') === 0)
 			{
-				$query->where($db->quoteName('f.field_id') . ' = ' . (int) substr($search, 3));
+				$query->where($db->quoteName('f.id') . ' = ' . (int) substr($search, 3));
 			}
 			else
 			{
 				$search = $db->quote('%' . $db->escape($search, true) . '%');
 				
 				$where = array(
-						($db->quoteName('f.field_name') . ' LIKE ' . $search),
-						($db->quoteName('f.field_alias') . ' LIKE ' . $search)
+						($db->quoteName('f.name') . ' LIKE ' . $search),
+						($db->quoteName('f.alias') . ' LIKE ' . $search)
 					);
 				
 				$query->where('(' . implode(' OR ', $where) . ')');
@@ -191,7 +191,7 @@ class FieldsandfiltersModelFields extends JModelList
 		// Filter on the type.
 		if ($type = $this->getState('filter.type'))
 		{
-			$query->where($db->quoteName('f.field_type') . ' = ' . $db->quote($type));
+			$query->where($db->quoteName('f.type') . ' = ' . $db->quote($type));
 		}
 		
 		/*

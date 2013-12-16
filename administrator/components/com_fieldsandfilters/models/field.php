@@ -89,6 +89,24 @@ class FieldsandfiltersModelField extends JModelAdmin
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
+		if (empty($data))
+		{
+			$item 			= $this->getItem();
+			$mode 			= $item->get('mode');
+			$type 			= $item->get('type');
+			$content_type_id 	= $item->get('content_type_id');
+		}
+		else
+		{
+			$mode 			= JArrayHelper::getValue($data, 'mode');
+			$type 			= JArrayHelper::getValue($data, 'type');
+			$content_type_id 	= JArrayHelper::getValue($data, 'content_type_id');
+		}
+		
+		$this->setState('mode', $mode);
+		$this->setState('type', $type);
+		$this->setState('content_type_id', $content_type_id);
+		
 		// Get the form.
 		$form = $this->loadForm('com_fieldsandfilters.field', 'field', array('control' => 'jform', 'load_data' => $loadData));
 		if (empty($form))
@@ -102,15 +120,15 @@ class FieldsandfiltersModelField extends JModelAdmin
 		if (!in_array($form->getValue('mode', 0), (array) $typesHelper->getMode('filter')))
 		{
 			// Disable field for display.
-			$form->setFieldAttribute('field_alias', 'type', 'hidden');
+			$form->setFieldAttribute('alias', 'type', 'hidden');
 			
 			// Disable fields while saving.
 			// The controller has already verified this is a record you can edit.
-			$form->setFieldAttribute('field_alias', 'filter', 'unset');
+			$form->setFieldAttribute('alias', 'filter', 'unset');
 			
-			if (trim($form->getValue('field_alias')) != '')
+			if (trim($form->getValue('alias')) != '')
 			{
-				$form->setValue('field_alias', null, '');
+				$form->setValue('alias', null, '');
 			}
 		}
 		
@@ -130,8 +148,8 @@ class FieldsandfiltersModelField extends JModelAdmin
 		$typesHelper = FieldsandfiltersFactory::getTypes();
 		
 		$data 		= is_array($data) ? new JObject($data) : $data;
-		$fieldType 	= $data->get('field_type');
-		$typeMode 	= $data->get('type_mode', $typesHelper->getModeName($data->get('mode'), FieldsandfiltersTypes::MODE_NAME_TYPE));		
+		$fieldType 	= $data->get('type', $this->getState('type'));
+		$typeMode 	= $data->get('type_mode', $typesHelper->getModeName($data->get('mode', $this->getState('mode')), FieldsandfiltersTypes::MODE_NAME_TYPE));		
 		
 		try
 		{
@@ -149,7 +167,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 				KextensionsLanguage::load("plg_{$type->type}_{$type->name}", JPATH_ADMINISTRATOR);
 			}
 			
-			$contentTypeId 	= $data->get('content_type_id');			
+			$contentTypeId 	= $data->get('content_type_id', $this->getState('content_type_id'));			
 			$extensionForm	= $data->get('field.extension_form', 'extension');
 			
 			// get extension type objet by type id or plugin type
@@ -211,7 +229,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 	 */
 	public function getItem($pk = null)
 	{
-		$pk = (!empty($pk)) ? (int) $pk : (int) $this->getState('field.id');
+		$pk = (!empty($pk)) ? (int) $pk : (int) $this->getState($this->getName() . '.id');
 		
 		$store = md5(__METHOD__ . $pk);
 		if (!isset($this->_cache[$store]))
@@ -233,7 +251,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 			}
 			
 			// Prime required properties.			
-			if (empty($table->field_id))
+			if (empty($table->id))
 			{
 				$table->content_type_id 	= 0;
 				$table->params			= '{}';
@@ -248,7 +266,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 					
 					$objectTable			= new stdClass;
 					$objectTable->element_id 	= 0;
-					$objectTable->field_id 		= $table->field_id;
+					$objectTable->field_id 		= $table->id;
 					
 					$elementTable->content_type_id = $table->content_type_id;
 					
@@ -289,27 +307,6 @@ class FieldsandfiltersModelField extends JModelAdmin
 		}
 		
 		return $this->_cache[$store];
-	}
-	
-	/**
-	 * Auto-populate the model state.
-	 *
-	 * Note. Calling getState in this method will result in recursion.
-	 *
-	 * @return	void
-	 * @since       1.1.0
-	 */
-	protected function populateState()
-	{
-		// Get the pk of the record from the request.
-		$app = JFactory::getApplication();
-		
-		$fieldId = $app->input->getInt('id');
-		$this->setState('field.id', $fieldId);
-		
-		// Load the parameters.
-		$value = JComponentHelper::getParams($this->option);
-		$this->setState('params', $value);
 	}
 	
 	/**
@@ -467,7 +464,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 					
 					$objectTable			= new stdClass;
 					$objectTable->element_id 	= 0;
-					$objectTable->field_id 		= $table->field_id;
+					$objectTable->field_id 		= $table->id;
 					
 					$elementTable->content_type_id	= $item->content_type_id;
 					
@@ -508,7 +505,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 			{
 				$objectTable			= new stdClass;
 				$objectTable->element_id 	= 0;
-				$objectTable->field_id 		= $table->field_id;
+				$objectTable->field_id 		= $table->id;
 				
 				$elementTable->deleteData($objectTable);
 			}
@@ -595,13 +592,13 @@ class FieldsandfiltersModelField extends JModelAdmin
 				}
 				
 				$objectTable 			= new stdClass();
-				$objectTable->field_id 		= $table->field_id;
+				$objectTable->field_id 		= $table->id;
 				$objectTable->element_id 	= null;
 				
 				//delete fields values and connections
 				if (in_array($table->mode, $filterMode))
 				{
-					if (!$valueTable->deleteByFieldID($table->field_id))
+					if (!$valueTable->deleteByFieldID($table->id))
 					{
 						throw new Exception($valueTable->getError());
 					}

@@ -133,6 +133,22 @@ class FieldsandfiltersFactory
         }
 	
 	/**
+	 * @since   	1.2.0
+	 * @deprecated	1.2.0
+	 */
+	public static function useOldStructure()
+	{
+		static $useOldStructure;
+		
+		if(is_null($useOldStructure))
+		{
+			$useOldStructure = JComponentHelper::getParams('com_fieldsandfilters')->get('use_old_structure', false);
+		}
+		
+		return $useOldStructure;
+	}
+	
+	/**
 	 * Get dispatcher object.
 	 *
 	 * @see     JEventDispatcher or JDispatcher

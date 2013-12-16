@@ -27,57 +27,59 @@
 		
 		<!-- Add fields to the parameters object for the plugin type. -->
 		<fields name="params">
-			<fieldset name="type">
-				<!--<field
-					name="regexp"
-					type="text"
-					label="PLG_FAF_TS_IT_FORM_REGEXP_LBL"
-					description="PLG_FAF_TS_IT_FORM_REGEXP_DESC"
-					filter="safehtml"
-				/>-->
-				<field
-					name="readonly"
-					type="radio"
-					class="btn-group"
-					label="PLG_FAF_TS_IT_FORM_READONLY_LBL"
-					description="PLG_FAF_TS_IT_FORM_READONLY_DESC"
-					default="0"
-					filter="intval"
-				>
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-				</field>
-				<field
-					name="hidden"
-					type="radio"
-					class="btn-group"
-					label="PLG_FAF_TS_IT_FORM_HIDDEN_LBL"
-					description="PLG_FAF_TS_IT_FORM_HIDDEN_DESC"
-					default="0"
-					filter="intval"
-				>
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-				</field>
-				<field
-					name="field_layout"
-					type="fieldsandfiltersPluginLayout"
-					mode="field"
-					plugin="fieldsandfiltersTypes"
-					key="field_type"
-					label="PLG_FAF_TS_IT_FORM_FIELD_LAYOUT_LBL"
-					description="PLG_FAF_IT_TA_FORM_FIELD_LAYOUT_DESC"
-				/>
-				<field
-					name="field_layout"
-					type="fieldsandfiltersPluginLayout"
-					mode="field"
-					plugin="fieldsandfiltersTypes"
-					key="field_type"
-					label="PLG_FAF_TS_IT_FORM_FIELD_LAYOUT_LBL"
-					description="PLG_FAF_TS_IT_FORM_FIELD_LAYOUT_DESC"
-				/>
-			</fieldset>
+			<fields name="type">
+				<fieldset name="type">
+					<!--<field
+						name="regexp"
+						type="text"
+						label="PLG_FAF_TS_IT_FORM_REGEXP_LBL"
+						description="PLG_FAF_TS_IT_FORM_REGEXP_DESC"
+						filter="safehtml"
+					/>-->
+					<field
+						name="readonly"
+						type="radio"
+						class="btn-group"
+						label="PLG_FAF_TS_IT_FORM_READONLY_LBL"
+						description="PLG_FAF_TS_IT_FORM_READONLY_DESC"
+						default="0"
+						filter="intval"
+					>
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+					</field>
+					<field
+						name="hidden"
+						type="radio"
+						class="btn-group"
+						label="PLG_FAF_TS_IT_FORM_HIDDEN_LBL"
+						description="PLG_FAF_TS_IT_FORM_HIDDEN_DESC"
+						default="0"
+						filter="intval"
+					>
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+					</field>
+					<field
+						name="field_layout"
+						type="fieldsandfiltersPluginLayout"
+						mode="field"
+						plugin="fieldsandfiltersTypes"
+						key="field_type"
+						label="PLG_FAF_TS_IT_FORM_FIELD_LAYOUT_LBL"
+						description="PLG_FAF_IT_TA_FORM_FIELD_LAYOUT_DESC"
+					/>
+					<field
+						name="field_layout"
+						type="fieldsandfiltersPluginLayout"
+						mode="field"
+						plugin="fieldsandfiltersTypes"
+						key="field_type"
+						label="PLG_FAF_TS_IT_FORM_FIELD_LAYOUT_LBL"
+						description="PLG_FAF_TS_IT_FORM_FIELD_LAYOUT_DESC"
+					/>
+				</fieldset>
+			</fields>
 		</fields>
 	</form>
 </metadata>

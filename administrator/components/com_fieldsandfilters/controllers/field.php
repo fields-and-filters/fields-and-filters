@@ -34,35 +34,6 @@ class FieldsandfiltersControllerField extends JControllerForm
 		}
 		/* @end deprecated J3.x */
         }
-        
-        /**
-	 * Method to save a record.
-	 *
-	 * @param   string  $key     The name of the primary key of the URL variable.
-	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
-	 *
-	 * @return  boolean  True if successful, false otherwise.
-	 * @since       1.0.0
-	 */
-	public function save($key = 'field_id', $urlVar = 'id')
-	{
-                parent::save($key, $urlVar);       
-        }
-        
-        /**
-	 * Method to edit an existing record.
-	 *
-	 * @param   string  $key     The name of the primary key of the URL variable.
-	 * @param   string  $urlVar  The name of the URL variable if different from the primary key
-	 * (sometimes required to avoid router collisions).
-	 *
-	 * @return  boolean  True if access level check and checkout passes, false otherwise.
-	 * @since       1.0.0
-	 */
-	public function edit($key = 'field_id', $urlVar = 'id')
-	{
-                parent::edit($key, $urlVar); 
-        }
 	
 	/**
 	 * Sets the type of the field item currently being edited.
@@ -90,7 +61,7 @@ class FieldsandfiltersControllerField extends JControllerForm
 		
 		if ($name && $modes && $type && $recordId  == $options->get('id', 0))
 		{
-			$data['field_type'] 	= $name;
+			$data['type']		= $name;
                         $data['type_mode'] 	= $typeMode;
 			
 			//Save the data in the session.

@@ -24,7 +24,7 @@ class FieldsandfiltersTableField extends JTable
 	 */
 	public function __construct( &$db )
 	{
-		parent::__construct( '#__fieldsandfilters_fields', 'field_id', $db );
+		parent::__construct( '#__fieldsandfilters_fields', 'id', $db );
 	}
 
 	/**
@@ -54,26 +54,8 @@ class FieldsandfiltersTableField extends JTable
 			$this->values = JArrayHelper::getValue( $array, 'values', array() );
 			unset( $array['values'] );
 		}
-    
+                
 		return parent::bind( $array, $ignore );
-	}
-    
-	/**
-	 * This function convert an array of JAccessRule objects into an rules array.
-	 * 
-	 * @param type $jaccessrules an arrao of JAccessRule objects.
-	 * @since	1.0.0
-	 */
-	private function JAccessRulestoArray($jaccessrules){
-		$rules = array();
-		foreach($jaccessrules as $action => $jaccess){
-			$actions = array();
-			foreach($jaccess->getData() as $group => $allow){
-				$actions[$group] = ((bool)$allow);
-			}
-			$rules[$action] = $actions;
-		}
-		return $rules;
 	}
 
 	/**
@@ -92,7 +74,7 @@ class FieldsandfiltersTableField extends JTable
 		$typesHelper = FieldsandfiltersFactory::getTypes();
 		
 		//If there is an ordering column and this is a new row then get the next ordering value
-		if( $this->field_id == 0 )
+		if( $this->id == 0 )
 		{
 			$this->ordering = self::getNextOrder();
 		}
@@ -107,19 +89,19 @@ class FieldsandfiltersTableField extends JTable
                         }
                         
                         // Check for a field name.
-                        if( trim( $this->field_name ) == '' )
+                        if( trim( $this->name ) == '' )
                         {
                                 throw new RuntimeException( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_NAME' ) );
                         }
                         
                         // Check for a field type.
-                        if( trim( $this->field_type ) == '' )
+                        if( trim( $this->type ) == '' )
                         {
                                 throw new RuntimeException( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_TYPE' ) );
                         }
-                        elseif( !$typesHelper->getTypes()->get( $this->field_type ) )
+                        elseif( !$typesHelper->getTypes()->get( $this->type ) )
                         {
-                               throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_TYPE_NOT_EXISTS', $this->field_type ) );
+                               throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_TYPE_NOT_EXISTS', $this->type ) );
                         }
                         
                         // Check for a field extension type id.
@@ -142,21 +124,21 @@ class FieldsandfiltersTableField extends JTable
 		if( in_array( $this->mode, (array) $typesHelper->getMode( 'filter' ) ) )
 		{
 			// Check for a field alias
-			if( trim( $this->field_alias ) == '' )
+			if( trim( $this->alias ) == '' )
 			{
-				$this->field_alias = $this->field_name;
+				$this->alias = $this->name;
 			}
                         
-			$this->field_alias = JApplication::stringURLSafe( $this->field_alias );
+			$this->alias = JApplication::stringURLSafe( $this->alias );
 		       
-			if( trim( str_replace( '-', '', $this->field_alias ) ) == '' )
+			if( trim( str_replace( '-', '', $this->alias ) ) == '' )
 			{
-				$this->field_alias = JFactory::getDate()->format( 'Y-m-d-H-i-s' );
+				$this->alias = JFactory::getDate()->format( 'Y-m-d-H-i-s' );
 			}
 		}
-		elseif( trim( $this->field_alias ) != '' )
+		elseif( trim( $this->alias ) != '' )
 		{
-			$this->field_alias = '';
+			$this->alias = '';
 		}
 		return true;
 	}
@@ -177,9 +159,9 @@ class FieldsandfiltersTableField extends JTable
 			// Verify that the alias is unique
 			$table = JTable::getInstance( 'Field', 'FieldsandfiltersTable' );
                         
-			if( $table->load( array( 'field_alias' => $this->field_alias ) ) && ( $table->field_id != $this->field_id || $this->field_id == 0 ) )
+			if( $table->load( array( 'alias' => $this->alias ) ) && ( $table->id != $this->id || $this->id == 0 ) )
 			{
-				$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_ALIAS_EXISTS', $this->field_alias ) );
+				$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_ALIAS_EXISTS', $this->alias ) );
 				return false;
 			}
 		}

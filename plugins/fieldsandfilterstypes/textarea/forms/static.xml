@@ -43,64 +43,66 @@
 		
 		<!-- Add fields to the parameters object for the plugin type. -->
 		<fields name="params">
-			<fieldset name="type">
-				<field
-					name="rows"
-					type="text"
-					class="inputbox"
-					label="PLG_FAF_TS_TA_FORM_DISPLAY_ROWS_LBL"
-					description="PLG_FAF_TS_TA_FORM_DISPLAY_ROWS_DESC"
-					default="0"
-					filter="intval"
-				>
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-				</field>
-				<field
-					name="cols"
-					type="text"
-					class="inputbox"
-					label="PLG_FAF_TS_TA_FORM_DISPLAY_COLS_LBL"
-					description="PLG_FAF_TS_TA_FORM_DISPLAY_COLS_DESC"
-					default="0"
-					filter="intval"
-				>
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-				</field>
-				<field
-					name="display_editor"
-					type="radio"
-					class="btn-group"
-					label="PLG_FAF_TS_TA_FORM_DISPLAY_EDITOR_LBL"
-					description="PLG_FAF_TS_TA_FORM_DISPLAY_EDITOR_DESC"
-					default="0"
-					filter="intval"
-				>
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-				</field>
-				<field
-					name="editor"
-					type="plugins"
-					folder="editors"
-					default=""
-					label="PLG_FAF_TS_TA_FORM_EDITOR_LBL"
-					description="PLG_FAF_TS_TA_FORM_EDITOR_DESC"
-					filter="cmd"
-				>
-					<option value="">JDEFAULT</option>
-				</field>
-				<field
-					name="field_layout"
-					type="fieldsandfiltersPluginLayout"
-					mode="static"
-					plugin="fieldsandfiltersTypes"
-					key="field_type"
-					label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
-					description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
-				/>
-			</fieldset>
+			<fields name="type">
+				<fieldset name="type">
+					<field
+						name="rows"
+						type="text"
+						class="inputbox"
+						label="PLG_FAF_TS_TA_FORM_DISPLAY_ROWS_LBL"
+						description="PLG_FAF_TS_TA_FORM_DISPLAY_ROWS_DESC"
+						default="0"
+						filter="intval"
+					>
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+					</field>
+					<field
+						name="cols"
+						type="text"
+						class="inputbox"
+						label="PLG_FAF_TS_TA_FORM_DISPLAY_COLS_LBL"
+						description="PLG_FAF_TS_TA_FORM_DISPLAY_COLS_DESC"
+						default="0"
+						filter="intval"
+					>
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+					</field>
+					<field
+						name="display_editor"
+						type="radio"
+						class="btn-group"
+						label="PLG_FAF_TS_TA_FORM_DISPLAY_EDITOR_LBL"
+						description="PLG_FAF_TS_TA_FORM_DISPLAY_EDITOR_DESC"
+						default="0"
+						filter="intval"
+					>
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+					</field>
+					<field
+						name="editor"
+						type="plugins"
+						folder="editors"
+						default=""
+						label="PLG_FAF_TS_TA_FORM_EDITOR_LBL"
+						description="PLG_FAF_TS_TA_FORM_EDITOR_DESC"
+						filter="cmd"
+					>
+						<option value="">JDEFAULT</option>
+					</field>
+					<field
+						name="field_layout"
+						type="fieldsandfiltersPluginLayout"
+						mode="static"
+						plugin="fieldsandfiltersTypes"
+						key="field_type"
+						label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
+						description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
+					/>
+				</fieldset>
+			</fields>
 		</fields>
 	</form>
 </metadata>

@@ -149,7 +149,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	protected function _prepareVars()
 	{
 		$this->vars->typeName 		= 'content_type_id';
-		$this->vars->elementName 	= 'field_id';
+		$this->vars->elementName 	= 'id';
 		
 		if( $this->method == 'getFieldsByID' )
 		{
@@ -241,7 +241,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		
 		if( $this->method == 'getFieldsByID' )
 		{
-			$query->where( $this->_db->quoteName( 'field_id' ) . ' IN (' . implode( ',', $this->elements ) . ')' );
+			$query->where( $this->_db->quoteName( 'id' ) . ' IN (' . implode( ',', $this->elements ) . ')' );
 		}
 		else if( $this->method == 'getFieldsByModeID' )
 		{
@@ -252,10 +252,22 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		if( !empty( $this->vars->notElements ) )
 		{
 			JArrayHelper::toInteger( $this->vars->notElements  );
-			$query->where( $this->_db->quoteName( 'field_id' ) . ' NOT IN (' . implode( ',', $this->vars->notElements  ) . ')' );
+			$query->where( $this->_db->quoteName( 'id' ) . ' NOT IN (' . implode( ',', $this->vars->notElements  ) . ')' );
 		}
 		
 		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
+		
+		/* @deprecated 1.2.0 */
+		if (FieldsandfiltersFactory::useOldStructure())
+		{
+			$query->select( array(
+				$this->_db->quoteName( 'id', 'field_id' ),
+				$this->_db->quoteName( 'name', 'field_name' ),
+				$this->_db->quoteName( 'alias', 'field_alias' ),
+				$this->_db->quoteName( 'type', 'field_type' )
+			) );
+		}
+		/* @end deprecated 1.2.0 */
 		
 		return $query;
 	}
@@ -266,19 +278,19 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	 */
 	protected function _setData( &$_field )
         {
-		$this->_getData( $_field->content_type_id )->elements->set( $_field->field_id, $_field );
+		$this->_getData( $_field->content_type_id )->elements->set( $_field->id, $_field );
 		$_field->params = new JRegistry( $_field->params );
 		$_field->location = (array) $_field->params->get( 'extension.location', $this->_extension_locatnion_default );
 		
 		
 		if( ( $byID = $this->method == 'getFieldsByID' ) || $this->method == 'getFieldsByModeID' )
 		{
-			$this->buffer->set( $_field->field_id, $_field );
+			$this->buffer->set( $_field->id, $_field );
 		}
 		
 		if( $byID )
 		{
-			array_push( $this->vars->fieldsID, $_field->field_id );
+			array_push( $this->vars->fieldsID, $_field->id );
 		}
         }
 	
@@ -351,15 +363,15 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			
 		if( $this->methodValues == 'values' )
 		{
-			$query->from( $this->_db->quoteName( '#__fieldsandfilters_field_values' ) );
-			$query->where( $this->_db->quoteName( 'state' ) . ' = 1' );
-			$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
+			$query->from( $this->_db->quoteName( '#__fieldsandfilters_field_values' ) )
+				->where( $this->_db->quoteName( 'state' ) . ' = 1' )
+				->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
 		}
 		else if( $this->methodValues == 'data' )
 		{
-			$query->from( $this->_db->quoteName( '#__fieldsandfilters_data' ) );
-			$query->where( $this->_db->quoteName( 'element_id' ) . ' = ' .  0 );
-			$query->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' );
+			$query->from( $this->_db->quoteName( '#__fieldsandfilters_data' ) )
+				->where( $this->_db->quoteName( 'element_id' ) . ' = ' .  0 )
+				->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' );
 		}
 				
 		return $query;
@@ -429,11 +441,11 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			     $element->$valuesName = new JObject();
 			}
 			
-			if( isset( $_value->field_value_id ) )
+			if( isset( $_value->id ) )
 			{
 				unset( $_value->field_id );
 				
-				$element->$valuesName->set( $_value->field_value_id, $_value );
+				$element->$valuesName->set( $_value->id, $_value );
 			}
 		}
 		else if( $this->methodValues == 'data' )

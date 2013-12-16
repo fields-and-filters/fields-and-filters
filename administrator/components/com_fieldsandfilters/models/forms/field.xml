@@ -2,7 +2,7 @@
 <form>
 	<fieldset addfieldpath="/administrator/components/com_fieldsandfilters/models/fields">
 		<field
-			name="field_id"
+			name="id"
 			type="text"
 			default="0"
 			class="readonly"
@@ -12,7 +12,7 @@
 			filter="intval"
 		/>
 		<field
-			name="field_name"
+			name="name"
 			type="text"
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_FIELD_NAME"
 			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_FIELD_NAME"
@@ -22,7 +22,7 @@
 			size="40"
 		/>
 		<field
-			name="field_alias"
+			name="alias"
 			type="text"
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELD_FIELD_ALIAS"
 			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELD_FIELD_ALIAS"
@@ -32,7 +32,7 @@
 			hint="JFIELD_ALIAS_PLACEHOLDER"
 		/>
 		<field
-			name="field_type"
+			name="type"
 			type="Modal_FieldsandfiltersTypes"
 			size="40"
 			class="inputbox input-medium"
@@ -153,7 +153,7 @@
 				<field
 					name="show_name"
 					type="radio"
-					class="btn-group"
+					class="btn-group btn-group-yesno"
 					default="1"
 					filter="intval"
 					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_BASE_SITE_SHOW_NAME"
@@ -177,7 +177,7 @@
 				<field
 					name="site_enabled_description"
 					type="radio"
-					class="btn-group"
+					class="btn-group btn-group-yesno"
 					default="0"
 					filter="intval"
 					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_BASE_SITE_ENABLED_DESCRIPTION"
@@ -219,7 +219,7 @@
 				<field
 					name="prepare_description"
 					type="radio"
-					class="btn-group"
+					class="btn-group btn-group-yesno"
 					default="0"
 					filter="intval"
 					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_PREPARE_DESCRIPTION"
@@ -239,7 +239,7 @@
 				<field
 					name="admin_enabled_description"
 					type="radio"
-					class="btn-group"
+					class="btn-group btn-group-yesno"
 					default="0"
 					filter="intval"
 					label="COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_BASE_ADMIN_ENABLED_DESCRIPTION"

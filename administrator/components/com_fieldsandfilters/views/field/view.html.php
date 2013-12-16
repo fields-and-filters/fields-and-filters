@@ -70,7 +70,7 @@ class FieldsandfiltersViewField extends JViewLegacy
 			JToolBarHelper::custom('field.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		}
 		
-		$isNew = empty($this->item->field_id);
+		$isNew = empty($this->item->id);
 		
 		// If an existing item, can save to a copy.
 		if (!$isNew && $canDo->get('core.create'))
