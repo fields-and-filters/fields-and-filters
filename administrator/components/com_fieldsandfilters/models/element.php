@@ -499,10 +499,8 @@ class FieldsandfiltersModelElement extends JModelAdmin
 				$data 		= $tableFields->get( 'data', new JObject );
 				$connections 	= $tableFields->get( 'connections', new JObject );
 				
-				// Load PluginTypes Helper
-				$typesHelper 		= FieldsandfiltersFactory::getTypes();
-				$filterMode 		= (array) $typesHelper->getMode( 'filter', array() );
-				$otherMode		= (array) $typesHelper->getModes( null, array(), true, $filterMode );
+				$filterMode 		= (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER, array());
+				$otherMode		= (array) FieldsandfiltersModes::getModes( null, array(), true, $filterMode );
 				
 				// Load Array Helper
 				$fields 		= KextensionsArray::flatten( get_object_vars( $fields ) );
@@ -528,14 +526,14 @@ class FieldsandfiltersModelElement extends JModelAdmin
 						// insert text
 						elseif( empty( $_dataItem ) && !empty( $_data ) )
 						{
-							$tableObject->field_data	= $_data;
+							$tableObject->data	= $_data;
 							
 							$table->insertData( $tableObject );
 						}
 						// update text
 						elseif( $_dataItem != $_data )
 						{
-							$tableObject->field_data	= $_data;
+							$tableObject->data	= $_data;
 							
 							$table->updateData( $tableObject );
 						}

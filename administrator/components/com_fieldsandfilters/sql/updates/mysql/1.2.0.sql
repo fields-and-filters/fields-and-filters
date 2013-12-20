@@ -31,6 +31,7 @@ ALTER TABLE `#__fieldsandfilters_field_values` CHANGE `field_value_id` `id` INT(
 ALTER TABLE `#__fieldsandfilters_field_values` CHANGE `field_value` `value` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL DEFAULT '';
 ALTER TABLE `#__fieldsandfilters_field_values` CHANGE `field_value_alias` `alias` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL DEFAULT '';
 
+ALTER TABLE `#__fieldsandfilters_data` CHANGE `field_data` `data` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL ;
 -- -----------------------------------------------------
 -- Add new/Remove old index
 -- -----------------------------------------------------

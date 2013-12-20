@@ -28,17 +28,17 @@ abstract class FieldsandfiltersHtmlDropdown
 	 *
 	 * @since       1.0.0
 	 */
-	public static function required( $checkboxId, $prefix = '' )
+	public static function required($checkboxId, $prefix = '')
 	{
 		$task = $prefix . 'required';
 		
-		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
+		if (FieldsandfiltersFactory::isVersion('>=', 3.2))
 		{
-			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM' ), 'star', $checkboxId, $task );
+			JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM'), 'star', $checkboxId, $task);
 		}
 		else
 		{
-			JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );
+			JHtml::_('dropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM'), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"');
 		}
 		
 		return;
@@ -54,16 +54,16 @@ abstract class FieldsandfiltersHtmlDropdown
 	 *
 	 * @since       1.0.0
 	 */
-	public static function unrequired( $checkboxId, $prefix = '' )
+	public static function unrequired($checkboxId, $prefix = '')
 	{
 		$task = $prefix . 'unrequired';
-		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
+		if (FieldsandfiltersFactory::isVersion('>=', 3.2))
 		{
-			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM' ), 'star-empty', $checkboxId, $task );
+			JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM'), 'star-empty', $checkboxId, $task);
 		}
 		else
 		{
-			JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );
+			JHtml::_('dropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM'), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"');JHtml::_('dropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM'), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"');
 		}
 		
 		return;
@@ -79,16 +79,16 @@ abstract class FieldsandfiltersHtmlDropdown
 	 *
 	 * @since       1.0.0
 	 */
-	public static function onlyAdmin( $checkboxId, $prefix = '' )
+	public static function onlyAdmin($checkboxId, $prefix = '')
 	{
 		$task = $prefix . 'onlyadmin';
-		if( FieldsandfiltersFactory::isVersion( '>=', 3.2 ) )
+		if (FieldsandfiltersFactory::isVersion('>=', 3.2))
 		{
-			JHtml::_( 'actionsdropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_ONLYADMIN' ), 'dashboard', $checkboxId, $task );
+			JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_ONLYADMIN'), 'dashboard', $checkboxId, $task);
 		}
 		else
 		{
-			JHtml::_( 'dropdown.addCustomItem', JText::_( 'COM_FIELDSANDFILTERS_HTML_ONLYADMIN' ), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"' );
+			JHtml::_('dropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_ONLYADMIN'), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"');
 		}
 		
 		return;

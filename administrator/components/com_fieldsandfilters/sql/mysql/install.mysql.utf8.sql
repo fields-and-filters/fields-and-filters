@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `#__fieldsandfilters_data` (
   `element_id` INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `content_type_id` INT(11) UNSIGNED NOT NULL DEFAULT 0,
   `field_id` INT(11) UNSIGNED NOT NULL DEFAULT 0,
-  `field_data` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL DEFAULT '',
+  `data` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL DEFAULT '',
   INDEX `field_id` (`field_id` ASC),
   INDEX `element_id` (`element_id` ASC),
   UNIQUE INDEX `element_id_field_id` (`element_id` ASC, `field_id` ASC),

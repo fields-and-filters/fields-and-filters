@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 // Load PluginTypes Helper
 $typesHelper 	= FieldsandfiltersFactory::getTypes();
-$valuesMode	= (array) $typesHelper->getMode('filter');
+$valuesMode	= (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER);
 
 // Load PluginExtensions Helper
 $extensionsHelper = FieldsandfiltersFactory::getExtensions();
@@ -197,7 +197,7 @@ if ($saveOrder)
 							<?php if ($type = $typesHelper->getTypes(true)->get($item->type)) : ?>
 								<?php
 									KextensionsLanguage::load('plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR);
-									$typeName 	= $typesHelper->getModeName($item->mode, FieldsandfiltersTypes::MODE_NAME_TYPE);
+									$typeName 	= FieldsandfiltersModes::getModeName($item->mode, FieldsandfiltersModes::MODE_NAME_TYPE);
 									$typeForm	= $type->forms->get($typeName, new JObject);
 									
 									if (isset($typeForm->group->title))

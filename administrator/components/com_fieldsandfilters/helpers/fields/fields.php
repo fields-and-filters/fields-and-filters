@@ -108,10 +108,8 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	{
 		parent::__construct( $debug );
 		
-		$typesHelper =  FieldsandfiltersFactory::getTypes();
-		
-		$this->_valuesModes = (array) $typesHelper->getMode( 'filter' );
-		$this->_staticModes = (array) $typesHelper->getMode( 'static' );
+		$this->_valuesModes = (array) FieldsandfiltersModes::getMode( FieldsandfiltersModes::MODE_FILTER );
+		$this->_staticModes = (array) FieldsandfiltersModes::getMode( FieldsandfiltersModes::MODE_STATIC );
 	}
 	
 	/**
@@ -450,11 +448,11 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		}
 		else if( $this->methodValues == 'data' )
 		{
-			if( isset( $_value->field_id ) && isset( $_value->field_data ) )
+			if( isset( $_value->field_id ) && isset( $_value->data ) )
 			{
 				if( !isset( $element->$valuesName ) )
 				{
-					$element->$valuesName = $_value->field_data;
+					$element->$valuesName = $_value->data;
 				}
 			}
 			else if( !isset( $element->$valuesName ) )

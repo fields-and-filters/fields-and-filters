@@ -9,37 +9,37 @@
 
 
 // no direct access
-defined( '_JEXEC' ) or die;
+defined('_JEXEC') or die;
 
-JHtml::_( 'bootstrap.tooltip' );
-JHtml::_( 'behavior.multiselect' );
-JHtml::_( 'dropdown.init' );
-JHtml::_( 'formbehavior.chosen', 'select' );
+JHtml::_('bootstrap.tooltip');
+JHtml::_('behavior.multiselect');
+JHtml::_('dropdown.init');
+JHtml::_('formbehavior.chosen', 'select');
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
+JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true);
 
 $app		= JFactory::getApplication();
 $user		= JFactory::getUser();
-$userId		= $user->get( 'id' );
-$listOrder	= $this->escape( $this->state->get( 'list.ordering' ) );
-$listDirn	= $this->escape( $this->state->get( 'list.direction' ) );
-$canOrder	= $user->authorise( 'core.edit.state', 'com_fieldsandfilters' );
+$userId		= $user->get('id');
+$listOrder	= $this->escape($this->state->get('list.ordering'));
+$listDirn	= $this->escape($this->state->get('list.direction'));
+$canOrder	= $user->authorise('core.edit.state', 'com_fieldsandfilters');
 $saveOrder	= $listOrder == 'fv.ordering';
-if( $saveOrder )
+if ($saveOrder)
 {
 	$saveOrderingUrl = 'index.php?option=com_fieldsandfilters&task=fieldvalues.saveOrderAjax&tmpl=component';
-	JHtml::_( 'sortablelist.sortable', 'fieldvalueList', 'adminForm', strtolower( $listDirn ), $saveOrderingUrl );
+	JHtml::_('sortablelist.sortable', 'fieldvalueList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 
 ?>
 <script type="text/javascript">
 	Joomla.orderTable = function()
 	{
-		table = document.getElementById( 'sortTable' );
-		direction = document.getElementById( 'directionTable' );
+		table = document.getElementById('sortTable');
+		direction = document.getElementById('directionTable');
 		order = table.options[table.selectedIndex].value;
-		if (order != '<?php echo $listOrder; ?>' )
+		if (order != '<?php echo $listOrder; ?>')
 		{
 			dirn = 'asc';
 		}
@@ -47,11 +47,11 @@ if( $saveOrder )
 		{
 			dirn = direction.options[direction.selectedIndex].value;
 		}
-		Joomla.tableOrdering( order, dirn, '' );
+		Joomla.tableOrdering(order, dirn, '');
 	}
 </script>
 
-<form action="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&view=fieldvalues' ); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if (!empty($this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -79,26 +79,26 @@ if( $saveOrder )
 							<?php echo JHtml::_('grid.checkall'); ?>
 						</th>
 						<th width="1%" style="min-width:55px" class="nowrap center">
-							<?php echo JHtml::_( 'searchtools.sort', 'JSTATUS', 'fv.state', $listDirn, $listOrder ); ?>
+							<?php echo JHtml::_('searchtools.sort', 'JSTATUS', 'fv.state', $listDirn, $listOrder); ?>
 						</th>
 						<th>
-							<?php echo JHtml::_( 'searchtools.sort',  'COM_FIELDSANDFILTERS_FIELDVALUES_FIELD_VALUE', 'fv.field_value', $listDirn, $listOrder ); ?>
+							<?php echo JHtml::_('searchtools.sort',  'COM_FIELDSANDFILTERS_FIELDVALUES_FIELD_VALUE', 'fv.value', $listDirn, $listOrder); ?>
 						</th>
 						<th  class="hidden-phone">
-							<?php echo JHtml::_( 'searchtools.sort',  'COM_FIELDSANDFILTERS_FIELDVALUES_FIELD', 'f.field_name', $listDirn, $listOrder ); ?>
+							<?php echo JHtml::_('searchtools.sort',  'COM_FIELDSANDFILTERS_FIELDVALUES_FIELD', 'f.field_name', $listDirn, $listOrder); ?>
 						</th>
 						<th width="1%" class="nowrap hidden-phone">
-							<?php echo JHtml::_( 'searchtools.sort',  'COM_FIELDSANDFILTERS_FIELDVALUES_FIELD_VALUE_ID', 'fv.field_value_id', $listDirn, $listOrder ); ?>
+							<?php echo JHtml::_('searchtools.sort',  'COM_FIELDSANDFILTERS_FIELDVALUES_FIELD_VALUE_ID', 'fv.id', $listDirn, $listOrder); ?>
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-				<?php foreach( $this->items as $i => $item ) :
-					$ordering	= ( $listOrder == 'fv.ordering' );
-					$canCreate	= $user->authorise( 'core.create',		'com_fieldsandfilters' );
-					$canEdit	= $user->authorise( 'core.edit',		'com_fieldsandfilters' );
-					$canCheckin	= $user->authorise( 'core.manage',		'com_fieldsandfilters' );
-					$canChange	= $user->authorise( 'core.edit.state',		'com_fieldsandfilters' );
+				<?php foreach ($this->items as $i => $item) :
+					$ordering	= ($listOrder == 'fv.ordering');
+					$canCreate	= $user->authorise('core.create',		'com_fieldsandfilters');
+					$canEdit	= $user->authorise('core.edit',		'com_fieldsandfilters');
+					$canCheckin	= $user->authorise('core.manage',		'com_fieldsandfilters');
+					$canChange	= $user->authorise('core.edit.state',		'com_fieldsandfilters');
 					?>
 					<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->field_id; ?>">
 						<td class="order nowrap center hidden-phone">
@@ -121,40 +121,40 @@ if( $saveOrder )
 							<?php endif; ?>
 						</td>
 						<td class="center hidden-phone">
-							<?php echo JHtml::_( 'grid.id', $i, $item->field_value_id ); ?>
+							<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 						</td>
 						<td class="center">
 							<div class="btn-group">
-								<?php echo JHtml::_( 'jgrid.published', $item->state, $i, 'fieldvalues.', $canChange, 'cb' ); ?>
+								<?php echo JHtml::_('jgrid.published', $item->state, $i, 'fieldvalues.', $canChange, 'cb'); ?>
 								
 								<?php
 									$action = $item->state ? 'unpublish' : 'publish';
 									JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'fieldvalues');
 									
 									// Render dropdown list
-									echo JHtml::_( 'actionsdropdown.render' );
+									echo JHtml::_('actionsdropdown.render');
 								?>
 							</div>
 						</td>
 						<td class="nowrap has-context">
 							<div class="pull-left">
-								<?php if( $canEdit) : ?>
-									<a href="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&task=fieldvalue.edit&id='.(int) $item->field_value_id ); ?>">
-										<?php echo $this->escape( $item->field_value ); ?>
+								<?php if ($canEdit) : ?>
+									<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&task=fieldvalue.edit&id='.(int) $item->id); ?>">
+										<?php echo $this->escape($item->value); ?>
 									</a>
 								<?php else : ?>
-									<?php echo $this->escape( $item->field_value ); ?>
+									<?php echo $this->escape($item->value); ?>
 								<?php endif; ?>
-								<?php echo JText::sprintf( 'JGLOBAL_LIST_ALIAS', $this->escape( $item->field_value_alias ) ); ?>
+								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
 							</div>
 						</td>
 						
 						<td class="hidden-phone">
-							<?php echo $this->escape( $item->field_name ); ?>
+							<?php echo $this->escape($item->field_name); ?>
 						</td>
 						
 						<td class="center hidden-phone">
-							<?php echo (int) $item->field_value_id; ?>
+							<?php echo (int) $item->id; ?>
 						</td>
 					</tr>
 					<?php endforeach; ?>
@@ -165,6 +165,6 @@ if( $saveOrder )
 			
 		<input type="hidden" name="task" value="" />
 		<input type="hidden" name="boxchecked" value="0" />
-		<?php echo JHtml::_( 'form.token' ); ?>
+		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>

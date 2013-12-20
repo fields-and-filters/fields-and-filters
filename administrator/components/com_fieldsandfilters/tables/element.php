@@ -150,7 +150,7 @@ class FieldsandfiltersTableElement extends JTable
 		
 		$query 	= $this->_db->getQuery( true );
 		
-		$query->select( $this->_db->quoteName( 'field_data' ) );
+		$query->select( $this->_db->quoteName( 'data' ) );
 		$query->from( $this->_db->quoteName( $this->_tbl_data ) );
 		$query->where( $this->_db->quoteName( $this->_tbl_key ) . ' = ' . (int) $pk );
 		$query->where( $this->_db->quoteName( 'extension_type_id' ) . ' = ' . (int) $this->extension_type_id );
@@ -179,7 +179,7 @@ class FieldsandfiltersTableElement extends JTable
 	{
 		$pk = $this->_testPrimaryKey( $object );
 		
-		if( !isset( $object->field_id ) || !isset( $object->field_data ) )
+		if( !isset( $object->field_id ) || !isset( $object->data ) )
 		{
 			$this->setError( '' );
 			return false;
@@ -192,14 +192,14 @@ class FieldsandfiltersTableElement extends JTable
 			$this->_db->quoteName( $this->_tbl_key ),
 			$this->_db->quoteName( 'extension_type_id' ),
 			$this->_db->quoteName( 'field_id' ),
-			$this->_db->quoteName( 'field_data' )
+			$this->_db->quoteName( 'data' )
 		) );
 		
 		$query->values(
 			       (int) $pk . ',' .
 			       (int) $this->extension_type_id . ',' .
 			       (int) $object->field_id . ',' .
-			       $this->_db->quote( $object->field_data )
+			       $this->_db->quote( $object->data )
 			);
 		$this->_db->setQuery( $query );
 		
@@ -224,7 +224,7 @@ class FieldsandfiltersTableElement extends JTable
 	{
 		$pk = $this->_testPrimaryKey( $object );
 		
-		if( !isset( $object->field_id ) || !isset( $object->field_data ) )
+		if( !isset( $object->field_id ) || !isset( $object->data ) )
 		{
 			$this->setError( '' );
 			return false;
@@ -233,7 +233,7 @@ class FieldsandfiltersTableElement extends JTable
 		$query 	= $this->_db->getQuery( true );
 		
 		$query->update( $this->_db->quoteName( $this->_tbl_data ) );
-		$query->set( $this->_db->quoteName( 'field_data' ) . ' = ' . $this->_db->quote( $object->field_data ) );
+		$query->set( $this->_db->quoteName( 'data' ) . ' = ' . $this->_db->quote( $object->data ) );
 		
 		$query->where( $this->_db->quoteName( $this->_tbl_key ) . ' = ' . (int) $pk );
 		$query->where( $this->_db->quoteName( 'field_id' ) . ' = ' . (int) $object->field_id );

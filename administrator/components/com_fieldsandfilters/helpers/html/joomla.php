@@ -90,20 +90,20 @@ abstract class FieldsandfiltersHtmlJoomla
 	 *
 	 * @since   1.2.0
 	 */
-	public static function jquery( $noConflict = true )
+	public static function jquery($noConflict = true)
 	{
 		// Only load once
-		if( !empty( static::$loaded[__METHOD__] ) )
+		if (!empty(static::$loaded[__METHOD__]))
 		{
 			return;
 		}
 
-		JHtml::_( 'script', 'fieldsandfilters/core/jquery-1.10.2.min.js', false, true, false, false, false );
+		JHtml::_('script', 'fieldsandfilters/core/jquery-1.10.2.min.js', false, true, false, false, false);
 
 		// Check if we are loading in noConflict
-		if( $noConflict )
+		if ($noConflict)
 		{
-			JHtml::_( 'script', 'fieldsandfilters/core/jquery-noconflict.js', false, true, false, false, false );
+			JHtml::_('script', 'fieldsandfilters/core/jquery-noconflict.js', false, true, false, false, false);
 		}
 
 		static::$loaded[__METHOD__] = true;

@@ -33,44 +33,44 @@ class FieldsandfiltersHtmlFilters
 	 *
 	 * @since   1.2.0
 	 */
-	public static function framework( $debug = null )
+	public static function framework($debug = null)
 	{
 		// Only load once
-		if( !empty( static::$loaded[__METHOD__ ] ) )
+		if (!empty(static::$loaded[__METHOD__ ]))
 		{
 			return;
 		}
 
 		// If no debugging value is set, use the configuration setting
-		if( $debug === null )
+		if ($debug === null)
 		{
 			$config = JFactory::getConfig();
-			$debug  = (boolean) $config->get( 'debug' );
+			$debug  = (boolean) $config->get('debug');
 		}
 		
-		$params = JComponentHelper::getParams( 'com_fieldsandfilters' );
+		$params = JComponentHelper::getParams('com_fieldsandfilters');
 		
 		// Import CSS
-		JHtml::_( 'stylesheet', 'fieldsandfilters/filters/filters.css', array(), true, false, false, false, false );
+		JHtml::_('stylesheet', 'fieldsandfilters/filters/filters.css', array(), true, false, false, false, false);
 		
-		$loadingBackground = $params->get( 'loading_background_filters', 'loading-balls' );
+		$loadingBackground = $params->get('loading_background_filters', 'loading-balls');
 		
-		if( $loadingBackground != -1 )
+		if ($loadingBackground != -1)
 		{
-			JHtml::_( 'stylesheet', 'fieldsandfilters/filters/' . $loadingBackground . '.css', array(), true, false, false, false );
+			JHtml::_('stylesheet', 'fieldsandfilters/filters/' . $loadingBackground . '.css', array(), true, false, false, false);
 		}	
 		
 		// Import JS
-		if( FieldsandfiltersFactory::isVersion() )
+		if (FieldsandfiltersFactory::isVersion())
 		{
-			JHtml::_( 'jquery.framework', (boolean) $params->get( 'load_noconflict_javascript', 1 ) );
+			JHtml::_('jquery.framework', (boolean) $params->get('load_noconflict_javascript', 1));
 		}
 		else
 		{
-			JHtml::_( 'FieldsandfiltersHtml.joomla.jquery', (boolean) $params->get( 'load_noconflict_javascript', 1 ) );
+			JHtml::_('FieldsandfiltersHtml.joomla.jquery', (boolean) $params->get('load_noconflict_javascript', 1));
 		}
 		
-		JHtml::_( 'script', 'fieldsandfilters/core/jquery.fieldsandfilters.js', false, true, false, false, $debug );
+		JHtml::_('script', 'fieldsandfilters/core/jquery.fieldsandfilters.js', false, true, false, false, $debug);
 		
 		static::$loaded[__METHOD__] = true;
 		

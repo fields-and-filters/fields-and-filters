@@ -45,9 +45,6 @@ class FieldsandfiltersControllerField extends JControllerForm
 	 */
 	function setType($urlVar = 'id')
 	{
-		// Get Types Helper
-		$typesHelper = FieldsandfiltersFactory::getTypes();
-		
 		// Get the posted values from the request.
 		$data           = $this->input->post->get('jform', array(), 'array');
 		$recordId	= $this->input->get($urlVar, 0, 'int');
@@ -56,8 +53,8 @@ class FieldsandfiltersControllerField extends JControllerForm
 		$options	= new JRegistry(base64_decode($data['temp_type']));
                 $name 		= $options->get('name');
 		$typeMode 	= $options->get('type_mode');
-		$modes		= $typesHelper->getMode()->get($typeMode);
-		$type		= $typesHelper->getTypesByName($name)->get($name);
+		$modes		= FieldsandfiltersModes::getMode()->get($typeMode);
+		$type		= FieldsandfiltersFactory::getTypes()->getTypesByName($name)->get($name);
 		
 		if ($name && $modes && $type && $recordId  == $options->get('id', 0))
 		{

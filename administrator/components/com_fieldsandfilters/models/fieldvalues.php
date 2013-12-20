@@ -32,14 +32,13 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		if( empty( $config['filter_fields'] ) )
 		{
 			$config['filter_fields'] = array(
-				'field_value_id', 	'fv.field_value_id',
-				'field_id', 		'fv.field_id',
-				'field_value',		'fv.field_value',
-				'field_value_alias', 	'fv.field_value_alias',
-				'ordering', 		'fv.ordering',
-				'state',		'fv.state',
-				'field_name',		'f.field_name',
-				'id'
+				'id', 		'fv.id',
+				'field_id', 	'fv.field_id',
+				'value',	'fv.value',
+				'alias', 	'fv.alias',
+				'ordering', 	'fv.ordering',
+				'state',	'fv.state',
+				'field_name',	'f.field_name'
 			);
 		}
 		
@@ -77,8 +76,7 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		{
 			if( !( $fieldID = $app->getUserState( $this->context . '.filter.field_id' ) ) )
 			{
-				// Load pluginTypes Helper
-				$filterMode 	= FieldsandfiltersFactory::getTypes()->getMode( 'filter' );
+				$filterMode 	= FieldsandfiltersModes::getMode( FieldsandfiltersModes::MODE_FILTER );
 				
 				// Load pluginExtensions Helper
 				$extensionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID( 'content_type_id' );
@@ -96,7 +94,7 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		$this->setState( 'params', $params );
 		
 		// List state information.
-		parent::populateState( 'fv.field_value', 'asc' );
+		parent::populateState( 'fv.value', 'asc' );
 	}
 
 	/**
@@ -142,14 +140,14 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		$query->from( $db->quoteName( '#__fieldsandfilters_field_values', 'fv' ) );
 		
 		// Join over the fields.
-		$query->select( $db->quoteName( 'f.field_name' ) );
-		$query->join( 'LEFT', $db->quoteName( '#__fieldsandfilters_fields', 'f' ) . ' ON ' . $db->quoteName( 'f.field_id' ) . ' = ' . $db->quoteName( 'fv.field_id' ) );
+		$query->select( $db->quoteName( 'f.name', 'field_name' ) );
+		$query->join( 'LEFT', $db->quoteName( '#__fieldsandfilters_fields', 'f' ) . ' ON ' . $db->quoteName( 'f.id' ) . ' = ' . $db->quoteName( 'fv.field_id' ) );
 		
 		// Filter by field id in title
 		$fieldID = $this->getState( 'filter.field_id' );
 		if( is_numeric( $fieldID ) )
 		{
-			$query->where( $db->quoteName( 'f.field_id' ) . ' = ' . (int) $fieldID );
+			$query->where( $db->quoteName( 'f.id' ) . ' = ' . (int) $fieldID );
 		}
 		
 		// Filter by published state
@@ -165,15 +163,15 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		{
 			if( stripos( $search, 'id:' ) === 0 )
 			{
-				$query->where( $db->quoteName( 'fv.field_value_id' ) . ' = ' . (int) substr( $search, 3 ) );
+				$query->where( $db->quoteName( 'fv.id' ) . ' = ' . (int) substr( $search, 3 ) );
 			}
 			else
 			{
 				$search = $db->Quote( '%' . $db->escape( $search, true ) . '%' );
 				
 				$where = array(
-						( $db->quoteName( 'fv.field_value' ) . ' LIKE ' . $search ),
-						( $db->quoteName( 'fv.field_value_alias' ) . ' LIKE ' . $search )
+						( $db->quoteName( 'fv.value' ) . ' LIKE ' . $search ),
+						( $db->quoteName( 'fv.alias' ) . ' LIKE ' . $search )
 					);
 				
 				$query->where( '( ' . implode( ' OR ', $where ) . ' )' );
@@ -181,7 +179,7 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		}
 		
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get( 'list.ordering', 'fv.field_value');
+		$orderCol	= $this->state->get( 'list.ordering', 'fv.value');
 		$orderDirn	= $this->state->get('list.direction', 'ASC');
 		
 		if( $orderCol && $orderDirn )

@@ -70,9 +70,9 @@ abstract class FieldsandfiltersHtmlGrid
 	 *
 	 * @since       1.0.0
 	 */
-	public static function required( $value = 0, $i, $prefix = '', $enabled = true, $checkbox = 'cb' )
+	public static function required($value = 0, $i, $prefix = '', $enabled = true, $checkbox = 'cb')
 	{
-		JHtml::_( 'bootstrap.tooltip' );
+		JHtml::_('bootstrap.tooltip');
 		
 		// Array of image, task, title, action
 		$states = array(
@@ -90,23 +90,23 @@ abstract class FieldsandfiltersHtmlGrid
 					)
 		);
 		
-		$state	= JArrayHelper::getValue( $states, (int) $value, $states[1] );
+		$state	= JArrayHelper::getValue($states, (int) $value, $states[1]);
 		
-		if( $enabled )
+		if ($enabled)
 		{
-			$html[]	= '<a href="#" class="btn btn-micro hasTooltip' . ( $value == 1 ? ' active' : '' ) . '" title="' . JText::_( $state[3] ) . '"';
+			$html[]	= '<a href="#" class="btn btn-micro hasTooltip' . ($value == 1 ? ' active' : '') . '" title="' . JText::_($state[3]) . '"';
 			$html[] = ' onclick="return listItemTask(\'' . $checkbox . $i . '\',\'' . $prefix . $state[1] . '\')">';
 			$html[] = '	<i class="icon-' . $state[0] . '"> </i>';
 			$html[] = '</a>';
 		}
 		else
 		{
-			$html[]	= '<a class="btn btn-micro hasTooltip disabled' . ( $value == 1 ? ' active' : '' ) . '" title="' . JText::_( $state[2] ) . '">';
+			$html[]	= '<a class="btn btn-micro hasTooltip disabled' . ($value == 1 ? ' active' : '') . '" title="' . JText::_($state[2]) . '">';
 			$html[] = '	<i class="icon-' . $state[0] . '"></i>';
 			$html[] = '</a>';
 		}
 		
-		return implode( "\n", $html );
+		return implode("\n", $html);
 	}
 	
 	/**

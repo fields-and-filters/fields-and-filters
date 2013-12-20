@@ -364,11 +364,11 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 		
 		if( $this->methodValues == 'data' )
 		{
-			if( isset( $_value->field_id ) && isset( $_value->field_data ) )
+			if( isset( $_value->field_id ) && isset( $_value->data ) )
 			{
 				if( !isset( $element->$valuesName->{$_value->field_id} ) )
 				{
-					$element->$valuesName->set( $_value->field_id, $_value->field_data );
+					$element->$valuesName->set( $_value->field_id, $_value->data );
 				}
 			}
 		}

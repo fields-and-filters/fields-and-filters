@@ -113,11 +113,10 @@ class FieldsandfiltersModelField extends JModelAdmin
 		{
 			return false;
 		}
-		$typesHelper = FieldsandfiltersFactory::getTypes();
 		
-		$form->setValue('mode', null, $typesHelper->getMode($form->getFieldAttribute('mode', 'value', 'field.text', 'properties')));
+		$form->setValue('mode', null, FieldsandfiltersModes::getMode($form->getFieldAttribute('mode', 'value', 'field.text', 'properties')));
 		
-		if (!in_array($form->getValue('mode', 0), (array) $typesHelper->getMode('filter')))
+		if (!in_array($form->getValue('mode', 0), (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER)))
 		{
 			// Disable field for display.
 			$form->setFieldAttribute('alias', 'type', 'hidden');
@@ -145,15 +144,13 @@ class FieldsandfiltersModelField extends JModelAdmin
 	 */
 	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
-		$typesHelper = FieldsandfiltersFactory::getTypes();
-		
 		$data 		= is_array($data) ? new JObject($data) : $data;
 		$fieldType 	= $data->get('type', $this->getState('type'));
-		$typeMode 	= $data->get('type_mode', $typesHelper->getModeName($data->get('mode', $this->getState('mode')), FieldsandfiltersTypes::MODE_NAME_TYPE));		
+		$typeMode 	= $data->get('type_mode', FieldsandfiltersModes::getModeName($data->get('mode', $this->getState('mode')), FieldsandfiltersModes::MODE_NAME_TYPE));		
 		
 		try
 		{
-			if ($fieldType && $typeMode && ($type = $typesHelper->getTypes(true)->get($fieldType)))
+			if ($fieldType && $typeMode && ($type = FieldsandfiltersFactory::getTypes()->getTypes(true)->get($fieldType)))
 			{
 				$path = $type->forms->get($typeMode, new JObject)->get('path');
 				$form::addFormPath($path);
@@ -192,7 +189,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 		}
 		
 		// overwrite the mode default of the plugin type mode 
-		$form->setFieldAttribute('mode', 'default', $typesHelper->getMode($form->getFieldAttribute('mode', 'value', 'field.text', 'properties')));
+		$form->setFieldAttribute('mode', 'default', FieldsandfiltersModes::getMode($form->getFieldAttribute('mode', 'value', 'field.text', 'properties')));
 		
 		// Trigger the default form events.
 		parent::preprocessForm($form, $data, $group);
@@ -235,7 +232,6 @@ class FieldsandfiltersModelField extends JModelAdmin
 		if (!isset($this->_cache[$store]))
 		{
 			$isNew		= true;
-			$typesHelper	= FieldsandfiltersFactory::getTypes();
 			
 			// Get a level row instance.
 			$table = $this->getTable();
@@ -260,7 +256,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 			{
 				$isNew		= false;
 				
-				if (in_array($table->mode, $typesHelper->getMode('static')))
+				if (in_array($table->mode, FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC)))
 				{
 					$elementTable 	= $this->getTable('Element', 'FieldsandfiltersTable');
 					
@@ -426,7 +422,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 				throw new Exception($table->getError());
 			}
 			
-			if ($isValues = isset($table->values) )
+			if ($isValues = isset($table->values))
 			{
 				$tableFields = (array) $table->get('values');
 			}
@@ -453,7 +449,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 				throw new Exception($table->getError());
 			}
 			
-			$staticModes = FieldsandfiltersFactory::getTypes()->getMode('static');
+			$staticModes = FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC);
 			
 			if ($isValues)
 			{
@@ -472,7 +468,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 					
 					if (!empty($data))
 					{
-						$objectTable->field_data = $data;
+						$objectTable->data = $data;
 						
 						if ($oldData && $table->content_type_id != $item->content_type_id)
 						{
@@ -550,10 +546,8 @@ class FieldsandfiltersModelField extends JModelAdmin
 		$valueTable 	= $this->getTable('Fieldvalue', 'FieldsandfiltersTable');
 		$elementTable 	= $this->getTable('Element', 'FieldsandfiltersTable');
 		
-		// Load PluginTypes Helper
-		$typesHelper	= FieldsandfiltersFactory::getTypes();
-		$filterMode	= (array) $typesHelper->getMode('filter');
-		$otherMode	= (array) $typesHelper->getModes(null, array(), true, $filterMode);
+		$filterMode	= (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER);
+		$otherMode	= (array) FieldsandfiltersModes::getModes(null, array(), true, $filterMode);
 		
 		// Include the content plugins for the on delete events.
 		JPluginHelper::importPlugin('content');
