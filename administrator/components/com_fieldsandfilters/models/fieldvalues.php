@@ -64,7 +64,7 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		$published = $app->getUserStateFromRequest( $this->context . '.filter.state', 'filter_published', '', 'string' );
 		$this->setState( 'filter.state', $published );
 		
-		if( $fieldID = $app->input->getInt( 'id', $app->getUserStateFromRequest( $this->context . '.filter.field_id', 'filter_field_id', 0, 'int' ) ) )
+		if( $fieldID = $app->input->getInt( 'field_id', $app->getUserStateFromRequest( $this->context . '.filter.field_id', 'filter_field_id', 0, 'int' ) ) )
 		{
 			if( $fieldID != $app->getUserState( $this->context . '.filter.field_id' ) )
 			{
@@ -87,6 +87,7 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 				
 			}
 		}
+		
 		$this->setState( 'filter.field_id', (int) $fieldID );
 		
 		// Load the parameters.

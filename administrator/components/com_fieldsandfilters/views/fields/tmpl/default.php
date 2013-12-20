@@ -182,7 +182,7 @@ if ($saveOrder)
 								<?php if (in_array($item->mode, $valuesMode)) : ?>
 								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
 								<div>
-									<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&id=' . (int) $item->id); ?>">
+									<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&field_id=' . (int) $item->id); ?>">
 										<span class="label label-info">
 											<i class="icon-list"></i>
 											<?php echo JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES'); ?>

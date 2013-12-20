@@ -115,7 +115,7 @@ abstract class FieldsandfiltersModes
 		{
 			while ($path = array_shift($paths))
 			{
-				if ($mode = $this->getMode($path, false))
+				if ($mode = self::getMode($path, false))
 				{
 					if ($pathKey)
 					{
@@ -130,7 +130,7 @@ abstract class FieldsandfiltersModes
 		}
 		else if (is_string($paths))
 		{
-			$modes = (array) $this->getMode($paths);
+			$modes = (array) self::getMode($paths);
 		}
 		
 		if (!empty($modes))

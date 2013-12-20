@@ -12,6 +12,7 @@
 			type="fieldsandfiltersFields"
 			label="COM_FIELDSANDFILTERS_FILTER_FIELD"
 			description="COM_FIELDSANDFILTERS_FILTER_FIELD_DESC"
+			modes="filter"
 			onchange="this.form.submit();"
 		>''
 			<option value="">COM_FIELDSANDFILTERS_OPTION_SELECT_FIELD</option>

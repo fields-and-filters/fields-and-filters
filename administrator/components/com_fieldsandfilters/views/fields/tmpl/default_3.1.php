@@ -218,7 +218,7 @@ $sortFields 	= $this->getSortFields();
 					
 					<td class="center">
 						<?php if (in_array($item->mode, $valuesMode)) : ?>
-							<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&id=' . (int) $item->id); ?>">
+							<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&field_id=' . (int) $item->id); ?>">
 								<?php echo JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES'); ?>
 							</a>
 						<?php endif; ?>
