@@ -13,7 +13,7 @@
 			filter="intval"
 		/>
 		<field
-			name="field_value"
+			name="value"
 			type="text"
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD_VALUE"
 			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD_VALUE"
@@ -23,13 +23,14 @@
 			size="30"
 		/>
 		<field
-			name="field_value_alias"
+			name="alias"
 			type="text"
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD_VALUE_ALIAS"
 			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD_VALUE_ALIAS"
-			class="inputbox"
+			class="inputbox input-xxlarge"
 			filter="safehtml"
 			size="40"
+			hint="COM_FIELDSANDFILTERS_FORM_FIELD_VALUE_ALIAS_PLACEHOLDER"
 		/>
 		<field
 			name="state"
@@ -44,7 +45,7 @@
 			<option value="0">JUNPUBLISHED</option>
 		</field>
 		<field
-			name="field_value_id"
+			name="id"
 			type="text"
 			default="0"
 			class="readonly"

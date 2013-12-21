@@ -24,7 +24,6 @@ class FieldsandfiltersControllerField extends JControllerForm
 
         function __construct()
         {
-                $this->view_list = 'fields';
                 parent::__construct();
 		
 		/* @deprecated J3.x */

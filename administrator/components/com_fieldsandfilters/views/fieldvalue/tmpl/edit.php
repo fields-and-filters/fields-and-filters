@@ -8,77 +8,44 @@
  */
 
 // no direct access
-defined( '_JEXEC' ) or die;
+defined('_JEXEC') or die;
 
-JHtml::_( 'behavior.tooltip' );
-JHtml::_( 'behavior.formvalidation' );
-JHtml::_( 'behavior.keepalive' );
-JHtml::_( 'formbehavior.chosen', 'select' );
+JHtml::_('behavior.tooltip');
+JHtml::_('behavior.formvalidation');
+JHtml::_('behavior.keepalive');
+JHtml::_('formbehavior.chosen', 'select');
 
 // Import CSS
-JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
+JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true);
 ?>
 <script type="text/javascript">
-	Joomla.submitbutton = function( task )
+	Joomla.submitbutton = function(task)
 	{
-		if( task == 'fieldvalue.cancel' || document.formvalidator.isValid( document.id( 'fieldvalue-form' ) ) )
+		if (task == 'fieldvalue.cancel' || document.formvalidator.isValid(document.id('fieldvalue-form')))
 		{
-			Joomla.submitform(task, document.getElementById( 'fieldvalue-form' ));
+			Joomla.submitform(task, document.getElementById('fieldvalue-form'));
 		}
 		else
 		{
-			alert( '<?php echo $this->escape( JText::_( 'JGLOBAL_VALIDATION_FORM_FAILED' ) );?>' );
+			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
 </script>
 
-<form action="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->field_value_id ); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="fieldvalue-form" class="form-validate form-horizontal">
-	<fieldset>
+<form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="fieldvalue-form" class="form-validate">
+	
+	<div class="form-horizontal">
 		<div class="row-fluid">
-			<div class="control-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel( 'field_value' ); ?>
-				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput( 'field_value' ); ?>
-				</div>
-			</div>
-			<div class="control-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel( 'field_value_alias' ); ?>
-				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput( 'field_value_alias' ); ?>
-				</div>
-			</div>
-			<div class="control-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel( 'field_id' ); ?>
-				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput( 'field_id' ); ?>
-				</div>
-			</div>
-			<div class="control-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel( 'state' ); ?>
-				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput( 'state' ); ?>
-				</div>
-			</div>
-			<div class="control-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel( 'field_value_id' ); ?>
-				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput( 'field_value_id' ); ?>
-				</div>
-			</div>
+			<?php
+				echo $this->form->getControlGroup('value');
+				echo $this->form->getControlGroup('alias');
+				echo $this->form->getControlGroup('field_id');
+				echo $this->form->getControlGroup('state');
+				echo $this->form->getControlGroup('id');
+			?>
 		</div>
-	</fieldset>
+	</div>
 	
 	<input type="hidden" name="task" value="" />
-	<?php echo JHtml::_( 'form.token' ); ?>
-	<div class="clr"></div>
+	<?php echo JHtml::_('form.token'); ?>
 </form>

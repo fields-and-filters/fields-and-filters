@@ -29,7 +29,7 @@
 			class="inputbox"
 			filter="safehtml"
 			size="40"
-			hint="JFIELD_ALIAS_PLACEHOLDER"
+			hint="COM_FIELDSANDFILTERS_FORM_FIELD_ALIAS_PLACEHOLDER"
 		/>
 		<field
 			name="type"

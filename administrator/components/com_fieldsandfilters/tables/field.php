@@ -71,8 +71,6 @@ class FieldsandfiltersTableField extends JTable
 	 */
 	public function check()
 	{
-		$typesHelper = FieldsandfiltersFactory::getTypes();
-		
 		//If there is an ordering column and this is a new row then get the next ordering value
 		if( $this->id == 0 )
 		{
@@ -82,7 +80,7 @@ class FieldsandfiltersTableField extends JTable
                 try
                 {
                         // Check for exist mode field
-                        if( !in_array( $this->mode, (array) $typesHelper->getModes( null, array(), true ) ) )
+                        if( !in_array( $this->mode, (array) FieldsandfiltersModes::getModes( null, array(), true ) ) )
                         {
                                 throw new RuntimeException( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_MODE' ) );
                                 return false;
@@ -99,7 +97,7 @@ class FieldsandfiltersTableField extends JTable
                         {
                                 throw new RuntimeException( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_TYPE' ) );
                         }
-                        elseif( !$typesHelper->getTypes()->get( $this->type ) )
+                        elseif( !FieldsandfiltersFactory::getTypes()->getTypes()->get( $this->type ) )
                         {
                                throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_TYPE_NOT_EXISTS', $this->type ) );
                         }
@@ -121,7 +119,7 @@ class FieldsandfiltersTableField extends JTable
                 }
                 
 		// Check mode field
-		if( in_array( $this->mode, (array) $typesHelper->getMode( 'filter' ) ) )
+		if( in_array( $this->mode, (array) FieldsandfiltersModes::getMode( FieldsandfiltersModes::MODE_FILTER ) ) )
 		{
 			// Check for a field alias
 			if( trim( $this->alias ) == '' )
@@ -154,7 +152,7 @@ class FieldsandfiltersTableField extends JTable
 	public function store( $updateNulls = false )
 	{
 		// Check mode field
-		if( in_array( $this->mode, (array) FieldsandfiltersFactory::getTypes()->getMode( 'filter' ) ) )
+		if( in_array( $this->mode, (array) FieldsandfiltersModes::getMode( FieldsandfiltersModes::MODE_FILTER ) ) )
 		{
 			// Verify that the alias is unique
 			$table = JTable::getInstance( 'Field', 'FieldsandfiltersTable' );

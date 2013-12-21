@@ -118,10 +118,10 @@ $sortFields 	= $this->getSortFields();
 			<tbody>
 			<?php foreach ($this->items as $i => $item) :
 				$ordering	= ($listOrder == 'fv.ordering');
-				$canCreate	= $user->authorise('core.create',		'com_fieldsandfilters');
+				$canCreate	= $user->authorise('core.create',	'com_fieldsandfilters');
 				$canEdit	= $user->authorise('core.edit',		'com_fieldsandfilters');
-				$canCheckin	= $user->authorise('core.manage',		'com_fieldsandfilters');
-				$canChange	= $user->authorise('core.edit.state',		'com_fieldsandfilters');
+				$canCheckin	= $user->authorise('core.manage',	'com_fieldsandfilters');
+				$canChange	= $user->authorise('core.edit.state',	'com_fieldsandfilters');
 				?>
 				<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->field_id; ?>">
 					<td class="order nowrap center hidden-phone">
