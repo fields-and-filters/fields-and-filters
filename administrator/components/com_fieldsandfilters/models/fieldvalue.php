@@ -154,6 +154,9 @@ class FieldsandfiltersModelFieldvalue extends JModelAdmin
 				// Trigger the onContentAfterDelete event.
 				$app->triggerEvent($this->event_after_delete, array($context, $table));
 			}
+			
+			// Clear the component's cache
+			$this->cleanCache();
 		}
 		catch (Exception $e)
 		{
@@ -161,9 +164,6 @@ class FieldsandfiltersModelFieldvalue extends JModelAdmin
 			return false;
 		}
 		
-		// Clear the component's cache
-		$this->cleanCache();
-
 		return true;
 	}
 }

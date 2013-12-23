@@ -53,10 +53,6 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 					<?php echo $this->form->getInput('state'); ?>
 				</li>
 				<li>
-					<?php echo $this->form->getLabel('default'); ?>
-					<?php echo $this->form->getInput('default'); ?>
-				</li>
-				<li>
 					<?php echo $this->form->getLabel('id'); ?>
 					<?php echo $this->form->getInput('id'); ?>
 				</li>

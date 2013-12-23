@@ -103,9 +103,9 @@ class FieldsandfiltersModelField extends JModelAdmin
 			$content_type_id 	= JArrayHelper::getValue($data, 'content_type_id');
 		}
 		
-		$this->setState('mode', $mode);
-		$this->setState('type', $type);
-		$this->setState('content_type_id', $content_type_id);
+		$this->setState($this->getName() . '.mode', $mode);
+		$this->setState($this->getName() . '.type', $type);
+		$this->setState($this->getName() . '.content_type_id', $content_type_id);
 		
 		// Get the form.
 		$form = $this->loadForm('com_fieldsandfilters.field', 'field', array('control' => 'jform', 'load_data' => $loadData));
@@ -145,8 +145,8 @@ class FieldsandfiltersModelField extends JModelAdmin
 	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
 		$data 		= is_array($data) ? new JObject($data) : $data;
-		$fieldType 	= $data->get('type', $this->getState('type'));
-		$typeMode 	= $data->get('type_mode', FieldsandfiltersModes::getModeName($data->get('mode', $this->getState('mode')), FieldsandfiltersModes::MODE_NAME_TYPE));		
+		$fieldType 	= $data->get('type', $this->getState($this->getName() . '.type'));
+		$typeMode 	= $data->get('type_mode', FieldsandfiltersModes::getModeName($data->get('mode', $this->getState($this->getName() . '.mode')), FieldsandfiltersModes::MODE_NAME_TYPE));		
 		
 		try
 		{
@@ -164,7 +164,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 				KextensionsLanguage::load("plg_{$type->type}_{$type->name}", JPATH_ADMINISTRATOR);
 			}
 			
-			$contentTypeId 	= $data->get('content_type_id', $this->getState('content_type_id'));			
+			$contentTypeId 	= $data->get('content_type_id', $this->getState($this->getName() . '.content_type_id'));			
 			$extensionForm	= $data->get('field.extension_form', 'extension');
 			
 			// get extension type objet by type id or plugin type
@@ -320,6 +320,9 @@ class FieldsandfiltersModelField extends JModelAdmin
 		$table 	= $this->getTable();
 		$pks 	= (array) $pks;
 		
+		// Include the content plugins for the change of state event.
+		JPluginHelper::importPlugin('content');
+		
 		try
 		{
 			// Access checks.
@@ -341,9 +344,6 @@ class FieldsandfiltersModelField extends JModelAdmin
 				throw new Exception($table->getError());
 			}
 			
-			// Include the content plugins for the change of state event.
-			JPluginHelper::importPlugin('content');
-			
 			// Trigger the onContentChangeState event.
 			$context 	= $this->option . '.' . $this->name;
 			$result 	= JFactory::getApplication()->triggerEvent($this->event_change_required, array($context, $pks, $value));
@@ -352,6 +352,9 @@ class FieldsandfiltersModelField extends JModelAdmin
 			{
 				throw new Exception($table->getError());
 			}
+			
+			// Clear the component's cache
+			$this->cleanCache();
 		}
 		catch (RuntimeException $e)
 		{
@@ -359,9 +362,6 @@ class FieldsandfiltersModelField extends JModelAdmin
 			return false;
 		}
 		
-		// Clear the component's cache
-		$this->cleanCache();
-
 		return true;
 	}
 	
@@ -508,6 +508,9 @@ class FieldsandfiltersModelField extends JModelAdmin
 
 			// Trigger the onContentAfterSave event.
 			$app->triggerEvent($this->event_after_save, array($context, $table, $isNew));
+			
+			// Clean the cache.
+			$this->cleanCache();
 		}
 		catch (Exception $e)
 		{
@@ -523,9 +526,6 @@ class FieldsandfiltersModelField extends JModelAdmin
 			$this->setState($this->getName() . '.id', $table->$pkName);
 		}
 		$this->setState($this->getName() . '.new', $isNew);
-
-		// Clean the cache.
-		$this->cleanCache();
 		
 		return true;
 	}
@@ -616,15 +616,15 @@ class FieldsandfiltersModelField extends JModelAdmin
 				// Trigger the onContentAfterDelete event.
 				$app->triggerEvent($this->event_after_delete, array($context, $table));
 			}
+			
+			// Clear the component's cache
+			$this->cleanCache();
 		}
 		catch (Exception $e)
 		{
 			$this->setError($e->getMessage());
 			return false;
 		}
-		
-		// Clear the component's cache
-		$this->cleanCache();
 		
 		return true;
 	}

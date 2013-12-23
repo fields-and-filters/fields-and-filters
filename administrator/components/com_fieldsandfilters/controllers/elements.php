@@ -10,9 +10,9 @@
 // No direct access.
 defined('_JEXEC') or die;
 
-if( !FieldsandfiltersFactory::isVersion() )
+if (!FieldsandfiltersFactory::isVersion())
 {
-	jimport( 'joomla.application.component.controlleradmin' );
+	jimport('joomla.application.component.controlleradmin');
 }
 
 /**
@@ -25,9 +25,9 @@ class FieldsandfiltersControllerElements extends JControllerAdmin
 	 * Proxy for getModel.
 	 * @since       1.0.0
 	 */
-	public function getModel( $name = 'element', $prefix = 'FieldsandfiltersModel', $config = array() )
+	public function getModel($name = 'element', $prefix = 'FieldsandfiltersModel', $config = array())
 	{
-		$model = parent::getModel( $name, $prefix, array_merge( array( 'ignore_request' => true ), $config ) );
+		$model = parent::getModel($name, $prefix, array_merge(array('ignore_request' => true), $config));
 		return $model;
 	}
 	
@@ -39,20 +39,20 @@ class FieldsandfiltersControllerElements extends JControllerAdmin
 	 */
 	public function saveOrderAjax()
 	{
-		$pks = $this->input->post->get( 'cid', array(), 'array' );
-		$order = $this->input->post->get( 'order', array(), 'array' );
+		$pks = $this->input->post->get('cid', array(), 'array');
+		$order = $this->input->post->get('order', array(), 'array');
 		
 		// Sanitize the input
-		JArrayHelper::toInteger( $pks );
-		JArrayHelper::toInteger( $order );
+		JArrayHelper::toInteger($pks);
+		JArrayHelper::toInteger($order);
 		
 		// Get the model
 		$model = $this->getModel();
 		
 		// Save the ordering
-		$return = $model->saveorder( $pks, $order );
+		$return = $model->saveorder($pks, $order);
 		
-		if( $return )
+		if ($return)
 		{
 			echo "1";
 		}

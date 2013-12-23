@@ -32,11 +32,11 @@ class FieldsandfiltersModelElements extends JModelList
 		if( empty( $config['filter_fields'] ) )
 		{
 			$config['filter_fields'] = array(
-						'element_id', 		'e.element_id',
-						'extension_type_id', 	'e.extension_type_id',
-						'item_id', 		'e.item_id',
-						'ordering', 		'e.ordering',
-						'state', 		'e.state'
+				'id', 			'e.id',
+				'content_type_id', 	'e.content_type_id',
+				'item_id', 		'e.item_id',
+				'ordering', 		'e.ordering',
+				'state', 		'e.state'
 			);
 		}
 		
@@ -53,7 +53,7 @@ class FieldsandfiltersModelElements extends JModelList
 	protected function populateState( $ordering = null, $direction = null )
 	{
 		// Initialise variables.
-		$app = JFactory::getApplication( 'administrator' );
+		$app = JFactory::getApplication();
 		
 		// Load the filter state.
 		$search = $app->getUserStateFromRequest( $this->context.'.filter.search', 'filter_search' );
@@ -62,13 +62,13 @@ class FieldsandfiltersModelElements extends JModelList
 		$published = $app->getUserStateFromRequest($this->context.'.filter.state', 'filter_published', '', 'string' );
 		$this->setState( 'filter.state', $published );
 		
-		$extensionTypeId = $app->getUserStateFromRequest( $this->context . '.filter.extension_type_id', 'filter_extension_type_id', 0, 'int' );
-		
 		// Load the parameters.
 		$params = JComponentHelper::getParams( 'com_fieldsandfilters' );
 		$this->setState( 'params', $params );
 		
-		if( $extensionTypeId && ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeIDPivot( 'extension_type_id', $extensionTypeId )->get( $extensionTypeId ) ) )
+		$contentTypeID = $app->getUserStateFromRequest( $this->context . '.filter.content_type_id', 'filter_extension_type_id', 0, 'int' );
+		
+		if( $contentTypeID && ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeIDPivot( 'content_type_id', $contentTypeID )->get( $contentTypeID ) ) )
 		{
 			// Include the content plugins for the on delete events.
 			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
@@ -76,7 +76,7 @@ class FieldsandfiltersModelElements extends JModelList
 			// Trigger the onContentBeforeDelete event.
 			FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPopulateState', array( ( $this->context . '.' . $extension->name ), $this->state, &$this->filter_fields ) );
 			
-			$this->setState( 'elements.extension_name', $extension->name );
+			$this->setState( $this->getName() . '.extension_name', $extension->name );
 		}
 		
 		$this->setState( 'filter.extension_type_id', $extensionTypeId );
@@ -101,7 +101,7 @@ class FieldsandfiltersModelElements extends JModelList
 		// Compile the store id.
 		$id.= ':' . $this->getState( 'filter.search' );
 		$id.= ':' . $this->getState( 'filter.state' );
-		$id.= ':' . $this->getState( 'filter.extension_type_id' );
+		$id.= ':' . $this->getState( 'filter.content_type_id' );
 
 		return parent::getStoreId( $id );
 	}
@@ -115,7 +115,7 @@ class FieldsandfiltersModelElements extends JModelList
 	protected function getListQuery()
 	{
 		// get extension, we need him for query
-		$extensionName = $this->getState( 'elements.extension_name' );
+		$extensionName = $this->getState( $contentTypeID . '.extension_name' );
 		
 		if( empty( $extensionName ) )
 		{
@@ -148,7 +148,7 @@ class FieldsandfiltersModelElements extends JModelList
 		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 		
 		// Trigger the onPrepareListQuery event.
-		$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareListQuery', array( ( $this->context . '.' . $extensionName ), $query, $this->state ) );
+		$result = JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareListQuery', array( ( $this->context . '.' . $extensionName ), $query, $this->state ) );
 		
 		if( in_array( false, $result, true ) )
 		{
@@ -180,7 +180,7 @@ class FieldsandfiltersModelElements extends JModelList
 	 */
 	public function getItems()
 	{
-		$extensionName = $this->getState( 'elements.extension_name' );
+		$extensionName = $this->getState( $this->getName() . '.extension_name' );
 		
 		return ( !empty( $extensionName ) ? parent::getItems() : array() );
 	}
@@ -193,7 +193,7 @@ class FieldsandfiltersModelElements extends JModelList
 	 */
 	public function getPagination()
 	{
-		$extensionName = $this->getState( 'elements.extension_name' );
+		$extensionName = $this->getState( $this->getName() . '.extension_name' );
 		
 		if( $extensionName )
 		{

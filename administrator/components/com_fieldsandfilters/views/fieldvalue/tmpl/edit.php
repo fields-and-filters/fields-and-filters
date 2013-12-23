@@ -35,15 +35,7 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 <form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="fieldvalue-form" class="form-validate">
 	
 	<div class="form-horizontal">
-		<div class="row-fluid">
-			<?php
-				echo $this->form->getControlGroup('value');
-				echo $this->form->getControlGroup('alias');
-				echo $this->form->getControlGroup('field_id');
-				echo $this->form->getControlGroup('state');
-				echo $this->form->getControlGroup('id');
-			?>
-		</div>
+		<?php echo JLayoutHelper::render('joomla.edit.fieldset', $this); ?>
 	</div>
 	
 	<input type="hidden" name="task" value="" />
