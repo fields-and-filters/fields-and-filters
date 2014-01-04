@@ -38,11 +38,19 @@ class JFormFieldFieldsandfiltersExtensions extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		$options = JHtml::_( 'FieldsandfiltersHtml.options.extensions' );
-
+		$exclude = (string) $this->element['exclude'];
+		$excluded = array();
+		
+		if( !empty( $exclude ) )
+		{
+			$exclude = explode(',', $exclude);
+			$excluded = array_map('trim', $exclude);
+		}
+		$options = JHtml::_( 'FieldsandfiltersHtml.options.extensions',  $excluded);
+		
 		// Merge any additional options in the XML definition.
 		$options = array_merge( parent::getOptions(), $options );
-
+		
 		return $options;
 	}
 }

@@ -245,7 +245,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 	 */
 	public function getItem( $elementID = null )
 	{		
-		$row = ( !empty( $elementID ) ) ? (int) $elementID : (int) $this->getState( $this->getName() . '.element_id' );
+		$row = ( !empty( $elementID ) ) ? (int) $elementID : (int) $this->getState( $this->getName() . '.id' );
 		
 		if( empty( $row ) )
 		{
@@ -279,7 +279,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 							);
 				}
 				
-				$this->setExtensionState( $table->extension_type_id  );
+				$this->setExtensionState( $table->content_type_id  );
 			}
 			
 			// Convert to the JObject before adding other data.

@@ -73,30 +73,26 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			return true;
 		}
 		
-		JHtml::addIncludePath( JPATH_SITE . '/components/com_content/helpers/html' );
+		$state->set('list.view.extension.dir', __DIR__ . '/views/elements');
 		
-		// Initialise variables.
-		$itemCategory = JFactory::getApplication( 'administrator' )->getUserStateFromRequest( 'com_fieldsandfilters.elements.filter.item_category', 'filter_item_category', '', 'string' );
-		$state->set( 'filter.item_category', $itemCategory );
+		array_push( $filter_fields,
+			'item_id',		'a.id',
+			'item_name',		'a.title',
+			'item_category_id', 	'a.catid',
+			'item_category_name', 	'c.title'
+		);
 		
-		$state->set( 'query.item_id', 'a.id' );
-		$state->set( 'query.item_name', 'a.title' );
-		$state->set( 'query.item_category', 'c.title' );
-		
-		$state->set( 'filters.options', array(
+		if( FieldsandfiltersFactory::isVersion('<', 3.2) )
+		{
+			JHtml::addIncludePath( JPATH_SITE . '/components/com_content/helpers/html' );
+			
+			$state->set( 'filters.options', array(
 				'item_category' => array(
 						'label' 	=> JText::_( 'JOPTION_SELECT_CATEGORY' ),
 						'options'	=> JHtml::_( 'category.options', 'com_content' )
 					)
 			) );
-		
-		$state->set( 'enabled_search', true );
-		
-		array_push( $filter_fields,
-				'item_category', 	'a.catid',	'c.title',
-				'item_name',		'a.title',
-				'item_id',		'a.id'
-			);
+		}
 	}
 	
 	/**
@@ -115,16 +111,13 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$query->select( array(
 				$db->quoteName( 'a.id', 'item_id' ),
 				$db->quoteName( 'a.title', 'item_name' ),
-				$db->quoteName( 'a.alias', 'item_alias' ),
-			) );
+				$db->quoteName( 'a.catid', 'item_category_id' ),
+				$db->quoteName( 'c.title' ,'item_category_name' )
+			) )
+			->join( 'RIGHT', $db->quoteName( '#__content', 'a' ).' ON ' . $db->quoteName( 'a.id' ) . ' = ' . $db->quoteName( 'e.item_id' ) )
+			->join( 'LEFT', $db->quoteName( '#__categories', 'c' ) . ' ON ' . $db->quoteName( 'c.id' ) . ' = ' . $db->quoteName( 'a.catid' ) );
 		
-		$query->join( 'RIGHT', $db->quoteName( '#__content', 'a' ).' ON ' . $db->quoteName( 'a.id' ) . ' = ' . $db->quoteName( 'e.item_id' ) );
-		
-		// Join over the categories.
-		$query->select( $db->quoteName( 'c.title' ,'item_category' ) );
-		$query->join( 'LEFT', $db->quoteName( '#__categories', 'c' ) . ' ON ' . $db->quoteName( 'c.id' ) . ' = ' . $db->quoteName( 'a.catid' ) );
-		
-		$itemCategory = $state->get( 'filter.item_category' );
+		$itemCategory = $state->get( 'filter.item_category_id' );
 		if( is_numeric( $itemCategory ) )
 		{
 			$query->where( $db->quoteName( 'c.id' ) . ' = ' . (int) $itemCategory );

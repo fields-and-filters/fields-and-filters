@@ -55,40 +55,45 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 	protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
-		$app 	= JFactory::getApplication();
+		$app 			= JFactory::getApplication();
+		$filterUserState 	= (array) $app->getUserState($this->context . '.filter');
 		
-		// Load the filter state.
-		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
-		$this->setState('filter.search', $search);
-  
-		$published = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_published', '', 'string');
-		$this->setState('filter.state', $published);
-		
-		if ($fieldID = $app->input->getInt('field_id', $app->getUserStateFromRequest($this->context . '.filter.field_id', 'filter_field_id', 0, 'int')))
+		if ($fieldID = $app->input->getInt('field_id'))
 		{
-			if ($fieldID != $app->getUserState($this->context . '.filter.field_id'))
+			if ($fieldID != JArrayHelper::getValue($filterUserState, 'filed_id'))
 			{
-				$app->setUserState($this->context . '.filter.field_id', $fieldID);
-				$app->input->set('limitstart', 0);
+				$filterUserState['field_id'] = $fieldID;
+				$app->setUserState($this->context . '.filter', $filterUserState);
+				$this->setState('list.start', 0);
 			}
 		}
 		else
 		{
-			if (!($fieldID = $app->getUserState($this->context . '.filter.field_id')))
+			if (!JArrayHelper::getValue($filterUserState, 'filed_id'))
 			{
 				$filterMode 	= FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER);
-				
-				// Load pluginExtensions Helper
-				$extensionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID('content_type_id');
-				
-				// Load Fields Helper
-				$fieldsID 	= FieldsandfiltersFactory::getFields()->getFieldsByModeIDColumn('field_id', $extensionsID, $filterMode, array(1, -1));
+				$extensionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsColumn('content_type_id');
+				$fieldsID 	= FieldsandfiltersFactory::getFields()->getFieldsByModeIDColumn('id', $extensionsID, $filterMode, array(1, -1));
 				$fieldID 	= current($fieldsID);
 				
+				$filterUserState['field_id'] = $fieldID;
+				$app->setUserState($this->context . '.filter', $filterUserState);
 			}
 		}
 		
-		$this->setState('filter.field_id', (int) $fieldID);
+		// If the context is set, assume that stateful lists are used.
+		// @deprecated v.1.2 && J3.x
+		if (!FieldsandfiltersFactory::isVersion() && $this->context)
+		{
+			// Receive & set filters
+			if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
+			{
+				foreach ($filters as $name => $value)
+				{
+					$this->setState('filter.' . $name, $value);
+				}
+			}
+		}
 		
 		// Load the parameters.
 		$params = JComponentHelper::getParams('com_fieldsandfilters');

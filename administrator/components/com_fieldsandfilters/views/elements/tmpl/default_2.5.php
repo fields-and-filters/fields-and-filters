@@ -31,19 +31,17 @@ $saveOrder	= $listOrder == 'e.ordering';
 
 <form action="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&view=elements' ); ?>" method="post" name="adminForm" id="adminForm">
 	<fieldset id="filter-bar">
-		<?php if( $this->state->get( 'enabled_search', false ) ) : ?>
 		<div class="filter-search fltlft">
 			<label class="filter-search-lbl" for="filter_search"><?php echo JText::_( 'JSEARCH_FILTER_LABEL' ); ?></label>
 			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->escape($this->state->get( 'filter.search' ) ); ?>" title="<?php echo JText::_( 'Search' ); ?>" />
 			<button type="submit"><?php echo JText::_( 'JSEARCH_FILTER_SUBMIT' ); ?></button>
 			<button type="button" onclick="document.id( 'filter_search' ).value='';this.form.submit( );"><?php echo JText::_( 'JSEARCH_FILTER_CLEAR' ); ?></button>
 		</div>
-		<?php endif; ?>
-        
+		        
 		<div class='filter-select fltrt'>
-			<select name="filter_extension_type_id" class="inputbox" onchange="this.form.submit()">
+			<select name="filter_content_type_id" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION'  );?></option>
-				<?php echo JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.extensions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.extension_type_id' )  );?>
+				<?php echo JHtml::_( 'select.options', JHtml::_( 'FieldsandfiltersHtml.options.extensions', array( 'allextensions' ) ), 'value', 'text', $this->state->get( 'filter.content_type_id' )  );?>
 			</select>
 			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_( 'JOPTION_SELECT_PUBLISHED' );?></option>
@@ -91,19 +89,19 @@ $saveOrder	= $listOrder == 'e.ordering';
 				<?php endif; ?>
 				
 				<th>
-					<?php echo JHtml::_( 'grid.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_EXTENSION_TYPE', 'e.extension_type_id', $listDirn, $listOrder ); ?>
+					<?php echo JHtml::_( 'grid.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_EXTENSION_TYPE', 'e.content_type_id', $listDirn, $listOrder ); ?>
 				</th>
 				
 				<th>
-					<?php echo JHtml::_( 'grid.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_STATE', 'e.extension_type_id', $listDirn, $listOrder ); ?>
+					<?php echo JHtml::_( 'grid.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_STATE', 'e.content_type_id', $listDirn, $listOrder ); ?>
 				</th>
 				
 				<th>
-					<?php echo JHtml::_( 'grid.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_ORDERING', 'e.extension_type_id', $listDirn, $listOrder ); ?>
+					<?php echo JHtml::_( 'grid.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_ORDERING', 'e.content_type_id', $listDirn, $listOrder ); ?>
 				</th>
 				
 				<th>
-					<?php echo JHtml::_( 'grid.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_ELEMENT_ID', 'e.element_id', $listDirn, $listOrder ); ?>
+					<?php echo JHtml::_( 'grid.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_ELEMENT_ID', 'e.id', $listDirn, $listOrder ); ?>
 				</th>
 			</tr>
 		</thead>
@@ -124,12 +122,12 @@ $saveOrder	= $listOrder == 'e.ordering';
 				<?php if( isset( $this->items[0]->item_name ) ) : ?>
 				<td>
 					<?php if( $canEdit ) : ?>
-						<?php if( !empty( $item->element_id ) ) : ?>
-							<a href="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&task=element.edit&id=' . (int) $item->element_id ); ?>">
+						<?php if( !empty( $item->id ) ) : ?>
+							<a href="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&task=element.edit&id=' . (int) $item->id ); ?>">
 								<?php echo $this->escape( $item->item_name ); ?>
 							</a>
 						<?php else: ?>
-							<a href="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&task=element.edit&etid=' . (int) $this->state->get( 'filter.extension_type_id' ) . '&itid=' . (int) $item->item_id ); ?>">
+							<a href="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&task=element.edit&etid=' . (int) $this->state->get( 'filter.content_type_id' ) . '&itid=' . (int) $item->item_id ); ?>">
 								<?php echo $this->escape( $item->item_name ); ?>
 							</a>
 						<?php endif; ?>
@@ -150,7 +148,7 @@ $saveOrder	= $listOrder == 'e.ordering';
 				</td>
 				<?php endif; ?>
 				<td>
-					<?php if( $extension = $extensionsHelper->getExtensionsPivot( 'extension_type_id', true )->get( (int) $this->state->get( 'filter.extension_type_id', 0 ) ) ) : ?>
+					<?php if( $extension = $extensionsHelper->getExtensionsPivot( 'content_type_id', true )->get( (int) $this->state->get( 'filter.content_type_id', 0 ) ) ) : ?>
 						<?php echo JText::_( $extension->forms->extension->title ); ?>
 					<?php else: ?>
 						<?php echo JText::_( 'JUNDEFINED' ); ?>
@@ -182,8 +180,8 @@ $saveOrder	= $listOrder == 'e.ordering';
 					
 				</td>
 				<td class="center">
-					<?php if( !is_null( $item->element_id ) ) : ?>
-						<?php echo (int) $item->element_id; ?>
+					<?php if( !is_null( $item->id ) ) : ?>
+						<?php echo (int) $item->id; ?>
 					<?php endif; ?>
 				</td>
 			</tr>

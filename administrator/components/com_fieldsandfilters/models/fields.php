@@ -64,29 +64,21 @@ class FieldsandfiltersModelFields extends JModelList
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-		// Initialise variables.
-		$app = JFactory::getApplication();
-		
-		// Load the filter state.
-		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
-		$this->setState('filter.search', $search);
-		
-		$published = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_state', '', 'string');
-		$this->setState('filter.state', $published);
-		
-		$contentTypeID = $app->getUserStateFromRequest($this->context . '.filter.content_type_id', 'filter_content_type_id', '', 'string');
-		$this->setState('filter.content_type_id', $contentTypeID);
-		
-		$type = $app->getUserStateFromRequest($this->context . '.filter.type', 'filter_type', '', 'string');
-		$this->setState('filter.type', $type);
-		
-		$access = $app->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', '', 'string');
-		$this->setState('filter.access', $access);
-		
-		/*
-		$language = $app->getUserStateFromRequest($this->context . '.filter.language', 'filter_language', '', 'string');
-		$this->setState('filter.language', $language);
-		*/
+		// If the context is set, assume that stateful lists are used.
+		// @deprecated v.1.2 && J3.x
+		if (!FieldsandfiltersFactory::isVersion() && $this->context)
+		{
+			$app = JFactory::getApplication();
+
+			// Receive & set filters
+			if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
+			{
+				foreach ($filters as $name => $value)
+				{
+					$this->setState('filter.' . $name, $value);
+				}
+			}
+		}
 		
 		// Load the parameters.
 		$params = JComponentHelper::getParams('com_fieldsandfilters');

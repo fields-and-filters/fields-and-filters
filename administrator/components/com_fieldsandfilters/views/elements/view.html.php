@@ -12,14 +12,39 @@ defined('_JEXEC') or die;
 
 /**
  * View class for a list of Fieldsandfilters.
- * @since	1.1.0
  */
 class FieldsandfiltersViewElements extends JViewLegacy
 {
+	/**
+	 * @since	1.0.0
+	 */
 	protected $items;
+	
+	/**
+	 * @since	1.0.0
+	 */
 	protected $pagination;
+	
+	/**
+	 * @since	1.0.0
+	 */
 	protected $state;
-
+	
+	/**
+	 * @since	1.2.0
+	 */
+	public $filterForm;
+	
+	/**
+	 * @since	1.2.0
+	 */
+	public $activeFilters;
+	
+	/**
+	 * @since	1.2.0
+	 */
+	public $extensionDir;
+	
 	/**
 	 * Display the view
 	 * 
@@ -30,7 +55,14 @@ class FieldsandfiltersViewElements extends JViewLegacy
 		$this->state		= $this->get( 'State' );
 		$this->items		= $this->get( 'Items' );
 		$this->pagination	= $this->get( 'Pagination' );
-
+		$this->extensionDir	= $this->get( 'ExtensionDir' );
+		
+		if (FieldsandfiltersFactory::isVersion('>=', 3.2))
+		{
+			$this->filterForm    	= $this->get('FilterForm');
+			$this->activeFilters 	= $this->get('ActiveFilters');
+		}
+		
 		// Check for errors.
 		if( count( $errors = $this->get( 'Errors' ) ) )
 		{
@@ -41,9 +73,19 @@ class FieldsandfiltersViewElements extends JViewLegacy
 		
 		$this->addToolbar();
 		
+		if( $this->extensionDir )
+		{
+			$this->addTemplatePath($this->extensionDir);
+		}
+		
 		if( FieldsandfiltersFactory::isVersion() )
 		{
 			$this->sidebar = JHtmlSidebar::render();
+			
+			if (is_null($tpl) && FieldsandfiltersFactory::isVersion('<', 3.2))
+			{
+				$tpl = '3.1';
+			}
 		}
 		else if( is_null( $tpl ) )
 		{
@@ -64,7 +106,7 @@ class FieldsandfiltersViewElements extends JViewLegacy
 		
 		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_ELEMENTS' ), 'elements.png' );
 		
-		if( FieldsandfiltersFactory::isVersion() )
+		if( FieldsandfiltersFactory::isVersion() && FieldsandfiltersFactory::isVersion('<', 3.2))
 		{
 			JHtmlSidebar::setAction( 'index.php?option=com_fieldsandfilters&view=elements' );
 			
@@ -107,9 +149,9 @@ class FieldsandfiltersViewElements extends JViewLegacy
 		return array(
 			'e.ordering' 						=> JText::_( 'JGRID_HEADING_ORDERING' ),
 			'e.state' 						=> JText::_( 'COM_FIELDSANDFILTERS_FIELDS_STATUS' ),
-			$this->state->get( 'query.item_id', 'e.item_id' ) 	=> JText::_( 'COM_FIELDSANDFILTERS_ELEMENTS_ITEM_ID' ),
-			'e.extension_type_id' 					=> JText::_( 'COM_FIELDSANDFILTERS_ELEMENTS_EXTENSION_TYPE' ),
-			'e.element_id'						=> JText::_( 'COM_FIELDSANDFILTERS_ELEMENTS_ELEMENT_ID' )
+			'e.item_id'						=> JText::_( 'COM_FIELDSANDFILTERS_ELEMENTS_ITEM_ID' ),
+			'e.content_type_id' 					=> JText::_( 'COM_FIELDSANDFILTERS_ELEMENTS_EXTENSION_TYPE' ),
+			'e.id'							=> JText::_( 'COM_FIELDSANDFILTERS_ELEMENTS_ELEMENT_ID' )
 		);
 	}
 }

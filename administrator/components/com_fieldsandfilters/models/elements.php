@@ -55,34 +55,38 @@ class FieldsandfiltersModelElements extends JModelList
 		// Initialise variables.
 		$app = JFactory::getApplication();
 		
-		// Load the filter state.
-		$search = $app->getUserStateFromRequest( $this->context.'.filter.search', 'filter_search' );
-		$this->setState( 'filter.search', $search );
-		
-		$published = $app->getUserStateFromRequest($this->context.'.filter.state', 'filter_published', '', 'string' );
-		$this->setState( 'filter.state', $published );
+		// If the context is set, assume that stateful lists are used.
+		// @deprecated v.1.2 && J3.x
+		if (!FieldsandfiltersFactory::isVersion() && $this->context)
+		{
+			// Receive & set filters
+			if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
+			{
+				foreach ($filters as $name => $value)
+				{
+					$this->setState('filter.' . $name, $value);
+				}
+			}
+		}
 		
 		// Load the parameters.
 		$params = JComponentHelper::getParams( 'com_fieldsandfilters' );
 		$this->setState( 'params', $params );
 		
-		$contentTypeID = $app->getUserStateFromRequest( $this->context . '.filter.content_type_id', 'filter_extension_type_id', 0, 'int' );
+		// List state information.
+		parent::populateState( 'e.item_id', 'asc' );
 		
+		$contentTypeID = (int) $this->state->get('filter.content_type_id');
 		if( $contentTypeID && ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeIDPivot( 'content_type_id', $contentTypeID )->get( $contentTypeID ) ) )
 		{
 			// Include the content plugins for the on delete events.
 			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
 			
 			// Trigger the onContentBeforeDelete event.
-			FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPopulateState', array( ( $this->context . '.' . $extension->name ), $this->state, &$this->filter_fields ) );
+			$app->triggerEvent( 'onFieldsandfiltersPopulateState', array( ( $this->context . '.' . $extension->name ), $this->state, &$this->filter_fields ) );
 			
-			$this->setState( $this->getName() . '.extension_name', $extension->name );
+			$this->setState('filter.extension_name', $extension->name);
 		}
-		
-		$this->setState( 'filter.extension_type_id', $extensionTypeId );
-		
-		// List state information.
-		parent::populateState( $this->state->get( 'query.item_id', 'e.item_id' ), 'asc' );
 	}
 
 	/**
@@ -115,27 +119,34 @@ class FieldsandfiltersModelElements extends JModelList
 	protected function getListQuery()
 	{
 		// get extension, we need him for query
-		$extensionName = $this->getState( $contentTypeID . '.extension_name' );
+		$extensionName	= $this->state->get('filter.extension_name');
+		$contentTypeID	= (int) $this->state->get('filter.content_type_id');
 		
-		if( empty( $extensionName ) )
+		if( !$extensionName || !$contentTypeID )
 		{
 			return false;
 		}
 		
 		// Create a new query object.
-		$db		= $this->getDbo();
-		$query		= $db->getQuery( true );
-
-		// Select the required fields from the table.
-		$query->select(
-			$this->getState(
-				'list.select',
-				'e.*'
+		$db	= $this->getDbo();
+		$query	= $db->getQuery( true )
+			->select(
+				$this->getState(
+					'list.select',
+					'e.*'
+				)
 			)
-		);
-		$query->from( $db->quoteName( '#__fieldsandfilters_elements', 'e' ) );
+			->from( $db->quoteName( '#__fieldsandfilters_elements', 'e' ) );
 		
-		$query->wher( $db->quoteName( 'e.extension_type_id' ) . ' = ' . (int) $this->getState( 'filter.extension_type_id' ) );
+		$where = array(
+			$db->quoteName( 'e.content_type_id' ) . ' = ' . (int) $contentTypeID
+		);
+		if( $this->state->get('filter.empty', true) )
+		{
+			$where[] = $db->quoteName( 'e.content_type_id' ) . ' IS NULL';
+		}
+		
+		$query->where( '(' . implode( ' OR ', $where ) . ')' );
 		
 		// Filter by published state
 		$published = $this->getState( 'filter.state' );
@@ -152,21 +163,23 @@ class FieldsandfiltersModelElements extends JModelList
 		
 		if( in_array( false, $result, true ) )
 		{
-			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_PREPARE_LIST_QUERY', $this->getState( 'elements.extension_name' ) ) );
+			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_PREPARE_LIST_QUERY', $extensionName ) );
 			
-			$this->setState( 'elements.extension_name', null );
+			$this->setState( 'filter.extension_name', null );
 			
 			return false;
 		}
 		
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get( 'list.ordering' );
-		$orderDirn	= $this->state->get( 'list.direction' );
+		$orderCol	= $this->state->get('list.ordering', 'e.item_id');
+		$orderDirn	= $this->state->get('list.direction', 'ASC');
 		
-		if( $orderCol && $orderDirn )
+		if ($orderCol && $orderDirn)
 		{
-		    $query->order( $db->escape( $orderCol . ' ' . $orderDirn ) );
+		    $query->order($db->escape($orderCol . ' ' . $orderDirn));
 		}
+		
+		// echo $query->dump();
 		
 		return $query;
 	}
@@ -180,9 +193,7 @@ class FieldsandfiltersModelElements extends JModelList
 	 */
 	public function getItems()
 	{
-		$extensionName = $this->getState( $this->getName() . '.extension_name' );
-		
-		return ( !empty( $extensionName ) ? parent::getItems() : array() );
+		return ( $this->getState( 'filter.extension_name' ) ? parent::getItems() : array() );
 	}
 	
 	/**
@@ -193,9 +204,7 @@ class FieldsandfiltersModelElements extends JModelList
 	 */
 	public function getPagination()
 	{
-		$extensionName = $this->getState( $this->getName() . '.extension_name' );
-		
-		if( $extensionName )
+		if( $this->getState( 'filter.extension_name' ) )
 		{
 			$page = parent::getPagination();
 		}
@@ -208,5 +217,14 @@ class FieldsandfiltersModelElements extends JModelList
 		}
 		
 		return $page;
+	}
+	
+	/**
+	 * @since       1.2.0
+	 */
+	public function getExtensionDir()
+	{
+		$dir = $this->state->get('list.view.extension.dir', false);
+		return ($dir && is_dir($dir) ? $dir : false);
 	}
 }
