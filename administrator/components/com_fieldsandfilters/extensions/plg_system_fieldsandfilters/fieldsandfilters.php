@@ -39,8 +39,8 @@ class plgSystemFieldsandfilters extends JPlugin
 	 */
 	public function onContentBeforeSave( $context, $article, $isNew )
 	{
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		
 		// Trigger the onFinderBeforeSave event.
 		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersBeforeSave', array( $context, $article, $isNew ) );
@@ -59,8 +59,8 @@ class plgSystemFieldsandfilters extends JPlugin
 	 */
 	public function onContentAfterSave($context, $item, $isNew)
 	{
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		
 		// Trigger the onFinderBeforeSave event.
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersAfterSave', array( $context, $item, $isNew ) );
@@ -74,8 +74,8 @@ class plgSystemFieldsandfilters extends JPlugin
 	 */
 	public function onContentBeforeDelete( $context, $table )
 	{
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		
 		// Trigger the onFinderBeforeSave event.
 		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersBeforeDelete', array( $context, $table ) );
@@ -93,7 +93,7 @@ class plgSystemFieldsandfilters extends JPlugin
 	 */
 	public function onContentChangeState( $context, $pks, $value )
 	{
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 		
 		// Trigger the onFinderBeforeSave event.
 		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersChangeState', array( $context, $pks, $value ) );
@@ -122,7 +122,7 @@ class plgSystemFieldsandfilters extends JPlugin
 			return false;
 		}
 		
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 		
 		// Trigger the onFinderBeforeSave event.
 		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareForm', array( $form, $data ) );
@@ -160,7 +160,7 @@ class plgSystemFieldsandfilters extends JPlugin
 	 */
 	public function onContentAfterTitle( $context, &$row, &$params, $page = 0 )
 	{
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 		
 		// Trigger the onFieldsandfiltersContentAfterTitle event.
 		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentAfterTitle', array( $context, &$row, &$params, $page = 0 ) );
@@ -179,7 +179,7 @@ class plgSystemFieldsandfilters extends JPlugin
 	 */
 	public function onContentBeforeDisplay( $context, &$row, &$params, $page = 0 )
 	{
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 		
 		// Trigger the onFinderBeforeSave event.
 		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentBeforeDisplay', array( $context, &$row, &$params, $page = 0 ) );
@@ -198,7 +198,7 @@ class plgSystemFieldsandfilters extends JPlugin
 	 */
 	public function onContentAfterDisplay( $context, &$row, &$params, $page = 0 )
 	{
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 		
 		// Trigger the onFinderBeforeSave event.
 		$results = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersContentAfterDisplay', array( $context, &$row, &$params, $page = 0 ) );

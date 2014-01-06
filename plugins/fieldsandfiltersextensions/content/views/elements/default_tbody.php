@@ -11,6 +11,6 @@
 // no direct access
 defined( '_JEXEC' ) or die;
 ?>
-<td>
-    działa td :D
+<td class="small hidden-phone">
+    <?php echo $this->escape($this->item->item_category_name); ?>
 </td>

@@ -74,11 +74,16 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		$state->set('list.view.extension.dir', __DIR__ . '/views/elements');
+		$state->set('list.query.ordering', 'a.id');
+		$state->set('list.query.item_id', 'a.id');
+		$state->set('list.query.item_state', 'a.state');
+		$state->set('list.query.item_name', 'a.title');
 		
 		array_push( $filter_fields,
 			'item_id',		'a.id',
 			'item_name',		'a.title',
-			'item_category_id', 	'a.catid',
+			'item_state',		'a.state',
+			'item_category', 	'a.catid',
 			'item_category_name', 	'c.title'
 		);
 		
@@ -88,9 +93,9 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			
 			$state->set( 'filters.options', array(
 				'item_category' => array(
-						'label' 	=> JText::_( 'JOPTION_SELECT_CATEGORY' ),
-						'options'	=> JHtml::_( 'category.options', 'com_content' )
-					)
+					'label' 	=> JText::_( 'JOPTION_SELECT_CATEGORY' ),
+					'options'	=> JHtml::_( 'category.options', 'com_content' )
+				)
 			) );
 		}
 	}
@@ -111,13 +116,15 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$query->select( array(
 				$db->quoteName( 'a.id', 'item_id' ),
 				$db->quoteName( 'a.title', 'item_name' ),
-				$db->quoteName( 'a.catid', 'item_category_id' ),
+				$db->quoteName( 'a.alias', 'item_alias' ),
+				$db->quoteName( 'a.state', 'item_state' ),
+				$db->quoteName( 'a.catid', 'item_category' ),
 				$db->quoteName( 'c.title' ,'item_category_name' )
 			) )
 			->join( 'RIGHT', $db->quoteName( '#__content', 'a' ).' ON ' . $db->quoteName( 'a.id' ) . ' = ' . $db->quoteName( 'e.item_id' ) )
 			->join( 'LEFT', $db->quoteName( '#__categories', 'c' ) . ' ON ' . $db->quoteName( 'c.id' ) . ' = ' . $db->quoteName( 'a.catid' ) );
 		
-		$itemCategory = $state->get( 'filter.item_category_id' );
+		$itemCategory = $state->get( 'filter.item_category' );
 		if( is_numeric( $itemCategory ) )
 		{
 			$query->where( $db->quoteName( 'c.id' ) . ' = ' . (int) $itemCategory );
@@ -138,48 +145,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * @since       1.1.0
-	 */
-	public function onFieldsandfiltersPrepareFields( $context, $fieldsForm, $extensionsTypeID  )
-	{
-		// Check we have a xml element
-		if( !( $fieldsForm instanceof KextensionsFormElement ) )
-		{
-			$this->_subject->setError( 'JERROR_NOT_A_FORM' );
-			return false;
-		}
-		
-		if( empty( $extensionsTypeID ) || !in_array( $context, array( $this->_context, 'com_fieldsandfilters.element.content' ) ) )
-		{
-			return true;
-		}
-		
-		// Load Fields Helper
-		$fieldsHelper = FieldsandfiltersFactory::getFields();
-		
-		$extensionsParams = new JObject( array(
-					'module.off'		=> true,
-					'plugin.value'		=> $this->params->get( 'show_static_fields' )
-			) );
-		
-		// Load Extensions Helper
-		if( FieldsandfiltersExtensionsHelper::getParams( 'show_static_fields', $extensionsParams, true ) )
-		{
-			$fields = $fieldsHelper->getFieldsPivot( 'field_type', $extensionsTypeID, array( 1, -1 ), 'both' );
-		}
-		else
-		{
-			$typesHelper 	= FieldsandfiltersFactory::getTypes();
-			$staticMode	= (array) $typesHelper->getMode( 'static' );
-			$othersMode	= (array) $typesHelper->getModes( null, array(), true, $staticMode );
-			
-			$fields = $fieldsHelper->getFieldsByModeIDPivot( 'field_type', $extensionsTypeID, $othersMode, array( 1, -1 ), 'both' );
-		}
-		
-		$fieldsForm->setElements( $fields );
 	}
 	
 	/**
@@ -211,103 +176,120 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	 * @return	boolean
 	 * @since       1.0.0
 	 */
-	public function onFieldsandfiltersPrepareForm( $form, $data )
+	public function onFieldsandfiltersPrepareForm(JForm $form, $data )
 	{
-		// Check we have a xml element
-		if( !( $form instanceof JForm ) )
-		{
-			$this->_subject->setError( 'JERROR_NOT_A_FORM' );
-			return false;
-		}
+		$context = $form->getName();
 		
-		if( $form->getName() != $this->_context )
+		if( !($context == $this->_context || $context == 'com_fieldsandfilters.elements.filter' ))
 		{
 			return true;
 		}
 		
-		// Load Extensions Helper
-		$extensions = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( array( 'allextensions', $this->_name ) );
-		
-		if( !( $extensionContent = $extensions->get( $this->_name ) ) )
+		if( $context == 'com_fieldsandfilters.elements.filter' )
 		{
-			return true;
-		}
-		
-		JModelLegacy::addIncludePath( ( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/models' ), 'FieldsandfiltersModel' );
-		
-		if( !( $elementModel = JModelLegacy::getInstance( 'element', 'FieldsandfiltersModel', array( 'ignore_request' => true, 'table_path' => ( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/tables' ) ) ) ) )
-		{
-			return true;
-		}
-		
-		$elementModel->setState( 'element.extension_type_id', $extensionContent->extension_type_id );
-		
-		// Load Extension Language
-		KextensionsLanguage::load( 'com_fieldsandfilters', JPATH_ADMINISTRATOR );
-		
-		$fieldsForm = $elementModel->prepareFieldsForm();
-		
-		if( !$fieldsForm instanceof KextensionsFormElement )
-		{
-			return true;
-		}
-		
-		$fieldsForm->setPath( 'attribs.fieldsandfilters' );
-		
-		$fieldsetXML =  new SimpleXMLElement( '<fieldset />' );
-		$fieldsetXML->addAttribute( 'name', 'fieldsandfilters' );
-		$fieldsetXML->addAttribute( 'label', 'COM_FIELDSANDFILTERS' );
-		// $fieldsetForm->addAttribute( 'description', 'COM_FIELDSANDFILTERS_FIELDSET_DESC' );
-		
-		$fielsXML = $fieldsetXML->addChild( 'fields' );
-		$fielsXML->addAttribute( 'name', 'fieldsandfilters' );
-		
-		if( !empty( $data ) )
-		{
-			$data = (object) $data;
-			$elementModel->setState( 'element.item_id', $data->id );
-			$itemFields = $elementModel->getItem()->get( 'fields', new JObject );
-		}
-		
-		$isNew = !(boolean) $elementModel->getState( 'element.element_id', 0 );
-		
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
-		
-		// Trigger the onFieldsandfiltersPrepareFormField event.
-		FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFormField', array( $fieldsForm, $isNew ) );
-		
-		if( $fieldsFormXML = $fieldsForm->getFields() )
-		{
-			// Load the XML Helper
-			KextensionsXML::setFields( $fielsXML , $fieldsFormXML );
+			$form->addFieldPath(JPATH_ADMINISTRATOR . '/components/com_categories/models/fields');
 			
-			$form->setField( $fieldsetXML, 'attribs' );
+			$addform = new SimpleXMLElement('<form />');
+			$fields = $addform->addChild('fields');
+			$fields->addAttribute('name', 'filter');
 			
-			// For joomla 2.5 && Key Reference
-			if( !FieldsandfiltersFactory::isVersion() )
+			$field = $fields->addChild('field');
+			$field->addAttribute('name', 'item_category');
+			$field->addAttribute('type', 'category');
+			$field->addAttribute('label', 'JOPTION_FILTER_CATEGORY');
+			$field->addAttribute('description', 'JOPTION_FILTER_CATEGORY_DESC');
+			$field->addAttribute('extension', 'com_content');
+			$field->addAttribute('onchange', 'this.form.submit();');
+			
+			KextensionsXML::addOptionsNode( $field, array(
+				'JOPTION_SELECT_CATEGORY' => '',
+			) );
+			
+			$form->load($addform, false);
+		}
+		else if($context == $this->_context)
+		{
+			// Load Extensions Helper
+			$extensions = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( array( 'allextensions', $this->_name ) );
+			
+			if( !( $extensionContent = $extensions->get( $this->_name ) ) )
 			{
-				$fieldsetXML = new SimpleXMLElement( '<fieldset />' );
-				$fieldsetXML->addAttribute( 'name', 'key_reference' );
-				$fieldsetXML->addAttribute( 'label', 'Key Reference' );
+				return true;
+			}
+			
+			JModelLegacy::addIncludePath( ( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/models' ), 'FieldsandfiltersModel' );
+			
+			if( !( $elementModel = JModelLegacy::getInstance( 'element', 'FieldsandfiltersModel', array( 'ignore_request' => true, 'table_path' => ( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/tables' ) ) ) ) )
+			{
+				return true;
+			}
+			
+			// [TODO]
+			// $elementModel->setState( 'element.extension_type_id', $extensionContent->content_type_id );
+			
+			// Load Extension Language
+			KextensionsLanguage::load( 'com_fieldsandfilters', JPATH_ADMINISTRATOR );
+			
+			$fieldsForm = new KextensionsForm( $this->_context . '.' . $this->_name );
+			$fieldsData = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($extensionContent->content_type_id);
+			
+			$fieldsForm->setPath( 'attribs.fieldsandfilters' );
+			
+			$fieldsetXML =  new SimpleXMLElement( '<fieldset />' );
+			$fieldsetXML->addAttribute( 'name', 'fieldsandfilters' );
+			$fieldsetXML->addAttribute( 'label', 'COM_FIELDSANDFILTERS' );
+			// $fieldsetForm->addAttribute( 'description', 'COM_FIELDSANDFILTERS_FIELDSET_DESC' );
+			
+			$fielsXML = $fieldsetXML->addChild( 'fields' );
+			$fielsXML->addAttribute( 'name', 'fieldsandfilters' );
+			
+			if( !empty( $data ) )
+			{
+				$data = (object) $data;
+				$elementModel->setState( $elementModel->getName() . '.item_id', $data->id );
+				$itemFields = $elementModel->getItem()->get( 'fields', new JObject );
+			}
+			
+			$isNew = !(boolean) $elementModel->getState( $elementModel->getName() . '.id', 0 );
+			
+			JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
+			
+			// Trigger the onFieldsandfiltersPrepareFormField event.
+			JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareFormField', array( $fieldsForm, $fieldsData, $isNew ) );
+			
+			if( $fieldsFormXML = $fieldsForm->getFormFields() )
+			{
+				// Load the XML Helper
+				KextensionsXML::setFields( $fielsXML , $fieldsFormXML );
 				
 				$form->setField( $fieldsetXML, 'attribs' );
-			}
-			
-			if( $default = $fieldsForm->getData() )
-			{
-				$form->bind( $default );
-			}
-			
-			if( !$isNew )
-			{
-				$attribs    = new JRegistry();
-				$attribs->set( 'attribs.fieldsandfilters.fields', $itemFields );
 				
-				$form->bind( $attribs );
+				// For joomla 2.5 && Key Reference
+				if( !FieldsandfiltersFactory::isVersion() )
+				{
+					$fieldsetXML = new SimpleXMLElement( '<fieldset />' );
+					$fieldsetXML->addAttribute( 'name', 'key_reference' );
+					$fieldsetXML->addAttribute( 'label', 'Key Reference' );
+					
+					$form->setField( $fieldsetXML, 'attribs' );
+				}
+				
+				if( $default = $fieldsForm->getData() )
+				{
+					$form->bind( $default );
+				}
+				
+				if( !$isNew )
+				{
+					$attribs    = new JRegistry();
+					$attribs->set( 'attribs.fieldsandfilters.fields', $itemFields );
+					
+					$form->bind( $attribs );
+				}
 			}
+			
+			return true;
 		}
-		
-		return true;
 	}
 	
 	/**
@@ -639,7 +621,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$templateFields = new JObject;
 		
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		// Trigger the onFieldsandfiltersPrepareFormField event.
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $element ) );
 		
@@ -732,7 +714,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$templateFields = new JObject;
 		
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		// Trigger the onFieldsandfiltersPrepareFormField event.
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFiltersHTML', array( $templateFields, $fields, $params, $ordering ) );
 		

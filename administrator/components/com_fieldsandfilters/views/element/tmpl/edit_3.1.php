@@ -32,11 +32,11 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', a
 	}
 </script>
 
-<form action="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&layout=edit&eid='. (int) $this->item->get( 'element_id' )  ); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="element-form" class="form-validate">
+<form action="<?php echo JRoute::_( 'index.php?option=com_fieldsandfilters&layout=edit&eid='. (int) $this->item->get( 'element_id' )  ); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="element-form" class="form-validate form-horizontal">
 
-	<div class="form-horizontal">
+	<fieldset>
 		<legend>
-		<?php if( $extensionTitle = $this->item->get('extension_name') ) : ?>
+		<?php if( $extensionTitle = $this->state->get( 'element.extension_title' ) ) : ?>
 			<?php echo JText::_( $extensionTitle ); ?>: 
 		<?php endif; ?>
 			<?php echo $this->escape( $this->item->get( 'item_name', '' ) ); ?> 
@@ -56,7 +56,7 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', a
 				<?php endif; ?>
 			<?php endforeach;?>
 		</div>
-	</div>
+	</fieldset>
 	
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_( 'form.token' ); ?>

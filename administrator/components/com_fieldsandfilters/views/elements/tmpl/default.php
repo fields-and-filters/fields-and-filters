@@ -79,20 +79,18 @@ if( $saveOrder )
 						<th width="1%" class="nowrap center hidden-phone">
 							<?php echo JHtml::_('searchtools.sort', '', 'e.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>							
 						</th>
-						<th>
-							state [TODO]
+						<th width="1%" style="min-width:55px" class="nowrap center">
+							<?php echo JHtml::_('searchtools.sort', 'JSTATUS', $this->state->get('list.query.item_state', 'e.state'), $listDirn, $listOrder); ?>
 						</th>
-						<th width="1%" class="nowrap center hidden-phone">
-							<?php echo JHtml::_( 'searchtools.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_ITEM_NAME', 'e.item_name', $listDirn, $listOrder ); ?>
+						<th class="title">
+							<?php echo JHtml::_( 'searchtools.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_ITEM_NAME', $this->state->get('list.query.item_name', ''), $listDirn, $listOrder ); ?>
 						</th>
-						
 						<?php if($this->extensionDir) : ?>
-							<?php echo $this->loadTemplate('thead'); ?>
-						<?php else : ?>
-							<th width="1%" class="nowrap center hidden-phone">
-								<?php echo JHtml::_( 'searchtools.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_ITEM_ID', 'e.item_id', $listDirn, $listOrder ); ?>
-							</th>
+							<?php echo $this->loadTemplate('thead'); ?>	
 						<?php endif; ?>
+						<th width="1%" class="nowrap center hidden-phone">
+								<?php echo JHtml::_( 'searchtools.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_ITEM_ID', $this->state->get('list.query.item_id', 'e.item_id'), $listDirn, $listOrder ); ?>
+							</th>
 						<th width="1%" class="nowrap center hidden-phone">
 							<?php echo JHtml::_( 'searchtools.sort',  'COM_FIELDSANDFILTERS_ELEMENTS_ELEMENT_ID', 'e.id', $listDirn, $listOrder ); ?>
 						</th>
@@ -105,6 +103,7 @@ if( $saveOrder )
 					$canEdit	= $user->authorise( 'core.edit',	'com_fieldsandfilters' );
 					$canCheckin	= $user->authorise( 'core.manage',	'com_fieldsandfilters' );
 					$canChange	= $user->authorise( 'core.edit.state',	'com_fieldsandfilters' );
+					$this->item	= $item;
 					?>
 					<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo ( !empty( $item->content_type_id ) ? $item->content_type_id : 0 ); ?>">
 						<td class="order nowrap center hidden-phone">
@@ -127,13 +126,17 @@ if( $saveOrder )
 							<?php endif; ?>
 						</td>
 						<td class="center">
-							<?php if( !empty( $item->id ) ) : ?>
+							<?php if( isset( $item->id ) ) : ?>
 							<div class="btn-group">
 								<?php echo JHtml::_( 'jgrid.published', $item->state, $i, 'elements.', false, 'cb' ); ?>
 							</div>
+							<?php elseif ( isset($item->item_state) ) : ?>
+							<div class="btn-group">
+								<?php echo JHtml::_( 'jgrid.published', $item->item_state, $i, 'elements.', false, 'cb' ); ?>
+							</div>
 							<?php endif; ?>
 						</td>
-						<td class="nowrap has-context">
+						<td class="has-context">
 							<?php if( isset( $item->item_name ) ) : ?>
 							<div class="pull-left">
 								<?php if( $canEdit ) : ?>
@@ -151,9 +154,7 @@ if( $saveOrder )
 								<?php endif; ?>
 								
 								<?php if( isset( $item->item_alias ) ) : ?>
-								<p class="smallsub">
 									<?php echo JText::sprintf( $this->state->get( 'text.alias', 'JGLOBAL_LIST_ALIAS' ), $this->escape( $item->item_alias ) ); ?>
-								</p>
 								<?php endif; ?>
 								<?php if( $extension = $extensionsHelper->getExtensionsPivot( 'content_type_id', true )->get( (int) $this->state->get( 'filter.content_type_id', 0 ) ) ) : ?>
 								<p class="smallsub">
@@ -166,13 +167,14 @@ if( $saveOrder )
 						
 						<?php if($this->extensionDir) : ?>
 							<?php echo $this->loadTemplate('tbody'); ?>
-						<?php else : ?>
-							<th width="1%" class="nowrap center hidden-phone">
-								<?php (int) $item->item_id; ?>
-							</th>
 						<?php endif; ?>
 						<td class="center hidden-phone">
-							<?php if( !is_null( $item->id ) ) : ?>
+							<?php if( isset( $item->item_id ) ) : ?>
+								<?php echo (int) $item->item_id; ?>
+							<?php endif; ?>
+						</td>
+						<td class="center hidden-phone">
+							<?php if( isset( $item->id ) ) : ?>
 								<?php echo (int) $item->id; ?>
 							<?php endif; ?>
 						</td>

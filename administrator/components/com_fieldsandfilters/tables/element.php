@@ -27,7 +27,7 @@ class FieldsandfiltersTableElement extends JTable
 	 */
 	public function __construct( &$db )
 	{
-	    parent::__construct( '#__fieldsandfilters_elements', 'element_id', $db );
+	    parent::__construct( '#__fieldsandfilters_elements', 'id', $db );
 	}
 
 	/**
@@ -60,8 +60,10 @@ class FieldsandfiltersTableElement extends JTable
 	 */
 	public function check()
 	{
+		$key = $this->_tbl_key;
+		
 		//If there is an ordering column and this is a new row then get the next ordering value
-		if( $this->element_id == 0 )
+		if( $this->$key == 0 )
 		{
 			$this->ordering = self::getNextOrder();
 		}

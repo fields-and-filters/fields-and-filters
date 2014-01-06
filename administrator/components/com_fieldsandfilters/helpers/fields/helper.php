@@ -122,7 +122,7 @@ class FieldsandfiltersFieldsHelper
 		}
 		
 		$fields = new JObject( JArrayHelper::pivot( $fields, 'field_type' ) );
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $object->element, $params, $ordering ) );
 		
@@ -341,6 +341,30 @@ class FieldsandfiltersFieldsHelper
 	}
 	
 	/**
+	 * @since       1.2.0
+	 **/
+	public static function getFieldsByTypeIDColumnFieldType($contentTypeID, $withStatic = null)
+	{
+		$withStatic = !is_null($withStatic) ? $withStatic : JComponentHelper::getParams('com_fieldsandfilters')->get('show_static_fields', true);
+		
+		$fieldsHelper = FieldsandfiltersFactory::getFields();
+		
+		if( $withStatic )
+		{
+			$fields = $fieldsHelper->getFieldsPivot( 'type', $contentTypeID, array( 1, -1 ), FieldsandfiltersFields::VALUES_BOTH );
+		}
+		else
+		{
+			$staticMode	= (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC, array());
+			$otherMode	= (array) FieldsandfiltersModes::getModes( null, array(), true, $staticMode );
+			
+			$fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $contentTypeID, $othersMode, array( 1, -1 ), FieldsandfiltersFields::VALUES_BOTH );
+		}
+		
+		return $fields;
+	}
+	
+	/**
 	 * @since       1.0.0
 	 **/
 	protected static function _returnEmpty()
@@ -375,7 +399,7 @@ class FieldsandfiltersFieldsHelper
 		}
 		
 		$fields = new JObject( JArrayHelper::pivot( $fields, 'field_type' ) );
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $object->element, $params, $ordering ) );
 		

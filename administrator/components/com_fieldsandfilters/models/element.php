@@ -89,15 +89,15 @@ class FieldsandfiltersModelElement extends JModelAdmin
 		// The folder and element vars are passed when saving the form.
 		if( empty( $data ) ) {
 			$item			= $this->getItem();
-			$elementID		= $item->id;
-			$contentTypeID		= $item->content_type_id;
-			$itemID			= $item->item_id;
+			$elementID		= (int) $item->get('id');
+			$contentTypeID		= (int) $item->get('content_type_id');
+			$itemID			= (int) $item->get('item_id');
 		}
 		else
 		{
-			$elementID		= JArrayHelper::getValue( $data, 'id' );
-			$contentTypeID		= JArrayHelper::getValue( $data, 'content_type_id' );
-			$itemID			= JArrayHelper::getValue( $data, 'item_id' );
+			$elementID		= JArrayHelper::getValue( $data, 'id', 0, 'int' );
+			$contentTypeID		= JArrayHelper::getValue( $data, 'content_type_id', 0, 'int' );
+			$itemID			= JArrayHelper::getValue( $data, 'item_id', 0, 'int' );
 		}
 		
 		// These variables are used to add data from the plugin XML files.
@@ -125,11 +125,45 @@ class FieldsandfiltersModelElement extends JModelAdmin
 	 */
 	protected function preprocessForm( JForm $form, $data, $group = 'content' )
 	{
-		$jregistry = JRegistry::getInstance( 'fieldsandfilters' );
 		$contentTypeID	= $this->getState( $this->getName() . '.content_type_id', 0 );
 		
-		$jregistry->set( 'content_type_id', $contentTypeID );
-		
+		if ($contentTypeID)
+		{
+			$fieldsForm = new KextensionsForm($form->getName());
+			$fieldsData = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($contentTypeID);
+			
+			$fieldsForm->setPath('filters');
+			
+			$fieldsetXML =  new SimpleXMLElement( '<fields />' );
+			$fieldsetXML->addAttribute( 'name', 'fields' );
+			
+			JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
+			
+			// Trigger the onFieldsandfiltersPrepareFormField event.
+			JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareFormField', array( $fieldsForm, $fieldsData, !(boolean) $this->getState( $this->getName() . '.element_id', 0 ) ) );
+			
+			if( $fieldsFormXML = $fieldsForm->getFormFields() )
+			{
+				// Load the XML Helper
+				KextensionsXML::setFields( $fielsXML , $fieldsFormXML );
+				
+				$form->setField( $fieldsetXML, 'fields' );
+				
+				if( $default = $fieldsForm->getData() )
+				{
+					$form->bind( $default );
+				}
+				
+				if( !$isNew )
+				{
+					$attribs    = new JRegistry();
+					$attribs->set( 'fields', $itemFields );
+					
+					$form->bind( $attribs );
+				}
+			}
+		}
+		/*
 		if( $this->prepareFields() && ( $fields = $jregistry->get( 'fields' ) ) )
 		{			
 			$elementsForm = new JXMLElement( '<fields />' );
@@ -140,7 +174,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			$fieldsetForm->addAttribute( 'label', 'fields' );
 			// $fieldsetForm->addAttribute( 'description', 'COM_MENUS_ITEM_ASSOCIATIONS_FIELDSET_DESC');
 			
-			JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+			JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 			
 			// Trigger the onFieldsandfiltersPrepareFormField event.
 			JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareFormField', array( !(boolean) $this->getState( $this->getName() . '.element_id', 0 ) ) );
@@ -177,43 +211,11 @@ class FieldsandfiltersModelElement extends JModelAdmin
 				}
 			}
 		}
+		
+		*/
+		
 		// Trigger the default form events.
 		parent::preprocessForm( $form, $data, $group );
-	}
-	
-	/**
-	 * @since       1.1.0
-	 **/
-	public function prepareFieldsForm( $extensionTypeID = null )
-	{
-		$extensionTypeID 	= ( !empty( $extensionTypeID ) ) ? (int) $extensionTypeID : (int) $this->getState( $this->getName() . '.extension_type_id' );
-		
-		if( !isset( $this->fieldsFrom[$extensionTypeID] ) )
-		{
-			$fieldsForm = false;
-			
-			if( $extensionTypeID )
-			{
-				// Load PluginExtensions Helper
-				$extensionsHelper = FieldsandfiltersFactory::getExtensions();
-				
-				if( $extensionName = $this->getState( 'element.extension_name', ( ( $pluginExtension = $extensionsHelper->getExtensionsByTypeIDPivot( 'extension_type_id', $extensionTypeID )->get( $extensionTypeID ) ) ? $pluginExtension->name : null ) ) )
-				{
-					JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
-					
-					$name			= $this->option . '.' . $this->name;
-					$context 		= $name . '.' . $extensionName;
-					$fieldsForm 		= new KextensionsFormElement( $name );
-					$extensionsTypeID 	= $extensionsHelper->getExtensionsByNameColumn( 'extension_type_id', array( 'allextensions', $extensionName ) );
-					
-					$result = JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareFields', array( $context, $fieldsForm, $extensionsTypeID ) );
-				}
-			}
-			
-			$this->fieldsFrom[$extensionTypeID] = $fieldsForm;
-		}
-		
-		return $this->fieldsFrom[$extensionTypeID];
 	}
 
 	/**
@@ -229,8 +231,10 @@ class FieldsandfiltersModelElement extends JModelAdmin
 
 		if( empty( $data ) )
 		{
-			$data = new JRegistry( $this->getItem() );
+			$data = $this->getItem();
 		}
+		
+		$this->preprocessData('com_fieldsandfilters.element', $data);
 
 		return $data;
 	}
@@ -243,22 +247,24 @@ class FieldsandfiltersModelElement extends JModelAdmin
 	 * @return	mixed	Object on success, false on failure.
 	 * @since       1.1.0
 	 */
-	public function getItem( $elementID = null )
+	public function getItem($pk = null)
 	{		
-		$row = ( !empty( $elementID ) ) ? (int) $elementID : (int) $this->getState( $this->getName() . '.id' );
+		$row = ( !empty( $pk ) ) ? (int) $pk : (int) $this->getState( $this->getName() . '.id' );
 		
 		if( empty( $row ) )
 		{
 			$row = array(
-					'item_id' 		=> (int) $this->getState( $this->getName() . '.item_id', 0 ),
-					'extension_type_id' 	=> (int) $this->getState( $this->getName() . '.extension_type_id', 0 ),
-				);
+				'item_id' 		=> (int) $this->getState( $this->getName() . '.item_id', 0 ),
+				'content_type_id' 	=> (int) $this->getState( $this->getName() . '.content_type_id', 0 ),
+			);
 		}
 		
 		$store = md5( serialize( $row ) );
 		if( !isset( $this->_cache[$store] ) )
 		{
-			$isNew = true;
+			$app		= JFactory::getApplication();
+			$isNew 		= true;
+			$extensionName 	= false;
 			
 			// Get a level row instance.
 			$table = $this->getTable();
@@ -266,20 +272,29 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			// Attempt to load the row.
 			$table->load( $row );
 			
-			if( !empty( $table->element_id ) )
+			if( !empty( $table->id ) )
 			{
 				$isNew = false;
 				
 				// Load Elements Helper
-				if( $element = FieldsandfiltersFactory::getElements()->getElementsByID( $table->extension_type_id, $table->element_id, $this->_item_states, 3 )->get( $table->element_id ) )
+				if( $element = FieldsandfiltersFactory::getElements()->getElementsByID( $table->content_type_id, $table->id, $this->_item_states, 3 )->get( $table->id ) )
 				{
 					$table->fields = array(
-							       'connections' 	=>$element->connections->getProperties( true ),
-							       'data' 		=>$element->data->getProperties( true )
-							);
+						'connections' 	=> $element->connections->getProperties( true ),
+						'data' 		=> $element->data->getProperties( true )
+					 );
 				}
+			}
+			else
+			{
+				$table->content_type_id = (int) $this->getState( $this->getName() . '.content_type_id', 0 );
+				$table->item_id = (int) $this->getState( $this->getName() . '.item_id', 0 );
 				
-				$this->setExtensionState( $table->content_type_id  );
+			}
+			
+			if( $table->content_type_id && ($extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID($table->content_type_id, true, true)->get( $table->content_type_id )))
+			{
+				$extensionName = $extension->name;
 			}
 			
 			// Convert to the JObject before adding other data.
@@ -287,20 +302,33 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			
 			$item = JArrayHelper::toObject( $properties, 'JObject' );
 			
-			if( $extensionName = $this->getState( 'element.extension_name' ) )
+			// [TODO]
+			// fields i value kes nalezy zmienic w values wartos elementName bo teraz jest id a powinno byc field_id, czyli dodajemy jakies FOREIGN KEY
+			
+			if( $extensionName )
 			{
-				// Include the fieldsandfiltersExtensions plugins for the on prepare item events.
-				JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
-				// Trigger the onFieldsandfiltersPrepareElement event.
-				$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareElement', array( ( $this->option . '.' . $this->name . '.' . $extensionName ), &$item, $isNew, $this->state ) );
+				$item->extension_name = $extension->forms->extension->title;
 				
-				JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
-				// Trigger the onPrepareItem event.
-				$result = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareElementFields', array( ( $this->option . '.' . $this->name ), &$item, $isNew, $this->state ) );
+				// Include the fieldsandfiltersExtensions plugins for the on prepare item events.
+				JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
+				JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
+				
+				// Trigger the onFieldsandfiltersPrepareElement event.
+				$result = $app->triggerEvent( 'onFieldsandfiltersPrepareElement', array( ( $this->option . '.' . $this->name . '.' . $extensionName ), &$item, $isNew, $this->state ) );
 				
 				if( in_array( false, $result, true ) )
 				{
-					$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_PREPARE_ITEM', $this->getState( 'elements.extension_name' ) ) );
+					$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_PREPARE_ITEM', $extensionName ) );
+					
+					return false;
+				}
+				
+				// Trigger the onFieldsandfiltersPrepareElementFields event.
+				$result = $app->triggerEvent( 'onFieldsandfiltersPrepareElementFields', array( ( $this->option . '.' . $this->name ), &$item, $isNew, $this->state ) );
+				
+				if( in_array( false, $result, true ) )
+				{
+					$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_PREPARE_ITEM', $extensionName ) );
 					
 					return false;
 				}
@@ -308,8 +336,6 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			
 			$this->_cache[$store] = $item;
 		}
-		
-		$return = $this->_cache[$store];
 		
 		return $this->_cache[$store];
 	}
@@ -323,37 +349,15 @@ class FieldsandfiltersModelElement extends JModelAdmin
 	protected function populateState()
 	{
 		// Get the pk of the record from the request.
-		$jinput 	= JFactory::getApplication()->input;
-		
-		$elementID = $jinput->getInt( 'id' );
-		$this->setState( $this->getName() . '.element_id', $elementID );
+		$jinput = JFactory::getApplication()->input;
 		
 		$itemID = $jinput->getInt( 'itid' );
 		$this->setState( $this->getName() . '.item_id', $itemID );
 		
-		$extensionTypeID = $jinput->getInt( 'etid' );
-		$this->setState( $this->getName() . '.extension_type_id', $extensionTypeID );
+		$contentTypeID = $jinput->getInt( 'ctid' );
+		$this->setState( $this->getName() . '.content_type_id', $contentTypeID );
 		
-		$this->setExtensionState( $extensionTypeID );
-		
-		// Load the parameters.
-		$value = JComponentHelper::getParams( $this->option );
-		$this->setState( 'params', $value );
-	}
-	/**
-	 * @since       1.1.0
-	 **/
-	protected function setExtensionState( $extensionTypeID )
-	{
-		if( is_numeric( $extensionTypeID ) )
-		{
-			// Load PluginExtensions Helper
-			if( $extensionTypeID && ( $pluginExtension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeIDPivot( 'extension_type_id', $extensionTypeID, true )->get( $extensionTypeID ) ) )
-			{
-				$this->setState( $this->getName() . '.extension_name', $pluginExtension->name );
-				$this->setState( $this->getName() . '.extension_title', $pluginExtension->forms->get( 'extension', new JObject )->get( 'title', new JObject ) );
-			}
-		}
+		parent::populateState();
 	}
 	
 	/**
@@ -412,7 +416,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 
 		// Include the content plugins for the on save events.
 		JPluginHelper::importPlugin( 'content' );
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 
 		// Allow an exception to be thrown.
 		try
@@ -440,7 +444,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			}
 			
 			// Load PluginExtensions Helper
-			$extensionName = ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
+			$extensionName = ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeIDPivot( 'content_type_id', $table->content_type_id )->get( $table->content_type_id ) ) ? $extension->name : '';
 			
 			$context = $this->option . '.' . $this->name . '.' . $extensionName;
 			
@@ -598,7 +602,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 		
 		// Include the content plugins for the on delete events.
 		JPluginHelper::importPlugin( 'content' );
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		
 		// Load PluginExtensions Helper
 		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
@@ -611,7 +615,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 				throw new Exception($table->getError());
 			}
 			
-			$extensionName = ( $extension = $extensionsHelper->getExtensionsByTypeIDPivot( 'extension_type_id', $table->extension_type_id )->get( $table->extension_type_id ) ) ? $extension->name : '';
+			$extensionName = ( $extension = $extensionsHelper->getExtensionsByTypeIDPivot( 'content_type_id', $table->content_type_id )->get( $table->content_type_id ) ) ? $extension->name : '';
 			
 			$context = $this->option . '.' . $this->name . '.' .  $extensionName;
 			
@@ -623,7 +627,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			}
 			
 			// Store fields data and connections
-			if( $this->prepareFields( $table->extension_type_id ) && ( $fields = JRegistry::getInstance( 'fieldsandfilters' )->get( 'fields' ) ) )
+			if( $this->prepareFields( $table->content_type_id ) && ( $fields = JRegistry::getInstance( 'fieldsandfilters' )->get( 'fields' ) ) )
 			{
 				// Get old item
 				$item = $this->getItem( $pk );

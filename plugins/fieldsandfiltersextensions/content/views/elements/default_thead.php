@@ -10,8 +10,10 @@
 
 // no direct access
 defined( '_JEXEC' ) or die;
-?>
 
-<td>
-	działa2 :D
-</td>
+$listOrder	= $this->state->get( 'list.ordering' );
+$listDirn	= $this->state->get( 'list.direction' );
+?>
+<th width="10%" class="hidden-phone">
+	<?php echo JHtml::_( 'searchtools.sort',  'PLG_FAF_ES_CT_ELEMENTS_ITEM_CATEGORY_NAME', 'a.catid', $listDirn, $listOrder ); ?>
+</th>

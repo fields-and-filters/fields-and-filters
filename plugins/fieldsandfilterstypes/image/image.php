@@ -215,13 +215,13 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 					$element->addAttribute( 'fieldset', $fieldset );
 					
 					KextensionsXML::addOptionsNode( $element, array(
-							'PLG_FAF_TS_IE_FORM_TARGET_OPTION_DEFAULT'	=> '',
-							'PLG_FAF_TS_IE_FORM_TARGET_OPTION_BLANK'	=> 1,
-							'PLG_FAF_TS_IE_FORM_TARGET_OPTION_POPUP'	=> 2,
-							'PLG_FAF_TS_IE_FORM_TARGET_OPTION_MODAL'	=> 3,
-							'PLG_FAF_TS_IE_FORM_TARGET_OPTION_PARENT'	=> 4
-							
-						) );
+						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_DEFAULT'	=> '',
+						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_BLANK'	=> 1,
+						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_POPUP'	=> 2,
+						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_MODAL'	=> 3,
+						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_PARENT'	=> 4
+						
+					) );
 				}
 			}
 			

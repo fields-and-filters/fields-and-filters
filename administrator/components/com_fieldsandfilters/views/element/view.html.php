@@ -27,8 +27,6 @@ class FieldsandfiltersViewElement extends JViewLegacy
 	 */
 	public function display( $tpl = null )
 	{
-		$tpl 			= is_null( $tpl ) && !FieldsandfiltersFactory::isVersion() ? '2.5' : $tpl;
-		
 		$this->state		= $this->get( 'State' );
 		$this->item		= $this->get( 'Item' );
 		$this->form		= $this->get( 'Form' );
@@ -40,6 +38,12 @@ class FieldsandfiltersViewElement extends JViewLegacy
 		}
 		
 		$this->addToolbar();
+		
+		if (FieldsandfiltersFactory::isVersion('<', 3.2) && is_null($tpl))
+		{
+			$tpl = (FieldsandfiltersFactory::isVersion()) ? '3.1' : '2.5';
+		}
+		
 		parent::display( $tpl );
 	}
 	

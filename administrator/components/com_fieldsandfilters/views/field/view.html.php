@@ -36,12 +36,13 @@ class FieldsandfiltersViewField extends JViewLegacy
 			throw new Exception(implode("\n", $errors));
 		}
 		
+		$this->addToolbar();
+		
 		if (FieldsandfiltersFactory::isVersion('<', 3.2) && is_null($tpl))
 		{
 			$tpl = (FieldsandfiltersFactory::isVersion()) ? '3.1' : '2.5';
 		}
 		
-		$this->addToolbar();
 		parent::display($tpl);
 	}
 

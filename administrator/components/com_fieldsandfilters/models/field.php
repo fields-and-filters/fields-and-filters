@@ -92,15 +92,15 @@ class FieldsandfiltersModelField extends JModelAdmin
 		if (empty($data))
 		{
 			$item 			= $this->getItem();
-			$mode 			= $item->get('mode');
+			$mode 			= (int) $item->get('mode');
 			$type 			= $item->get('type');
-			$content_type_id 	= $item->get('content_type_id');
+			$content_type_id 	= (int) $item->get('content_type_id');
 		}
 		else
 		{
-			$mode 			= JArrayHelper::getValue($data, 'mode');
+			$mode 			= JArrayHelper::getValue($data, 'mode', 0,'int');
 			$type 			= JArrayHelper::getValue($data, 'type');
-			$content_type_id 	= JArrayHelper::getValue($data, 'content_type_id');
+			$content_type_id 	= JArrayHelper::getValue($data, 'content_type_id', 0, 'int');
 		}
 		
 		$this->setState($this->getName() . '.mode', $mode);
@@ -284,7 +284,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 			if (!$isNew)
 			{
 				// Include the fieldsandfiltersExtensions plugins for the on prepare item events.
-				JPluginHelper::importPlugin('fieldsandfiltersTypes');
+				JPluginHelper::importPlugin('fieldsandfilterstypes');
 				
 				// Trigger the onPrepareItem event.
 				$result = JFactory::getApplication()->triggerEvent('onFieldsandfiltersPrepareElementFields', array(($this->option . '.' . $this->name), &$item, $isNew, $this->state));

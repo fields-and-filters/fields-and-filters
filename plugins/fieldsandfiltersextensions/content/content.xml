@@ -55,24 +55,6 @@
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 					</field>
-				<field
-					name="admin_fields_spacer"
-					type="spacer"
-					label="COM_FIELDSANDFILTERS_ADMIN_FIELDS_SPACER_LBL"
-					description="COM_FIELDSANDFILTERS_ADMIN_FIELDS_SPACER_DESC"
-				/>
-					<field
-						name="show_static_fields"
-						type="radio"
-						class="btn-group"
-						label="COM_FIELDSANDFILTERS_SHOW_STATIC_FIELDS_LBL"
-						description="COM_FIELDSANDFILTERS_SHOW_STATIC_FIELDS_DESC"
-						default=""
-					>
-						<option value="">JDEFAULT</option>
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-					</field>
 			</fieldset>
 			<fieldset
 				name="filters"

@@ -53,14 +53,15 @@ class FieldsandfiltersModelElements extends JModelList
 	protected function populateState( $ordering = null, $direction = null )
 	{
 		// Initialise variables.
-		$app = JFactory::getApplication();
+		$app 		= JFactory::getApplication();
+		$filters 	= $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array');
 		
 		// If the context is set, assume that stateful lists are used.
 		// @deprecated v.1.2 && J3.x
 		if (!FieldsandfiltersFactory::isVersion() && $this->context)
 		{
 			// Receive & set filters
-			if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
+			if ($filters)
 			{
 				foreach ($filters as $name => $value)
 				{
@@ -68,25 +69,29 @@ class FieldsandfiltersModelElements extends JModelList
 				}
 			}
 		}
+		else
+		{
+			$this->state->set('filter.content_type_id', JArrayHelper::getValue($filters, 'content_type_id', 0, 'int'));
+		}
 		
 		// Load the parameters.
 		$params = JComponentHelper::getParams( 'com_fieldsandfilters' );
 		$this->setState( 'params', $params );
 		
-		// List state information.
-		parent::populateState( 'e.item_id', 'asc' );
-		
 		$contentTypeID = (int) $this->state->get('filter.content_type_id');
 		if( $contentTypeID && ( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeIDPivot( 'content_type_id', $contentTypeID )->get( $contentTypeID ) ) )
 		{
 			// Include the content plugins for the on delete events.
-			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+			JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 			
 			// Trigger the onContentBeforeDelete event.
 			$app->triggerEvent( 'onFieldsandfiltersPopulateState', array( ( $this->context . '.' . $extension->name ), $this->state, &$this->filter_fields ) );
 			
 			$this->setState('filter.extension_name', $extension->name);
 		}
+		
+		// List state information.
+		parent::populateState( $this->state->get('list.query.ordering', 'e.item_id'), 'asc' );
 	}
 
 	/**
@@ -156,7 +161,7 @@ class FieldsandfiltersModelElements extends JModelList
 		}
 		
 		// Include the fieldsandfiltersExtensions plugins for the on PrepareList Query events.
-		JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+		JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 		
 		// Trigger the onPrepareListQuery event.
 		$result = JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareListQuery', array( ( $this->context . '.' . $extensionName ), $query, $this->state ) );

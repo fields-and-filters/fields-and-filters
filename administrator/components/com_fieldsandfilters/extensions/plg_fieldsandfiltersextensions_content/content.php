@@ -276,7 +276,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$fieldsetForm->addAttribute( 'label', 'COM_FIELDSANDFILTERS' );
 		// $fieldsetForm->addAttribute( 'description', 'COM_MENUS_ITEM_ASSOCIATIONS_FIELDSET_DESC' );
 		
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		
 		// Trigger the onFieldsandfiltersPrepareFormField event.
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFormField', array( !(boolean) $elementModel->getState( 'element.element_id', 0 ) ) );
@@ -649,7 +649,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$templateFields = new JObject;
 		
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		// Trigger the onFieldsandfiltersPrepareFormField event.
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $element ) );
 		
@@ -742,7 +742,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$templateFields = new JObject;
 		
-		JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		// Trigger the onFieldsandfiltersPrepareFormField event.
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFiltersHTML', array( $templateFields, $fields, $params, $ordering ) );
 		

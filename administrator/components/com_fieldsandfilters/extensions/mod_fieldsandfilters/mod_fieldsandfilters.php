@@ -29,7 +29,7 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 	
 	$showAllextensions = $extensionsHelper->getExtensionsParam( 'use_allextensions_filters', $extensionsParams, true );
 	
-	JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+	JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 	
 	// Trigger the onFieldsandfiltersPrepareFiltersHTML event.
 	$templateFilters = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFiltersHTML', array( $context, $fieldsID, $showAllextensions, false ) );

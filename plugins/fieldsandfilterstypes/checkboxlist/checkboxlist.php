@@ -44,14 +44,9 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	 * @return	boolean
 	 * @since	1.1.0
 	 */
-	public function onFieldsandfiltersPrepareFormField( $fieldsForm, $isNew = false, $fieldset = 'fieldsandfilters' )
+	public function onFieldsandfiltersPrepareFormField( KextensionsForm $form, JObject $data, $isNew = false, $fieldset = 'fieldsandfilters' )
 	{
-		if( !$fieldsForm instanceof KextensionsFormElement )
-		{
-			return true;
-		}
-		
-		if( !( $fields = $fieldsForm->getElement( $this->_name ) ) )
+		if( !( $fields = $data->get( $this->_name ) ) )
 		{
 			return true;
 		}
@@ -79,7 +74,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 					default:
 						$element = $root->addChild( 'field' );
 						$element->addAttribute( 'type', 'spacer' );
-						$element->addAttribute( 'name', 'description_spacer_' . $field->field_id );
+						$element->addAttribute( 'name', 'description_spacer_' . $field->id );
 						$element->addAttribute( 'label', $field->description );
 						$element->addAttribute( 'translate_label', 'false' );
 						$element->addAttribute( 'fieldset', $fieldset );
@@ -95,15 +90,15 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				$element->addAttribute( 'fieldset', $fieldset );
 			}
 			
-			$label = '<strong>' . $field->field_name . '</strong> {' . $field->field_id . '}';
+			$label = '<strong>' . $field->name . '</strong> {' . $field->id . '}';
 				
 			if( $field->state == -1 )
 			{
 				$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN' ) . ']';
 			}
 
-			$element->addAttribute( 'id', $field->field_id );
-			$element->addAttribute( 'name', $field->field_id );
+			$element->addAttribute( 'id', $field->id );
+			$element->addAttribute( 'name', $field->id );
 			$element->addAttribute( 'class', 'inputbox' );
 			$element->addAttribute( 'labelclass' , 'control-label' );
 			$element->addAttribute( 'label', $label );
@@ -120,12 +115,17 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			// FieldsandfiltersFieldValues
 			$values = $field->values->getProperties();
 			
+			//echo '<pre>';
+			//print_r($field->values);
+			//echo '</pre>';
+			
+			
 			if( !empty( $values ) )
 			{
 				while( $value = array_shift( $values ) )
 				{
-					$option = $element->addChild( 'option', ( $value->field_value . ' [' . $value->field_value_alias . ']' ) );
-					$option->addAttribute( 'value', $value->field_value_id );
+					$option = $element->addChild( 'option', ( $value->value . ' [' . $value->alias . ']' ) );
+					$option->addAttribute( 'value', $value->id );
 				}
 				
 				if( $isNew && ( $default = $field->params->get( 'type.default' ) ) )
@@ -133,18 +133,19 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 					$default = array_unique( (array) $default );
 					JArrayHelper::toInteger( $default );
 					
-					$fieldsForm->setData( 'connections.' . $field->field_id, $default );
+					$fieldsForm->setData( 'connections.' . $field->id, $default );
 				}
 			}
 			
 			// hr bottom spacer
 			$element = $root->addChild( 'field' );
 			$element->addAttribute( 'type', 'spacer' );
-			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->field_id );
+			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->id );
 			$element->addAttribute( 'hr', 'true' );
 			$element->addAttribute( 'fieldset', $fieldset );
 			
-			$fieldsForm->setField( $field->ordering, $root );
+			$form->addOrder($field->id, $field->ordering)
+				->setField( $field->id, $root );
 		}
 		
 		return true;
@@ -176,7 +177,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		while( $field = array_shift( $fields ) )
 		{
 			$modeName 	= $typesHelper->getModeName( $field->mode );
-			$isStaticMode 	= (  $modeName == 'static' );
+			$isStaticMode 	= (  $modeName == 'static' ); // [TODO] change to mode mode
 			
 			if( ( $isStaticMode && empty( $field->connections ) ) || ( $modeName == 'field' && ( !isset( $element->connections ) || !property_exists( $element->connections, $field->field_id ) ) ) )
 			{

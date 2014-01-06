@@ -16,6 +16,8 @@ defined('_JEXEC') or die;
 class FieldsandfiltersViewElements extends JViewLegacy
 {
 	/**
+	 * List items
+	 * 
 	 * @since	1.0.0
 	 */
 	protected $items;
@@ -44,6 +46,13 @@ class FieldsandfiltersViewElements extends JViewLegacy
 	 * @since	1.2.0
 	 */
 	public $extensionDir;
+	
+	/**
+	 * Single item
+	 * 
+	 * @since	1.2.0
+	 */
+	public $item;
 	
 	/**
 	 * Display the view

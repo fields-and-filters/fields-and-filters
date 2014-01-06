@@ -62,7 +62,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
                 
                 try
 		{
-			JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+			JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 			
                         // Trigger the onFieldsandfiltersPrepareFormField event.
                         $context = 'com_fieldsandfilters.filters.' . $extension->name;
@@ -123,7 +123,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		
                 try
 		{
-			JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+			JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 			
                         // Trigger the onFieldsandfiltersPrepareFormField event.
                         $context = 'com_fieldsandfilters.fields.' . $field->field_type;

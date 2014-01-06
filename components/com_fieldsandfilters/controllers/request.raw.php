@@ -40,7 +40,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
                         }
                         else
                         {
-				JPluginHelper::importPlugin( 'fieldsandfiltersTypes' );
+				JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 				
                                 $context = 'com_fieldsandfilters.fields.' . $field->field_type;
                                 FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersFieldsRequestRaw', array( $context, $field ) );
