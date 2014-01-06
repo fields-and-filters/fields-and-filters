@@ -15,9 +15,24 @@ defined( 'JPATH_PLATFORM' ) or die;
  * 
  * @since       1.0.0
  */
-abstract class KextensionsBufferValues extends KextensionsBuffer
+abstract class KextensionsBufferValues extends KextensionsBuffer implements KextensionsBufferInterfaceValues
 {
+	/*
+	 * @since       1.0.0
+	 */
         protected $methodValues = null;
+	
+	/**
+	 * Temporarily values elements var
+	 * @since       1.0.0
+	 */
+	protected $_valuesElements = array();
+	
+	/**
+	 * Temporarily values elements add var
+	 * @since       1.0.0
+	 */
+	protected $_valuesElementsAdd = array();
         
         /**
 	 * Method to get the Elements that reflect extensions type id and states
@@ -41,14 +56,12 @@ abstract class KextensionsBufferValues extends KextensionsBuffer
                                 while( $getValue = array_shift( $getValues ) )
                                 {
                                         $this->methodValues     = $getValue;
-                                        $this->vars->valuesName = $getValue;
                                         $this->_getBufferValues(); 
                                 }
                         }
                         else
                         {
                                 $this->methodValues     = $getValues;
-                                $this->vars->valuesName = $getValues;
                                 $this->_getBufferValues();   
                         }
                         
@@ -62,7 +75,7 @@ abstract class KextensionsBufferValues extends KextensionsBuffer
 	 */
         protected function _getBufferValues()
         {
-                if( !( $this->_prepareVarsValues() ) || is_null( $this->methodValues ) )
+                if( !( $this->Values() ) || is_null( $this->methodValues ) )
                 {
                         return;
                 }
@@ -92,43 +105,21 @@ abstract class KextensionsBufferValues extends KextensionsBuffer
                         } 	
 		}
                 
-                $_vars = $this->vars->values;
-                $_vars->elements = array_diff( $_vars->elements, $_vars->elementsAdd );
-                if( !empty( $_vars->elements ) )
+                $this->_valuesElements = array_diff( $this->_valuesElements, $this->_valuesElementsAdd );
+                if( !empty( $this->_valuesElements ) )
                 {
-                        while( $element = array_shift( $_vars->elements ) )
+                        while( $element = array_shift( $this->_valuesElements ) )
                         {
                                 $buffer = $this->buffer->$element;
                                 $this->_addValue( $buffer );
                                 
                                 if( !$this->config->get('elemntsWithoutValues', true ) )
                                 {
-                                        $element = $buffer->{$this->vars->elementName};
+                                        $element = $buffer->{$this->getForeignName()};
                                         unset( $this->buffer->{$element} );
                                 }
                         }
                 }
-                
-                unset( $_vars );
-        }
-        
-        /**
-	 * 
-	 * @since       1.0.0
-	 */
-        protected function _prepareVarsValues()
-        {
-                if( !isset( $this->vars->valuesName ) )
-                {
-                        JLog::add( 'Not isset vars valuesName', JLog::ERROR, 'Kextensions' );
-                        return false;  
-                }
-                
-                $this->vars->values                    = new stdClass();
-                $this->vars->values->elements          = array();
-                $this->vars->values->elementsAdd       = array();
-                
-                return true;
         }
         
         /**
@@ -153,17 +144,16 @@ abstract class KextensionsBufferValues extends KextensionsBuffer
 	 */
         protected function _searchValuesElement( &$element )
         {
-                $elementName    = $this->vars->elementName;
-                $_vars          = $this->vars->values;
+                $elementName    = $this->getForeignName();
                 // if element don't have filter_connection, add to arrry
-                if( !isset( $element->{$this->vars->valuesName} ) )
+                if( !isset( $element->{$this->getValuesName()} ) )
                 {
-                        array_push( $_vars->elements, $element->$elementName );
+                        array_push( $this->_valuesElements, $element->$elementName );
                 }
                 // if we need only elements with filter_connections isn't empty
                 elseif( !$this->config->get( 'elemntsWithoutValues', true ) )
                 {
-                        $_values = get_object_vars( $element->{$this->vars->valuesName} );
+                        $_values = get_object_vars( $element->{$this->getValuesName()} );
                         
                         if( empty( $_values ) )
                         {
@@ -180,7 +170,7 @@ abstract class KextensionsBufferValues extends KextensionsBuffer
 	 */
         protected function _testQueryVarsValues()
         {
-                return ( !empty( $this->vars->values->elements ) );
+                return ( !empty( $this->_valuesElements ) );
         }
         
         /**
@@ -200,11 +190,9 @@ abstract class KextensionsBufferValues extends KextensionsBuffer
 	 */
         protected function _setDataValue( &$_value )
         {
-                $_vars = $this->vars;
-                
-                if( isset( $_value->{$_vars->elementName} ) && !in_array( $_value->{$_vars->elementName}, $_vars->values->elementsAdd ) )
+                if( isset( $_value->{$this->getForeignName()} ) && !in_array( $_value->{$this->getForeignName()}, $this->_valuesElementsAdd ) )
                 {
-                        array_push( $_vars->values->elementsAdd, $_value->{$_vars->elementName} );
+                        array_push( $this->_valuesElementsAdd, $_value->{$this->getForeignName()} );
                 }
                 
                 $this->_addValue( $_value );
@@ -215,4 +203,25 @@ abstract class KextensionsBufferValues extends KextensionsBuffer
 	 * @since       1.0.0
 	 */
         protected function _addValue( &$value ){}
+	
+	/**
+	 * Reset arguments
+	 * 
+	 * @param	boolean 	$reset		reset arguments if you need
+	 *
+	 * @return      boolean         if is reset
+	 * @since       1.0.0
+	 **/
+	protected function _resetArgs( $reset = null )
+	{
+		$reset = parent::_resetArgs( $reset );
+		
+		if( $reset && $this->methodValues )
+		{
+			$this->_valuesElements 		= array();
+			$this->_valuesElementsAdd 	= array();
+		}
+                
+                return $reset;
+	}
 }

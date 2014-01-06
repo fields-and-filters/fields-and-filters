@@ -74,14 +74,6 @@ abstract class KextensionsBufferCore
         protected $_methods = array();
         
         /**
-	 * Temp varibles for method and query
-	 *
-	 * @var    object
-	 * @since       1.0.0
-	 */
-        protected $vars;
-        
-        /**
          * Temp varibles elements and values when method in running
          * 
 	 * @var    object.
@@ -149,7 +141,6 @@ abstract class KextensionsBufferCore
                 $this->_db      = JFactory::getDbo();
                 $this->_data    = new stdClass;
                 $this->buffer   = new JObject;
-                $this->vars     = new stdClass;
                 $this->config   = new JObject;
 	}
         
@@ -338,6 +329,7 @@ abstract class KextensionsBufferCore
 	 * 
 	 * @param	boolean 	$reset		reset arguments if you need
 	 *
+	 * @return      boolean         if is reset
 	 * @since       1.0.0
 	 **/
 	protected function _resetArgs( $reset = null )
@@ -351,11 +343,12 @@ abstract class KextensionsBufferCore
                         $this->notElements 	= array();
 			$this->states 		= array();
 			$this->reset		= true;
-                        $this->vars             = new stdClass;
                         $this->method           = null;
                         $this->config           = new JObject;
                         $this->buffer           = new JObject;
 		}
+                
+                return $reset;
 	}
         
         /**
@@ -488,7 +481,8 @@ abstract class KextensionsBufferCore
                         return call_user_func_array( array( $this, $method ), $arguments );
                 }
                 
-                throw new InvalidArgumentException( 'Method not exists ' . get_class($this) . '::' . $name );
+                // [TODO] uncooments only for test
+                // throw new InvalidArgumentException( 'Method not exists ' . get_class($this) . '::' . $name );
         }
         
         // abstract protected function _beforeCall( $type, $method, $arguments );

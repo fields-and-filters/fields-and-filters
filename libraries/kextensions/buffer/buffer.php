@@ -15,29 +15,43 @@ defined( 'JPATH_PLATFORM' ) or die;
  *
  * @since       1.0.0
  */
-abstract class KextensionsBuffer extends KextensionsBufferCore
+abstract class KextensionsBuffer extends KextensionsBufferCore implements KextensionsBufferInterfaceBuffer
 {
-        /**
+	/**
+	 * Temporarily states var
+	 * @since       1.0.0
+	 */
+	protected $_states = array();
+	
+	/**
+	 * Temporarily types var
+	 * @since       1.0.0
+	 */
+	protected $_types = array();
+	
+	/**
+	 * Temporarily not elements var
+	 * @since       1.0.0
+	 */
+	protected $_notElements = array();
+	
+	/**
 	 * 
 	 * @since       1.0.0
 	 */
-        protected function _prepareVars()
-        {
-                // We take elements from cache, when they aren't in the cache, we add they to query variables
-		$this->vars->states		= array();
-		$this->vars->types 		= array();
-		$this->vars->notElements        = array();
-                
-                if( !isset( $this->vars->typeName, $this->vars->elementName ) )
-                {
-                        JLog::add( 'Not isset vars typeName or elementName', JLog::ERROR, 'Kextensions' );
-                        return false;
-                }
-                
-                $this->vars->stateName = isset( $this->vars->stateName ) ? (string) $this->vars->stateName : 'state';
-               
-                return true;
-        }
+	public function getPrimaryName()
+	{
+		return 'id';
+	}
+	
+	/**
+	 * 
+	 * @since       1.0.0
+	 */
+	public function getStateName()
+	{
+		return 'state';
+	}
         
         /**
 	 * 
@@ -69,16 +83,16 @@ abstract class KextensionsBuffer extends KextensionsBufferCore
                 if( !empty( $_states ) )
                 {                        
                         // Add difference states to query varible
-                        $this->vars->states += $_states;
+                        $this->_states += $_states;
                         
                         // When the get states of the need, then add states to the cache extenion type, because we don't need them next time
                         $data->set( '__states', array_merge( $dataStates, $_states ) );
                         
                         // Get elements id from cache, because we don't need get that id's second time from database 
-                        $this->vars->notElements = array_merge( $this->vars->notElements, array_keys( get_object_vars( $data->get( 'elements', new stdClass ) ) ) );
+                        $this->_notElements = array_merge( $this->_notElements, array_keys( get_object_vars( $data->get( 'elements', new stdClass ) ) ) );
                         
                         // Add extension type id to query varible
-                        array_push( $this->vars->types, $type );
+                        array_push( $this->_types, $type );
                         
                         $this->_unsetNot( $type, $_states );
                         
@@ -140,8 +154,8 @@ abstract class KextensionsBuffer extends KextensionsBufferCore
 		if( !empty( $_states ) && !empty( $elements ) )
 		{
 			// Add difference states and extension type id to query varibles.
-			$this->vars->states += $_states;
-			array_push( $this->vars->types, $type );
+			$this->_states += $_states;
+			array_push( $this->_types, $type );
 		}
 		
 		unset( $_notElements, $_elementsID );
@@ -162,9 +176,9 @@ abstract class KextensionsBuffer extends KextensionsBufferCore
                 // We take element from cache and this id add to array
                 if( $_element = $data->elements->get( $elementID ) )
                 {
-                        if( in_array( $_element->{$this->vars->stateName}, $this->states ) )
+                        if( in_array( $_element->{$this->getStateName()}, $this->states ) )
                         {
-                                $this->buffer->set( $_element->{$this->vars->elementName}, $_element );	
+                                $this->buffer->set( $_element->{$this->getPrimaryName()}, $_element );	
                         }
                         
 			if( ( $key = array_search( $elementID, $this->elements ) ) !== false )
@@ -191,7 +205,7 @@ abstract class KextensionsBuffer extends KextensionsBufferCore
 	 */
         protected function _testQueryVars()
         {
-                return ( !empty( $this->vars->types ) );
+                return ( !empty( $this->_types ) );
         }
         
         /**
@@ -211,7 +225,7 @@ abstract class KextensionsBuffer extends KextensionsBufferCore
 	 */
         protected function _setData( &$_element )
         {
-                $this->_getData( $_element->{$this->vars->typeName} )->elements->set( $_element->{$this->vars->elementName}, $_element );
+                $this->_getData( $_element->{$this->getTypeName()} )->elements->set( $_element->{$this->getPrimaryName()}, $_element );
         }
         
         /**
@@ -227,9 +241,9 @@ abstract class KextensionsBuffer extends KextensionsBufferCore
 			// Add only those elements are suitable states
 			while( ( $_element = current( $_elements ) ) !== false )
 			{
-				if( in_array( $_element->{$this->vars->stateName}, $this->states ) )
+				if( in_array( $_element->{$this->getStateName()}, $this->states ) )
 				{
-					$this->buffer->set( $_element->{$this->vars->elementName}, $_element );
+					$this->buffer->set( $_element->{$this->getPrimaryName()}, $_element );
 				}
 				
 				next( $_elements );
@@ -244,9 +258,6 @@ abstract class KextensionsBuffer extends KextensionsBufferCore
 	 */
 	protected function _prepareBuffer()
         {
-		// We need to get more than one extensions type, we need cache variables for that
-                $this->_prepareVars();
-                
                 $this->_searchData();
                 
 		// If array extensions type ids isn't empty, we get elements from database
@@ -295,4 +306,26 @@ abstract class KextensionsBuffer extends KextensionsBufferCore
                 
                 return $this->_returnBuffer();
         }
+	
+	/**
+	 * Reset arguments
+	 * 
+	 * @param	boolean 	$reset		reset arguments if you need
+	 *
+	 * @return      boolean         if is reset
+	 * @since       1.0.0
+	 **/
+	protected function _resetArgs( $reset = null )
+	{
+		$reset = parent::_resetArgs( $reset );
+		
+		if( $reset )
+		{
+			$this->_states 		= array();
+			$this->_types 		= array();
+			$this->_notElements	= array();
+		}
+                
+                return $reset;
+	}
 }

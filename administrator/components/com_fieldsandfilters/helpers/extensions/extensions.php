@@ -29,6 +29,12 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	const PLUGIN_FOLDER = 'fieldsandfiltersextensions';
 	
 	/**
+	 * Temporarily element name var
+	 * @since       1.0.0
+	 */
+	protected $_elementName;
+	
+	/**
 	 * @since       1.1.0
 	**/
 	public function getExtensions( $withXML = false )
@@ -90,7 +96,7 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	**/
         public function getExtensionsByName( $names, $defaultProperty = true, $withXML = false )
         {
-                $this->vars->elementName = 'name';
+                $this->_elementName = 'name';
                 $this->config->def( 'elementsString', true );
                 
                 return $this->_getExtensionsBy( $names, $defaultProperty, $withXML );   
@@ -101,7 +107,7 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	**/
         public function getExtensionsByExtension( $extensions, $defaultProperty = true, $withXML = false )
         {
-                $this->vars->elementName = 'extension';
+                $this->_elementName = 'extension';
 		$this->config->def( 'elementsString', true );
                 
                 return $this->_getExtensionsBy( $extensions, $defaultProperty, $withXML );     
@@ -113,7 +119,7 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	**/
         public function getExtensionsByTypeID( $ids, $defaultProperty = true, $withXML = false )
         {
-                $this->vars->elementName = 'content_type_id';
+                $this->_elementName = 'content_type_id';
                 
                 return $this->_getExtensionsBy( $ids, $defaultProperty, $withXML );     
         }
@@ -123,7 +129,7 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	**/
         public function getExtensionsByTypeAlias( $alias, $defaultProperty = true, $withXML = false )
         {
-                $this->vars->elementName = 'content_type_alias';
+                $this->_elementName = 'content_type_alias';
                 $this->config->def( 'elementsString', true );
                 
                 return $this->_getExtensionsBy( $alias, $defaultProperty, $withXML );   
@@ -134,7 +140,7 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 	**/
         public function getExtensionsByOption( $option, $defaultProperty = true, $withXML = false )
         {
-                $this->vars->elementName = 'option';
+                $this->_elementName = 'option';
                 $this->config->def( 'elementsString', true );
                 
                 return $this->_getExtensionsBy( $alias, $defaultProperty, $withXML );   
@@ -207,9 +213,9 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
                         
                         while( $extension = array_shift( $extensions ) )
                         {
-                                if( in_array( $extension->{$this->vars->elementName}, $elements ) )
+                                if( in_array( $extension->{$this->_elementName}, $elements ) )
                                 {
-					$property = $defaultProperty ? $this->vars->elementName : 'extension';
+					$property = $defaultProperty ? $this->_elementName : 'extension';
                                         $this->buffer->set( $extension->$property,  $extension );
                                 }
                         }
@@ -217,6 +223,26 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
                 
                 return $this->_returnBuffer( true ); 
         }
+	
+	/**
+	 * Reset arguments
+	 * 
+	 * @param	boolean 	$reset		reset arguments if you need
+	 *
+	 * @return      boolean         if is reset
+	 * @since       1.0.0
+	 **/
+	protected function _resetArgs( $reset = null )
+	{
+		$reset = parent::_resetArgs( $reset );
+		
+		if( $reset )
+		{
+			$this->_elementName = null;
+		}
+                
+                return $reset;
+	}
 	
 	
 	/** __call method generator methods:

@@ -60,6 +60,30 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	protected $_staticModes = array();
 	
 	/**
+	 * Temporarily fields ID var
+	 * @since       1.0.0
+	 */
+	protected $_fieldsID = array();
+	
+	/**
+	 * Temporarily modes var
+	 * @since       1.0.0
+	 */
+	protected $_modes = array();
+	
+	/**
+	 * 
+	 * @since       1.1.0
+	 */
+	public function __construct( $debug = false )
+	{
+		parent::__construct( $debug );
+		
+		$this->_valuesModes = (array) FieldsandfiltersModes::getMode( FieldsandfiltersModes::MODE_FILTER );
+		$this->_staticModes = (array) FieldsandfiltersModes::getMode( FieldsandfiltersModes::MODE_STATIC );
+	}
+	
+	/**
 	 * 
 	 * @since       1.1.0
 	 */
@@ -102,14 +126,38 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	
 	/**
 	 * 
-	 * @since       1.1.0
+	 * @since       1.2.0
 	 */
-	public function __construct( $debug = false )
+	public function getTypeName()
 	{
-		parent::__construct( $debug );
+		return 'content_type_id';
+	}
+	
+	/**
+	 * 
+	 * @since       1.2.0
+	 */
+	public function getForeignName()
+	{
+		return 'field_id';
+	}
+	
+	/**
+	 * 
+	 * @since       1.2.0
+	 */
+	public function getValuesName()
+	{
+		if( $this->methodValues == self::VALUES_VALUES )
+		{
+			return 'values';
+		}
+		else if( $this->methodValues == self::VALUES_DATA )
+		{
+			return 'data';
+		}
 		
-		$this->_valuesModes = (array) FieldsandfiltersModes::getMode( FieldsandfiltersModes::MODE_FILTER );
-		$this->_staticModes = (array) FieldsandfiltersModes::getMode( FieldsandfiltersModes::MODE_STATIC );
+		return null;
 	}
 	
 	/**
@@ -128,38 +176,16 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			switch( $values )
 			{
 				case self::VALUES_VALUES:
-					$this->config->def( 'getValues', 'values' );
+					$this->config->def( 'getValues', self::VALUES_VALUES );
 				break;
 				case self::VALUES_DATA:
-					$this->config->def( 'getValues', 'data' );
+					$this->config->def( 'getValues', self::VALUES_DATA );
 				break;
 				case self::VALUES_BOTH;
-					$this->config->def( 'getValues', array( 'values', 'data' ) );
+					$this->config->def( 'getValues', array( self::VALUES_VALUES, self::VALUES_DATA ) );
 				break;
 			}
 		}
-	}
-	
-	/**
-	 * 
-	 * @since       1.1.0
-	 */
-	protected function _prepareVars()
-	{
-		$this->vars->typeName 		= 'content_type_id';
-		$this->vars->elementName 	= 'id';
-		
-		if( $this->method == 'getFieldsByID' )
-		{
-			// We take elements from cache, when they aren't in the cache, we add they to query variables
-			$this->vars->fieldsID = array();
-		}
-		else if( $this->method == 'getFieldsByModeID' )
-		{
-			$this->vars->modes = array();
-		}
-		
-		return parent::_prepareVars();
 	}
 	
 	/**
@@ -188,19 +214,19 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 				if( !empty( $_modes ) && !empty( $_states ) )
 				{
 					// Add difference states to query varible
-					$this->vars->states += $_states;
+					$this->_states += $_states;
 					
 					// Add difference modes to query varible
-					$this->vars->modes += $_modes;
+					$this->_modes += $_modes;
 					
 					// When the get modes of the need, then add modes to the cache content type, because we don't need them next time
 					$data->set( '__modes', array_merge( $dataModes, $_modes ) );
 					
 					// Get elements id from cache, because we don't need get that id's second time from database 
-					$this->vars->notElements = array_merge( $this->vars->notElements, array_keys( get_object_vars( $data->get( 'elements', new stdClass ) ) ) );
+					$this->_notElements = array_merge( $this->_notElements, array_keys( get_object_vars( $data->get( 'elements', new stdClass ) ) ) );
 					
 					// Add content type id to query varible
-					array_push( $this->vars->types, $type );
+					array_push( $this->_types, $type );
 				}
 			break;
 			default:
@@ -217,7 +243,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	{
 		if( $this->method == 'getFieldsByID' )
 		{
-			return ( !empty( $this->vars->types ) && !empty( $this->elements ) );
+			return ( !empty( $this->_types ) && !empty( $this->elements ) );
 		}
 		
 		return parent::_testQueryVars();
@@ -234,8 +260,8 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			
 		$query->select( '*' )
 			->from( $this->_db->quoteName( '#__fieldsandfilters_fields' ) )
-			->where( $this->_db->quoteName( 'state' ) . ' IN (' . implode( ',', $this->vars->states ) . ')' )		// Fiels where states
-			->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' ); 	// Fields where contents type id
+			->where( $this->_db->quoteName( 'state' ) . ' IN (' . implode( ',', $this->_states ) . ')' )		// Fiels where states
+			->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->_types ) . ')' ); 	// Fields where contents type id
 		
 		if( $this->method == 'getFieldsByID' )
 		{
@@ -243,14 +269,14 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		}
 		else if( $this->method == 'getFieldsByModeID' )
 		{
-			$query->where( $this->_db->quoteName( 'mode' ) . ' IN (' . implode( ',', $this->vars->modes ) . ')' );
+			$query->where( $this->_db->quoteName( 'mode' ) . ' IN (' . implode( ',', $this->_modes ) . ')' );
 		}
 		
 		// We no need same elements id
-		if( !empty( $this->vars->notElements ) )
+		if( !empty( $this->_notElements ) )
 		{
-			JArrayHelper::toInteger( $this->vars->notElements  );
-			$query->where( $this->_db->quoteName( 'id' ) . ' NOT IN (' . implode( ',', $this->vars->notElements  ) . ')' );
+			JArrayHelper::toInteger( $this->_notElements  );
+			$query->where( $this->_db->quoteName( 'id' ) . ' NOT IN (' . implode( ',', $this->_notElements  ) . ')' );
 		}
 		
 		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
@@ -288,7 +314,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		
 		if( $byID )
 		{
-			array_push( $this->vars->fieldsID, $_field->id );
+			array_push( $this->_fieldsID, $_field->id );
 		}
         }
 	
@@ -303,7 +329,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			case 'getFieldsByID':
 				if( $this->_testQueryVars() )
 				{
-					$this->_setNot( array_diff( $this->elements, $this->vars->fieldsID ), 'fields' );
+					$this->_setNot( array_diff( $this->elements, $this->_fieldsID ), 'fields' );
 				}
 			break;
 			case 'getFieldsByModeID':
@@ -317,7 +343,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 					{
 						if( in_array( $_element->mode, $this->elements ) && in_array( $_element->state, $this->states ) )
 						{
-							$this->buffer->set( $_element->{$this->vars->elementName}, $_element );
+							$this->buffer->set( $_element->{$this->getPrimaryName()}, $_element );
 						}
 						
 						next( $_elements );
@@ -334,42 +360,24 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	 * 
 	 * @since       1.1.0
 	 */
-	protected function _prepareVarsValues()
-	{
-		if( $this->methodValues == 'values' )
-		{
-			$this->vars->valuesName = 'values';
-		}
-		else if( $this->methodValues == 'data' )
-		{
-			$this->vars->valuesName = 'data';
-		}
-		
-		return parent::_prepareVarsValues();
-	}
-	
-	/**
-	 * 
-	 * @since       1.1.0
-	 */
 	protected function _getQueryValues()
 	{
 		$query = $this->_db->getQuery( true );
 		
 		$query->select( '*' )
-			->where( $this->_db->quoteName( 'field_id' ) . ' IN (' . implode( ',', $this->vars->values->elements ) . ')' );
+			->where( $this->_db->quoteName( 'field_id' ) . ' IN (' . implode( ',', $this->_valuesElements ) . ')' );
 			
-		if( $this->methodValues == 'values' )
+		if( $this->methodValues == self::VALUES_VALUES )
 		{
 			$query->from( $this->_db->quoteName( '#__fieldsandfilters_field_values' ) )
 				->where( $this->_db->quoteName( 'state' ) . ' = 1' )
 				->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
 		}
-		else if( $this->methodValues == 'data' )
+		else if( $this->methodValues == self::VALUES_DATA )
 		{
 			$query->from( $this->_db->quoteName( '#__fieldsandfilters_data' ) )
 				->where( $this->_db->quoteName( 'element_id' ) . ' = ' .  0 )
-				->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->vars->types ) . ')' );
+				->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->_types ) . ')' );
 		}
 				
 		return $query;
@@ -381,14 +389,13 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	 */
 	protected function _searchValuesElement( &$element )
         {
-		$elementName    = $this->vars->elementName;
-		$_vars          = $this->vars->values;
+		$elementName    = $this->getForeignName();
 		
-		if( $this->methodValues == 'values' )
+		if( $this->methodValues == self::VALUES_VALUES )
 		{
 			$modes = $this->_valuesModes;
 		}
-		else if( $this->methodValues == 'data' )
+		else if( $this->methodValues == self::VALUES_DATA )
 		{
 			$modes = $this->_staticModes;
 		}
@@ -398,20 +405,20 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		}
 		
 		// if element don't have filter_connection, add to arrry
-		if( in_array( $element->mode, $modes ) && !isset( $element->{$this->vars->valuesName} ) )
+		if( in_array( $element->mode, $modes ) && !isset( $element->{$this->getValuesName()} ) )
 		{
-			array_push( $_vars->elements, $element->$elementName );
+			array_push( $this->_valuesElements, $element->$elementName );
 		}
 		// if we need only elements with filter_connections isn't empty
-		elseif( !$this->config->get( 'elemntsWithoutValues', true ) && isset( $element->{$this->vars->valuesName} ) )
+		elseif( !$this->config->get( 'elemntsWithoutValues', true ) && isset( $element->{$this->getValuesName()} ) )
 		{
-			if( $this->methodValues == 'values' )
+			if( $this->methodValues == self::VALUES_VALUES )
 			{
-				$_values = get_object_vars( $element->{$this->vars->valuesName} );
+				$_values = get_object_vars( $element->{$this->getValuesName()} );
 			}
-			else if( $this->methodValues == 'data' )
+			else if( $this->methodValues == self::VALUES_DATA )
 			{
-				$_values = $element->{$this->vars->valuesName};
+				$_values = $element->{$this->getValuesName()};
 			}	
 			
 			if( empty( $_values ) )
@@ -429,10 +436,10 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	 */
 	protected function _addValue( &$_value )
 	{
-		$element 	= $this->buffer->get( $_value->{$this->vars->elementName} );
-		$valuesName 	= $this->vars->valuesName;
+		$element 	= $this->buffer->get( $_value->{$this->getForeignName()} );
+		$valuesName 	= $this->getValuesName();
 		
-		if( $this->methodValues == 'values' )
+		if( $this->methodValues == self::VALUES_VALUES )
 		{
 			if( !( isset( $element->$valuesName ) && $element->$valuesName instanceof JObject ) )
 			{
@@ -446,7 +453,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 				$element->$valuesName->set( $_value->id, $_value );
 			}
 		}
-		else if( $this->methodValues == 'data' )
+		else if( $this->methodValues == self::VALUES_DATA )
 		{
 			if( isset( $_value->field_id ) && isset( $_value->data ) )
 			{
@@ -460,6 +467,33 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 				$element->$valuesName = '';
 			}
 		}
+	}
+	
+	/**
+	 * Reset arguments
+	 * 
+	 * @param	boolean 	$reset		reset arguments if you need
+	 *
+	 * @return      boolean         if is reset
+	 * @since       1.0.0
+	 **/
+	protected function _resetArgs( $reset = null )
+	{
+		$reset = parent::_resetArgs( $reset );
+		
+		if( $reset )
+		{
+			if( $this->method == 'getFieldsByID' )
+			{
+				$this->_fieldsID = array();
+			}
+			else if( $this->method == 'getFieldsByModeID' )
+			{
+				$this->_modes = array();
+			}
+		}
+                
+                return $reset;
 	}
 
 	/** __call method generator methods:
@@ -492,5 +526,4 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			$this->_setConfigFields( $values, $without );	
 		}
 	}
-	
 }
