@@ -348,7 +348,7 @@ class KextensionsForm
 	 */
 	public function addOrder($name, $order)
 	{
-		$this->ordering[$key] = $order;
+		$this->ordering[$name] = $order;
 		
 		return $this;
 	}

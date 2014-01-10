@@ -482,7 +482,7 @@ abstract class KextensionsBufferCore
                 }
                 
                 // [TODO] uncooments only for test
-                // throw new InvalidArgumentException( 'Method not exists ' . get_class($this) . '::' . $name );
+                throw new InvalidArgumentException( 'Method not exists ' . get_class($this) . '::' . $name );
         }
         
         // abstract protected function _beforeCall( $type, $method, $arguments );

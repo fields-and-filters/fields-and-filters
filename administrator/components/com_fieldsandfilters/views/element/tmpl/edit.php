@@ -17,6 +17,8 @@ JHtml::_( 'formbehavior.chosen', 'select' );
 
 // Import CSS
 JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true );
+
+$this->set('fieldset', 'fieldsandfilters');
 ?>
 
 <script type="text/javascript">
@@ -42,20 +44,8 @@ JHtml::_( 'stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', a
 			<?php echo $this->escape( $this->item->get( 'item_name', '' ) ); ?> 
 			(<?php echo (int) $this->item->get( 'item_id' ); ?>)
 		</legend>
-		<div class="row-fluid">
-			<?php foreach( $this->form->getFieldset( 'fields' ) AS $name => $field ) : ?>
-				<?php if( strtolower( $field->type ) == 'hidden' ) : ?>
-					<?php echo $field->input; ?>
-				<?php else : ?>
-					<div class="control-group">
-						<?php echo $field->label; ?>
-						<div class="controls">
-							<?php echo $field->input; ?>
-						</div>
-					</div>
-				<?php endif; ?>
-			<?php endforeach;?>
-		</div>
+		
+		<?php echo JLayoutHelper::render('joomla.edit.fieldset', $this); ?>
 	</div>
 	
 	<input type="hidden" name="task" value="" />

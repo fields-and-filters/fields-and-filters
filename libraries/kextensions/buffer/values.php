@@ -75,7 +75,7 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 	 */
         protected function _getBufferValues()
         {
-                if( !( $this->Values() ) || is_null( $this->methodValues ) )
+                if( is_null( $this->methodValues ) )
                 {
                         return;
                 }
@@ -106,18 +106,12 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 		}
                 
                 $this->_valuesElements = array_diff( $this->_valuesElements, $this->_valuesElementsAdd );
-                if( !empty( $this->_valuesElements ) )
+                if( !empty( $this->_valuesElements ) && !$this->config->get('elemntsWithoutValues', true ) )
                 {
                         while( $element = array_shift( $this->_valuesElements ) )
                         {
-                                $buffer = $this->buffer->$element;
-                                $this->_addValue( $buffer );
-                                
-                                if( !$this->config->get('elemntsWithoutValues', true ) )
-                                {
-                                        $element = $buffer->{$this->getForeignName()};
-                                        unset( $this->buffer->{$element} );
-                                }
+				$element = $this->buffer->{$this->getPrimaryName()};
+				unset( $this->buffer->{$element} );
                         }
                 }
         }
@@ -133,10 +127,26 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 		while( $element = array_shift( $elements ) )
 		{
 			$this->_searchValuesElement( $element );
+			
+			$this->_prepareValuesElement($element);
 		}
 		
 		unset( $elements, $element );
         }
+	
+	/**
+	 * 
+	 * @since       1.0.0
+	 */
+	protected function _prepareValuesElement($element)
+	{
+		$valuesName = $this->getValuesName();
+		
+		if( !( isset( $element->$valuesName ) && $element->$valuesName instanceof JObject ) )
+		{
+		     $element->$valuesName = new JObject();
+		}
+	}
         
         /**
 	 * 
@@ -144,7 +154,8 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 	 */
         protected function _searchValuesElement( &$element )
         {
-                $elementName    = $this->getForeignName();
+                $elementName    = $this->getPrimaryName();
+		
                 // if element don't have filter_connection, add to arrry
                 if( !isset( $element->{$this->getValuesName()} ) )
                 {
@@ -190,9 +201,11 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 	 */
         protected function _setDataValue( &$_value )
         {
-                if( isset( $_value->{$this->getForeignName()} ) && !in_array( $_value->{$this->getForeignName()}, $this->_valuesElementsAdd ) )
+		$foreignName = $this->getForeignName();
+		
+                if( isset( $_value->$foreignName ) && !in_array( $_value->$foreignName, $this->_valuesElementsAdd ) )
                 {
-                        array_push( $this->_valuesElementsAdd, $_value->{$this->getForeignName()} );
+                        array_push( $this->_valuesElementsAdd, $_value->$foreignName );
                 }
                 
                 $this->_addValue( $_value );
@@ -202,7 +215,7 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 	 * 
 	 * @since       1.0.0
 	 */
-        protected function _addValue( &$value ){}
+        abstract protected function _addValue( &$value );
 	
 	/**
 	 * Reset arguments

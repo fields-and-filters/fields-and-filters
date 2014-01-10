@@ -115,7 +115,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 	public function getElementID( $types, $id, $states = null )
         {
 		// Get elements
-		$elements = (array) $this->getElementsByItemIDColumn( 'element_id', $types, $id, $states );
+		$elements = (array) $this->getElementsByItemIDColumn( 'id', $types, $id, $states );
 		if( !empty( $elements ) )
 		{
 			reset( $elements );
@@ -283,7 +283,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 		
 		if( $this->method == 'getElementsByID' )
 		{
-			$query->where( $this->_db->quoteName( 'element_id' ) . ' IN (' . implode( ',', $this->elements ) . ')' );
+			$query->where( $this->_db->quoteName( 'id' ) . ' IN (' . implode( ',', $this->elements ) . ')' );
 		}
 		else if( $this->method == 'getElementsByItemID' )
 		{
@@ -294,7 +294,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 		if( !empty( $this->_notElements ) )
 		{
 			JArrayHelper::toInteger( $this->_notElements  );
-			$query->where( $this->_db->quoteName( 'element_id' ) . ' NOT IN (' . implode( ',', $this->_notElements  ) . ')' );
+			$query->where( $this->_db->quoteName( 'id' ) . ' NOT IN (' . implode( ',', $this->_notElements  ) . ')' );
 		}
 		
 		$query->order( $this->_db->quoteName( 'ordering' ) . ' ASC' );
@@ -310,12 +310,14 @@ class FieldsandfiltersElements extends KextensionsBufferValues
         {
 		if( ( $byID = $this->method == 'getElementsByID' ) || ( $byItem = $this->method == 'getElementsByItemID' ) )
 		{
-			$this->_getData( $_element->content_type_id )->elements->set( $_element->element_id, $_element );
-			$this->buffer->{$_element->element_id} = $_element;
+			$key = $_element->{$this->getPrimaryName()};
+			
+			$this->_getData( $_element->content_type_id )->elements->set( $key, $_element );
+			$this->buffer->$key = $_element;
 			
 			if( $byID )
 			{
-				array_push( $this->_elementsID, $_element->element_id );
+				array_push( $this->_elementsID, $key );
 			}
 			else if( $byItem )
 			{

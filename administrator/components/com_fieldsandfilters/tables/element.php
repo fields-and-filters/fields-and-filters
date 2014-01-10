@@ -16,8 +16,9 @@ defined('_JEXEC') or die;
  */
 class FieldsandfiltersTableElement extends JTable
 {
-	protected $_tbl_data 	= '#__fieldsandfilters_data';
-	protected $_tbl_connections = '#__fieldsandfilters_connections';
+	protected $_tbl_data 		= '#__fieldsandfilters_data';
+	protected $_tbl_connections 	= '#__fieldsandfilters_connections';
+	protected $_tbl_for_key 	= 'element_id';
 	/**
 	 * Constructor
 	 *
@@ -100,7 +101,7 @@ class FieldsandfiltersTableElement extends JTable
 		$query 	= $this->_db->getQuery( true );
 		$query->select( $this->_db->quoteName( $this->_tbl_key ) );
 		$query->from( $this->_db->quoteName( $this->_tbl ) );
-		$query->where( $this->_db->quoteName( 'extension_type_id' ) . '=' . (int) $extensionID );
+		$query->where( $this->_db->quoteName( 'content_type_id' ) . '=' . (int) $extensionID );
 		$query->where( $this->_db->quoteName( 'item_id' ) . '=' . (int) $itemID );
 		
 		// Check for a database error.
@@ -154,8 +155,8 @@ class FieldsandfiltersTableElement extends JTable
 		
 		$query->select( $this->_db->quoteName( 'data' ) );
 		$query->from( $this->_db->quoteName( $this->_tbl_data ) );
-		$query->where( $this->_db->quoteName( $this->_tbl_key ) . ' = ' . (int) $pk );
-		$query->where( $this->_db->quoteName( 'extension_type_id' ) . ' = ' . (int) $this->extension_type_id );
+		$query->where( $this->_db->quoteName( $this->_tbl_for_key ) . ' = ' . (int) $pk );
+		$query->where( $this->_db->quoteName( 'content_type_id' ) . ' = ' . (int) $this->content_type_id );
 		$query->where( $this->_db->quoteName( 'field_id' ) . ' = ' . (int) $object->field_id );
 		
 		$this->_db->setQuery( $query );
@@ -191,15 +192,15 @@ class FieldsandfiltersTableElement extends JTable
 		
 		$query->insert( $this->_db->quoteName( $this->_tbl_data ) );
 		$query->columns( array(
-			$this->_db->quoteName( $this->_tbl_key ),
-			$this->_db->quoteName( 'extension_type_id' ),
+			$this->_db->quoteName( $this->_tbl_for_key ),
+			$this->_db->quoteName( 'content_type_id' ),
 			$this->_db->quoteName( 'field_id' ),
 			$this->_db->quoteName( 'data' )
 		) );
 		
 		$query->values(
 			       (int) $pk . ',' .
-			       (int) $this->extension_type_id . ',' .
+			       (int) $this->content_type_id . ',' .
 			       (int) $object->field_id . ',' .
 			       $this->_db->quote( $object->data )
 			);
@@ -237,7 +238,7 @@ class FieldsandfiltersTableElement extends JTable
 		$query->update( $this->_db->quoteName( $this->_tbl_data ) );
 		$query->set( $this->_db->quoteName( 'data' ) . ' = ' . $this->_db->quote( $object->data ) );
 		
-		$query->where( $this->_db->quoteName( $this->_tbl_key ) . ' = ' . (int) $pk );
+		$query->where( $this->_db->quoteName( $this->_tbl_for_key ) . ' = ' . (int) $pk );
 		$query->where( $this->_db->quoteName( 'field_id' ) . ' = ' . (int) $object->field_id );
 		
 		$this->_db->setQuery( $query );
@@ -270,7 +271,7 @@ class FieldsandfiltersTableElement extends JTable
 		
 		if( !is_null( $pk ) )
 		{
-			$query->where( $this->_db->quoteName( $this->_tbl_key ) . ' = ' . (int) $pk );
+			$query->where( $this->_db->quoteName( $this->_tbl_for_key ) . ' = ' . (int) $pk );
 		}
 		
 		if( isset( $object->field_id ) )
@@ -326,15 +327,15 @@ class FieldsandfiltersTableElement extends JTable
 		
 		$query->insert( $this->_db->quoteName( $this->_tbl_connections ) );
 		$query->columns( array(
-					$this->_db->quoteName( $this->_tbl_key ),
-					$this->_db->quoteName( 'extension_type_id' ),
+					$this->_db->quoteName( $this->_tbl_for_key ),
+					$this->_db->quoteName( 'content_type_id' ),
 					$this->_db->quoteName( 'field_id' ),
 					$this->_db->quoteName( 'field_value_id' )
 				) );
 		
 		$arrayValues = array(
 					(int) $pk,
-					(int) $this->extension_type_id,
+					(int) $this->content_type_id,
 					(int) $object->field_id,
 				);
 		
@@ -392,7 +393,7 @@ class FieldsandfiltersTableElement extends JTable
 		
 		if( !is_null( $pk ) )
 		{
-			$query->where( $this->_db->quoteName( $this->_tbl_key ) . ' = ' . (int) $pk );
+			$query->where( $this->_db->quoteName( $this->_tbl_for_key ) . ' = ' . (int) $pk );
 		}
 		
 		if( isset( $object->field_id ) )

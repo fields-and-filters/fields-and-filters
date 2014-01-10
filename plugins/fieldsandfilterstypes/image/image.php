@@ -250,12 +250,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		}
 		else if( $context == 'com_fieldsandfilters.element' )
 		{
-			// [TODO] NO idea for now
-			
-			$jregistry 	= JRegistry::getInstance( 'fieldsandfilters' ); // ~
-			$fieldsItem 	= $newItem->get( 'fields', new JObject ); // ~
-			
-			if( ( $data = $fieldsItem->get( 'data', new JObject ) ) && ( $fields = $jregistry->get( 'fields.' . $this->_name ) ) )
+			if( ( $data = $newItem->get( 'data', new JObject ) ) && ( $fields = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($newItem->get('content_type_id'))->get( $this->_name ) ) )
 			{
 				$fields = is_array( $fields ) ? $fields : array( $fields );
 				

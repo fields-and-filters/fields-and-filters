@@ -129,23 +129,25 @@ class FieldsandfiltersModelElement extends JModelAdmin
 		
 		if ($contentTypeID)
 		{
+			$isNew = !(boolean) $this->getState( $this->getName() . '.id', 0 );
+			
 			$fieldsForm = new KextensionsForm($form->getName());
 			$fieldsData = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($contentTypeID);
 			
 			$fieldsForm->setPath('filters');
 			
-			$fieldsetXML =  new SimpleXMLElement( '<fields />' );
-			$fieldsetXML->addAttribute( 'name', 'fields' );
+			$fieldsetXML =  new SimpleXMLElement( '<fieldset />' );
+			$fieldsetXML->addAttribute( 'name', 'fieldsandfilters' );
 			
 			JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 			
 			// Trigger the onFieldsandfiltersPrepareFormField event.
-			JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareFormField', array( $fieldsForm, $fieldsData, !(boolean) $this->getState( $this->getName() . '.element_id', 0 ) ) );
+			JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareFormField', array( $fieldsForm, $fieldsData, $isNew ) );
 			
 			if( $fieldsFormXML = $fieldsForm->getFormFields() )
 			{
 				// Load the XML Helper
-				KextensionsXML::setFields( $fielsXML , $fieldsFormXML );
+				KextensionsXML::setFields( $fieldsetXML , $fieldsFormXML );
 				
 				$form->setField( $fieldsetXML, 'fields' );
 				
@@ -153,66 +155,8 @@ class FieldsandfiltersModelElement extends JModelAdmin
 				{
 					$form->bind( $default );
 				}
-				
-				if( !$isNew )
-				{
-					$attribs    = new JRegistry();
-					$attribs->set( 'fields', $itemFields );
-					
-					$form->bind( $attribs );
-				}
 			}
 		}
-		/*
-		if( $this->prepareFields() && ( $fields = $jregistry->get( 'fields' ) ) )
-		{			
-			$elementsForm = new JXMLElement( '<fields />' );
-			$elementsForm->addAttribute( 'name', 'fields' );
-			
-			$fieldsetForm = $elementsForm->addChild( 'fieldset'  );
-			$fieldsetForm->addAttribute( 'name', 'fields' );
-			$fieldsetForm->addAttribute( 'label', 'fields' );
-			// $fieldsetForm->addAttribute( 'description', 'COM_MENUS_ITEM_ASSOCIATIONS_FIELDSET_DESC');
-			
-			JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
-			
-			// Trigger the onFieldsandfiltersPrepareFormField event.
-			JFactory::getApplication()->triggerEvent( 'onFieldsandfiltersPrepareFormField', array( !(boolean) $this->getState( $this->getName() . '.element_id', 0 ) ) );
-			
-			// [TODO] do totalnej przebudowy
-			if( $fieldsForm = $jregistry->get( 'form.fields' ) )
-			{
-				$fieldsForm = get_object_vars( $fieldsForm );
-				
-				ksort( $fieldsForm );
-				
-				// Load the XML Helper:
-				KextensionsXML::setFields( $fieldsetForm , $fieldsForm );
-				
-				unset( $fieldsForm );
-				
-				// add parameters to form
-				$form->setFields( $elementsForm, 'fields' );
-				
-				if( $defaultForm = $jregistry->get( 'form.default' ) )
-				{
-					// add values to xml form
-					foreach( $defaultForm AS $fieldID => $default )
-					{
-						if( $defaultName = $default->get( 'name' ) )
-						{
-							$form->setValue( $fieldID, 'fields.' . $defaultName, $default->get( 'default' ) );
-						}
-						else
-						{
-							$form->setValue( $fieldID, 'fields', $default->get( 'default' ) );
-						}
-					}
-				}
-			}
-		}
-		
-		*/
 		
 		// Trigger the default form events.
 		parent::preprocessForm( $form, $data, $group );
@@ -231,7 +175,8 @@ class FieldsandfiltersModelElement extends JModelAdmin
 
 		if( empty( $data ) )
 		{
-			$data = $this->getItem();
+			// is error SimpleXMLElement::xpath(), searching name '*_error' when $data is instance of JObject.
+			$data = new JRegistry($this->getItem());
 		}
 		
 		$this->preprocessData('com_fieldsandfilters.element', $data);
@@ -277,7 +222,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 				$isNew = false;
 				
 				// Load Elements Helper
-				if( $element = FieldsandfiltersFactory::getElements()->getElementsByID( $table->content_type_id, $table->id, $this->_item_states, 3 )->get( $table->id ) )
+				if( $element = FieldsandfiltersFactory::getElements()->getElementsByID( $table->content_type_id, $table->id, $this->_item_states, FieldsandfiltersElements::VALUES_BOTH )->get( $table->id ) )
 				{
 					$table->fields = array(
 						'connections' 	=> $element->connections->getProperties( true ),
@@ -301,9 +246,6 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			$properties = $table->getProperties( true );
 			
 			$item = JArrayHelper::toObject( $properties, 'JObject' );
-			
-			// [TODO]
-			// fields i value kes nalezy zmienic w values wartos elementName bo teraz jest id a powinno byc field_id, czyli dodajemy jakies FOREIGN KEY
 			
 			if( $extensionName )
 			{
@@ -470,93 +412,92 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			$table->set( 'fields', JArrayHelper::toObject( $tableFields, 'JObject' ) );
 			
 			// Store fields data and connections
-			if( $this->prepareFields( $table->content_type_id ) && ( $fields = JRegistry::getInstance( 'fieldsandfilters' )->get( 'fields' ) ) )
+			// [TODO] to jeszcze do przemyślenia czy przesyłamy dane czy też nie za pomocją jregistry
+			
+			// Trigger the onFieldsandfiltersBeforeSaveData event.
+			$result = $app->triggerEvent( 'onFieldsandfiltersBeforeSaveData', array( ( $this->option . '.' . $this->name ), $table, $item, $isNew ) ); // array( $newItem, $oldItem )
+			
+			if( in_array( false, $result, true ) )
 			{
-				// Trigger the onFieldsandfiltersBeforeSaveData event.
-				$result = $app->triggerEvent( 'onFieldsandfiltersBeforeSaveData', array( ( $this->option . '.' . $this->name ), $table, $item, $isNew ) ); // array( $newItem, $oldItem )
+				$this->setError( $table->getError() );
+				return false;
+			}
+			
+			$item 			= $item->get( 'fields', new JObject );
+			$dataItem 		= $item->get( 'data', new JObject );
+			$connectionsItem 	= $item->get( 'connections', new JObject );
+			
+			$tableFields 	= $table->get( 'fields', new JObject );
+			$data 		= $tableFields->get( 'data', new JObject );
+			$connections 	= $tableFields->get( 'connections', new JObject );
+			
+			$filterMode 	= (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER, array());
+			$otherMode	= (array) FieldsandfiltersModes::getModes( null, array(), true, $filterMode );
+			
+			$fields 	= FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($table->content_type_id);
+			$fields 	= KextensionsArray::flatten( get_object_vars( $fields ) );
+			
+			while( $field = array_shift( $fields ) )
+			{
+				$_data 			= (string) $data->get( $field->id, '' );
+				$_dataItem		= (string) $dataItem->get( $field->id, '' );
+				$_connections		= (array) $connections->get( $field->id, new JObject )->getProperties( true );
+				$_connectionsItem	= (array) $connectionsItem->get( $field->id, new JObject )->getProperties( true );
 				
-				if( in_array( false, $result, true ) )
+				// other ( field/static )
+				if( in_array( $field->mode, $otherMode ) && ( !empty( $_data ) || !empty( $_dataItem ) ) )
 				{
-					$this->setError( $table->getError() );
-					return false;
-				}
-				
-				$item 			= $item->get( 'fields', new JObject );
-				$dataItem 		= $item->get( 'data', new JObject );
-				$connectionsItem 	= $item->get( 'connections', new JObject );
-				
-				$tableFields 	= $table->get( 'fields', new JObject );
-				$data 		= $tableFields->get( 'data', new JObject );
-				$connections 	= $tableFields->get( 'connections', new JObject );
-				
-				$filterMode 		= (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER, array());
-				$otherMode		= (array) FieldsandfiltersModes::getModes( null, array(), true, $filterMode );
-				
-				// Load Array Helper
-				$fields 		= KextensionsArray::flatten( get_object_vars( $fields ) );
-				
-				while( $field = array_shift( $fields ) )
-				{
-					$_data 			= (string) $data->get( $field->field_id, '' );
-					$_dataItem		= (string) $dataItem->get( $field->field_id, '' );
-					$_connections		= (array) $connections->get( $field->field_id, new JObject )->getProperties( true );
-					$_connectionsItem	= (array) $connectionsItem->get( $field->field_id, new JObject )->getProperties( true );
+					$tableObject 			= new stdClass();
+					$tableObject->field_id 		= (int) $field->id;
 					
-					// other ( data/static )
-					if( in_array( $field->mode, $otherMode ) && ( !empty( $_data ) || !empty( $_dataItem ) ) )
+					// delete text
+					if( !empty( $_dataItem ) && empty( $_data ) )
 					{
-						$tableObject 			= new stdClass();
-						$tableObject->field_id 		= (int) $field->field_id;
-						
-						// delete text
-						if( !empty( $_dataItem ) && empty( $_data ) )
-						{
-							$table->deleteData( $tableObject );
-						}
-						// insert text
-						elseif( empty( $_dataItem ) && !empty( $_data ) )
-						{
-							$tableObject->data	= $_data;
-							
-							$table->insertData( $tableObject );
-						}
-						// update text
-						elseif( $_dataItem != $_data )
-						{
-							$tableObject->data	= $_data;
-							
-							$table->updateData( $tableObject );
-						}
+						$table->deleteData( $tableObject );
 					}
-					// filter
-					elseif( in_array( $field->mode, $filterMode ) && ( !empty( $_connections ) || !empty( $_connectionsItem ) ) )
+					// insert text
+					elseif( empty( $_dataItem ) && !empty( $_data ) )
+					{
+						$tableObject->data	= $_data;
+						
+						$table->insertData( $tableObject );
+					}
+					// update text
+					elseif( $_dataItem != $_data )
+					{
+						$tableObject->data	= $_data;
+						
+						$table->updateData( $tableObject );
+					}
+				}
+				// filter
+				elseif( in_array( $field->mode, $filterMode ) && ( !empty( $_connections ) || !empty( $_connectionsItem ) ) )
+				{
+					$tableObject 			= new stdClass();
+					$tableObject->field_id 		= (int) $field->id;
+					
+					$field_valuesID 	= array_keys( $field->values->getProperties( true ) );
+					$_connections		= array_intersect( $field_valuesID, $_connections );
+					$__connections 		= array_unique( array_diff( $_connections, $_connectionsItem ) );
+					
+					JArrayHelper::toInteger( $__connections );
+					
+					if( !empty( $__connections ) )
+					{
+						$tableObject->field_value_id = $__connections;
+						$table->insertConnections( $tableObject );
+					}
+					
+					$__connections = array_unique( array_diff( $_connectionsItem, $_connections ) );
+					
+					JArrayHelper::toInteger( $__connections );
+					
+					if( !empty( $__connections ) )
 					{
 						$tableObject 			= new stdClass();
-						$tableObject->field_id 		= (int) $field->field_id;
+						$tableObject->field_value_id 	= $__connections;
 						
-						$field_valuesID 	= array_keys( $field->values->getProperties( true ) );
-						$_connections		= array_intersect( $field_valuesID, $_connections );
-						$__connections 		= array_unique( array_diff( $_connections, $_connectionsItem ) );
-						
-						JArrayHelper::toInteger( $__connections );
-						
-						if( !empty( $__connections ) )
-						{
-							$tableObject->field_value_id = $__connections;
-							$table->insertConnections( $tableObject );
-						}
-						
-						$__connections = array_unique( array_diff( $_connectionsItem, $_connections ) );
-						
-						JArrayHelper::toInteger( $__connections );
-						
-						if( !empty( $__connections ) )
-						{
-							$tableObject 			= new stdClass();
-							$tableObject->field_value_id 	= $__connections;
-							
-							$table->deleteConnections( $tableObject );
-						}
+						$table->deleteConnections( $tableObject );
 					}
 				}
 			}

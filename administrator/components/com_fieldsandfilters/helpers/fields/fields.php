@@ -379,7 +379,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 				->where( $this->_db->quoteName( 'element_id' ) . ' = ' .  0 )
 				->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->_types ) . ')' );
 		}
-				
+		
 		return $query;
 	}
 	
@@ -389,7 +389,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 	 */
 	protected function _searchValuesElement( &$element )
         {
-		$elementName    = $this->getForeignName();
+		$elementName    = $this->getPrimaryName();
 		
 		if( $this->methodValues == self::VALUES_VALUES )
 		{
@@ -441,11 +441,6 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		
 		if( $this->methodValues == self::VALUES_VALUES )
 		{
-			if( !( isset( $element->$valuesName ) && $element->$valuesName instanceof JObject ) )
-			{
-			     $element->$valuesName = new JObject();
-			}
-			
 			if( isset( $_value->id ) )
 			{
 				unset( $_value->field_id );
