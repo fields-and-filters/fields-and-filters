@@ -224,9 +224,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 				return true;
 			}
 			
-			// [TODO]
-			// $elementModel->setState( 'element.extension_type_id', $extensionContent->content_type_id );
-			
 			// Load Extension Language
 			KextensionsLanguage::load( 'com_fieldsandfilters', JPATH_ADMINISTRATOR );
 			
@@ -238,19 +235,25 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$fieldsetXML =  new SimpleXMLElement( '<fieldset />' );
 			$fieldsetXML->addAttribute( 'name', 'fieldsandfilters' );
 			$fieldsetXML->addAttribute( 'label', 'COM_FIELDSANDFILTERS' );
-			// $fieldsetForm->addAttribute( 'description', 'COM_FIELDSANDFILTERS_FIELDSET_DESC' );
+			// $fieldsetXML->addAttribute( 'description', 'COM_FIELDSANDFILTERS_FIELDSET_DESC' );
 			
 			$fielsXML = $fieldsetXML->addChild( 'fields' );
 			$fielsXML->addAttribute( 'name', 'fieldsandfilters' );
+			
+			$fieldXML = $fielsXML->addChild('field');
+			$fieldXML->addAttribute('name', 'context_extension_' . $this->_name);
+			$fieldXML->addAttribute('type', 'hidden');
+			$fieldXML->addAttribute( 'fieldset', 'fieldsandfilters');
 			
 			if( !empty( $data ) )
 			{
 				$data = (object) $data;
 				$elementModel->setState( $elementModel->getName() . '.item_id', $data->id );
-				$itemFields = $elementModel->getItem()->get( 'fields', new JObject );
+				$elementModel->setState( $elementModel->getName() . '.content_type_id', $extensionContent->content_type_id );
+				$elementItem = $elementModel->getItem();
 			}
 			
-			$isNew = !(boolean) $elementModel->getState( $elementModel->getName() . '.id', 0 );
+			$isNew = empty($elementItem->id);
 			
 			JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 			
@@ -282,7 +285,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 				if( !$isNew )
 				{
 					$attribs    = new JRegistry();
-					$attribs->set( 'attribs.fieldsandfilters.fields', $itemFields );
+					$attribs->set( 'attribs.fieldsandfilters', $elementItem->get( 'fields', new JObject ) );
 					
 					$form->bind( $attribs );
 				}
@@ -301,7 +304,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			if( $contentTable->load( $item->item_id ) )
 			{
-				$item->state 		= $contentTable->state;
+				$item->state = $contentTable->state;
 			}
 		}
 		elseif( $context == $this->_context && property_exists( $item, 'attribs' ) )
@@ -309,17 +312,13 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$attribs = new JRegistry;
 			$attribs->loadString( $item->attribs );
 			
-			JRegistry::getInstance( 'fieldsandfilters' )->set( $this->_name . '.save', $attribs->get( 'fieldsandfilters.fields' ) );
+			$this->set('fieldsandfilters_save_data', $attribs->get( 'fieldsandfilters' ));
 			
-			$attribs = $attribs->toArray();
-			
-			unset( $attribs['fieldsandfilters'] );
+			$attribs = $attribs->toObject();
+			unset( $attribs->fieldsandfilters );
 			
 			$attribs = new JRegistry( $attribs );
-			
 			$item->attribs = (string) $attribs;
-			
-			unset( $attribs );
 		}
 		
 		return true;
@@ -335,10 +334,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			return true;
 		}
 		
-		if( !( $itemData = JRegistry::getInstance( 'fieldsandfilters' )->get( $this->_name . '.save' ) ) )
+		if( !( $itemData = $this->get('fieldsandfilters_save_data') ) )
 		{
 			return true;
 		}
+		
+		unset($this->fieldsandfilters_save_data);
 		
 		// Load PluginExtensions Helper		
 		if( !( $extensionContent = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( $this->_name )->get( $this->_name ) ) )
@@ -359,7 +360,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$data = array(
 			'item_id'		=> $item->id,
 			'state'			=> $item->get( 'state', 0 ),
-			'extension_type_id'	=> $extensionContent->extension_type_id,
+			'content_type_id'	=> $extensionContent->content_type_id,
 			'fields'		=> $itemData
 		);
 		

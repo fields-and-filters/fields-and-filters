@@ -32,8 +32,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		
 		if( JFactory::getApplication()->isAdmin() )
 		{
-			// load plugin language
-			KextensionsLanguage::load( 'plg_' . $this->_type . '_' . $this->_name, JPATH_ADMINISTRATOR );
+			$this->loadLanguage();
 		}
 	}
 	
@@ -54,6 +53,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		JForm::addFieldPath( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/models/fields' );
 		
 		$fields = is_array( $fields ) ? $fields : array( $fields );
+		$syntax = KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
 		
 		while( $field = array_shift( $fields ) )
 		{
@@ -90,7 +90,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				$element->addAttribute( 'fieldset', $fieldset );
 			}
 			
-			$label = '<strong>' . $field->name . '</strong> {' . $field->id . '}';
+			$label = '<strong>' . $field->name . '</strong> ' . sprintf($syntax,$field->id);
 				
 			if( $field->state == -1 )
 			{
@@ -114,11 +114,6 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			
 			// FieldsandfiltersFieldValues
 			$values = $field->values->getProperties();
-			
-			//echo '<pre>';
-			//print_r($field->values);
-			//echo '</pre>';
-			
 			
 			if( !empty( $values ) )
 			{

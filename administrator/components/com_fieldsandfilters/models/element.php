@@ -521,7 +521,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			$this->setState( $this->getName() . '.id', $table->$pkName );
 		}
 		$this->setState( $this->getName() . '.new', $isNew );
-
+		
 		return true;
 	}
 	
