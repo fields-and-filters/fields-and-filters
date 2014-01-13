@@ -64,18 +64,14 @@
 					<field
 						name="field_layout"
 						type="fieldsandfiltersPluginLayout"
-						mode="field"
-						plugin="fieldsandfiltersTypes"
-						key="field_type"
+						modeType="field"
 						label="PLG_FAF_TS_CBLT_FORM_FIELD_LAYOUT_LBL"
 						description="PLG_FAF_TS_CBLT_FORM_FIELD_LAYOUT_DESC"
 					/>
 					<field
 						name="filter_layout"
 						type="fieldsandfiltersPluginLayout"
-						mode="filter"
-						plugin="fieldsandfiltersTypes"
-						key="field_type"
+						modeType="filter"
 						label="PLG_FAF_TS_CBLT_FORM_FILTER_LAYOUT_LBL"
 						description="PLG_FAF_TS_CBLT_FORM_FILTER_LAYOUT_DESC"
 					/>

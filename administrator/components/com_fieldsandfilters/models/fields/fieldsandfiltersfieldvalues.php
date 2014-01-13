@@ -113,8 +113,8 @@ class JFormFieldFieldsandfiltersFieldValues extends JFormFieldCheckboxes
 				break;
 			
 			case 'states':
-				$value = (string) $value;
-				$this->$name = JArrayHelper::toInteger(explode(',', $value));
+				$value = explode(',', (string) $value);
+				$this->$name = JArrayHelper::toInteger($value);
 				break;
 			
 			/* @deprecated >= J3.2 */
@@ -157,7 +157,10 @@ class JFormFieldFieldsandfiltersFieldValues extends JFormFieldCheckboxes
 			$attributes = array('parentField', 'checked', 'states', 'class'); /* class is @deprecated >= J3.2 */
 			foreach ($attributes as $attributeName)
 			{
-				$this->__set($attributeName, $element[$attributeName]);
+				if(isset($element[$attributeName]))
+				{
+					$this->__set($attributeName, $element[$attributeName]);
+				}
 			}
 		}
 		

@@ -177,7 +177,10 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 			$attributes = array('inputType', 'checked', 'context', 'states', 'modes', 'class'); /* class is @deprecated >= J3.2 */
 			foreach ($attributes as $attributeName)
 			{
-				$this->__set($attributeName, $element[$attributeName]);
+				if(isset($element[$attributeName]))
+				{
+					$this->__set($attributeName, $element[$attributeName]);
+				}
 			}
 		}
 		

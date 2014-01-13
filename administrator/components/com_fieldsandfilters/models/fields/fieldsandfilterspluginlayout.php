@@ -177,7 +177,10 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 			$attributes = array('parentField', 'pluginType', 'modeType', 'size', 'class'); /* class is @deprecated >= J3.2 */
 			foreach ($attributes as $attributeName)
 			{
-				$this->__set($attributeName, $element[$attributeName]);
+				if (isset($element[$attributeName]))
+				{
+					$this->__set($attributeName, $element[$attributeName]);
+				}
 			}
 			
 			if ($this->form instanceof JForm)
@@ -224,7 +227,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 			$templates = $db->setQuery($query)->loadObjectList('element');
 
 			// Build the search paths for module layouts.
-			$plugin_path = JPath::clean(JPATH_PLUGINS . '/' . $this->pluginType . '/' . $this->pluginName . '/tmpl');
+			$plugin_path = JPath::clean(JPATH_PLUGINS . "/{$this->pluginType}/{$this->pluginName}/tmpl/{$this->modeType}");
 			
 			// Prepare array of component layouts
 			$plugin_layouts = array();
@@ -233,22 +236,21 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 			$groups = array();
 
 			// Add the layout options from the module path.
-			if (is_dir($plugin_path) && ($plugin_layouts = JFolder::files($plugin_path, '^' . $modeName . '-[^_]*\.php$')))
+			if (is_dir($plugin_path) && ($plugin_layouts = JFolder::files($plugin_path, '^[^_]*\.php$')))
 			{
 				// Create the group for the plgin
-				$groups['_'] = array();
-				$groups['_']['id'] = $this->id . '__';
-				$groups['_']['text'] = JText::sprintf('FIELDSANDFILTERS_OPTION_FROM_PLUGIN');
-				$groups['_']['items'] = array();
+				$group = JHtml::_('select.option', $this->id, JText::sprintf('FIELDSANDFILTERS_OPTION_FROM_PLUGIN'));
+				$group->items = array();
 
 				foreach ($plugin_layouts as $file)
 				{
 					// Add an option to the module group
 					$value	= basename($file, '.php');
-					$text 	= str_replace(($modeName . '-'), '', $value);
-					$text 	= $lang->hasKey($key = strtoupper($extension . '_LAYOUT_' . $value)) ? JText::_($key) : $text;
-					$groups['_']['items'][] = JHtml::_('select.option', '_:' . $value, $text);
+					$text 	= $lang->hasKey($key = strtoupper($extension . '_LAYOUT_' . $value)) ? JText::_($key) : $value;
+					$group->items[] = JHtml::_('select.option', '_:' . $value, $text);
 				}
+				
+				$groups['_'] = $group;
 			}
 
 			// Loop on all templates
@@ -259,10 +261,10 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 					// Load language file
 					KextensionsLanguage::load('tpl_' . $template->element, JPATH_SITE);
 					
-					$template_path = JPath::clean(JPATH_SITE . '/templates/' . $template->element . '/html/' . $extension);
-
+					$template_path = JPath::clean(JPATH_SITE . "/templates/{$template->element}/html/$extension/{$this->modeType}");
+					
 					// Add the layout options from the template path.
-					if (is_dir($template_path) && ($files = JFolder::files($template_path, '^' . $modeName . '-[^_]*\.php$')))
+					if (is_dir($template_path) && ($files = JFolder::files($template_path, '^[^_]*\.php$')))
 					{
 						foreach ($files as $i => $file)
 						{
@@ -272,24 +274,23 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 								unset($files[$i]);
 							}
 						}
-
+						
 						if (count($files))
 						{
 							// Create the group for the template
-							$groups[$template->element] = array();
-							$groups[$template->element]['id'] = $this->id . '_' . $template->element;
-							$groups[$template->element]['text'] = JText::sprintf('JOPTION_FROM_TEMPLATE', $template->name);
-							$groups[$template->element]['items'] = array();
-
+							$group = JHtml::_('select.option', $this->id . '_' . $template->element, JText::sprintf('JOPTION_FROM_TEMPLATE', $template->name));
+							$group->items = array();
+							
 							foreach ($files as $file)
 							{
 								// Add an option to the template group
 								$value = basename($file, '.php');
-								$text 	= str_replace(($modeName . '-'), '', $value);
 								$text = $lang->hasKey($key = strtoupper('TPL_' . $template->element . '_' . $extension . '_LAYOUT_' . $value))
-									? JText::_($key) : $text;
-								$groups[$template->element]['items'][] = JHtml::_('select.option', $template->element . ':' . $value, $text);
+									? JText::_($key) : $value;
+								$group->items[] = JHtml::_('select.option', $template->element . ':' . $value, $text);	
 							}
+							
+							$groups[$template->element] = $group;
 						}
 					}
 				}
@@ -298,24 +299,15 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 			// Compute attributes for the grouped list
 			$attr = $this->size ? ' size="' . $this->size . '"' : '';
 			
-			// Prepare HTML code
-			$html = array();
-
-			// Compute the current selected values
-			$selected = array($this->value);
-
 			// Add a grouped list
-			$html[] = JHtml::_(
+			return JHtml::_(
 				'select.groupedlist', $groups, $this->name,
-				array('id' => $this->id, 'group.id' => 'id', 'list.attr' => $attr, 'list.select' => $selected)
+				array('id' => $this->id, 'group.id' => 'id', 'list.attr' => $attr, 'list.select' => (array) $this->value)
 			);
-
+			
 			return implode($html);
 		}
-		else
-		{
-
-			return '';
-		}
+		
+		return '';
 	}
 }
