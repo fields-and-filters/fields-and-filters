@@ -64,7 +64,7 @@ class JFormFieldModal_FieldsandfiltersExtensions extends JFormField
 				return $this->$name;
 			/* @enddeprecated >= J3.2 */
 		}
-
+		
 		return parent::__get($name);
 	}
 
@@ -88,9 +88,11 @@ class JFormFieldModal_FieldsandfiltersExtensions extends JFormField
 				$value = preg_replace('/\s+/', ' ', trim((string) $value));
 				$this->$name = (string) $value;
 				break;
+			
 			case 'size':
 				$this->$name = (int) $value;
 				break;
+			
 			default:
 				if (FieldsandfiltersFactory::isVersion('>=', 3.2))
 				{
@@ -129,7 +131,7 @@ class JFormFieldModal_FieldsandfiltersExtensions extends JFormField
 			}
 			/* @end deprecated >= J3.2 */
 		}
-
+		
 		return $return;
 	}
 	

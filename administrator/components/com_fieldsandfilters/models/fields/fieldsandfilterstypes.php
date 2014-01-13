@@ -28,7 +28,6 @@ class JFormFieldFieldsandfiltersTypes extends JFormFieldList
 	 * @since       1.2.0
 	 */
 	protected $type = 'FieldsandfiltersTypes';
-	
 
 	/**
 	 * Method to get the field options.
@@ -39,10 +38,10 @@ class JFormFieldFieldsandfiltersTypes extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		$options = JHtml::_( 'FieldsandfiltersHtml.options.types' );
+		$options = JHtml::_('FieldsandfiltersHtml.options.types');
 
 		// Merge any additional options in the XML definition.
-		$options = array_merge( parent::getOptions(), $options );
+		$options = array_merge(parent::getOptions(), $options);
 
 		return $options;
 	}

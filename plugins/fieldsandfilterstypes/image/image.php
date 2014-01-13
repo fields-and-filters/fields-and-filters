@@ -36,8 +36,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		
 		if( JFactory::getApplication()->isAdmin() )
 		{
-			// load plugin language
-			KextensionsLanguage::load( 'plg_' . $this->_type . '_' . $this->_name, JPATH_ADMINISTRATOR );
+			$this->loadLanguage();
 		}
 		
 	}
@@ -269,9 +268,8 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		jimport( 'joomla.filesystem.file' );
 		
 		$app		= JFactory::getApplication();
-		$jroot		= JPATH_ROOT . '/';
 		
-		if( ( $image = $_data->get( 'image' ) ) && file_exists( JPath::clean( $jroot . $image ) ) )
+		if( ( $image = $_data->get( 'image' ) ) && file_exists( JPath::clean( JPATH_ROOT . '/' . $image ) ) )
 		{
 			$_data 			= new JRegistry( $_data->getProperties( true ) );
 			
@@ -284,7 +282,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				$isCreated		= true;
 				$isCreatedThumb		= true;
 				
-				$folder 		= FieldsandfiltersImage::getCacheFolder() . '/'  . $field->field_id . '/';
+				$folder 		= FieldsandfiltersImage::getCacheFolder() . '/'  . $field->id . '/';
 				$imageInfo		= self::prepareImageInfo( $field, $element, $image, false, $scaleImage );
 				
 				if( $scaleImage )
@@ -292,24 +290,24 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 					$src 		= JPath::clean(  $folder . $imageInfo->name );
 					$srcOld 	= $_data->get( 'src', false );
 					
-					if( $src != $srcOld || !file_exists( JPath::clean( $jroot . $src ) ) )
+					if( $src != $srcOld || !file_exists( JPath::clean( JPATH_ROOT . '/' . $src ) ) )
 					{
 						try
 						{
-							if( $srcOld && file_exists( $srcOld = JPath::clean( $jroot . $srcOld ) ) )
+							if( $srcOld && file_exists( $srcOld = JPath::clean( JPATH_ROOT . '/' . $srcOld ) ) )
 							{
 								JFile::delete( $srcOld );
 							}
 							
-							if( FieldsandfiltersImage::createImage( $field->field_name, $imageInfo ) && ( $src = $imageInfo->get( 'src' ) ) )
+							if( FieldsandfiltersImage::createImage( $field->name, $imageInfo ) && ( $src = $imageInfo->get( 'src' ) ) )
 							{
-								$_data->set( 'src', str_replace( JPath::clean( $jroot ), '', $src ) );
+								$_data->set( 'src', str_replace( JPath::clean( JPATH_ROOT . '/' ), '', $src ) );
 								
-								$app->enqueueMessage(  JText::sprintf( 'COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->field_name ) );
+								$app->enqueueMessage(  JText::sprintf( 'COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->name ) );
 							}
 							else
 							{
-								throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->field_name ) );
+								throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->name ) );
 							}
 						}
 						catch( Exception $e )
@@ -338,15 +336,15 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 								JFile::delete( $srcOld );
 							}
 							
-							if( FieldsandfiltersImage::createImage( ( $field->field_name . ' Thumbs' ), $imageInfo ) && ( $src = $imageInfo->get( 'src' ) ) )
+							if( FieldsandfiltersImage::createImage( ( $field->name . ' Thumbs' ), $imageInfo ) && ( $src = $imageInfo->get( 'src' ) ) )
 							{
 								$_data->set( 'src_thumb', str_replace( JPath::clean( $jroot ), '', $src ) );
 								
-								$app->enqueueMessage( JText::sprintf( 'COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->field_name . ' Thumb' ) );
+								$app->enqueueMessage( JText::sprintf( 'COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->name . ' Thumb' ) );
 							}
 							else
 							{
-								throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->field_name . ' Thumb' ) );
+								throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->name . ' Thumb' ) );
 							}
 						}
 						catch( Exception $e )
@@ -374,7 +372,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				// delete image
 				if( !JFile::delete( $jroot . $src ) )
 				{
-					$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->field_name, $src ), 'error' );
+					$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->name, $src ), 'error' );
 				}
 			}
 			
@@ -383,7 +381,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				// delete thumb
 				if( !JFile::delete( $jroot . $src ) )
 				{
-					$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->field_name . ' Thumb', $src ), 'error' );
+					$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->name . ' Thumb', $src ), 'error' );
 				}
 			}
 			
@@ -397,32 +395,28 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	 */
 	public function onFieldsandfiltersBeforeDeleteData( $context, $item )
 	{
-		if( $context == 'com_fieldsandfilters.field' && $item->field_type == $this->_name )
+		if( $context == 'com_fieldsandfilters.field' && isset($item->type) && $item->type == $this->_name )
 		{
 			jimport( 'joomla.filesystem.folder' );
 			
-			$path 		= FieldsandfiltersImage::getCacheFolder() . '/' . $item->field_id;
+			$path 		= FieldsandfiltersImage::getCacheFolder() . '/' . $item->id;
 			$fullname 	= JPath::clean( JPATH_ROOT . '/' . $path );
 			
 			if( is_dir( $fullname ) )
 			{
 				if( !JFolder::delete( $fullname ) )
 				{
-					JFactory::getApplication()->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_FOLDER', $item->field_name, $path ) );
+					JFactory::getApplication()->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_FOLDER', $item->name, $path ) );
 				}
 			}
 		}
 		elseif( $context == 'com_fieldsandfilters.element' )
 		{
-			// [TODO] no idea
-			
-			$jregistry 	= JRegistry::getInstance( 'fieldsandfilters' ); // ~
-			$fieldsItem 	= $item->get( 'fields', new JObject ); // ~
-			
-			if( ( $data = $fieldsItem->get( 'data', new JObject ) ) && ( $fields = $jregistry->get( 'fields.' . $this->_name ) ) )
+			$data = $item->get( 'fields', new JObject )->get( 'data', new JObject );
+			$fields = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($item->get('content_type_id'))->get($this->_name);
+			if( $fields )
 			{
-				$jroot		= JPATH_ROOT . '/' ;
-				$notDelete	= array();
+				$notDelete = array();
 				
 				$fields = is_array( $fields ) ? $fields : array( $fields );
 				
@@ -430,9 +424,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				
 				while( $field = array_shift( $fields ) )
 				{
-					$_data 		= $data->get( $field->field_id, new JObject );
+					$_data = $data->get( $field->id, new JObject );
 					
-					if( ( $src = $_data->get( 'src' ) ) && file_exists( $fullname = JPath::clean( $jroot . $src ) ) )
+					if( ( $src = $_data->get( 'src' ) ) && file_exists( $fullname = JPath::clean( JPATH_ROOT . '/' . $src ) ) )
 					{
 						if( !JFile::delete( $fullname ) )
 						{
@@ -440,7 +434,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						}
 					}
 					
-					if( ( $src = $_data->get( 'src_thumb' ) ) && file_exists( $fullname = JPath::clean( $jroot . $src ) ) )
+					if( ( $src = $_data->get( 'src_thumb' ) ) && file_exists( $fullname = JPath::clean( JPATH_ROOT . '/' . $src ) ) )
 					{
 						if( !JFile::delete( $fullname ) )
 						{
@@ -451,7 +445,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				
 				if( !empty( $notDelete ) )
 				{
-					JFactory::getApplication()->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_ELEMENT', $notDelete ) );
+					JFactory::getApplication()->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_ELEMENT', implode( ', ', $notDelete )) );
 				}
 			}
 		}

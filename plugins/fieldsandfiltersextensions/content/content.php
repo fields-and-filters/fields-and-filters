@@ -241,7 +241,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$fielsXML->addAttribute( 'name', 'fieldsandfilters' );
 			
 			$fieldXML = $fielsXML->addChild('field');
-			$fieldXML->addAttribute('name', 'context_extension_' . $this->_name);
+			$fieldXML->addAttribute('name', '_fieldsandfilters');
 			$fieldXML->addAttribute('type', 'hidden');
 			$fieldXML->addAttribute( 'fieldset', 'fieldsandfilters');
 			
@@ -312,7 +312,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$attribs = new JRegistry;
 			$attribs->loadString( $item->attribs );
 			
-			$this->set('fieldsandfilters_save_data', $attribs->get( 'fieldsandfilters' ));
+			$item->set('_fieldsandfilters', $attribs->get( 'fieldsandfilters' ));
 			
 			$attribs = $attribs->toObject();
 			unset( $attribs->fieldsandfilters );
@@ -334,12 +334,10 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			return true;
 		}
 		
-		if( !( $itemData = $this->get('fieldsandfilters_save_data') ) )
+		if( !( $itemData = $item->get('_fieldsandfilters') ) )
 		{
 			return true;
 		}
-		
-		unset($this->fieldsandfilters_save_data);
 		
 		// Load PluginExtensions Helper		
 		if( !( $extensionContent = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( $this->_name )->get( $this->_name ) ) )

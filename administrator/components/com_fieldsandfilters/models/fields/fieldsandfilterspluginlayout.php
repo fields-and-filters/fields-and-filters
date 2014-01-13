@@ -28,6 +28,166 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 	 * @since  11.1
 	 */
 	protected $type = 'FieldsandfiltersPluginLayout';
+	
+	/**
+	 * The parent field of the form field
+	 *
+	 * @var    mixed
+	 * @since  1.2.0
+	 */
+	protected $parentField = 'type';
+	
+	/**
+	 * The plugin type of the form field
+	 *
+	 * @var    mixed
+	 * @since  1.2.0
+	 */
+	protected $pluginType = 'fieldsandfilterstypes';
+	
+	/**
+	 * The plugin name of the form field
+	 *
+	 * @var    mixed
+	 * @since  1.2.0
+	 */
+	protected $pluginName;
+	
+	/**
+	 * The mode type of the form field
+	 *
+	 * @var    mixed
+	 * @since  1.2.0
+	 */
+	protected $modeType;
+	
+	/**
+	 * The size of the form field.
+	 *
+	 * @var    integer
+	 * @since  1.2.0
+	 * @deprecated >= J3.2
+	 */
+	protected $size;
+	
+	/**
+	 * The class of the form field
+	 *
+	 * @var    mixed
+	 * @since  1.2.0
+	 * @deprecated >= J3.2
+	 */
+	protected $class;
+	
+	/**
+	 * Method to get certain otherwise inaccessible properties from the form field object.
+	 *
+	 * @param   string  $name  The property name for which to the the value.
+	 *
+	 * @return  mixed  The property value or null.
+	 *
+	 * @since   1.2.0
+	 */
+	public function __get($name)
+	{
+		switch ($name)
+		{
+			case 'parentField':
+			case 'pluginType':
+			case 'modeType':
+				return $this->$name;
+			
+			/* @deprecated >= J3.2 */
+			case 'size':
+			case 'class':
+				return $this->$name;
+			/* @enddeprecated >= J3.2 */
+		}
+		
+		return parent::__get($name);
+	}
+	
+	/**
+	 * Method to set certain otherwise inaccessible properties of the form field object.
+	 *
+	 * @param   string  $name   The property name for which to the the value.
+	 * @param   mixed   $value  The value of the property.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.2.0 && J3.2
+	 */
+	public function __set($name, $value)
+	{
+		switch ($name)
+		{
+			case 'parentField':
+				$this->$name = (string) $value;
+				break;
+			
+			case 'pluginType':
+			case 'pluginName':
+			case 'modeType':
+				case 'pluginType':
+				$value = (string) $value;
+				$this->$name = preg_replace('#\W#', '', $value);
+				break;
+			
+			/* @deprecated >= J3.2 */
+			case 'class':
+				// Removes spaces from left & right and extra spaces from middle
+				$value = preg_replace('/\s+/', ' ', trim((string) $value));
+				$this->$name = (string) $value;
+				break;
+			
+			case 'size':
+				$this->$name = (int) $value;
+				break;
+			
+			default:
+				if (FieldsandfiltersFactory::isVersion('>=', 3.2))
+				{
+					parent::__set($name, $value);
+				}
+				break;
+			/* @end deprecated >= J3.2 */
+		}
+	}
+	
+	/**
+	 * Method to attach a JForm object to the field.
+	 *
+	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
+	 * @param   mixed             $value    The form field value to validate.
+	 * @param   string            $group    The field name group control value. This acts as as an array container for the field.
+	 *                                      For example if the field has name="foo" and the group value is set to "bar" then the
+	 *                                      full field name would end up being "bar[foo]".
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @see     JFormField::setup()
+	 * @since   1.2.0
+	 */
+	public function setup(SimpleXMLElement $element, $value, $group = null)
+	{
+		$return = parent::setup($element, $value, $group);
+		
+		if ($return)
+		{
+			$attributes = array('parentField', 'pluginType', 'modeType', 'size', 'class'); /* class is @deprecated >= J3.2 */
+			foreach ($attributes as $attributeName)
+			{
+				$this->__set($attributeName, $element[$attributeName]);
+			}
+			
+			if ($this->form instanceof JForm)
+			{
+				$this->__set('pluginName', $this->form->getValue($this->parentField));
+			}
+		}
+		
+		return $return;
+	}
 
 	/**
 	 * Method to get the field input for module layouts.
@@ -38,65 +198,33 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 	 */
 	protected function getInput()
 	{
-		// Get the variables
-		$pluginKey = ( $v = (string) $this->element['key'] ) ? $v : 'field_type';
-		
-		// Get the plugin.
-		$pluginType = ( $v = (string) $this->element['plugin'] ) ? $v : 'fieldsandfiltersTypes';
-		$pluginType = preg_replace('#\W#', '', $pluginType);
-		
-		// Get the template.
-		$modeName = ( $v = (string) $this->element['mode'] ) ? $v : 'field';
-		$modeName = preg_replace( '#\W#', '', $modeName );
-		
-		if( $this->form instanceof JForm)
-		{
-			$pluginName = $this->form->getValue($pluginKey);
-		}
-		
-		$pluginName = preg_replace('#\W#', '', $pluginName);
-		
-		if( $pluginName )
+		if ($this->pluginName)
 		{
 			$lang 		= JFactory::getLanguage();
-			$extension 	= 'plg_' . $pluginType . '_' . $pluginName;
+			$extension 	= 'plg_' . $this->pluginType . '_' . $this->pluginName;
 			
 			// Load language file
-			KextensionsLanguage::load( $extension, JPATH_ADMINISTRATOR );
-			
-			
+			KextensionsLanguage::load($extension, JPATH_ADMINISTRATOR);
 			
 			// Get the database object and a new query object.
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
 
 			// Build the query.
-			$query->select( array(
-				       $db->quoteName( 'element' ),
-				       $db->quoteName( 'name' )
-				) )
-				->from( $db->quoteName( '#__extensions', 'e' ) )
-				->where( $db->quoteName( 'e.client_id' ) . ' = ' . 0 )
-				->where( $db->quoteName( 'e.type' ) . ' = ' . $db->quote( 'template' ) )
-				->where( $db->quoteName( 'e.enabled' ) . ' = 1');
-
-			//if( $template )
-			//{
-			//	$query->where('e.element = ' . $db->quote($template));
-			//}
-
-			//if ($template_style_id)
-			//{
-			//	$query->join('LEFT', '#__template_styles as s on s.template=e.element')
-			//		->where('s.id=' . (int) $template_style_id);
-			//}
+			$query->select(array(
+				       $db->quoteName('element'),
+				       $db->quoteName('name')
+				))
+				->from($db->quoteName('#__extensions', 'e'))
+				->where($db->quoteName('e.client_id') . ' = ' . 0)
+				->where($db->quoteName('e.type') . ' = ' . $db->quote('template'))
+				->where($db->quoteName('e.enabled') . ' = 1');
 
 			// Set the query and load the templates.
-			$db->setQuery($query);
-			$templates = $db->loadObjectList( 'element' );
+			$templates = $db->setQuery($query)->loadObjectList('element');
 
 			// Build the search paths for module layouts.
-			$plugin_path = JPath::clean( JPATH_PLUGINS . '/' . $pluginType . '/' . $pluginName . '/tmpl' );
+			$plugin_path = JPath::clean(JPATH_PLUGINS . '/' . $this->pluginType . '/' . $this->pluginName . '/tmpl');
 			
 			// Prepare array of component layouts
 			$plugin_layouts = array();
@@ -105,62 +233,62 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 			$groups = array();
 
 			// Add the layout options from the module path.
-			if( is_dir( $plugin_path ) && ( $plugin_layouts = JFolder::files( $plugin_path, '^' . $modeName . '-[^_]*\.php$' ) ) )
+			if (is_dir($plugin_path) && ($plugin_layouts = JFolder::files($plugin_path, '^' . $modeName . '-[^_]*\.php$')))
 			{
 				// Create the group for the plgin
 				$groups['_'] = array();
 				$groups['_']['id'] = $this->id . '__';
-				$groups['_']['text'] = JText::sprintf( 'FIELDSANDFILTERS_OPTION_FROM_PLUGIN' );
+				$groups['_']['text'] = JText::sprintf('FIELDSANDFILTERS_OPTION_FROM_PLUGIN');
 				$groups['_']['items'] = array();
 
-				foreach( $plugin_layouts as $file)
+				foreach ($plugin_layouts as $file)
 				{
 					// Add an option to the module group
-					$value	= basename( $file, '.php' );
-					$text 	= str_replace( ( $modeName . '-' ), '', $value );
-					$text 	= $lang->hasKey( $key = strtoupper( $extension . '_LAYOUT_' . $value ) ) ? JText::_( $key ) : $text;
-					$groups['_']['items'][] = JHtml::_( 'select.option', '_:' . $value, $text );
+					$value	= basename($file, '.php');
+					$text 	= str_replace(($modeName . '-'), '', $value);
+					$text 	= $lang->hasKey($key = strtoupper($extension . '_LAYOUT_' . $value)) ? JText::_($key) : $text;
+					$groups['_']['items'][] = JHtml::_('select.option', '_:' . $value, $text);
 				}
 			}
 
 			// Loop on all templates
-			if( $templates )
+			if ($templates)
 			{
-				foreach( $templates as $template )
+				foreach ($templates as $template)
 				{
 					// Load language file
-					KextensionsLanguage::load( 'tpl_' . $template->element, JPATH_SITE );
+					KextensionsLanguage::load('tpl_' . $template->element, JPATH_SITE);
 					
-					$template_path = JPath::clean( JPATH_SITE . '/templates/' . $template->element . '/html/' . $extension );
+					$template_path = JPath::clean(JPATH_SITE . '/templates/' . $template->element . '/html/' . $extension);
 
 					// Add the layout options from the template path.
-					if( is_dir( $template_path ) && ( $files = JFolder::files( $template_path, '^' . $modeName . '-[^_]*\.php$' ) ) )
+					if (is_dir($template_path) && ($files = JFolder::files($template_path, '^' . $modeName . '-[^_]*\.php$')))
 					{
-						foreach( $files as $i => $file )
+						foreach ($files as $i => $file)
 						{
 							// Remove layout that already exist in component ones
-							if( in_array( $file, $plugin_layouts ) )
+							if (in_array($file, $plugin_layouts))
 							{
-								unset( $files[$i] );
+								unset($files[$i]);
 							}
 						}
 
-						if( count( $files ) )
+						if (count($files))
 						{
 							// Create the group for the template
 							$groups[$template->element] = array();
 							$groups[$template->element]['id'] = $this->id . '_' . $template->element;
-							$groups[$template->element]['text'] = JText::sprintf( 'JOPTION_FROM_TEMPLATE', $template->name );
+							$groups[$template->element]['text'] = JText::sprintf('JOPTION_FROM_TEMPLATE', $template->name);
 							$groups[$template->element]['items'] = array();
 
-							foreach( $files as $file )
+							foreach ($files as $file)
 							{
 								// Add an option to the template group
-								$value = basename( $file, '.php' );
-								$text 	= str_replace( ( $modeName . '-' ), '', $value );
-								$text = $lang->hasKey( $key = strtoupper('TPL_' . $template->element . '_' . $extension . '_LAYOUT_' . $value ) )
+								$value = basename($file, '.php');
+								$text 	= str_replace(($modeName . '-'), '', $value);
+								$text = $lang->hasKey($key = strtoupper('TPL_' . $template->element . '_' . $extension . '_LAYOUT_' . $value))
 									? JText::_($key) : $text;
-								$groups[$template->element]['items'][] = JHtml::_( 'select.option', $template->element . ':' . $value, $text );
+								$groups[$template->element]['items'][] = JHtml::_('select.option', $template->element . ':' . $value, $text);
 							}
 						}
 					}
@@ -168,7 +296,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 			}
 			
 			// Compute attributes for the grouped list
-			$attr = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
+			$attr = $this->size ? ' size="' . $this->size . '"' : '';
 			
 			// Prepare HTML code
 			$html = array();
