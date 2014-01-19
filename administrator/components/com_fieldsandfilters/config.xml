@@ -15,7 +15,7 @@
 				name="use_static_fields"
 				type="radio"
 				size="1"
-				class="btn-group"
+				class="btn-group btn-group-yesno"
 				label="COM_FIELDSANDFILTERS_USE_STATIC_FIELDS_LBL"
 				description="COM_FIELDSANDFILTERS_USE_STATIC_FIELDS_DESC"
 				default="1"
@@ -33,7 +33,7 @@
 			<field
 				name="show_static_fields"
 				type="radio"
-				class="btn-group"
+				class="btn-group btn-group-yesno"
 				label="COM_FIELDSANDFILTERS_SHOW_STATIC_FIELDS_LBL"
 				description="COM_FIELDSANDFILTERS_SHOW_STATIC_FIELDS_DESC"
 				default="1"
@@ -73,7 +73,7 @@
 			<field
 				name="use_allextensions_filters"
 				type="radio"
-				class="btn-group"
+				class="btn-group btn-group-yesno"
 				label="COM_FIELDSANDFILTERS_USE_ALLEXTENSIONS_FILTERS_LBL"
 				description="COM_FIELDSANDFILTERS_USE_ALLEXTENSIONS_FILTERS_DESC"
 				default="1"
@@ -120,7 +120,7 @@
 		<field
 			name="load_noconflict_javascript"
 			type="radio"
-			class="inputbox"
+			class="btn-group btn-group-yesno"
 			label="COM_FIELDSANDFILTERS_LOAD_NOCONFLICT_JAVASCRIPT_LBL"
 			description="COM_FIELDSANDFILTERS_LOAD_NOCONFLICT_JAVASCRIPT_DESC"
 			default="1"
@@ -132,7 +132,7 @@
 		<field
 			name="load_jquery_javascript"
 			type="radio"
-			class="inputbox"
+			class="btn-group btn-group-yesno"
 			label="COM_FIELDSANDFILTERS_LOAD_JQUERY_JAVASCRIPT_LBL"
 			description="COM_FIELDSANDFILTERS_LOAD_JQUERY_JAVASCRIPT_DESC"
 			default="1"
@@ -144,7 +144,7 @@
 		<field
 			name="use_old_structure"
 			type="radio"
-			class="inputbox"
+			class="btn-group btn-group-yesno"
 			label="COM_FIELDSANDFILTERS_USE_OLD_STRUCTURE_LBL"
 			description="COM_FIELDSANDFILTERS_USE_OLD_STRUCTURE_DESC"
 			default="0"

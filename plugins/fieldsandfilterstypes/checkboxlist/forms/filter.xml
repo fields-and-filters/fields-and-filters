@@ -42,7 +42,7 @@
 					<field
 						name="readonly"
 						type="radio"
-						class="btn-group"
+						class="btn-group btn-group-yesno"
 						label="PLG_FAF_TS_CBLT_FORM_READONLY_LBL"
 						description="PLG_FAF_TS_CBLT_FORM_READONLY_DESC"
 						default="0"
@@ -53,7 +53,7 @@
 					<field
 						name="disabled"
 						type="radio"
-						class="btn-group"
+						class="btn-group btn-group-yesno"
 						label="PLG_FAF_TS_CBLT_FORM_DISABLED_LBL"
 						description="PLG_FAF_TS_CBLT_FORM_DISABLED_DESC"
 						default="0"

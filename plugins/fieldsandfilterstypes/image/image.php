@@ -11,651 +11,665 @@
 defined('_JEXEC') or die;
 
 // Load the Factory Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
+JLoader::import('fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers');
 
 /**
  * Checkbox type fild
+ *
  * @package     fieldsandfilters.plugin
  * @subpackage  fieldsandfilters_types.image
  * @since       1.0.0
  */
 class plgFieldsandfiltersTypesImage extends JPlugin
-{	
+{
 	/**
 	 * Constructor
 	 *
 	 * @access      protected
-	 * @param       object  $subject The object to observe
-	 * @param       array   $config  An array that holds the plugin configuration
+	 *
+	 * @param       object $subject The object to observe
+	 * @param       array  $config  An array that holds the plugin configuration
+	 *
 	 * @since       1.0.0
 	 */
-	public function __construct( &$subject, $config )
+	public function __construct(&$subject, $config)
 	{
-		parent::__construct( $subject, $config );
-		
-		if( JFactory::getApplication()->isAdmin() )
+		parent::__construct($subject, $config);
+
+		if (JFactory::getApplication()->isAdmin())
 		{
 			$this->loadLanguage();
 		}
-		
+
 	}
-	
+
 	/**
-	 * @param	JForm	$form	The form to be altered.
-	 * @param	array	$data	The associated data for the form.
+	 * onFieldsandfiltersPrepareFormField
 	 *
-	 * @return	boolean
-	 * @since	1.1.0
+	 * @param    KextensionsForm $form     The form to be altered.
+	 * @param    JObject         $data     The associated data for the form.
+	 * @param   boolean          $isNew    Is element is new
+	 * @param   string           $fieldset Fieldset name
+	 *
+	 * @return    boolean
+	 * @since    1.1.0
 	 */
-	public function onFieldsandfiltersPrepareFormField( $fieldsForm, $isNew = false, $fieldset = 'fieldsandfilters' )
+	public function onFieldsandfiltersPrepareFormField(KextensionsForm $form, JObject $data, $isNew = false, $fieldset = 'fieldsandfilters')
 	{
-		if( !$fieldsForm instanceof KextensionsFormElement )
+		if (!($fields = $data->get($this->_name)))
 		{
 			return true;
 		}
-		
-		if( !( $fields = $fieldsForm->getElement( $this->_name ) ) )
-		{
-			return true;
-		}
-		
-		$fields 	= is_array( $fields ) ? $fields : array( $fields );
-		$staticMode 	= (array) FieldsandfiltersFactory::getTypes()->getMode( 'static' );
-		
-		JHtml::_( 'behavior.formvalidation' );
-		$script[] = 'window.addEvent( "domready", function(){';
-		$script[] = '	if( document.formvalidator ){';
-		$script[] = '		document.formvalidator.setHandler( "url", function( value ){';
+
+		$fields     = is_array($fields) ? $fields : array($fields);
+		$staticMode = (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC);
+
+		$syntax = KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
+
+		JHtml::_('behavior.formvalidation');
+		$script[] = 'window.addEvent("domready", function() {';
+		$script[] = '	if( document.formvalidator ) {';
+		$script[] = '		document.formvalidator.setHandler("url", function(value) {';
 		$script[] = '			regex = new RegExp("^(https?|ftp|rmtp|mms):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?", "i");';
 		$script[] = '			return regex.test(value);';
 		$script[] = '		});';
 		$script[] = '	};';
 		$script[] = '});';
-		
-		JFactory::getDocument()->addScriptDeclaration( implode( "\n", $script ) );
-		
-		while( $field = array_shift( $fields ) )
+
+		JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
+
+		while ($field = array_shift($fields))
 		{
-			$root = new JXMLElement( '<fields />' );
-			$root->addAttribute( 'name', 'data' );
-			
-			$rootJson = $root->addChild( 'fields' );
-			$rootJson->addAttribute( 'name', $field->field_id );
-			
-			$label = '<strong>' . $field->field_name . '</strong> {' . $field->field_id . '}';
-			
-			if( $field->state == -1 )
+			$root = new SimpleXMLElement('<fields />');
+			$root->addAttribute('name', 'data');
+
+			$rootJson = $root->addChild('fields');
+			$rootJson->addAttribute('name', $field->id);
+
+			$label = '<strong>'.$field->name.'</strong> '.sprintf($syntax,$field->id);
+
+			if ($field->state == -1)
 			{
-				$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN' ) . ']';
+				$label .= ' ['.JText::_('PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN').']';
 			}
-			
-			if( !( $isStaticMode = in_array( $field->mode, $staticMode ) ) )
+
+			if (!($isStaticMode = in_array($field->mode, $staticMode)))
 			{
 				// name spacer
-				$element = $rootJson->addChild( 'field' );
-				$element->addAttribute( 'type', 'spacer' );
-				$element->addAttribute( 'name', 'name_spacer_' . $field->field_id );
-				$element->addAttribute( 'label', $label );
-				$element->addAttribute( 'translate_label', 'false' );
-				$element->addAttribute( 'class', 'text' );
-				$element->addAttribute( 'fieldset', $fieldset );
+				$element = $rootJson->addChild('field');
+				$element->addAttribute('type', 'spacer');
+				$element->addAttribute('name', 'name_spacer_' . $field->id);
+				$element->addAttribute('label', $label);
+				$element->addAttribute('translate_label', 'false');
+				$element->addAttribute('class', 'text');
+				$element->addAttribute('fieldset', $fieldset);
 			}
-			
-			if( !empty( $field->description ) && $field->params->get( 'base.admin_enabled_description', 0 ) )
+
+			if (!empty($field->description) && $field->params->get('base.admin_enabled_description', 0))
 			{
-				switch( $field->params->get( 'base.admin_description_type', 'description' ) )
+				switch ($field->params->get('base.admin_description_type', 'description'))
 				{
 					case 'tip':
-						$element->addAttribute( 'description', $field->description );
-						$element->addAttribute( 'translate_description', 'false' );
-					break;
+						$element->addAttribute('description', $field->description);
+						$element->addAttribute('translate_description', 'false');
+						break;
 					case 'description':
 					default:
-						$element = $rootJson->addChild( 'field' );
-						$element->addAttribute( 'type', 'spacer' );
-						$element->addAttribute( 'name', 'description_spacer_' . $field->field_id );
-						$element->addAttribute( 'label', $field->description );
-						$element->addAttribute( 'translate_label', 'false' );
-						$element->addAttribute( 'fieldset', $fieldset );
-					break;
+						$element = $rootJson->addChild('field');
+						$element->addAttribute('type', 'spacer');
+						$element->addAttribute('name', 'description_spacer_' . $field->field_id);
+						$element->addAttribute('label', $field->description);
+						$element->addAttribute('translate_label', 'false');
+						$element->addAttribute('fieldset', $fieldset);
+						break;
 				}
 			}
-			
-			$element = $rootJson->addChild( 'field' );
-			$element->addAttribute( 'labelclass' , 'control-label' );
-			$element->addAttribute( 'fieldset', $fieldset );
-			
-			if( $isStaticMode )
+
+			$element = $rootJson->addChild('field');
+			$element->addAttribute('labelclass', 'control-label');
+			$element->addAttribute('fieldset', $fieldset);
+
+			if ($isStaticMode)
 			{
-				$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_TITLE' ) . ']';
-				
-				$element->addAttribute( 'type', 'spacer' );
-				$element->addAttribute( 'description', $field->data );
-				$element->addAttribute( 'name', $field->field_id );
-				$element->addAttribute( 'label', $label );
-				$element->addAttribute( 'translate_label', 'false' );
-				$element->addAttribute( 'translate_description', 'false' );
+				$label .= ' ['.JText::_('PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_TITLE').']';
+
+				$element->addAttribute('type', 'spacer');
+				$element->addAttribute('description', $field->data);
+				$element->addAttribute('name', $field->id);
+				$element->addAttribute('label', $label);
+				$element->addAttribute('translate_label', 'false');
+				$element->addAttribute('translate_description', 'false');
 			}
 			else
 			{
 				//image
-				$element->addAttribute( 'name', 'image' );
-				$element->addAttribute( 'type', 'media' );
-				$element->addAttribute( 'class', 'inputbox' );
-				$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_IMAGE_LBL' );
-				$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_IMAGE_DESC' );
-				$element->addAttribute( 'filter', 'safehtml' );
-				
-				if( $field->required )
+				$element->addAttribute('name', 'image');
+				$element->addAttribute('type', 'media');
+				$element->addAttribute('class', 'inputbox');
+				$element->addAttribute('label', 'PLG_FAF_TS_IE_FORM_IMAGE_LBL');
+				$element->addAttribute('description', 'PLG_FAF_TS_IE_FORM_IMAGE_DESC');
+				$element->addAttribute('filter', 'safehtml');
+
+				if ($field->required)
 				{
-					$element->addAttribute( 'required', 'true' );
+					$element->addAttribute('required', 'true');
 				}
-				
+
 				//src
-				$element = $rootJson->addChild( 'field' );
-				$element->addAttribute( 'name', 'src' );
-				$element->addAttribute( 'type', 'hidden' );
-				$element->addAttribute( 'filter', 'safehtml' );
-				$element->addAttribute( 'fieldset', $fieldset );
-				
+				$element = $rootJson->addChild('field');
+				$element->addAttribute('name', 'src');
+				$element->addAttribute('type', 'hidden');
+				$element->addAttribute('filter', 'safehtml');
+				$element->addAttribute('fieldset', $fieldset);
+
 				// caption
-				$element = $rootJson->addChild( 'field' );
-				$element->addAttribute( 'name', 'caption' );
-				$element->addAttribute( 'type', 'text' );
-				$element->addAttribute( 'class', 'inputbox' );
-				$element->addAttribute( 'labelclass' , 'control-label' );
-				$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_CAPTION_LBL' );
-				$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_CAPTION_DESC' );
-				$element->addAttribute( 'filter', 'safehtml' );
-				$element->addAttribute( 'fieldset', $fieldset );
-				
+				$element = $rootJson->addChild('field');
+				$element->addAttribute('name', 'caption');
+				$element->addAttribute('type', 'text');
+				$element->addAttribute('class', 'inputbox');
+				$element->addAttribute('labelclass', 'control-label');
+				$element->addAttribute('label', 'PLG_FAF_TS_IE_FORM_CAPTION_LBL');
+				$element->addAttribute('description', 'PLG_FAF_TS_IE_FORM_CAPTION_DESC');
+				$element->addAttribute('filter', 'safehtml');
+				$element->addAttribute('fieldset', $fieldset);
+
 				// alt
-				$element = $rootJson->addChild( 'field' );
-				$element->addAttribute( 'name', 'alt' );
-				$element->addAttribute( 'type', 'text' );
-				$element->addAttribute( 'class', 'inputbox' );
-				$element->addAttribute( 'labelclass' , 'control-label' );
-				$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_ALT_LBL' );
-				$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_ALT_DESC' );
-				$element->addAttribute( 'filter', 'safehtml' );
-				$element->addAttribute( 'fieldset', $fieldset );
-				
-				if( $field->params->get( 'type.create_thumb' ) )
+				$element = $rootJson->addChild('field');
+				$element->addAttribute('name', 'alt');
+				$element->addAttribute('type', 'text');
+				$element->addAttribute('class', 'inputbox');
+				$element->addAttribute('labelclass', 'control-label');
+				$element->addAttribute('label', 'PLG_FAF_TS_IE_FORM_ALT_LBL');
+				$element->addAttribute('description', 'PLG_FAF_TS_IE_FORM_ALT_DESC');
+				$element->addAttribute('filter', 'safehtml');
+				$element->addAttribute('fieldset', $fieldset);
+
+				if ($field->params->get('type.create_thumb'))
 				{
 					//src thumb
-					$element = $rootJson->addChild( 'field' );
-					$element->addAttribute( 'name', 'src_thumb' );
-					$element->addAttribute( 'type', 'hidden' );
-					$element->addAttribute( 'filter', 'safehtml' );
-					$element->addAttribute( 'fieldset', $fieldset );
+					$element = $rootJson->addChild('field');
+					$element->addAttribute('name', 'src_thumb');
+					$element->addAttribute('type', 'hidden');
+					$element->addAttribute('filter', 'safehtml');
+					$element->addAttribute('fieldset', $fieldset);
 				}
 				else
 				{
 					// link
-					$element = $rootJson->addChild( 'field' );
-					$element->addAttribute( 'name', 'link' );
-					$element->addAttribute( 'type', 'text' );
-					$element->addAttribute( 'class', 'validate-url' );
-					$element->addAttribute( 'labelclass' , 'control-label' );
-					$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_LINK_LBL' );
-					$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_LINK_DESC' );
-					$element->addAttribute( 'validate', 'url' );
-					$element->addAttribute( 'fieldset', $fieldset );
-					
+					$element = $rootJson->addChild('field');
+					$element->addAttribute('name', 'link');
+					$element->addAttribute('type', 'text');
+					$element->addAttribute('class', 'validate-url');
+					$element->addAttribute('labelclass', 'control-label');
+					$element->addAttribute('label', 'PLG_FAF_TS_IE_FORM_LINK_LBL');
+					$element->addAttribute('description', 'PLG_FAF_TS_IE_FORM_LINK_DESC');
+					$element->addAttribute('validate', 'url');
+					$element->addAttribute('fieldset', $fieldset);
+
 					// link target
-					$element = $rootJson->addChild( 'field' );
-					$element->addAttribute( 'name', 'target' );
-					$element->addAttribute( 'type', 'list' );
-					$element->addAttribute( 'class', 'inputbox' );
-					$element->addAttribute( 'labelclass' , 'control-label' );
-					$element->addAttribute( 'label', 'PLG_FAF_TS_IE_FORM_TARGET_LBL' );
-					$element->addAttribute( 'description', 'PLG_FAF_TS_IE_FORM_TARGET_DESC' );
-					$element->addAttribute( 'fieldset', $fieldset );
-					
-					KextensionsXML::addOptionsNode( $element, array(
-						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_DEFAULT'	=> '',
-						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_BLANK'	=> 1,
-						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_POPUP'	=> 2,
-						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_MODAL'	=> 3,
-						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_PARENT'	=> 4
-						
-					) );
+					$element = $rootJson->addChild('field');
+					$element->addAttribute('name', 'target');
+					$element->addAttribute('type', 'list');
+					$element->addAttribute('class', 'inputbox');
+					$element->addAttribute('labelclass', 'control-label');
+					$element->addAttribute('label', 'PLG_FAF_TS_IE_FORM_TARGET_LBL');
+					$element->addAttribute('description', 'PLG_FAF_TS_IE_FORM_TARGET_DESC');
+					$element->addAttribute('fieldset', $fieldset);
+
+					KextensionsXML::addOptionsNode($element, array(
+						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_DEFAULT' => '',
+						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_BLANK'   => 1,
+						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_POPUP'   => 2,
+						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_MODAL'   => 3,
+						'PLG_FAF_TS_IE_FORM_TARGET_OPTION_PARENT'  => 4
+
+					));
 				}
 			}
-			
+
 			// hr bottom spacer
-			$element = $rootJson->addChild( 'field' );
-			$element->addAttribute( 'type', 'spacer' );
-			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->field_id );
-			$element->addAttribute( 'hr', 'true' );
-			$element->addAttribute( 'fieldset', $fieldset );
-			
-			$fieldsForm->setField( $field->ordering, $root );
+			$element = $rootJson->addChild('field');
+			$element->addAttribute('type', 'spacer');
+			$element->addAttribute('name', 'hr_bottom_spacer_' . $field->id);
+			$element->addAttribute('hr', 'true');
+			$element->addAttribute('fieldset', $fieldset);
+
+			$form->addOrder($field->id, $field->ordering)
+				->setField( $field->id, $root );
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * @since       1.0.0
 	 */
-	public function onFieldsandfiltersBeforeSaveData( $context, $newItem, $oldItem, $isNew )
+	public function onFieldsandfiltersBeforeSaveData($context, $newItem, $oldItem, $isNew)
 	{
-		if( $context == 'com_fieldsandfilters.field' && $newItem->field_type == $this->_name && FieldsandfiltersFactory::getTypes()->getModeName( $newItem->mode ) == 'static' )
+		if ($context == 'com_fieldsandfilters.field' && $newItem->type == $this->_name && FieldsandfiltersModes::getModeName($newItem->mode) == FieldsandfiltersModes::MODE_STATIC)
 		{
-			$newItem->params = new JRegistry( $newItem->params );
-			$newItem->values->set( 'data', (string) $this->createImages( new stdClass, $newItem, $newItem->values ) );
+			$newItem->params = new JRegistry($newItem->params);
+			$newItem->values->set('data', (string) $this->createImages(new stdClass, $newItem, $newItem->values));
 		}
-		else if( $context == 'com_fieldsandfilters.element' )
+		elseif ($context == 'com_fieldsandfilters.element')
 		{
-			if( ( $data = $newItem->get( 'data', new JObject ) ) && ( $fields = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($newItem->get('content_type_id'))->get( $this->_name ) ) )
+			$data = $newItem->get('fields')->get('data', new JObject);
+			$fields = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($newItem->get('content_type_id'))->get($this->_name);
+
+			if ($fields)
 			{
-				$fields = is_array( $fields ) ? $fields : array( $fields );
-				
-				while( $field = array_shift( $fields ) )
+				$fields = is_array($fields) ? $fields : array($fields);
+
+				while ($field = array_shift($fields))
 				{
-					$data->set( $field->field_id, (string) $this->createImages( $newItem, $field, $data->get( $field->field_id, new JObject ) ) );
+					$data->set($field->id, (string) $this->createImages($newItem, $field, $data->get($field->id, new JObject)));
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
-	protected function createImages( $element, $field, $_data )
+
+	/**
+	 * @param $element
+	 * @param $field
+	 * @param $_data
+	 *
+	 * @return JRegistry|null
+	 */
+	protected function createImages($element, $field, $_data)
 	{
-		jimport( 'joomla.filesystem.file' );
-		
-		$app		= JFactory::getApplication();
-		
-		if( ( $image = $_data->get( 'image' ) ) && file_exists( JPath::clean( JPATH_ROOT . '/' . $image ) ) )
+		jimport('joomla.filesystem.file');
+
+		$app = JFactory::getApplication();
+
+		if (($image = $_data->get('image')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$image)))
 		{
-			$_data 			= new JRegistry( $_data->getProperties( true ) );
-			
-			$scaleImage 	= (int) $field->params->def( 'type.scale',  $this->params->get( 'scale', 0 ) );
-			$createThumb	= (boolean) $field->params->get( 'type.create_thumb' );
-			$scaleThumb 	= (int) $field->params->def( 'type.scale_thumb', $this->params->get( 'scale_thumb', 0 ) );
-			
-			if( $scaleImage || ( $createThumb && $scaleThumb ) )
+			$_data = new JRegistry($_data->getProperties(true));
+
+			$scaleImage  = (int) $field->params->def('type.scale', $this->params->get('scale', 0));
+			$createThumb = (boolean) $field->params->get('type.create_thumb');
+			$scaleThumb  = (int) $field->params->def('type.scale_thumb', $this->params->get('scale_thumb', 0));
+
+			if ($scaleImage || ($createThumb && $scaleThumb))
 			{
-				$isCreated		= true;
-				$isCreatedThumb		= true;
-				
-				$folder 		= FieldsandfiltersImage::getCacheFolder() . '/'  . $field->id . '/';
-				$imageInfo		= self::prepareImageInfo( $field, $element, $image, false, $scaleImage );
-				
-				if( $scaleImage )
+				$isCreated      = true;
+				$isCreatedThumb = true;
+
+				$folder    = FieldsandfiltersImage::getCacheFolder().'/'.$field->id.'/';
+				$imageInfo = $this->prepareImageInfo($field, $element, $image, false, $scaleImage);
+
+				if ($scaleImage)
 				{
-					$src 		= JPath::clean(  $folder . $imageInfo->name );
-					$srcOld 	= $_data->get( 'src', false );
-					
-					if( $src != $srcOld || !file_exists( JPath::clean( JPATH_ROOT . '/' . $src ) ) )
+					$src    = JPath::clean($folder . $imageInfo->name);
+					$srcOld = $_data->get('src', false);
+
+					if ($src != $srcOld || !file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
 					{
 						try
 						{
-							if( $srcOld && file_exists( $srcOld = JPath::clean( JPATH_ROOT . '/' . $srcOld ) ) )
+							if ($srcOld && file_exists($srcOld = JPath::clean(JPATH_ROOT.'/'.$srcOld)))
 							{
-								JFile::delete( $srcOld );
+								JFile::delete($srcOld);
 							}
-							
-							if( FieldsandfiltersImage::createImage( $field->name, $imageInfo ) && ( $src = $imageInfo->get( 'src' ) ) )
+
+							if ($src = FieldsandfiltersImage::createImage($field->name, $imageInfo))
 							{
-								$_data->set( 'src', str_replace( JPath::clean( JPATH_ROOT . '/' ), '', $src ) );
-								
-								$app->enqueueMessage(  JText::sprintf( 'COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->name ) );
+								$_data->set('src', $src);
+
+								$app->enqueueMessage(JText::sprintf('COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->name));
 							}
 							else
 							{
-								throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->name ) );
+								throw new RuntimeException(JText::sprintf('COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->name));
 							}
-						}
-						catch( Exception $e )
+						} catch (Exception $e)
 						{
 							$isCreated = false;
-							
-							$_data->set( 'src', '' );
-							$app->enqueueMessage( $e->getMessage(), 'error' );
+
+							$_data->set('src', '');
+							$app->enqueueMessage($e->getMessage(), 'error');
 						}
 					}
 				}
-				
-				if( $createThumb && $scaleThumb )
+
+				if ($createThumb && $scaleThumb)
 				{
-					$src 		= JPath::clean( $folder . 'thumbs/' . $imageInfo->name );
-					$srcOld 	= $_data->get( 'src_thumb', false );
-					
-					if( $scaleThumb && ( $src != $srcOld || !file_exists( JPath::clean( $jroot . $src ) ) ) )
+					$src    = JPath::clean($folder.'thumbs/'.$imageInfo->name);
+					$srcOld = $_data->get('src_thumb', false);
+
+					if ($scaleThumb && ($src != $srcOld || !file_exists(JPath::clean(JPATH_ROOT.'/'.$src))))
 					{
-						$imageInfo = self::prepareImageInfo( $field, $element, $image, $imageInfo->name, $scaleThumb, 'thumb' );
-						
+						$imageInfo = $this->prepareImageInfo($field, $element, $image, $imageInfo->name, $scaleThumb, 'thumb');
+
 						try
 						{
-							if( $srcOld && file_exists( $srcOld = JPath::clean( $jroot . $srcOld ) ) )
+							if ($srcOld && file_exists($srcOld = JPath::clean(JPATH_ROOT.'/'.$srcOld)))
 							{
-								JFile::delete( $srcOld );
+								JFile::delete($srcOld);
 							}
-							
-							if( FieldsandfiltersImage::createImage( ( $field->name . ' Thumbs' ), $imageInfo ) && ( $src = $imageInfo->get( 'src' ) ) )
+
+							if ($src = FieldsandfiltersImage::createImage(($field->name . ' Thumbs'), $imageInfo))
 							{
-								$_data->set( 'src_thumb', str_replace( JPath::clean( $jroot ), '', $src ) );
-								
-								$app->enqueueMessage( JText::sprintf( 'COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->name . ' Thumb' ) );
+								$_data->set('src_thumb', $src);
+
+								$app->enqueueMessage(JText::sprintf('COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->name.' Thumb'));
 							}
 							else
 							{
-								throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->name . ' Thumb' ) );
+								throw new RuntimeException(JText::sprintf('COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->name.' Thumb'));
 							}
-						}
-						catch( Exception $e )
+						} catch (Exception $e)
 						{
 							$isCreatedThumb = false;
-							
-							$_data->set( 'src_thumb', '' );
-							$app->enqueueMessage( $e->getMessage(), 'error' );
+
+							$_data->set('src_thumb', '');
+							$app->enqueueMessage($e->getMessage(), 'error');
 						}
 					}
 				}
-				
-				if( !$isCreated && !( $createThumb && $isCreatedThumb ) )
+
+				if (!$isCreated && !($createThumb && $isCreatedThumb))
 				{
 					$_data = null;
 				}
 			}
-			
-			unset( $imageInfo );
+
+			unset($imageInfo);
 		}
 		else
 		{
-			if( ( $src = $_data->get( 'src' ) ) && file_exists( JPath::clean( $jroot . $src ) ) )
+			if (($src = $_data->get('src')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
 			{
 				// delete image
-				if( !JFile::delete( $jroot . $src ) )
+				if (!JFile::delete(JPATH_ROOT.'/'.$src))
 				{
-					$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->name, $src ), 'error' );
+					$app->enqueueMessage(JText::sprintf('PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->name, $src), 'error');
 				}
 			}
-			
-			if( ( $src = $_data->get( 'src_thumb' ) ) && file_exists( JPath::clean( $jroot . $src ) ) )
+
+			if (($src = $_data->get('src_thumb')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
 			{
 				// delete thumb
-				if( !JFile::delete( $jroot . $src ) )
+				if (!JFile::delete(JPATH_ROOT.'/'.$src))
 				{
-					$app->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->name . ' Thumb', $src ), 'error' );
+					$app->enqueueMessage(JText::sprintf('PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->name.' Thumb', $src), 'error');
 				}
 			}
-			
+
 			$_data = null;
 		}
-		
+
 		return $_data;
 	}
+
 	/**
 	 * @since       1.1.0
 	 */
-	public function onFieldsandfiltersBeforeDeleteData( $context, $item )
+	public function onFieldsandfiltersBeforeDeleteData($context, $item)
 	{
-		if( $context == 'com_fieldsandfilters.field' && isset($item->type) && $item->type == $this->_name )
+		if ($context == 'com_fieldsandfilters.field' && isset($item->type) && $item->type == $this->_name)
 		{
-			jimport( 'joomla.filesystem.folder' );
-			
-			$path 		= FieldsandfiltersImage::getCacheFolder() . '/' . $item->id;
-			$fullname 	= JPath::clean( JPATH_ROOT . '/' . $path );
-			
-			if( is_dir( $fullname ) )
+			jimport('joomla.filesystem.folder');
+
+			$path     = FieldsandfiltersImage::getCacheFolder().'/'.$item->id;
+			$fullname = JPath::clean(JPATH_ROOT.'/'.$path);
+
+			if (is_dir($fullname))
 			{
-				if( !JFolder::delete( $fullname ) )
+				if (!JFolder::delete($fullname))
 				{
-					JFactory::getApplication()->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_FOLDER', $item->name, $path ) );
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('PLG_FAF_TS_IE_SUCCESS_DELETE_FOLDER', $item->name, $path));
 				}
 			}
 		}
-		elseif( $context == 'com_fieldsandfilters.element' )
+		elseif ($context == 'com_fieldsandfilters.element')
 		{
-			$data = $item->get( 'fields', new JObject )->get( 'data', new JObject );
+			$data   = $item->get('fields', new JObject)->get('data', new JObject);
 			$fields = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($item->get('content_type_id'))->get($this->_name);
-			if( $fields )
+
+			if ($fields)
 			{
 				$notDelete = array();
-				
-				$fields = is_array( $fields ) ? $fields : array( $fields );
-				
-				jimport( 'joomla.filesystem.file' );
-				
-				while( $field = array_shift( $fields ) )
+
+				$fields = is_array($fields) ? $fields : array($fields);
+
+				jimport('joomla.filesystem.file');
+
+				while ($field = array_shift($fields))
 				{
-					$_data = $data->get( $field->id, new JObject );
-					
-					if( ( $src = $_data->get( 'src' ) ) && file_exists( $fullname = JPath::clean( JPATH_ROOT . '/' . $src ) ) )
+					$_data = $data->get($field->id, new JObject);
+
+					if (($src = $_data->get('src')) && file_exists($fullname = JPath::clean(JPATH_ROOT.'/'.$src)))
 					{
-						if( !JFile::delete( $fullname ) )
+						if (!JFile::delete($fullname))
 						{
-							array_push( $notDelete, $src );
+							array_push($notDelete, $src);
 						}
 					}
-					
-					if( ( $src = $_data->get( 'src_thumb' ) ) && file_exists( $fullname = JPath::clean( JPATH_ROOT . '/' . $src ) ) )
+
+					if (($src = $_data->get('src_thumb')) && file_exists($fullname = JPath::clean(JPATH_ROOT.'/'.$src)))
 					{
-						if( !JFile::delete( $fullname ) )
+						if (!JFile::delete($fullname))
 						{
-							array_push( $notDelete, $src );
+							array_push($notDelete, $src);
 						}
 					}
 				}
-				
-				if( !empty( $notDelete ) )
+
+				if (!empty($notDelete))
 				{
-					JFactory::getApplication()->enqueueMessage( JText::sprintf( 'PLG_FAF_TS_IE_SUCCESS_DELETE_ELEMENT', implode( ', ', $notDelete )) );
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('PLG_FAF_TS_IE_SUCCESS_DELETE_ELEMENT', implode(', ', $notDelete)));
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * @since       1.0.0
 	 */
-	public function onFieldsandfiltersPrepareElementFields( $context, $item, $isNew, $state )
+	public function onFieldsandfiltersPrepareElementFields($context, $item, $isNew, $state)
 	{
-		if( $isNew )
+		if ($isNew)
 		{
 			return true;
 		}
-		
-		if( $context == 'com_fieldsandfilters.field' && isset( $item->field_type ) && $item->field_type == $this->_name )
+
+		if ($context == 'com_fieldsandfilters.field' && isset($item->type) && $item->type == $this->_name)
 		{
-			if( !empty( $item->values->data ) && !is_object( $item->values->data ) )
+			if (!empty($item->values->data) && !is_object($item->values->data))
 			{
-				$_data = new JRegistry( $item->values->data );
-				$_data = new JObject( $_data->toObject() );
-				
+				$_data = new JRegistry($item->values->data);
+				$_data = new JObject($_data->toObject());
+
 				$item->values = $_data;
 			}
 		}
-		elseif( $context == 'com_fieldsandfilters.element' )
+		elseif ($context == 'com_fieldsandfilters.element')
 		{
-			$fieldsItem = $item->get( 'fields', new JObject );
-			if( ( $data = $fieldsItem->get( 'data', new JObject ) ) && ( $fields = JRegistry::getInstance( 'fieldsandfilters' )->get( 'fields.' . $this->_name ) ) )
+			$data   = $item->get('fields', new JObject)->get('data', new JObject);
+			$fields = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($item->get('content_type_id'))->get($this->_name);
+
+			if ($fields)
 			{
-				$fields = is_array( $fields ) ? $fields : array( $fields );
-				
-				while( $field = array_shift( $fields ) )
+				$fields = is_array($fields) ? $fields : array($fields);
+
+				while ($field = array_shift($fields))
 				{
-					$_data = $data->get( $field->field_id, '' );
-					
-					if( empty( $_data ) || is_object( $_data ) )
+					$_data = $data->get($field->id, '');
+
+					if (empty($_data) || is_object($_data))
 					{
 						continue;
 					}
-					
-					$_data = new JRegistry( $_data );
-					$_data = new JObject( $_data->toObject() );
-					
-					$data->set( $field->field_id, $_data );
+
+					$_data = new JRegistry($_data);
+					$_data = new JObject($_data->toObject());
+
+					$data->set($field->id, $_data);
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * @since       1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML( $layoutFields, $fields, $element, $params = false, $ordering = 'ordering' )
+	public function getFieldsandfiltersFieldsHTML($layoutFields, $fields, $element, $params = false, $ordering = 'ordering')
 	{
-		if( !( $fields = $fields->get( $this->_name ) ) )
+		if (!($fields = $fields->get($this->_name)))
 		{
 			return;
 		}
-		
-		$fields = is_array( $fields ) ? $fields : array( $fields );
-		
+
+		$fields = is_array($fields) ? $fields : array($fields);
+
 		// Load Plugin Types Helper
 		$typesHelper = FieldsandfiltersFactory::getTypes();
-		
-		$variables 		= new JObject;
-		$variables->type	= $this->_type;
-		$variables->name	= $this->_name;
-		$variables->params	= $this->params;
-		$variables->element 	= $element;
-		
-		$isParams = ( $params && $params instanceof JRegistry );
-		
+
+		$variables          = new JObject;
+		$variables->type    = $this->_type;
+		$variables->name    = $this->_name;
+		$variables->params  = $this->params;
+		$variables->element = $element;
+
+		$isParams = ($params && $params instanceof JRegistry);
+
 		$jroot = JPATH_ROOT . '/';
-		
-		jimport( 'joomla.filesystem.file' );
-		
-		while( $field = array_shift( $fields ) )
+
+		jimport('joomla.filesystem.file');
+
+		while ($field = array_shift($fields))
 		{
-			$modeName = $typesHelper->getModeName( $field->mode );
-			$isStaticMode = ( $modeName == 'static' );
-			
-			if( ( $isStaticMode && empty( $field->data ) ) || ( $modeName == 'field' && ( !isset( $element->data ) || !property_exists( $element->data, $field->field_id ) ) ) )
+			$modeName     = $typesHelper->getModeName($field->mode);
+			$isStaticMode = ($modeName == 'static');
+
+			if (($isStaticMode && empty($field->data)) || ($modeName == 'field' && (!isset($element->data) || !property_exists($element->data, $field->id))))
 			{
 				continue;
 			}
-			
-			$dataElement = ( $isStaticMode ) ? $field->data :  $element->data->get( $field->field_id );
-			
-			if( is_string( $dataElement ) )
+
+			$dataElement = ($isStaticMode) ? $field->data : $element->data->get($field->id);
+
+			if (is_string($dataElement))
 			{
-				if( $isStaticMode )
+				if ($isStaticMode)
 				{
-					$field->data = new JRegistry( $dataElement );
+					$field->data = new JRegistry($dataElement);
 				}
 				else
 				{
-					$element->data->set( $field->field_id, new JRegistry( $dataElement ) );
+					$element->data->set($field->id, new JRegistry($dataElement));
 				}
 			}
-			
-			if( $isParams )
+
+			if ($isParams)
 			{
-				$paramsTemp 	= $field->params;
-				$paramsField 	= clone $field->params;
-				
-				$paramsField->merge( $params );
-				$field->params 	= $paramsField;
+				$paramsTemp  = $field->params;
+				$paramsField = clone $field->params;
+
+				$paramsField->merge($params);
+				$field->params = $paramsField;
 			}
-			
-			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
+
+			if ($field->params->get('base.prepare_description', 0) && $field->params->get('base.site_enabled_description', 0))
 			{
-				FieldsandfiltersFieldsHelper::preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
+				FieldsandfiltersFieldsHelper::preparationConetent($field->description, null, null, null, array($field->id));
 			}
-			
+
 			// create new image if not exists		
-			$scaleImage 	= (int) $field->params->def( 'type.scale',  $this->params->get( 'scale', 0 ) );
-			$createThumb	= (boolean) $field->params->get( 'type.create_thumb' );
-			$scaleThumb 	= (int) $field->params->def( 'type.scale_thumb', $this->params->get( 'scale_thumb', 0 ) );
-			
-			if( $scaleImage || ( $createThumb && $scaleThumb ) )
+			$scaleImage  = (int) $field->params->def('type.scale', $this->params->get('scale', 0));
+			$createThumb = (boolean) $field->params->get('type.create_thumb');
+			$scaleThumb  = (int) $field->params->def('type.scale_thumb', $this->params->get('scale_thumb', 0));
+
+			if ($scaleImage || ($createThumb && $scaleThumb))
 			{
-				$data = $isStaticMode ? $field->data : $element->data->get( $field->field_id, new JRegistry );
-				
-				if( ( $image = $data->get( 'image' ) ) && file_exists( JPath::clean( $jroot . $image ) ) )
+				$data = $isStaticMode ? $field->data : $element->data->get($field->id, new JRegistry);
+
+				if (($image = $data->get('image')) && file_exists(JPath::clean($jroot . $image)))
 				{
-					if( $scaleImage && ( $src = $data->get( 'src' ) ) && !file_exists( JPath::clean( $jroot . $src ) ) )
+					if ($scaleImage && ($src = $data->get('src')) && !file_exists(JPath::clean($jroot . $src)))
 					{
-						$imageInfo = self::prepareImageInfo( $field, $element, $image, basename( $src ), $scaleImage );
-						
+						$imageInfo = self::prepareImageInfo($field, $element, $image, basename($src), $scaleImage);
+
 						try
 						{
-							if( !FieldsandfiltersImage::createImage( $field->field_name, $imageInfo ) )
+							if (!FieldsandfiltersImage::createImage($field->name, $imageInfo))
 							{
-								throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->field_name ) );
+								throw new RuntimeException(JText::sprintf('COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->name));
 							}
-						}
-						catch( Exception $e )
+						} catch (Exception $e)
 						{
-							JLog::add( $e->getMessage(), JLog::ERROR, 'plgFieldsandfiltersTypesImage' );
+							JLog::add($e->getMessage(), JLog::ERROR, 'plgFieldsandfiltersTypesImage');
 						}
 					}
-					
-					if( $createThumb && $scaleThumb && ( $src = $data->get( 'src_thumb' ) ) && !file_exists( JPath::clean( $jroot . $src ) ) )
+
+					if ($createThumb && $scaleThumb && ($src = $data->get('src_thumb')) && !file_exists(JPath::clean($jroot . $src)))
 					{
-						$imageInfo = self::prepareImageInfo( $field, $element, $image, basename( $src ), $scaleThumb, 'thumb' );
-						
+						$imageInfo = $this->prepareImageInfo($field, $element, $image, basename($src), $scaleThumb, 'thumb');
+
 						try
 						{
-							if( !FieldsandfiltersImage::createImage( ( $field->field_name . ' Thumbs' ), $imageInfo ) )
+							if (!FieldsandfiltersImage::createImage(($field->name . ' Thumbs'), $imageInfo))
 							{
-								throw new RuntimeException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->field_name . ' Thumb' ) );
+								throw new RuntimeException(JText::sprintf('COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->name . ' Thumb'));
 							}
-						}
-						catch( Exception $e )
+						} catch (Exception $e)
 						{
-							JLog::add( $e->getMessage(), JLog::ERROR, 'plgFieldsandfiltersTypesImage' );
+							JLog::add($e->getMessage(), JLog::ERROR, 'plgFieldsandfiltersTypesImage');
 						}
 					}
-					
+
 				}
-				
-				unset( $data, $imageInfo );
+
+				unset($data, $imageInfo);
 			}
-			
-			unset( $fieldTypeParams );
-			
-			$layoutField = $field->params->get( 'type.field_layout' );
-			
-			if( !$layoutField )
+
+			unset($fieldTypeParams);
+
+			$layoutField = $field->params->get('type.field_layout');
+
+			if (!$layoutField)
 			{
-				$layoutField	= $modeName . '-default';
+				$layoutField = $modeName . '-default';
 			}
-			
-			$field->params->set( 'type.field_layout', $layoutField );
-			
+
+			$field->params->set('type.field_layout', $layoutField);
+
 			$variables->field = $field;
-			
-			$layout = KextensionsPlugin::renderLayout( $variables, $layoutField );
-			$layoutFields->set( KextensionsArray::getEmptySlotObject( $layoutFields, $field->$ordering, false ), $layout );
-			
-			if( $isParams )
+
+			$layout = KextensionsPlugin::renderLayout($variables, $layoutField);
+			$layoutFields->set(KextensionsArray::getEmptySlotObject($layoutFields, $field->$ordering, false), $layout);
+
+			if ($isParams)
 			{
 				$field = $paramsTemp;
-				unset( $paramsField );
+				unset($paramsField);
 			}
 		}
-		
-		unset( $variables, $imageInfo );
+
+		unset($variables, $imageInfo);
 	}
-	
-	protected static function prepareImageInfo( $field, $element, $image, $name = false, $method = 1, $suffix = false )
+
+	protected function prepareImageInfo($field, $element, $image, $name = false, $method = 1, $suffix = false)
 	{
 		$paramSuffix = $suffix ? '_' . $suffix : '';
-		
-		$info 			= new JObject();
-		$info->path 		= $image;
-		$info->folder 		= $field->field_id . ( $suffix ? '/' . $suffix . 's' : '' );
-		$info->prefixName	= $element->element_id;
-		$info->width 		= (int) $field->params->def( 'type.width' . $paramSuffix, $this->params->get( 'width' . $paramSuffix, 0 ) );
-		$info->height 		= (int) $field->params->def( 'type.height' . $paramSuffix, $this->params->get( 'height' . $paramSuffix, 0 ) );
-		$info->method 		= (int) $method;
-		$info->quality		= (int) $field->params->def( 'type.quality' . $paramSuffix, $this->params->get( 'quality' . $paramSuffix, 0 ) );
-		
-		$info->name 		= !empty( $name ) ? $name : FieldsandfiltersImage::createNameImage( $imageInfo );
-		
+
+		$info             = new JObject();
+		$info->path       = $image;
+		$info->folder     = $field->id . ($suffix ? '/'.$suffix.'s' : '');
+		$info->prefixName = $element->id;
+		$info->width      = (int) $field->params->def('type.width' . $paramSuffix, $this->params->get('width' . $paramSuffix, 0));
+		$info->height     = (int) $field->params->def('type.height' . $paramSuffix, $this->params->get('height' . $paramSuffix, 0));
+		$info->method     = (int) $method;
+		$info->quality    = (int) $field->params->def('type.quality' . $paramSuffix, $this->params->get('quality' . $paramSuffix, 0));
+
+		$info->name = !empty($name) ? $name : FieldsandfiltersImage::createNameImage($info);
+
 		return $info;
 	}
 }

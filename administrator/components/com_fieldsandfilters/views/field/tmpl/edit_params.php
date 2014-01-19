@@ -8,23 +8,40 @@
  */
 
 defined('_JEXEC') or die;
-?>
-<?php $fieldSets = $this->form->getFieldsets('params'); ?>
-<?php foreach ($fieldSets AS $name => $fieldSet) : ?>
-	<?php echo JHtml::_('bootstrap.addTab', 'myTab', $name, JText::_('COM_FIELDSANDFILTERS_' . strtoupper($name) . '_FIELDSET_LABEL', true)); ?>
-		
-		<?php if (isset($fieldSet->description) && trim($fieldSet->description)) : ?>
-			<p class="tip"><?php echo $this->escape(JText::_($fieldSet->description)); ?></p>
-		<?php endif; ?>
-		<?php foreach ($this->form->getFieldset($name) AS $field) : ?>
-			<?php if (strpos((string) $field->labelClass, 'controls-disabled') !== false) : ?>
-				<div class="control-group">
-					<?php echo $field->label; ?>
-					<?php echo $field->input; ?>
-				</div>
-			<?php else : ?>
-				<?php echo $field->getControlGroup(); ?>
-			<?php endif; ?>
-		<?php endforeach; ?>
-	<?php echo JHtml::_('bootstrap.endTab'); ?>
-<?php endforeach;?>
+
+$fieldSets = $this->form->getFieldsets('params');
+
+foreach ($fieldSets AS $name => $fieldSet)
+{
+    if (isset($fieldSet->parent) && isset($fieldSets[$fieldSet->parent]))
+    {
+        $fieldSets[$fieldSet->parent]->children[$name] = $fieldSet;
+        unset($fieldSets[$name]);
+    }
+}
+
+foreach ($fieldSets AS $name => $fieldSet)
+{
+    echo JHtml::_('bootstrap.addTab', 'myTab', 'params_'.$name, JText::_('COM_FIELDSANDFILTERS_' . strtoupper($name) . '_FIELDSET_LABEL', true));
+
+    if (isset($fieldSet->children))
+    {
+        echo JHtml::_('bootstrap.startAccordion', 'menuParmasType');
+
+        foreach ($fieldSet->children AS $nameChild => $fieldSetChild)
+        {
+            $this->set('fieldset', $nameChild);
+
+            echo JHtml::_( 'bootstrap.addSlide', 'menuOptions', JText::_( 'COM_FIELDSANDFILTERS_' . strtoupper($name) . '_' . strtoupper($nameChild) . '_FIELDSET_LABEL', true ), 'params_'.$name.'_'.$nameChild );
+            echo JLayoutHelper::render('joomla.edit.fieldset', $this);
+            echo JHtml::_( 'bootstrap.endSlide' );
+        }
+
+        echo JHtml::_( 'bootstrap.endAccordion' );
+    }
+
+    $this->set('fieldset', $name);
+    echo JLayoutHelper::render('joomla.edit.fieldset', $this);
+
+    echo JHtml::_('bootstrap.endTab');
+}

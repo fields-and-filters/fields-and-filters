@@ -30,7 +30,7 @@ class FieldsandfiltersImage
 	*/
         public static function getCacheFolder()
         {
-                return JPATH_CACHE . '/' . self::$cache_folder;
+                return JPATH_ROOT . '/cache/' . self::$cache_folder;
         }
         
 	/**
@@ -47,88 +47,94 @@ class FieldsandfiltersImage
 			$jimage = new KextensionsJoomlaImageImage();
 		}
 		
-		$jimage->loadFile( JPath::clean( JPATH_CACHE . '/' . $jobject->get( 'path' ) ) );
-		
+		$jimage->loadFile( JPath::clean( JPATH_ROOT . '/' . $jobject->get( 'path' ) ) );
+
 		if( !$jimage->isLoaded() )
 		{
 			throw new RuntimeException( JText::_( 'COM_FIELDSANDFILTERS_ERROR_IMAGE_FILE_NOT_EXIST' ) );
-			return false;
 		}
 		
 		// If the parent folder doesn't exist we must create it
 		$folder = JPath::clean( self::getCacheFolder() . '/' . $jobject->get( 'folder' ) );
-		
-		if( !( $isFolder = is_dir( $folder ) ) )
+		$src = '';
+
+		try
 		{
-			jimport( 'joomla.filesystem.folder' );
-			$isFolder = JFolder::create( $folder );
+			if( !( $isFolder = is_dir( $folder ) ) )
+			{
+				jimport( 'joomla.filesystem.folder' );
+				$isFolder = JFolder::create( $folder );
+			}
+
+			if( $isFolder )
+			{
+				$width 	= (int) $jobject->get( 'width' );
+				$height = (int) $jobject->get( 'height' );
+				$method = (int) $jobject->get( 'method' );
+
+				if( !$width || !$height )
+				{
+					throw new UnexpectedValueException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_UNEXPECTED_VALUE_WIDTH_OR_HEIGHT', $name ) );
+				}
+				else
+				{
+					switch( $method )
+					{
+						// Generate cropping resize image
+						case $jimage::CROP_RESIZE:
+							$jimage->crop( $width, $height, null, null, false );
+						break;
+						// Generate cropping image
+						case $jimage::CROP:
+							$jimage->crop( $width, $height, null, null, false );
+						break;
+						// Generate resizing image
+						case $jimage::SCALE_FILL:
+						case $jimage::SCALE_INSIDE:
+						case $jimage::SCALE_OUTSIDE:
+						case $jimage::SCALE_FIT:
+						default:
+							$jimage->resize( $width, $height, false, $method );
+						break;
+					}
+
+					// Parent image properties
+					$properties 	= $jimage::getImageFileProperties( $jimage->getPath() );
+					$quality 	= (int) $jobject->get( 'quality', 75 );
+					$quality 	= (int) min( max( $quality, 0 ), 100 );
+
+					if( $properties->type == IMAGETYPE_PNG )
+					{
+						$quality = (int) min( max( floor( $quality / 10 ), 0 ), 9 );
+						$quality = abs( 9 - $quality );
+					}
+
+					if( !( $name = $jobject->get( 'name' ) ) )
+					{
+						$name = self::createNameImage( $jobject );
+					}
+
+					$imagePath = JPath::clean( $folder . '/' . JFile::makeSafe( $name ) ) ;
+
+					// Save image file to disk
+					$jimage->toFile( $imagePath, $properties->type, array( 'quality' => $quality ) );
+
+					if( is_file( $imagePath ) )
+					{
+						$src = str_replace(JPath::clean(JPATH_ROOT.'/'), '', $imagePath);
+					}
+				}
+			}
 		}
-		
-		$return = false;	
-		if( $isFolder )
+		catch (Exception $e)
 		{
-			$width 	= (int) $jobject->get( 'width' );
-			$height = (int) $jobject->get( 'height' );
-			$method = (int) $jobject->get( 'method' );
-			
-			if( !$width || !$height )
-			{
-				throw new UnexpectedValueException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_UNEXPECTED_VALUE_WIDTH_OR_HEIGHT', $name ) );
-			}
-			else
-			{
-				switch( $method )
-				{
-					// Generate cropping resize image
-					case $jimage::CROP_RESIZE:
-						$jimage->crop( $width, $height, null, null, false );
-					break;
-					// Generate cropping image
-					case $jimage::CROP:
-						$jimage->crop( $width, $height, null, null, false );
-					break;
-					// Generate resizing image
-					case $jimage::SCALE_FILL:
-					case $jimage::SCALE_INSIDE:
-					case $jimage::SCALE_OUTSIDE:
-					case $jimage::SCALE_FIT:
-					default:
-						$jimage->resize( $width, $height, false, $method );
-					break;
-				}
-				
-				// Parent image properties
-				$properties 	= $jimage::getImageFileProperties( $jimage->getPath() );
-				$quality 	= (int) $jobject->get( 'quality', 75 );
-				$quality 	= (int) min( max( $quality, 0 ), 100 );
-				
-				if( $properties->type == IMAGETYPE_PNG )
-				{
-					$quality = (int) min( max( floor( $quality / 10 ), 0 ), 9 );
-					$quality = abs( 9 - $quality );
-				}
-				
-				if( !( $name = $jobject->get( 'name' ) ) )
-				{
-					$name = self::createNameImage( $jobject );
-				}
-				
-				$imagePath = JPath::clean( $folder . '/' . JFile::makeSafe( $name ) ) ;
-				
-				// Save image file to disk
-				$jimage->toFile( $imagePath, $properties->type, array( 'quality' => $quality ) );
-				
-				if( is_file( $imagePath ) )
-				{
-					$object->set( 'src', $imagePath );
-					$return = true;
-				}
-			}
+			$jimage->destroy();
+			throw new Exception($e->getMessage());
 		}
-		
+
 		$jimage->destroy();
 		
-		return $return;
+		return $src;
 	}
         
         public static function createNameImage( JObject $jobject )

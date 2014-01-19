@@ -91,7 +91,7 @@
 						name="create_thumb"
 						type="radio"
 						size="1"
-						class="btn-group"
+						class="btn-group btn-group-yesno"
 						label="PLG_FAF_TS_IE_FORM_CREATE_THUMB_LBL"
 						description="PLG_FAF_TS_IE_FORM_CREATE_THUMB_DESC"
 						default="0"

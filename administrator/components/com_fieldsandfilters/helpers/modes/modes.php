@@ -22,47 +22,47 @@ abstract class FieldsandfiltersModes
 	 * @since       1.2.0
 	 **/
 	const MODE_FILTER = 'filter';
-	
+
 	/**
 	 * @since       1.2.0
 	 **/
 	const MODE_FIELD = 'field';
-	
+
 	/**
 	 * @since       1.2.0
 	 **/
 	const MODE_STATIC = 'static';
-        
+
 	/**
 	 * @since       1.2.0
 	 **/
 	const MODE_NAME_TYPE = 1;
-	
+
 	/**
 	 * @since       1.2.0
 	 **/
 	const MODE_NAME_MODE = 2;
-	
+
 	/**
 	 * @since       1.2.0
 	 **/
 	const MODE_NAME_PATH = 3;
-        
-        protected static $modes = array(
-                'filter' => array(
-                        'single' 	=> 1,
-                        'multi' 	=> 2
-               ),
-                'field'	=> array(
-                        'text' 		=> -1,
-                        'json' 		=> -2
-               ),
-                'static' => array(
-                        'text'	 	=> -6,
-                        'json' 		=> -7
-               )
-       );
-	
+
+    protected static $modes = array(
+            'filter' => array(
+                    'single' 	=> 1,
+                    'multi' 	=> 2
+           ),
+            'field'	=> array(
+                    'text' 		=> -1,
+                    'json' 		=> -2
+           ),
+            'static' => array(
+                    'text'	 	=> -6,
+                    'json' 		=> -7
+           )
+   );
+
 	/**
 	 * Get a mode type value.
 	 *
@@ -85,10 +85,10 @@ abstract class FieldsandfiltersModes
 			list($type, $name) = explode('.', $path, 2);
 			return isset(self::$modes[$type][$name]) ? self::$modes[$type][$name] : $default;
 		}
-		
+
 		return isset(self::$modes[$path]) ? self::$modes[$path] : $default;
 	}
-	
+
 	/**
 	 * Get a mode type values.
 	 *
@@ -106,7 +106,7 @@ abstract class FieldsandfiltersModes
 	{
 		$modes 		= array();
 		$isExcluded	= ($excluded && is_array($excluded));
-		
+
 		if (is_null($paths))
 		{
 			$modes = self::$modes;
@@ -132,14 +132,14 @@ abstract class FieldsandfiltersModes
 		{
 			$modes = (array) self::getMode($paths);
 		}
-		
+
 		if (!empty($modes))
 		{
 			if ($flatten || $isExcluded)
 			{
 				$modes = KextensionsArray::flatten($modes);
 			}
-			
+
 			if ($isExcluded)
 			{
 				$modes = array_diff($modes, $excluded);
@@ -149,14 +149,14 @@ abstract class FieldsandfiltersModes
 		{
 			$modes = $default;
 		}
-		
+
 		return $modes;
 	}
-	
+
 	/**
 	 * @since       1.0.0
 	**/
-	public static function getModeName($id, $name = FieldsandfiltersTypes::MODE_NAME_TYPE, $default = null)
+	public static function getModeName($id, $name = FieldsandfiltersModes::MODE_NAME_TYPE, $default = null)
 	{
 		if ($id = (int) $id)
 		{
@@ -176,12 +176,12 @@ abstract class FieldsandfiltersModes
 							return ($typeName . '.' . $modeName);
 						break;
 					}
-					
+
 					break;
 				}
 			}
 		}
-		
+
 		return $default;
 	}
 }

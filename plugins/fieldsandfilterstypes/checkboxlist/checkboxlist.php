@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
  * @since       1.0.0
  */
 class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
-{	
+{
 	/**
 	 * Constructor
 	 *
@@ -37,8 +37,12 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	}
 	
 	/**
-	 * @param	JForm	$form	The form to be altered.
-	 * @param	array	$data	The associated data for the form.
+	 * onFieldsandfiltersPrepareFormField
+	 *
+	 * @param	KextensionsForm     $form	The form to be altered.
+	 * @param	JObject     $data	The associated data for the form.
+	 * @param   boolean     $isNew  Is element is new
+	 * @param   string      $fieldset   Fieldset name
 	 *
 	 * @return	boolean
 	 * @since	1.1.0
