@@ -394,8 +394,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			$result = $app->triggerEvent($this->event_before_save, array($context, $table, $isNew));
 			if (in_array(false, $result, true))
 			{
-				$this->setError($table->getError());
-				return false;
+				throw new Exception($table->getError());
 			}
 			
 			$tableFields = (array) $table->get('fields');
@@ -412,15 +411,12 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			$table->set('fields', JArrayHelper::toObject($tableFields, 'JObject'));
 			
 			// Store fields data and connections
-			// [TODO] to jeszcze do przemyślenia czy przesyłamy dane czy też nie za pomocją jregistry
-			
 			// Trigger the onFieldsandfiltersBeforeSaveData event.
 			$result = $app->triggerEvent('onFieldsandfiltersBeforeSaveData', array(($this->option . '.' . $this->name), $table, $item, $isNew)); // array($newItem, $oldItem)
 			
 			if (in_array(false, $result, true))
 			{
-				$this->setError($table->getError());
-				return false;
+				throw new Exception($table->getError());
 			}
 			
 			$item 			= $item->get('fields', new JObject);

@@ -148,7 +148,7 @@ class JFormFieldModal_FieldsandfiltersExtensions extends JFormField
 		$html 		= array();
 		$size		= !empty($this->size) ? ' size="' . $this->size . '"' : '';
 		$class		= !empty($this->class) ? ' class="' . $this->class . '"' : 'class="inputbox"';
-		$recordId	= (int) $this->form->getValue('field_id', 0);
+		$recordId	= (int) $this->form->getValue('id', 0);
 		$typeExtension	= 'extension';
 		
 		if ($extension = FieldsandfiltersFactory::getExtensions()->getExtensionsPivot('content_type_id', true)->get($this->value))

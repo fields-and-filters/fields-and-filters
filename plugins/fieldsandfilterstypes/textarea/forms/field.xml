@@ -37,10 +37,7 @@
 						description="PLG_FAF_TS_TA_FORM_DISPLAY_ROWS_DESC"
 						default="0"
 						filter="intval"
-					>
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-					</field>
+					/>
 					<field
 						name="cols"
 						type="text"
@@ -49,14 +46,11 @@
 						description="PLG_FAF_TS_TA_FORM_DISPLAY_COLS_DESC"
 						default="0"
 						filter="intval"
-					>
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-					</field>
+					/>
 					<field
 						name="display_editor"
 						type="radio"
-						class="btn-group"
+						class="btn-group btn-group-yesno"
 						label="PLG_FAF_TS_TA_FORM_DISPLAY_EDITOR_LBL"
 						description="PLG_FAF_TS_TA_FORM_DISPLAY_EDITOR_DESC"
 						default="0"
@@ -79,9 +73,7 @@
 					<field
 						name="field_layout"
 						type="fieldsandfiltersPluginLayout"
-						mode="field"
-						plugin="fieldsandfiltersTypes"
-						key="field_type"
+						modeType="field"
 						label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
 						description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
 					/>

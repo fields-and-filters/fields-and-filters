@@ -10,9 +10,6 @@
 
 defined('_JEXEC') or die;
 
-// Load the Factory Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 /**
  * Input type fild
  * @package     fieldsandfilters.plugin
@@ -33,33 +30,39 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 	public function __construct( &$subject, $config )
 	{
 		parent::__construct( $subject, $config );
-		$this->loadLanguage();
+
+		if( JFactory::getApplication()->isAdmin() )
+		{
+			$this->loadLanguage();
+		}
 	}
-	
+
 	/**
-	 * @param	JForm	$form	The form to be altered.
-	 * @param	array	$data	The associated data for the form.
+	 * onFieldsandfiltersPrepareFormField
+	 *
+	 * @param	KextensionsForm     $form	The form to be altered.
+	 * @param	JObject     $data	The associated data for the form.
+	 * @param   boolean     $isNew  Is element is new
+	 * @param   string      $fieldset   Fieldset name
 	 *
 	 * @return	boolean
-	 * @since       1.1.0
+	 * @since	1.1.0
 	 */
-	public function onFieldsandfiltersPrepareFormField( $isNew = false )
+	public function onFieldsandfiltersPrepareFormField( KextensionsForm $form, JObject $data, $isNew = false, $fieldset = 'fieldsandfilters' )
 	{
-		$jregistry = JRegistry::getInstance( 'fieldsandfilters' );
-		
-		if( !( $fields = $jregistry->get( 'fields.' . $this->_name ) ) )
+		if( !( $fields = $data->get( $this->_name ) ) )
 		{
 			return true;
 		}
 		
 		// Load Array Helper
-		$fields 	= is_array( $fields ) ? $fields : array( $fields );
-		$staticMode 	= (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'static' );
-		$arrayHelper	= FieldsandfiltersFactory::getArray();
+		$fields 	    = is_array( $fields ) ? $fields : array( $fields );
+		$staticMode 	= (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC);
+		$syntax         = KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
 		
 		while( $field = array_shift( $fields ) )
 		{
-			$root = new JXMLElement( '<fields />' );
+			$root = new SimpleXMLElement( '<fields />' );
 			$root->addAttribute( 'name', 'data' );
 			
 			if( $field->params->get( 'type.hidden', 0 ) )
@@ -82,9 +85,10 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 						default:
 							$element = $root->addChild( 'field' );
 							$element->addAttribute( 'type', 'spacer' );
-							$element->addAttribute( 'name', 'description_spacer_' . $field->field_id );
+							$element->addAttribute( 'name', 'description_spacer_' . $field->id );
 							$element->addAttribute( 'label', $field->description );
 							$element->addAttribute( 'translate_label', 'false' );
+							$element->addAttribute('fieldset', $fieldset);
 							
 							$element = $root->addChild( 'field'  );
 						break;
@@ -94,12 +98,12 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 				{
 					$element = $root->addChild( 'field'  );
 				}
-				
-				$label = '<strong>' . $field->field_name . '</strong> {' . $field->field_id . '}';
-				
-				if( $field->state == -1 )
+
+				$label = '<strong>'.$field->name.'</strong> '.sprintf($syntax,$field->id);
+
+				if ($field->state == -1)
 				{
-					$label .= ' [' . JText::_( 'PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN' ) . ']';
+					$label .= ' ['.JText::_('PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN').']';
 				}
 				
 				if( in_array( $field->mode, $staticMode ) )
@@ -134,18 +138,19 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 				$element->addAttribute( 'translate_label', 'false' );
 			}
 			
-			$element->addAttribute( 'id', $field->field_id );
-			$element->addAttribute( 'name', $field->field_id );
+			$element->addAttribute( 'id', $field->id );
+			$element->addAttribute( 'name', $field->id );
+			$element->addAttribute('fieldset', $fieldset);
 			
 			// hr bottom spacer
 			$element = $root->addChild( 'field' );
 			$element->addAttribute( 'type', 'spacer' );
-			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->field_id );
+			$element->addAttribute( 'name', 'hr_bottom_spacer_' . $field->id );
 			$element->addAttribute( 'hr', 'true' );
-			
-			$jregistry->set( 'form.fields.' . $arrayHelper->getEmptySlotObject( $jregistry, $field->ordering ), $root );
-			
-			unset( $element, $elementSpacer );
+			$element->addAttribute('fieldset', $fieldset);
+
+			$form->addOrder($field->id, $field->ordering)
+				->setField( $field->id, $root );
 		}
 		
 		return true;
@@ -229,30 +234,5 @@ class plgFieldsandfiltersTypesInput extends JPlugin
 		}
 		
 		unset( $variables );
-	}
-	
-	/**
-	 * Loads the plugin language file
-	 *
-	 * @param   string  $extension  The extension for which a language file should be loaded
-	 * @param   string  $basePath   The basepath to use
-	 *
-	 * @return  boolean  True, if the file has successfully loaded.
-	 *
-	 * @since       1.0.0
-	 */
-	public function loadLanguage( $extension = '', $basePath = JPATH_ADMINISTRATOR )
-	{
-		if( empty( $extension ) )
-		{
-			$extension = 'plg_' . $this->_type . '_' . $this->_name;
-		}
-		
-		$lang = JFactory::getLanguage();
-		
-		return $lang->load( $extension, $basePath, null, false, false )
-			|| $lang->load( $extension, JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name, null, false, false )
-			|| $lang->load( $extension , $basePath, $lang->getDefault(), false, false )
-			|| $lang->load( $extension, JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name, $lang->getDefault(), false, false );
 	}
 }

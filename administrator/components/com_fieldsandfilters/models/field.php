@@ -208,7 +208,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 		
 		if (empty($data))
 		{
-			$data = $this->getItem();
+			$data = new JRegistry($this->getItem());
 		}
 		
 		$this->preprocessData('com_fieldsandfilters.field', $data);

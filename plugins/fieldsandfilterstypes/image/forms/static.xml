@@ -205,9 +205,7 @@
 					<field
 						name="field_layout"
 						type="fieldsandfiltersPluginLayout"
-						mode="static"
-						plugin="fieldsandfiltersTypes"
-						key="field_type"
+						modeType="static"
 						label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
 						description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
 					/>

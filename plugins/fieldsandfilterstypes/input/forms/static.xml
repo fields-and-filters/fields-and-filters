@@ -51,7 +51,7 @@
 					<field
 						name="readonly"
 						type="radio"
-						class="btn-group"
+						class="btn-group btn-group-yesno"
 						label="PLG_FAF_TS_IT_FORM_READONLY_LBL"
 						description="PLG_FAF_TS_IT_FORM_READONLY_DESC"
 						default="0"
@@ -63,7 +63,7 @@
 					<field
 						name="hidden"
 						type="radio"
-						class="btn-group"
+						class="btn-group btn-group-yesno"
 						label="PLG_FAF_TS_IT_FORM_HIDDEN_LBL"
 						description="PLG_FAF_TS_IT_FORM_HIDDEN_DESC"
 						default="0"
@@ -75,9 +75,7 @@
 					<field
 						name="field_layout"
 						type="fieldsandfiltersPluginLayout"
-						mode="static"
-						plugin="fieldsandfiltersTypes"
-						key="field_type"
+						modeType="static"
 						label="PLG_FAF_TS_IT_FORM_FIELD_LAYOUT_LBL"
 						description="PLG_FAF_TS_IT_FORM_FIELD_LAYOUT_DESC"
 					/>

@@ -169,9 +169,7 @@
 					<field
 						name="field_layout"
 						type="fieldsandfiltersPluginLayout"
-						mode="field"
-						plugin="fieldsandfiltersTypes"
-						key="field_type"
+						modeType="field"
 						label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
 						description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
 					/>
