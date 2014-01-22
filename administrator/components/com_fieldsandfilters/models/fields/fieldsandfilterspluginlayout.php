@@ -247,7 +247,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 					// Add an option to the module group
 					$value	= basename($file, '.php');
 					$text 	= $lang->hasKey($key = strtoupper($extension . '_LAYOUT_' . $value)) ? JText::_($key) : $value;
-					$group->items[] = JHtml::_('select.option', '_:' . $value, $text);
+					$group->items[] = JHtml::_('select.option', $value, $text);
 				}
 				
 				$groups['_'] = $group;

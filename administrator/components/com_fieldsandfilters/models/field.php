@@ -95,17 +95,28 @@ class FieldsandfiltersModelField extends JModelAdmin
 			$mode 			= (int) $item->get('mode');
 			$type 			= $item->get('type');
 			$content_type_id 	= (int) $item->get('content_type_id');
+
 		}
 		else
 		{
-			$mode 			= JArrayHelper::getValue($data, 'mode', 0,'int');
-			$type 			= JArrayHelper::getValue($data, 'type');
-			$content_type_id 	= JArrayHelper::getValue($data, 'content_type_id', 0, 'int');
+			$data = ($data instanceof JRegistry) ? $data : new JRegistry($data);
+
+			$mode 			= (int) $data->get('mode');
+			$type 			= $data->get('type');
+			$content_type_id 	= (int) $data->get('content_type_id');
+
+			if ($typeMode = FieldsandfiltersModes::getModeName($mode, FieldsandfiltersModes::MODE_NAME_TYPE))
+			{
+				$layoutType = $data->get('params.type.'.$typeMode.'_layout');
+			}
+
+
 		}
 		
 		$this->setState($this->getName() . '.mode', $mode);
 		$this->setState($this->getName() . '.type', $type);
 		$this->setState($this->getName() . '.content_type_id', $content_type_id);
+		$this->setState($this->getName() . '.layoutType', isset($layoutType) ? $layoutType : '');
 		
 		// Get the form.
 		$form = $this->loadForm('com_fieldsandfilters.field', 'field', array('control' => 'jform', 'load_data' => $loadData));
@@ -144,7 +155,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 	 */
 	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
-		$data 		= is_array($data) ? new JObject($data) : $data;
+		$data 		= $data instanceof JRegistry ? $data : new JRegistry($data);
 		$fieldType 	= $data->get('type', $this->getState($this->getName() . '.type'));
 		$typeMode 	= $data->get('type_mode', FieldsandfiltersModes::getModeName($data->get('mode', $this->getState($this->getName() . '.mode')), FieldsandfiltersModes::MODE_NAME_TYPE));		
 		
@@ -159,13 +170,37 @@ class FieldsandfiltersModelField extends JModelAdmin
 				{
 					throw new Exception(JText::_('JERROR_LOADFILE_FAILED'));
 				}
+
+				if( $layoutType = $data->get('params.type.'.$typeMode.'_layout', $this->getState($this->getName().'.layoutTyp') ))
+				{
+					$paths = array(
+						JPath::clean(JPATH_PLUGINS.'/'.$type->type.'/'.$type->name.'/tmpl/'.$typeMode)
+					);
+
+					if (strpos($layoutType, ':') > 0 && strpos($layoutType, '_:') !== 0)
+					{
+						list($template, $layoutType) = explode(':', $layoutType);
+						$paths[] = JPATH::clean(JPATH_SITE . '/templates/'.$template.'/html/plg_'.$type->type.'_'.$type->name.'/'.$typeMode);
+					}
+
+					$path = JPath::find($paths, $layoutType . '.xml');
+
+					if ( is_file($path))
+					{
+						if (!$form->loadFile($typeMode, true, 'form/*'))
+						{
+							throw new Exception(JText::_('JERROR_LOADFILE_FAILED'));
+						}
+					}
+				}
+
 				
 				// load plugin language
 				KextensionsLanguage::load("plg_{$type->type}_{$type->name}", JPATH_ADMINISTRATOR);
 			}
 			
 			$contentTypeId 	= $data->get('content_type_id', $this->getState($this->getName() . '.content_type_id'));			
-			$extensionForm	= $data->get('field.extension_form', 'extension');
+			$extensionForm	= $data->get('extension_form', 'extension');
 			
 			// get extension type objet by type id or plugin type
 			if ($contentTypeId && ($extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID($contentTypeId, true, true)->get($contentTypeId)))
@@ -208,7 +243,12 @@ class FieldsandfiltersModelField extends JModelAdmin
 		
 		if (empty($data))
 		{
-			$data = new JRegistry($this->getItem());
+			$data = $this->getItem();
+		}
+
+		if (!$data instanceof JRegistry)
+		{
+			$data = new JRegistry($data);
 		}
 		
 		$this->preprocessData('com_fieldsandfilters.field', $data);
