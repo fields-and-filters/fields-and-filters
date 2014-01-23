@@ -471,7 +471,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		if( !$elementModel->publish( $elementsID, $value ) )
 		{
-			$item->setError( $elementModel->getError() );
 			return false;
 		}
 		
@@ -486,13 +485,13 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		switch( $context )
 		{
 			case 'com_content.category':
-				return $this->_onFieldsandfiltersContent( 'onContentAfterTitleCategory', $row, $params, $page );
+				return $this->_onFieldsandfiltersContent( 'onContentAfterTitleCategory', $row, $params, $page, $context );
 			break;
 			case 'com_content.article':
-				return $this->_onFieldsandfiltersContent( 'onContentAfterTitleArticle', $row, $params, $page );
+				return $this->_onFieldsandfiltersContent( 'onContentAfterTitleArticle', $row, $params, $page, $context );
 			break;
 			case 'com_content.featured':
-				return $this->_onFieldsandfiltersContent( 'onContentAfterTitleFeatured', $row, $params, $page );
+				return $this->_onFieldsandfiltersContent( 'onContentAfterTitleFeatured', $row, $params, $page, $context );
 			break;	
 		}
 		
@@ -507,13 +506,13 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		switch( $context )
 		{
 			case 'com_content.category':
-				return $this->_onFieldsandfiltersContent( 'onContentBeforeDisplayCategory', $row, $params, $page );
+				return $this->_onFieldsandfiltersContent( 'onContentBeforeDisplayCategory', $row, $params, $page, $context );
 			break;
 			case 'com_content.article':
-				return $this->_onFieldsandfiltersContent( 'onContentBeforeDisplayArticle', $row, $params, $page );
+				return $this->_onFieldsandfiltersContent( 'onContentBeforeDisplayArticle', $row, $params, $page, $context );
 			break;
 			case 'com_content.featured':
-				return $this->_onFieldsandfiltersContent( 'onContentBeforeDisplayFeatured', $row, $params, $page );
+				return $this->_onFieldsandfiltersContent( 'onContentBeforeDisplayFeatured', $row, $params, $page, $context );
 			break;	
 		}
 		
@@ -528,13 +527,13 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		switch( $context )
 		{
 			case 'com_content.category':
-				return $this->_onFieldsandfiltersContent( 'onContentAfterDisplayCategory', $row, $params, $page );
+				return $this->_onFieldsandfiltersContent( 'onContentAfterDisplayCategory', $row, $params, $page, $context );
 			break;
 			case 'com_content.article':
-				return $this->_onFieldsandfiltersContent( 'onContentAfterDisplayArticle', $row, $params, $page );
+				return $this->_onFieldsandfiltersContent( 'onContentAfterDisplayArticle', $row, $params, $page, $context );
 			break;
 			case 'com_content.featured':
-				return $this->_onFieldsandfiltersContent( 'onContentAfterDisplayFeatured', $row, $params, $page );
+				return $this->_onFieldsandfiltersContent( 'onContentAfterDisplayFeatured', $row, $params, $page, $context );
 			break;	
 		}
 		
@@ -544,12 +543,9 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	protected function _onFieldsandfiltersContent( $location, &$row, &$params, $page )
+	protected function _onFieldsandfiltersContent( $location, &$row, &$params, $page, $context )
 	{
-		// Load PluginExtensions Helper
-		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
-		
-		if( !( $extensionContent = $extensionsHelper->getExtensionsByName( $this->_name )->get( $this->_name ) ) )
+		if( !( $extensionContent = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( $this->_name )->get( $this->_name ) ) )
 		{
 			return;
 		}
@@ -566,7 +562,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( $isStaticFields = FieldsandfiltersExtensionsHelper::getParams( 'use_static_fields', $extensionsParams, true ) )
 		{
 			// Load Plugin Types Helper
-			$staticMode = FieldsandfiltersFactory::getTypes()->getMode( 'static' );
+			$staticMode = FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC);
 			if( $fieldsStatic = $fieldsHelper->getFieldsByModeIDPivot( 'location', $extensionContent->extension_type_id, $staticMode, 1, 2 )->get( $location ) )
 			{
 				$fieldsStatic	= is_array( $fieldsStatic ) ? $fieldsStatic : array( $fieldsStatic );
@@ -616,30 +612,30 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$fields = $fieldsStatic;
 		}
 		
-		$fields = new JObject( JArrayHelper::pivot( (array) $fields, 'field_type' ) );
-		
-		$templateFields = new JObject;
+		$fields = new JObject( JArrayHelper::pivot( (array) $fields, 'type' ) );
+
+		$layoutFields = new JObject;
 		
 		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		// Trigger the onFieldsandfiltersPrepareFormField event.
-		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $element ) );
+		JFactory::getApplication()->triggerEvent('getFieldsandfiltersFieldsHTML', array( $layoutFields, $fields, $element, $context ) );
+
+		$layoutFields = $layoutFields->getProperties( true );
 		
-		$templateFields = $templateFields->getProperties( true );
-		
-		if( empty( $templateFields ) )
+		if( empty( $layoutFields ) )
 		{
 			return;
 		}
 		
-		ksort( $templateFields );
+		ksort( $layoutFields );
 		
-		return implode( "\n", $templateFields );
+		return implode( "\n", $layoutFields );
 	}
 	
 	/**
 	 * @since       1.1.0
 	 */
-	public function onFieldsandfiltersPrepareFiltersHTML( $context, $fieldsID = null, $getAllextensions = true, $params = false, $ordering = 'ordering' )
+	public function onFieldsandfiltersPrepareFiltersHTML( $context, $fieldsID = null, $getAllextensions = true, JRegistry $params, $ordering = 'ordering' )
 	{
 		if( $context != 'com_content.category' )
 		{
@@ -676,14 +672,14 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		// Load Filters Helper
-		$counts = (array) FieldsandFieldsandfiltersFilters::getFiltersValuesCount( $extensionContent->extension_type_id, $fieldsID, $itemsID );
+		$counts = (array) FieldsandFieldsandfiltersFilters::getFiltersValuesCount( $extensionContent->content_type_id, $fieldsID, $itemsID );
 		
 		if( empty( $counts ) )
 		{
 			return;
 		}
 		
-		$extensionsID = ( $getAllextensions ) ? $extensionsHelper->getExtensionsByNameColumn( 'extension_type_id', array( 'allextensions' , $this->_name ) ) : $extensionContent->extension_type_id;
+		$extensionsID = ( $getAllextensions ) ? $extensionsHelper->getExtensionsByTypeID(array( 'allextensions' , $this->_name ) ) : $extensionContent->content_type_id;
 		
 		// Load Fields Helper
 		$fieldsHelper = FieldsandfiltersFactory::getFields();
@@ -696,15 +692,15 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 				// multi extensions array( $this->_name, 'allextensions' )
 				// $fields = $fieldsHelper->getFieldsByModeIDPivot( 'field_type', $extensionsID, $modes, 1, true );
 				// single extension $this->_name
-				$fields = $fieldsHelper->getFieldsByModeIDPivot( 'field_type', $extensionsID, $modes, 1, true );
+				$fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $extensionsID, $modes, FieldsandfiltersFields::VALUES_VALUES, true );
 			}
 		}
 		else if( is_numeric( $fieldsID ) || is_array( $fieldsID ) )
 		{
 			// multi extensions array( $this->_name, 'allextensions' )
-			// $fields = $fieldsHelper->getFieldsByIDPivot( 'field_type', $extensionContent->extension_type_id, $fieldsID, 1, true );
+			// $fields = $fieldsHelper->getFieldsByIDPivot( 'field_type', $extensionContent->content_type_id, $fieldsID, 1, true );
 			// single extension $this->_name
-			$fields = $fieldsHelper->getFieldsByIDPivot( 'field_type', $extensionsID, $fieldsID, 1, true );
+			$fields = $fieldsHelper->getFieldsByIDPivot( 'type', $extensionsID, $fieldsID, FieldsandfiltersFields::VALUES_VALUES, true );
 		}
 		else
 		{
@@ -715,7 +711,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		// Trigger the onFieldsandfiltersPrepareFormField event.
-		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFiltersHTML', array( $templateFields, $fields, $params, $ordering ) );
+		$app->triggerEvent( 'getFieldsandfiltersFiltersHTML', array( $templateFields, $fields, $context, $params, $ordering ) );
 		
 		$templateFields = $templateFields->getProperties( true );
 		
@@ -725,18 +721,19 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		ksort( $templateFields );
-		
+
+		// [TODO] do zmiany zostawiany max JObjec przeylane w wartosciach aby jak najmniej obicazac system
 		$jregistry = JRegistry::getInstance( 'fieldsandfilters' );
 		
 		$request = new stdClass;
-		$request->extensionID 	= (int) $extensionContent->extension_type_id;
-		$request->id 		= JFactory::getApplication()->input->get( 'id', 0, 'int' );
+		$request->extensionID 	= (int) $extensionContent->content_type_id;
+		$request->id 		= $app->input->get( 'id', 0, 'int' );
 		// $request->limitstart	= (int) $model->getState( 'list.start', 0 );
 		
 		$jregistry->set( 'filters.request', $request );
 		$jregistry->set( 'filters.counts', $counts );
 		
-		if( $app->getCfg( 'sef', 0 ) )
+		if( $app->get( 'sef', 0 ) )
 		{
 			$jregistry->set( 'filters.pagination', array( 'start' => 0 ) );
 		}
@@ -812,7 +809,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$extensionsParams->set( 'plugin.value', $this->params->get( 'comparison_between_values_filters' ) );
 			$betweenValues = FieldsandfiltersExtensionsHelper::getParams( 'comparison_between_values_filters', $extensionsParams, 'OR' );
 			
-			$itemsID = FieldsandfiltersFilters::getItemsIDByFilters( $extension->extension_type_id, $fieldsandfilters, 1, $betweenFilters, $betweenValues );
+			$itemsID = FieldsandfiltersFilters::getItemsIDByFilters( $extension->content_type_id, $fieldsandfilters, 1, $betweenFilters, $betweenValues );
 		}
 		else
 		{
@@ -868,12 +865,14 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$itemsID 	= $model->getState( 'fieldsandfilters.itemsID', array() );
 		$fieldsID 	= $jinput->get( 'fields', array(), 'array' );
+
+		// [TODO] jak wyzej
 		$jregistry	= JRegistry::getInstance( 'fieldsandfilters' );
 		
 		if( !empty( $itemsID ) && !empty( $fieldsID ) && !$emptyItemsID  )
 		{
 			// Load Filters Helper
-			$counts = (array) FieldsandfiltersFilters::getFiltersValuesCount( $extension->extension_type_id, $fieldsID, $itemsID );
+			$counts = (array) FieldsandfiltersFilters::getFiltersValuesCount( $extension->content_type_id, $fieldsID, $itemsID );
 			
 			$jregistry->set( 'filters.counts', $counts );
 		}
@@ -889,7 +888,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			$js[] = 'jQuery(document).ready(function($) {';
 			$js[] = '	$("' . $this->params->get( 'selector_pagination_filters', '.pagination' ) . '").fieldsandfilters("pagination"'
-						. ( $app->getCfg( 'sef', 0 ) ? ',{pagination: "start"}' : '' )
+						. ( $app->get( 'sef', 0 ) ? ',{pagination: "start"}' : '' )
 						. ');';
 			$js[] = '});';
 			

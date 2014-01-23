@@ -113,8 +113,8 @@ class JFormFieldFieldsandfiltersFieldValues extends JFormFieldCheckboxes
 				break;
 			
 			case 'states':
-				$value = explode(',', (string) $value);
-				$this->$name = JArrayHelper::toInteger($value);
+				$this->$name = explode(',', (string) $value);
+				JArrayHelper::toInteger($this->$name);
 				break;
 			
 			/* @deprecated >= J3.2 */

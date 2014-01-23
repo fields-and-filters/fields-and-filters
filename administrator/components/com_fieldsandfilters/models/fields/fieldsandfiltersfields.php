@@ -133,8 +133,8 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 				break;
 			
 			case 'states':
-				$value = (string) $value;
-				$this->$name = JArrayHelper::toInteger(explode(',', $value));
+				$this->$name = explode(',', (string) $value);
+				JArrayHelper::toInteger($this->$name);
 				break;
 			
 			/* @deprecated >= J3.2 */
@@ -279,10 +279,6 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 			{
 				$this->value = $value;
 			}
-		}
-		else
-		{
-			JLog::add(JText::_('COM_FIELDSANDFILTERS_ERROR_FIELDS_ERROR_FIELDS_EMPTY'), JLog::WARNING, 'jerror');
 		}
 
 		// Merge any additional options in the XML definition.

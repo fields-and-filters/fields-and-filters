@@ -16,13 +16,13 @@ defined('_JEXEC') or die;
 class FieldsandfiltersFieldsHelper
 {
 	/**
-	 * Simple syntax - #{field_id,item_id-option,context}
+	 * Simple syntax - #{field_id,item_id:option,context}
 	 * @since       1.2.0
 	 **/
 	const SYNTAX_SIMPLE = 1;
 	
 	/**
-	 * Simple syntax + params - #{field_id,item_id-option,context,{params}}
+	 * Simple syntax + params - #{field_id,item_id:option,context,{params}}
 	 * @since       1.2.0
 	 **/
 	const SYNTAX_EXTENDED = 2;
@@ -121,7 +121,7 @@ class FieldsandfiltersFieldsHelper
 			return $templateFields;
 		}
 		
-		$fields = new JObject( JArrayHelper::pivot( $fields, 'field_type' ) );
+		$fields = new JObject( JArrayHelper::pivot( $fields, 'type' ) );
 		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		
 		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $object->element, $params, $ordering ) );
@@ -141,7 +141,7 @@ class FieldsandfiltersFieldsHelper
 	/**
 	 * @since       1.2.0
 	 **/
-	public static function preparationContent( &$text, $context = '', $option = null, $itemID = null, $excluded = array(), $syntax = null, $syntaxType = 1 )
+	public static function preparationContent( &$text, $context = '', $option = null, $itemID = null, $excluded = array(), $syntax = null, $syntaxType = self::SYNTAX_SIMPLE )
 	{
 		$syntax 	= $syntax ? $syntax : KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
 		$syntaxType 	= $syntaxType ? $syntaxType : KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax_type', self::SYNTAX_SIMPLE );
@@ -311,7 +311,7 @@ class FieldsandfiltersFieldsHelper
 								}
 							}
 							
-							$fieldsLayouts = self::getFieldsLayouts( $_object, $element['params'], 'field_id' );
+							$fieldsLayouts = self::getFieldsLayouts( $_object, $element['params'], 'id' );
 							
 							foreach( $element['matches'] AS $fieldID => &$match )
 							{
@@ -321,7 +321,7 @@ class FieldsandfiltersFieldsHelper
 					}
 					else
 					{
-						$fieldsLayouts = self::getFieldsLayouts( $object, null, 'field_id' );
+						$fieldsLayouts = self::getFieldsLayouts( $object, null, 'id' );
 						
 						foreach( $combination['matches'] AS $fieldID => &$match )
 						{
@@ -358,7 +358,7 @@ class FieldsandfiltersFieldsHelper
 			$staticMode	= (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC, array());
 			$otherMode	= (array) FieldsandfiltersModes::getModes( null, array(), true, $staticMode );
 			
-			$fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $contentTypeID, $othersMode, array( 1, -1 ), FieldsandfiltersFields::VALUES_BOTH );
+			$fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $contentTypeID, $otherMode, array( 1, -1 ), FieldsandfiltersFields::VALUES_BOTH );
 		}
 		
 		return $fields;

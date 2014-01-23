@@ -153,7 +153,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	/**
 	 * @since	1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML( $layoutFields, $fields, $element, $params = false, $ordering = 'ordering' )
+	public function getFieldsandfiltersFieldsHTML( JObject $layoutFields, JObject $fields, JObject $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -162,28 +162,23 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		
 		$fields = is_array( $fields ) ? $fields : array( $fields );
 		
-		// Load Types Helper
-		$typesHelper = FieldsandfiltersFactory::getTypes();
-		
 		$variables 		= new JObject;
 		$variables->type	= $this->_type;
 		$variables->name	= $this->_name;
 		$variables->params	= $this->params;
 		$variables->element 	= $element;
 		
-		$isParams = ( $params && $params instanceof JRegistry );
-		
 		while( $field = array_shift( $fields ) )
 		{
-			$modeName 	= $typesHelper->getModeName( $field->mode );
-			$isStaticMode 	= (  $modeName == 'static' ); // [TODO] change to mode mode
+			$modeName 	= FieldsandfiltersModes::getModeName( $field->mode );
+			$isStaticMode 	= (  $modeName == FieldsandfiltersModes::MODE_STATIC );
 			
-			if( ( $isStaticMode && empty( $field->connections ) ) || ( $modeName == 'field' && ( !isset( $element->connections ) || !property_exists( $element->connections, $field->field_id ) ) ) )
+			if( ( $isStaticMode && empty( $field->connections ) ) || ( $modeName == 'field' && ( !isset( $element->connections ) || !property_exists( $element->connections, $field->id ) ) ) )
 			{
 				continue;
 			}
 			
-			if( $isParams )
+			if( $params )
 			{
 				$paramsTemp 	= $field->params;
 				$paramsField 	= clone $field->params;
@@ -191,13 +186,14 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				$paramsField->merge( $params );
 				$field->params 	= $paramsField;
 			}
-			
-			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
+
+			if ($field->params->get( 'base.site_enabled_description', 0 ) && ($prepareType =  $field->params->get( 'base.prepare_description', 0 )))
 			{
-				FieldsandfiltersFieldsHelper::preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
-				// [TODO] do poprawy nie ta metoda i nie ma context
+				FieldsandfiltersFieldsField::preparationContent($prepareType, $field->description,$context, $field->id, $params);
 			}
-			
+
+			// [todo] dorobic dla wartosci pol mozliwośsc preparationContent
+
 			$layoutField = $field->params->get( 'type.field_layout' );
 			
 			if( !$layoutField )
@@ -212,9 +208,9 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			$layout = KextensionsPlugin::renderLayout( $variables, $layoutField );
 			$layoutFields->set( KextensionsArray::getEmptySlotObject( $layoutFields, $field->$ordering, false ), $layout );
 			
-			if( $isParams )
+			if( $params )
 			{
-				$field = $paramsTemp;
+				$field->params = $paramsTemp;
 				unset( $paramsField );
 			}
 		}
@@ -225,7 +221,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	/**
 	 * @since	1.1.0
 	 */
-	public function getFieldsandfiltersFiltersHTML( $layoutFields, $fields, $params = false, $ordering = 'ordering' )
+	public function getFieldsandfiltersFiltersHTML( JObject $layoutFields, JObject $fields, $context = 'filters', JRegistry $params = null, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -251,10 +247,10 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				$paramsFilter->merge( $params );
 				$field->params 	= $paramsFilter;
 			}
-			
-			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
+
+			if ($field->params->get( 'base.site_enabled_description', 0 ) && ($prepareType =  $field->params->get( 'base.prepare_description', 0 )))
 			{
-				FieldsandfiltersFieldsHelper::preparationConetent( $field->description, null, null, null, array( $field->field_id ) );
+				FieldsandfiltersFieldsField::preparationContent($prepareType, $field->description, $context, $field->id, $params);
 			}
 			
 			$layoutFilter = $field->params->get( 'type.filter_layout' );
@@ -268,12 +264,12 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			
 			$variables->field = $field;
 			
-			$layout = KextensionsPlugin::renderLayout( $variables, $layoutField );
+			$layout = KextensionsPlugin::renderLayout( $variables, $layoutFields );
 			$layoutFields->set( KextensionsArray::getEmptySlotObject( $layoutFields, $field->$ordering, false ), $layout );
 			
 			if( $isParams )
 			{
-				$field = $paramsTemp;
+				$field->params = $paramsTemp;
 				unset( $paramsFilter );
 			}
 		}
