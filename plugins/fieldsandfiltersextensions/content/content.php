@@ -210,9 +210,9 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		else if($context == $this->_context)
 		{
 			// Load Extensions Helper
-			$extensions = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( array( 'allextensions', $this->_name ) );
+			;
 			
-			if( !( $extensionContent = $extensions->get( $this->_name ) ) )
+			if( !( $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( $this->_name )->get( $this->_name )) )
 			{
 				return true;
 			}
@@ -228,7 +228,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			KextensionsLanguage::load( 'com_fieldsandfilters', JPATH_ADMINISTRATOR );
 			
 			$fieldsForm = new KextensionsForm( $this->_context . '.' . $this->_name );
-			$fieldsData = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($extensionContent->content_type_id);
+			$fieldsData = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($extension->content_type_id);
 			
 			$fieldsForm->setPath( 'attribs.fieldsandfilters' );
 			
@@ -249,7 +249,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			{
 				$data = (object) $data;
 				$elementModel->setState( $elementModel->getName() . '.item_id', $data->id );
-				$elementModel->setState( $elementModel->getName() . '.content_type_id', $extensionContent->content_type_id );
+				$elementModel->setState( $elementModel->getName() . '.content_type_id', $extension->content_type_id );
 				$elementItem = $elementModel->getItem();
 			}
 			
@@ -351,7 +351,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		if( !( $elementModel = JModelLegacy::getInstance( 'element', 'FieldsandfiltersModel', array( 'ignore_request' => true, 'table_path' => ( JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/tables' ) ) ) ) )
 		{
-			$app->enqueueMessage( JText::sprintf( 'JLIB_APPLICATION_ERROR_MODELCLASS_NOT_FOUND', ( $prefix . ucfirst( $type ) ) ), 'error' );
+			$app->enqueueMessage( JText::sprintf( 'JLIB_APPLICATION_ERROR_MODELCLASS_NOT_FOUND', 'FieldsandfiltersModelElement' ), 'error' );
 			return false;
 		}
 		

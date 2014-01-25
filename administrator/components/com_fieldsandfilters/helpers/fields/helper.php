@@ -343,22 +343,29 @@ class FieldsandfiltersFieldsHelper
 	/**
 	 * @since       1.2.0
 	 **/
-	public static function getFieldsByTypeIDColumnFieldType($contentTypeID, $withStatic = null)
+	public static function getFieldsByTypeIDColumnFieldType($contentTypeID, $withStatic = null, $states = array(1, -1), $getAllextensions = true)
 	{
 		$withStatic = !is_null($withStatic) ? $withStatic : JComponentHelper::getParams('com_fieldsandfilters')->get('show_static_fields', true);
-		
+
+		$contentTypeID = (array) $contentTypeID;
+
+		if( $getAllextensions && ($extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByName(FieldsandfiltersExtensions::EXTENSION_DEFAULT)->get(FieldsandfiltersExtensions::EXTENSION_DEFAULT)))
+		{
+				$contentTypeID[] = (int) $extension->content_type_id;
+		}
+
 		$fieldsHelper = FieldsandfiltersFactory::getFields();
 		
 		if( $withStatic )
 		{
-			$fields = $fieldsHelper->getFieldsPivot( 'type', $contentTypeID, array( 1, -1 ), FieldsandfiltersFields::VALUES_BOTH );
+			$fields = $fieldsHelper->getFieldsPivot( 'type', $contentTypeID, $states, FieldsandfiltersFields::VALUES_BOTH );
 		}
 		else
 		{
 			$staticMode	= (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC, array());
 			$otherMode	= (array) FieldsandfiltersModes::getModes( null, array(), true, $staticMode );
-			
-			$fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $contentTypeID, $otherMode, array( 1, -1 ), FieldsandfiltersFields::VALUES_BOTH );
+
+			$fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $contentTypeID, $otherMode, $states, FieldsandfiltersFields::VALUES_BOTH );
 		}
 		
 		return $fields;
