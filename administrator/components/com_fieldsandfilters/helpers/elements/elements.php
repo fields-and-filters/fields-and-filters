@@ -214,7 +214,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 		if( $this->method == 'getElementsByItemID' )
 		{
 			// Get elements id from elements where is items id
-			$this->_elementsItemsID = KextensionsArray::getColumn( $data->get( 'elements', new stdClass ), 'item_id', 'element_id' );
+			$this->_elementsItemsID = KextensionsArray::getColumn( $data->get( 'elements', new stdClass ), 'item_id', 'id' );
 		}
 	}
 	
@@ -229,11 +229,12 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 			// We take element from cache and this id add to array
 			if( ( $elementID = array_search( $itemID, $this->_elementsItemsID ) ) !== false )
 			{
+				$primaryName = $this->getPrimaryName();
 				$_element = $data->elements->get( $elementID );
 				
 				if( in_array( $_element->state, $this->states ) )
 				{
-					$this->buffer->{$_element->element_id} = $_element;	
+					$this->buffer->{$_element->$primaryName} = $_element;
 				}
 				
 				array_push( $_itemsID, $itemID );

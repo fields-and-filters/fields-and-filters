@@ -127,15 +127,8 @@ class plgSystemFieldsandfilters extends JPlugin
 	 * @return	boolean
 	 * @since       1.1.0
 	 */
-	public function onContentPrepareForm( $form, $data )
+	public function onContentPrepareForm(JForm $form, $data )
 	{
-		// Check we have a form
-		if( !( $form instanceof JForm ) )
-		{
-			$this->_subject->setError('JERROR_NOT_A_FORM');
-			return false;
-		}
-		
 		JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
 		
@@ -232,7 +225,7 @@ class plgSystemFieldsandfilters extends JPlugin
 	 */
 	public function onAfterRender()
 	{
-		if( JFactory::getApplication()->isAdmin() || !$this->params->get( 'prepare_after_render', 0 ) && !( $syntax = $this->params->get( 'syntax', '#{%s}' ) ) )
+		if( JFactory::getApplication()->isAdmin() || !$this->params->get( 'prepare_after_render', 0 ) || !( $syntax = $this->params->get( 'syntax', '#{%s}' )) )
 		{
 			return;
 		}

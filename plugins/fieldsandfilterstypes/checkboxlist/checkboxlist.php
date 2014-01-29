@@ -131,8 +131,8 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				{
 					$default = array_unique( (array) $default );
 					JArrayHelper::toInteger( $default );
-					
-					$fieldsForm->setData( 'connections.' . $field->id, $default );
+
+					$form->setData( 'connections.' . $field->id, $default );
 				}
 			}
 			
@@ -153,7 +153,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	/**
 	 * @since	1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML( JObject $layoutFields, JObject $fields, JObject $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering' )
+	public function getFieldsandfiltersFieldsHTML( JObject $layoutFields, Jobject $fields, stdClass $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -161,7 +161,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		}
 		
 		$fields = is_array( $fields ) ? $fields : array( $fields );
-		
+
 		$variables 		= new JObject;
 		$variables->type	= $this->_type;
 		$variables->name	= $this->_name;
@@ -187,22 +187,36 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				$field->params 	= $paramsField;
 			}
 
-			if ($field->params->get( 'base.site_enabled_description', 0 ) && ($prepareType =  $field->params->get( 'base.prepare_description', 0 )))
-			{
-				FieldsandfiltersFieldsField::preparationContent($prepareType, $field->description,$context, $field->id, $params);
-			}
+			FieldsandfiltersFieldsField::preparationContent('base.prepare_name', $field, 'name', $context, $field->id, $params);
+
+			FieldsandfiltersFieldsField::preparationContent('base.site_enabled_description', $field, 'description', $context, $field->id, $params);
+
+			FieldsandfiltersFieldsField::preparationContentValues('type.prepare_values', $field, $context, $field->id, $params);
+//			echo '<pre>';
+//			print_r($field->values);
+//			echo '</pre>';
+			// [todo] po zapisie wartosci wraca na zlego filtra poniewaz nie jest przekazywane field_id
 
 			// [todo] dorobic dla wartosci pol mozliwośsc preparationContent
 
-			$layoutField = $field->params->get( 'type.field_layout' );
+			$layoutField = $field->params->get('type.field_layout', 'default');
 			
-			if( !$layoutField )
+			if(!$field->params->get('is.field_layout', false))
 			{
-				$layoutField	= ( $isStaticMode ? $modeName : 'field' ) . '-default';
+				$layoutMode = $isStaticMode ? $modeName : 'field';
+				if (strpos($layoutField, ':') !== false)
+				{
+					$layoutField = str_replace(':', ':'.$layoutMode.'/', $layoutField);
+				}
+				else
+				{
+					$layoutField = $layoutMode.'/'.$layoutField;
+				}
+
+				$field->params->set('is.field_layout', true);
+				$field->params->set('type.field_layout', $layoutField);
 			}
-			
-			$field->params->set( 'type.field_layout', $layoutField );
-			
+
 			$variables->field = $field;
 			
 			$layout = KextensionsPlugin::renderLayout( $variables, $layoutField );

@@ -57,10 +57,10 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$extension 			= new JObject;
 		$extension->name		= $this->_name;
 		$extension->type		= $this->_type;
-		$extension->extension		= 'com_content';
+		$extension->option		= 'com_content';
 		$extension->content_type_alias 	= 'com_content.article';
 		
-		$extensions->set( $extension->extension,  $extension );
+		$extensions->set( $extension->option,  $extension );
 	}
 	
 	/**
@@ -563,7 +563,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			// Load Plugin Types Helper
 			$staticMode = FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC);
-			if( $fieldsStatic = $fieldsHelper->getFieldsByModeIDPivot( 'location', $extensionContent->extension_type_id, $staticMode, 1, 2 )->get( $location ) )
+			if( $fieldsStatic = $fieldsHelper->getFieldsByModeIDPivot( 'location', $extensionContent->content_type_id, $staticMode, 1, 2 )->get( $location ) )
 			{
 				$fieldsStatic	= is_array( $fieldsStatic ) ? $fieldsStatic : array( $fieldsStatic );
 			}
@@ -574,7 +574,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		// Load elements Helper
-		if( !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionContent->extension_type_id, $row->id, $row->state, 3 )->get( $row->id ) ) && !$isStaticFields )
+		if( !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionContent->content_type_id, $row->id, $row->state, 3 )->get( $row->id ) ) && !$isStaticFields )
 		{
 			return;
 		}
@@ -588,7 +588,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 				return;
 			}
 			
-			if( !( $fields = $fieldsHelper->getFieldsByIDPivot( 'location', $extensionContent->extension_type_id, $fieldsID, 1, 1 )->get( $location ) ) && !$isStaticFields )
+			if( !( $fields = $fieldsHelper->getFieldsByIDPivot( 'location', $extensionContent->content_type_id, $fieldsID, 1, 1 )->get( $location ) ) && !$isStaticFields )
 			{
 				return;
 			}
@@ -690,7 +690,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			if( $modes = FieldsandfiltersFactory::getTypes()->getMode( 'filter' ) );
 			{
 				// multi extensions array( $this->_name, 'allextensions' )
-				// $fields = $fieldsHelper->getFieldsByModeIDPivot( 'field_type', $extensionsID, $modes, 1, true );
+				// $fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $extensionsID, $modes, 1, true );
 				// single extension $this->_name
 				$fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $extensionsID, $modes, FieldsandfiltersFields::VALUES_VALUES, true );
 			}
@@ -698,7 +698,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		else if( is_numeric( $fieldsID ) || is_array( $fieldsID ) )
 		{
 			// multi extensions array( $this->_name, 'allextensions' )
-			// $fields = $fieldsHelper->getFieldsByIDPivot( 'field_type', $extensionContent->content_type_id, $fieldsID, 1, true );
+			// $fields = $fieldsHelper->getFieldsByIDPivot( 'type', $extensionContent->content_type_id, $fieldsID, 1, true );
 			// single extension $this->_name
 			$fields = $fieldsHelper->getFieldsByIDPivot( 'type', $extensionsID, $fieldsID, FieldsandfiltersFields::VALUES_VALUES, true );
 		}

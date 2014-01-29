@@ -47,10 +47,10 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
 			$default 			= new JObject;
 			$default->name 			= self::EXTENSION_DEFAULT;
 			$default->type			= 'com_fieldsandfilters';
-			$default->extension		= self::EXTENSION_DEFAULT;
-			$default->content_type_alias 	= 'com_fieldsandfilters.' . $default->extension;
+			$default->option		= self::EXTENSION_DEFAULT;
+			$default->content_type_alias 	= 'com_fieldsandfilters.' . $default->option;
 			
-			$data->elements->set( $default->extension, $default );
+			$data->elements->set( $default->option, $default );
 			
 			JPluginHelper::importPlugin( self::PLUGIN_FOLDER );
 			// Trigger the onFieldsandfiltersPrepareFormField event.
@@ -102,17 +102,6 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
                 return $this->_getExtensionsBy( $names, $defaultProperty, $withXML );   
         }
 	
-	/**
-	 * @since       1.2.0
-	**/
-        public function getExtensionsByExtension( $extensions, $defaultProperty = true, $withXML = false )
-        {
-                $this->_elementName = 'extension';
-		$this->config->def( 'elementsString', true );
-                
-                return $this->_getExtensionsBy( $extensions, $defaultProperty, $withXML );     
-        }
-	
 	
 	/**
 	 * @since       1.2.0
@@ -143,7 +132,7 @@ class FieldsandfiltersExtensions extends KextensionsBufferCore
                 $this->_elementName = 'option';
                 $this->config->def( 'elementsString', true );
                 
-                return $this->_getExtensionsBy( $alias, $defaultProperty, $withXML );   
+                return $this->_getExtensionsBy( $option, $defaultProperty, $withXML );
         }
 	
 	/**

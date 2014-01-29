@@ -55,13 +55,13 @@ class FieldsandfiltersFieldsHelper
 			$extensions[] = FieldsandfiltersExtensions::EXTENSION_DEFAULT;
 		}
 		
-		$extensionsID = $extensionsHelper->getExtensionsByExtensionColumn( 'content_type_id', $extensions );
+		$extensionsID = $extensionsHelper->getExtensionsByOptionColumn( 'content_type_id', $extensions );
 		
 		if( empty( $extensionsID ) )
 		{
 			return self::_returnEmpty();
 		}
-		
+
 		// Load elements Helper
 		$element = false;
 		if( !( $isNullItemID = is_null( $itemID ) ) && !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionsID, $itemID, 1, 3 )->get( $itemID ) ) )
@@ -105,7 +105,7 @@ class FieldsandfiltersFieldsHelper
 	/**
 	 * @since       1.2.0
 	 **/
-	public static function getFieldsLayouts( JObject $object, $params = false, $ordering = 'ordering' )
+	public static function getFieldsLayouts( JObject $object, $context = '', JRegistry $params = null, $ordering = 'ordering' )
 	{
 		$templateFields = new JObject;
 		
@@ -120,11 +120,23 @@ class FieldsandfiltersFieldsHelper
 		{
 			return $templateFields;
 		}
+
+		$app = JFactory::getApplication();
 		
 		$fields = new JObject( JArrayHelper::pivot( $fields, 'type' ) );
 		JPluginHelper::importPlugin( 'fieldsandfilterstypes' );
-		
-		FieldsandfiltersFactory::getDispatcher()->trigger( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $object->element, $params, $ordering ) );
+
+		if (is_array($object->element))
+		{
+			foreach($object->element AS &$element)
+			{
+				$app->triggerEvent( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $element, $context, $params, $ordering ) );
+			}
+		}
+		else
+		{
+			$app->triggerEvent( 'getFieldsandfiltersFieldsHTML', array( $templateFields, $fields, $object->element, $context, $params, $ordering ) );
+		}
 		
 		return $templateFields;
 	}
@@ -132,16 +144,16 @@ class FieldsandfiltersFieldsHelper
 	/**
 	 * @since       1.2.0
 	 **/
-	public static function getFieldsLayoutsByItemID( $option = null, $itemID = null, $fieldsID = null, $getAllextensions = true, $params = false, $ordering = 'ordering' )
+	public static function getFieldsLayoutsByItemID( $option = null, $itemID = null, $fieldsID = null, $getAllextensions = true, $context = '', JRegistry $params = null, $ordering = 'ordering' )
 	{
 		$object 	= self::getFieldsByItemID( $option, $itemID, $fieldsID, $getAllextensions );
-		return self::getFieldsLayouts( $object, $params, $ordering );
+		return self::getFieldsLayouts( $object, $context, $params, $ordering );
 	}
 	
 	/**
 	 * @since       1.2.0
 	 **/
-	public static function preparationContent( &$text, $context = '', $option = null, $itemID = null, $excluded = array(), $syntax = null, $syntaxType = self::SYNTAX_SIMPLE )
+	public static function preparationContent( &$text, $context = '', $option = null, $itemID = null, array $excluded = array(), $syntax = null, $syntaxType = self::SYNTAX_SIMPLE )
 	{
 		$syntax 	= $syntax ? $syntax : KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
 		$syntaxType 	= $syntaxType ? $syntaxType : KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax_type', self::SYNTAX_SIMPLE );
@@ -182,21 +194,20 @@ class FieldsandfiltersFieldsHelper
 			{
 				return true;
 			}
-			
+
 			$jinput			= JFactory::getApplication()->input;
 			$itemID			= ( $itemID = (int) $itemID ) ? $itemID : $jinput->get( 'id', 0, 'int' );
 			$option			= $option ? $option : $jinput->get( 'option' );
-			$extensionsOptions 	= FieldsandfiltersFactory::getExtensions()->getExtenionsOptions();
+			$extensionsOptions 	= FieldsandfiltersFactory::getExtensions()->getExtensionsColumn('option');
 			$combinations 		= array();
 			$getAllextensions 	= true;
-			$isExcluded		= !empty( $excluded ) && is_array( $excluded );
 			$excludes		= array();
 			$isExtended		= $syntaxType == self::SYNTAX_EXTENDED;
 			
 			foreach( $matches as $match )
 			{
 				/* field id */
-				if( !( $fieldID = (int) $match['field_id'] ) )
+				if( !( $fieldID = (int) $match['field_id'] ) || in_array( $fieldID, $excluded ) )
 				{
 					$excludes[] = $match[0];
 					continue;
@@ -213,7 +224,7 @@ class FieldsandfiltersFieldsHelper
 				$_itemID        = ( isset( $match['item_id'] ) && ( $val = (int) $match['item_id'] ) ) ? $val : $itemID;
 				$_option         = !empty( $match['option'] ) ? $match['option'] : $option;
 				
-				if( !property_exists( $extensionsOptions, $_option ) )
+				if( !in_array( $_option, $extensionsOptions ) )
 				{
 					$excludes[] = $match[0];
 					continue;
@@ -311,7 +322,7 @@ class FieldsandfiltersFieldsHelper
 								}
 							}
 							
-							$fieldsLayouts = self::getFieldsLayouts( $_object, $element['params'], 'id' );
+							$fieldsLayouts = self::getFieldsLayouts( $_object, $context, $element['params'], 'id' );
 							
 							foreach( $element['matches'] AS $fieldID => &$match )
 							{
@@ -321,8 +332,8 @@ class FieldsandfiltersFieldsHelper
 					}
 					else
 					{
-						$fieldsLayouts = self::getFieldsLayouts( $object, null, 'id' );
-						
+						$fieldsLayouts = self::getFieldsLayouts( $object, $context, null, 'id' );
+
 						foreach( $combination['matches'] AS $fieldID => &$match )
 						{
 							$text = str_replace( $match, addcslashes( $fieldsLayouts->get( $fieldID, '' ), '\\$' ), $text );
@@ -384,7 +395,7 @@ class FieldsandfiltersFieldsHelper
 	 * @deprecated  1.2.0
 	 * @use		FieldsandfiltersFieldsSite::preparationContent()
 	 **/
-	public static function preparationConetent( &$text, $option = null, $itemID = null, $syntax = null, $excluded = array() )
+	public static function preparationConetent( &$text, $option = null, $itemID = null, $syntax = null, array $excluded = array() )
 	{
 		self::preparationContent( $text, '', $option, $itemID, $excluded, $syntax, self::SYNTAX_OLD );
 	}
