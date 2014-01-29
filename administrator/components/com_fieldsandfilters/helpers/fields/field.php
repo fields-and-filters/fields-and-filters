@@ -49,14 +49,13 @@ class FieldsandfiltersFieldsField
 	 **/
 	public static function preparationContent($preparationName, stdClass $field, $dataName, $context, $excluded = array(), JRegistry $params = null)
 	{
-		$isName = self::_preparationName($preparationName);
-		if ($field->params->get($isName, false))
+		if (!($type = $field->params->get($preparationName, false)) || $field->params->get(self::_preparationName($preparationName), false))
 		{
 			return;
 		}
 
-		self::_preparetionConent($preparationName, $field, $dataName, $context, null, $excluded, $params);
-		$field->params->set($isName, true);
+		self::_preparetionConent($type, $field, $dataName, $context, null, $excluded, $params);
+		$field->params->set(self::_preparationName($preparationName), true);
 	}
 
 	/**
@@ -64,8 +63,7 @@ class FieldsandfiltersFieldsField
 	 **/
 	public static function preparationContentValues($preparationName, stdClass $field, $context, $excluded = array(), JRegistry $params = null)
 	{
-		$isName = self::_preparationName($preparationName);
-		if ($field->params->get($isName, false))
+		if (!($type = $field->params->get($preparationName, false)) || $field->params->get(self::_preparationName($preparationName), false))
 		{
 			return;
 		}
@@ -74,20 +72,20 @@ class FieldsandfiltersFieldsField
 
 		foreach($field->values AS $value)
 		{
-			self::_preparetionConent($preparationName, $field, 'value', $context, $value, $excluded, $params);
+			self::_preparetionConent($type, $field, 'value', $context, $value, $excluded, $params);
 		}
 
-		$field->params->set($isName, true);
+		$field->params->set(self::_preparationName($preparationName), true);
 	}
 
 	/**
 	 * @since       1.2.0
 	 **/
-	protected static function _preparetionConent($preparationName, stdClass $field, $dataName, $context, stdClass $other = null, $excluded = array(), JRegistry $params = null)
+	protected static function _preparetionConent($type, stdClass $field, $dataName, $context, stdClass $other = null, $excluded = array(), JRegistry $params = null)
 	{
 		$object = is_null($other) ? $field : $other;
 
-		if (!($type = $field->params->get( $preparationName, 0 )) || !isset($object->$dataName))
+		if (!isset($object->$dataName))
 		{
 			return;
 		}

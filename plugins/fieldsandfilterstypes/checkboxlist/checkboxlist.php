@@ -187,11 +187,18 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				$field->params 	= $paramsField;
 			}
 
-			FieldsandfiltersFieldsField::preparationContent('base.prepare_name', $field, 'name', $context, $field->id, $params);
+			if ($field->params->get('base.show_name'))
+			{
+				FieldsandfiltersFieldsField::preparationContent('base.prepare_name', $field, 'name', $context, $field->id, $params);
+			}
 
-			FieldsandfiltersFieldsField::preparationContent('base.site_enabled_description', $field, 'description', $context, $field->id, $params);
+			if ($field->params->get('base.site_enabled_description'))
+			{
+				FieldsandfiltersFieldsField::preparationContent('base.site_enabled_description', $field, 'description', $context, $field->id, $params);
+			}
 
 			FieldsandfiltersFieldsField::preparationContentValues('type.prepare_values', $field, $context, $field->id, $params);
+
 //			echo '<pre>';
 //			print_r($field->values);
 //			echo '</pre>';
