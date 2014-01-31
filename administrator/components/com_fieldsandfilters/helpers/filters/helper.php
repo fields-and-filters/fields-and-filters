@@ -49,7 +49,7 @@ class FieldsandfiltersFiltersHelper
 		{
 			$db 	= JFactory::getDbo();
 			$query 	= $db->getQuery( true );
-			
+
 			self::_checkArg( $types );
 			
 			try
@@ -65,7 +65,7 @@ class FieldsandfiltersFiltersHelper
 					) )
 					->from( $db->quoteName( '#__fieldsandfilters_connections', 'c' ) )
 					->where( $db->quoteName( 'c.content_type_id' ) . ' IN(' . implode( ',', $types ) . ')' );
-				
+
 				if( !is_null( $filters ) )
 				{
 					self::_checkArg( $filters );
@@ -76,8 +76,8 @@ class FieldsandfiltersFiltersHelper
 					}
 				}
 				
-				$query->join( 'INNER', $db->quoteName( '#__fieldsandfilters_elements', 'e' ) . ' ON ' . $db->quoteName( 'e.element_id' ) . '=' . $db->quoteName( 'c.element_id' ) );
-				
+				$query->join( 'INNER', $db->quoteName( '#__fieldsandfilters_elements', 'e' ) . ' ON ' . $db->quoteName( 'e.id' ) . '=' . $db->quoteName( 'c.element_id' ) );
+
 				if( !is_null( $items ) )
 				{
 					self::_checkArg( $items );
@@ -111,9 +111,6 @@ class FieldsandfiltersFiltersHelper
 					
 					unset( $counts );
 				}
-				
-				// echo nl2br( $query->dump() );
-				
 			}
 			catch( RuntimeException $e )
 			{
@@ -545,33 +542,7 @@ class FieldsandfiltersFiltersHelper
 			self::$filters = null;
 		}
 	}
-	
-	/**
-        * @since       1.1.0
-        */
-	protected static function _prepareQueyrValueArray( $query, $filter_values )
-	{
-		$db = JFactory::getDbo();
-		
-		self::_checkArg( self::$filters );
-		if( !empty( self::$filters ) )
-		{
-			while( $value = array_shift( $filter_values ) )
-			{
-				$alias = 'c' . $value ;
-				$and = array(
-						$db->quoteName( $alias . '.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ),
-						$db->quoteName( $alias . '.field_id' ) . ' = ' . $filter,
-						$db->quoteName( $alias . '.field_value_id' ) . ' IN(' . implode( ',', $filter_values ) . ')'
-					);
-				
-				$query->join( 'INNER', $db->quoteName( '#__fieldsandfilters_connections', $alias ) . ' ON ' . implode( ' AND ', $and ) );
-				
-				unset( $and );
-			}
-		}
-	}
-	
+
 	/**
         * @since       1.1.0
         */

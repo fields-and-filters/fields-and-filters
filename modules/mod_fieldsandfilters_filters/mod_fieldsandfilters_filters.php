@@ -11,60 +11,58 @@
 // no direct access
 defined('_JEXEC') or die;
 
-// Load the Factory Helper
-JLoader::import( 'fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers' );
-
 if( $fieldsID = $params->get( 'fields_id' ) )
 {
-	$jinput = JFactory::getApplication()->input;
-	$context = $jinput->get( 'option' ) . '.' . $jinput->get( 'view' );
+	$app = JFactory::getApplication();
+	$context = $app->input->get( 'option' ) . '.' . $app->input->get( 'view' );
 	
 	// Load Extensions Helper
 	$extensionsHelper = FieldsandfiltersFactory::getExtensions();
-	
+
+	// [TODO] change JObject to array
 	$extensionsParams = new JObject( array(
 					'module.value'		=> $params->get( 'use_allextensions_filters' ),
 					'plugin.name'		=> 'content'
 			) );
 	
-	$showAllextensions = $extensionsHelper->getExtensionsParam( 'use_allextensions_filters', $extensionsParams, true );
-	
+	$showAllextensions = FieldsandfiltersExtensionsHelper::getParams( 'use_allextensions_filters', $extensionsParams, true );
+
+	$filters = new JObject();
+
 	JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
-	
+
 	// Trigger the onFieldsandfiltersPrepareFiltersHTML event.
-	$templateFilters = FieldsandfiltersFactory::getDispatcher()->trigger( 'onFieldsandfiltersPrepareFiltersHTML', array( $context, $fieldsID, $showAllextensions, false ) );
-	$templateFilters = implode( "\n", $templateFilters );
+	$app->triggerEvent( 'onFieldsandfiltersPrepareFiltersHTML', array( $context, $filters, $fieldsID, $showAllextensions ) );
 	
-	$jregistry 	= JRegistry::getInstance( 'fieldsandfilters' );
-	$filtersRequest = $jregistry->get( 'filters.request', new stdClass );
-	$counts 	= $jregistry->get( 'filters.counts', array() );
-	$pagination 	= (array) $jregistry->get( 'filters.pagination', array( 'limitstart' => 0 ) );
-	
-	if( property_exists( $filtersRequest, 'extensionID' ) && !empty( $counts ) )
+	$filtersRequest = (array) $filters->get( 'request' );
+	$counts 	= (array) $filters->get( 'counts' );
+	$pagination 	= (array) $filters->get( 'pagination', array( 'limitstart' => 0 ) );
+
+	if( isset( $filtersRequest['extensionID'] ) && $filtersRequest['extensionID'] && !empty( $counts ) )
 	{
 		$request = array(
 				'option' 	=> 'com_fieldsandfilters',
 				'task' 		=> 'request.filters',
 				'tmpl' 		=> 'component',
 				'format'	=> 'json',
-				'Itemid'	=> $jinput->get( 'Itemid', 0, 'int' )
+				'Itemid'	=> $app->input->get( 'Itemid', 0, 'int' )
 		);
 		
-		$request = array_merge( $request, (array) get_object_vars( $filtersRequest ) );
+		$request = array_merge( $request, $filtersRequest );
 		
 		$options = array(
 			'url' 		=> JRoute::_( JURI::root(true) . '/index.php' ),
 			'token'		=> JSession::getFormToken(),
 			'fields'	=> $fieldsID,
 			'module' 	=> $module->id,
-			'counts'	=> $jregistry->get( 'filters.counts', array() ),
+			'counts'	=> $counts,
 			'request'	=> $request,
 			'pagination'	=> $pagination
 		);
 		
 		// get selectors
 		$extensionsParams->set( 'module.value', $params->get( 'selector_body_filters' ) );
-		if( $selectorBody = trim( $extensionsHelper->getExtensionsParam( 'selector_body_filters', $extensionsParams ) ) )
+		if( $selectorBody = trim( FieldsandfiltersExtensionsHelper::getParams( 'selector_body_filters', $extensionsParams ) ) )
 		{
 			$selectors['body'] = $selectorBody;
 		}
@@ -76,7 +74,7 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		
 		// get functions
 		$extensionsParams->set( 'module.value', $params->get( 'function_done_filters' ) );
-		if( $functionDone = trim( $extensionsHelper->getExtensionsParam( 'function_done_filters', $extensionsParams ) ) )
+		if( $functionDone = trim( FieldsandfiltersExtensionsHelper::getParams( 'function_done_filters', $extensionsParams ) ) )
 		{
 			$fn['done'] = '\\' . $functionDone;
 		}
@@ -104,6 +102,6 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		
 		JFactory::getDocument()->addScriptDeclaration( implode( "\n", $script ) );
 		
-		require JModuleHelper::getLayoutPath( 'mod_fieldsandfilters', $params->get( 'layout', 'default' ) );
+		require JModuleHelper::getLayoutPath( 'mod_fieldsandfilters_filters', $params->get( 'layout', 'default' ) );
 	}
 }

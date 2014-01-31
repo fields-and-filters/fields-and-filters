@@ -635,7 +635,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function onFieldsandfiltersPrepareFiltersHTML( $context, $fieldsID = null, $getAllextensions = true, JRegistry $params, $ordering = 'ordering' )
+	public function onFieldsandfiltersPrepareFiltersHTML( $context, Jobject $filters, $fieldsID = null, $getAllextensions = true, JRegistry $params = null, $ordering = 'ordering' )
 	{
 		if( $context != 'com_content.category' )
 		{
@@ -654,7 +654,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			return;
 		}
-		
+
 		// add model path
 		$prefix = get_class( $this );
 		JModelLegacy::addIncludePath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $prefix . 'Model' ) );
@@ -672,14 +672,14 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 		
 		// Load Filters Helper
-		$counts = (array) FieldsandFieldsandfiltersFilters::getFiltersValuesCount( $extensionContent->content_type_id, $fieldsID, $itemsID );
+		$counts = FieldsandfiltersFiltersHelper::getFiltersValuesCount( $extensionContent->content_type_id, $fieldsID, $itemsID );
 		
 		if( empty( $counts ) )
 		{
 			return;
 		}
-		
-		$extensionsID = ( $getAllextensions ) ? $extensionsHelper->getExtensionsByTypeID(array( 'allextensions' , $this->_name ) ) : $extensionContent->content_type_id;
+
+		$extensionsID = ( $getAllextensions ) ? $extensionsHelper->getExtensionsByNameColumn('content_type_id', array( FieldsandfiltersExtensions::EXTENSION_DEFAULT , $this->_name ) ) : $extensionContent->content_type_id;
 		
 		// Load Fields Helper
 		$fieldsHelper = FieldsandfiltersFactory::getFields();
@@ -687,12 +687,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( is_null( $fieldsID ) )
 		{
 			// Load PluginTypes Helper
-			if( $modes = FieldsandfiltersFactory::getTypes()->getMode( 'filter' ) );
+			if( $modes = FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER));
 			{
 				// multi extensions array( $this->_name, 'allextensions' )
 				// $fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $extensionsID, $modes, 1, true );
 				// single extension $this->_name
-				$fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $extensionsID, $modes, FieldsandfiltersFields::VALUES_VALUES, true );
+				$fields = $fieldsHelper->getFieldsByModeIDPivot( 'type', $extensionsID, $modes, 1, FieldsandfiltersFields::VALUES_VALUES, true );
 			}
 		}
 		else if( is_numeric( $fieldsID ) || is_array( $fieldsID ) )
@@ -700,7 +700,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			// multi extensions array( $this->_name, 'allextensions' )
 			// $fields = $fieldsHelper->getFieldsByIDPivot( 'type', $extensionContent->content_type_id, $fieldsID, 1, true );
 			// single extension $this->_name
-			$fields = $fieldsHelper->getFieldsByIDPivot( 'type', $extensionsID, $fieldsID, FieldsandfiltersFields::VALUES_VALUES, true );
+			$fields = $fieldsHelper->getFieldsByIDPivot( 'type', $extensionsID, $fieldsID, 1, FieldsandfiltersFields::VALUES_VALUES, true );
 		}
 		else
 		{
@@ -722,24 +722,22 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		ksort( $templateFields );
 
-		// [TODO] do zmiany zostawiany max JObjec przeylane w wartosciach aby jak najmniej obicazac system
-		$jregistry = JRegistry::getInstance( 'fieldsandfilters' );
-		
-		$request = new stdClass;
-		$request->extensionID 	= (int) $extensionContent->content_type_id;
-		$request->id 		= $app->input->get( 'id', 0, 'int' );
-		// $request->limitstart	= (int) $model->getState( 'list.start', 0 );
-		
-		$jregistry->set( 'filters.request', $request );
-		$jregistry->set( 'filters.counts', $counts );
+		$filters->set('layouts', $templateFields);
+
+		$filters->set( 'request', array(
+			'extensionID' => (int) $extensionContent->content_type_id,
+			'id' => $app->input->get( 'id', 0, 'int' ),
+			// 'limitstart' => (int) $model->getState( 'list.start', 0 )
+		));
+		$filters->set( 'counts', (array) $counts );
 		
 		if( $app->get( 'sef', 0 ) )
 		{
-			$jregistry->set( 'filters.pagination', array( 'start' => 0 ) );
+			$filters->set( 'pagination', array( 'start' => 0 ) );
 		}
 		else
 		{
-			$jregistry->set( 'filters.pagination', array( 'limitstart' => 0 ) );
+			$filters->set( 'pagination', array( 'limitstart' => 0 ) );
 		}
 		
 		return implode( "\n", $templateFields );

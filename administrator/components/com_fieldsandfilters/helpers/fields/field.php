@@ -100,4 +100,29 @@ class FieldsandfiltersFieldsField
 	{
 		return 'is.'.str_replace('.', '_', $preparationName);
 	}
+
+	/**
+	 * @since       1.2.0
+	 **/
+	public static function getLayout($type, $mode, JRegistry $params)
+	{
+		$layout = $params->get('type.'.$type.'_layout', 'default');
+
+		if(!$params->get('is.'.$type.'_layout', false))
+		{
+			if (strpos($layout, ':') !== false)
+			{
+				$layout = str_replace(':', ':'.$mode.'/', $layout);
+			}
+			else
+			{
+				$layout = $mode.'/'.$layout;
+			}
+
+			$params->set('is.'.$type.'_layout', true);
+			$params->set('type.'.$type.'_layout', $layout);
+		}
+
+		return $layout;
+	}
 }

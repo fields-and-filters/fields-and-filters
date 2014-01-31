@@ -194,35 +194,12 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 
 			if ($field->params->get('base.site_enabled_description'))
 			{
-				FieldsandfiltersFieldsField::preparationContent('base.site_enabled_description', $field, 'description', $context, $field->id, $params);
+				FieldsandfiltersFieldsField::preparationContent('base.prepare_description', $field, 'description', $context, $field->id, $params);
 			}
 
 			FieldsandfiltersFieldsField::preparationContentValues('type.prepare_values', $field, $context, $field->id, $params);
 
-//			echo '<pre>';
-//			print_r($field->values);
-//			echo '</pre>';
-			// [todo] po zapisie wartosci wraca na zlego filtra poniewaz nie jest przekazywane field_id
-
-			// [todo] dorobic dla wartosci pol mozliwośsc preparationContent
-
-			$layoutField = $field->params->get('type.field_layout', 'default');
-			
-			if(!$field->params->get('is.field_layout', false))
-			{
-				$layoutMode = $isStaticMode ? $modeName : 'field';
-				if (strpos($layoutField, ':') !== false)
-				{
-					$layoutField = str_replace(':', ':'.$layoutMode.'/', $layoutField);
-				}
-				else
-				{
-					$layoutField = $layoutMode.'/'.$layoutField;
-				}
-
-				$field->params->set('is.field_layout', true);
-				$field->params->set('type.field_layout', $layoutField);
-			}
+			$layoutField = FieldsandfiltersFieldsField::getLayout('field', ($isStaticMode ? $modeName : 'field'), $field->params);
 
 			$variables->field = $field;
 			
@@ -242,7 +219,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 	/**
 	 * @since	1.1.0
 	 */
-	public function getFieldsandfiltersFiltersHTML( JObject $layoutFields, JObject $fields, $context = 'filters', JRegistry $params = null, $ordering = 'ordering' )
+	public function getFieldsandfiltersFiltersHTML( JObject $layoutFilters, JObject $fields, $context = 'filters', JRegistry $params = null, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -256,39 +233,37 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		$variables->name	= $this->_name;
 		$variables->params	= $this->params;
 		
-		$isParams = ( $params && $params instanceof JRegistry );
-		
 		while( $field = array_shift( $fields ) )
 		{
-			if( $isParams )
+			if( $params )
 			{
 				$paramsTemp 	= $field->params;
-				$paramsFilter 	= clone $field->params;
-				
-				$paramsFilter->merge( $params );
-				$field->params 	= $paramsFilter;
+				$paramsField 	= clone $field->params;
+
+				$paramsField->merge( $params );
+				$field->params 	= $paramsField;
 			}
 
-			if ($field->params->get( 'base.site_enabled_description', 0 ) && ($prepareType =  $field->params->get( 'base.prepare_description', 0 )))
+			if ($field->params->get('base.show_name'))
 			{
-				FieldsandfiltersFieldsField::preparationContent($prepareType, $field->description, $context, $field->id, $params);
+				FieldsandfiltersFieldsField::preparationContent('base.prepare_name', $field, 'name', $context, $field->id, $params);
 			}
-			
-			$layoutFilter = $field->params->get( 'type.filter_layout' );
-			
-			if( !$layoutFilter )
+
+			if ($field->params->get('base.site_enabled_description'))
 			{
-				$layoutFilter	= 'filter-default';
+				FieldsandfiltersFieldsField::preparationContent('base.prepare_description', $field, 'description', $context, $field->id, $params);
 			}
-			
-			$field->params->set( 'type.filter_layout', $layoutFilter );
+
+			FieldsandfiltersFieldsField::preparationContentValues('type.prepare_values', $field, $context, $field->id, $params);
+
+			$layoutFilter = FieldsandfiltersFieldsField::getLayout('filter', 'filter', $field->params);
 			
 			$variables->field = $field;
 			
-			$layout = KextensionsPlugin::renderLayout( $variables, $layoutFields );
-			$layoutFields->set( KextensionsArray::getEmptySlotObject( $layoutFields, $field->$ordering, false ), $layout );
+			$layout = KextensionsPlugin::renderLayout( $variables, $layoutFilter );
+			$layoutFilters->set( KextensionsArray::getEmptySlotObject( $layoutFilters, $field->$ordering, false ), $layout );
 			
-			if( $isParams )
+			if( $params )
 			{
 				$field->params = $paramsTemp;
 				unset( $paramsFilter );

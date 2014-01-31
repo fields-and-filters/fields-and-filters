@@ -223,7 +223,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 					$data->set( '__modes', array_merge( $dataModes, $_modes ) );
 
 					// When the get states of the need, then add states to the cache extenion type, because we don't need them next time
-					$data->set('__states', array_merge($dataStates, $_states));
+					// $data->set('__states', array_merge($dataStates, $_states));
 					
 					// Get elements id from cache, because we don't need get that id's second time from database 
 					$this->_notElements = array_merge( $this->_notElements, array_keys( get_object_vars( $data->get( 'elements', new stdClass ) ) ) );

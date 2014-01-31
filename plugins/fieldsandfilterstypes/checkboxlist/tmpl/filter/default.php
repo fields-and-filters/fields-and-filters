@@ -2,7 +2,7 @@
 /**
  * @version     1.1.1
  * @package     fieldsandfilters.plugin
- * @subpackage  fieldsandfilters_field_type.checkbox
+ * @subpackage  fieldsandfilters_type.checkbox
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
@@ -36,7 +36,7 @@ if( $field->params->get( 'base.site_enabled_description', 0 ) && !empty( $field-
         }
 }
 
-$id = 'faf-filters-' . $field->field_id;
+$id = 'faf-filters-' . $field->id;
 ?>
 
 <fieldset id="<?php echo $id; ?>" class="faf-filters faf-filters-checkboxlist <?php echo htmlspecialchars( $field->params->get( 'base.class', '' ) ); ?>">
@@ -48,13 +48,13 @@ $id = 'faf-filters-' . $field->field_id;
                 {
                         JHtml::_( 'behavior.tooltip', '.faf-hasTip' );
                         $attribsDiv['class'] = $attribsDiv['class'] . ' faf-hasTip';
-                        $attribsDiv['title'] = htmlspecialchars( trim( $field->field_name, ':' ) . '::' . $field->description, ENT_COMPAT, 'UTF-8' );
+                        $attribsDiv['title'] = htmlspecialchars( trim( $field->name, ':' ) . '::' . $field->description, ENT_COMPAT, 'UTF-8' );
                         
                 }   
         ?>
         
         <legend <?php echo JArrayHelper::toString( $attribsDiv ); ?>>
-                <?php echo htmlspecialchars( $field->field_name, ENT_QUOTES, 'UTF-8' ); ?>
+                <?php echo htmlspecialchars( $field->name, ENT_QUOTES, 'UTF-8' ); ?>
         </legend>
         <?php endif; ?>
                 
@@ -66,12 +66,12 @@ $id = 'faf-filters-' . $field->field_id;
         
         <?php foreach( $values AS &$value ) : ?>
         <div class="control-group faf-control-group">
-                <input type="checkbox" name="fieldsandfilters[<?php echo $field->field_id; ?>][]" id="<?php echo ( $id . '-' . $value->field_value_id ); ?>"
-                        class="faf-filters-input inputbox" value="<?php echo $value->field_value_id; ?>" data-ordering="<?php echo $value->ordering; ?>"
-                        data-alias="<?php echo htmlspecialchars( $value->field_value_alias ); ?>" />
+                <input type="checkbox" name="fieldsandfilters[<?php echo $field->id; ?>][]" id="<?php echo ( $id . '-' . $value->id ); ?>"
+                        class="faf-filters-input inputbox" value="<?php echo $value->id; ?>" data-ordering="<?php echo $value->ordering; ?>"
+                        data-alias="<?php echo htmlspecialchars( $value->alias ); ?>" />
                         
-                <label for="<?php echo ( $id . '-' . $value->field_value_id ); ?>" class="checkbox">
-                        <?php echo htmlspecialchars( $value->field_value ); ?>
+                <label for="<?php echo ( $id . '-' . $value->id ); ?>" class="checkbox">
+                        <?php echo htmlspecialchars( $value->value ); ?>
                         <span class="faf-filters-count badge"></span>
                 </label>
         </div>

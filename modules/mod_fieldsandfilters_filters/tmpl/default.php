@@ -17,7 +17,7 @@ $isReset = $params->get( 'show_reset', 0 );
         <form action="#" method="get" name="faf-form-<?php echo $module->id; ?>"
                 id="faf-form-<?php echo $module->id; ?>" class="faf-filters-form faf-form faf-filters-loading form-inline" autocomplete="off">
                 
-                <?php echo $templateFilters; ?>
+                <?php echo implode( "\n", (array) $filters->get('layouts') ); ?>
                 
 		<?php if( !$isReset ) : ?>
 			<input type="reset" id="faf-form-empty-<?php echo $module->id; ?>" name="faf-form-empty-<?php echo $module->id; ?>" class="btn btn-link faf-form-empty" value="<?php echo JText::_( 'PLG_FAF_ES_CT_ERROR_NOT_MATCH_TO_FILTERS_RESET' );?>" />
