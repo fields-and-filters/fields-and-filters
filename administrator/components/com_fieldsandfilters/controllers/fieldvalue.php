@@ -21,4 +21,25 @@ if (!FieldsandfiltersFactory::isVersion())
  */
 class FieldsandfiltersControllerFieldvalue extends JControllerForm
 {
+	/**
+	 * Gets the URL arguments to append to a list redirect.
+	 *
+	 * @return  string  The arguments to append to the redirect URL.
+	 *
+	 * @since   12.2
+	 */
+	protected function getRedirectToListAppend()
+	{
+		$append = parent::getRedirectToListAppend();
+
+		$filter = (array) JFactory::getApplication()->getUserState($this->option.'.'.$this->view_list.'.filter', array());
+		$field_id = (int) JArrayHelper::getValue($filter, 'field_id');
+
+		if ($field_id)
+		{
+			$append .= '&field_id=' . $field_id;
+		}
+
+		return $append;
+	}
 }

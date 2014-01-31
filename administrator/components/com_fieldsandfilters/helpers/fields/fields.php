@@ -202,7 +202,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			case 'getFieldsByModeID':
 				// Get content type id from cache
 				$data  = $this->_getData( $type );
-				
+
 				// The difference states between argument states and cache states
 				$dataStates	= $data->get( '__states', array() );
 				$_states        = array_diff( $this->states, $dataStates );
@@ -211,7 +211,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 				$dataModes	= $data->get( '__modes', array() );
 				$_modes		= array_diff( $this->elements, $dataModes );
 				
-				if( !empty( $_modes ) && !empty( $_states ) )
+				if( !empty( $_modes ) || !empty( $_states ) )
 				{
 					// Add difference states to query varible
 					$this->_states += $_states;
@@ -221,6 +221,9 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 					
 					// When the get modes of the need, then add modes to the cache content type, because we don't need them next time
 					$data->set( '__modes', array_merge( $dataModes, $_modes ) );
+
+					// When the get states of the need, then add states to the cache extenion type, because we don't need them next time
+					$data->set('__states', array_merge($dataStates, $_states));
 					
 					// Get elements id from cache, because we don't need get that id's second time from database 
 					$this->_notElements = array_merge( $this->_notElements, array_keys( get_object_vars( $data->get( 'elements', new stdClass ) ) ) );
@@ -245,7 +248,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		{
 			return ( !empty( $this->_types ) && !empty( $this->elements ) );
 		}
-		
+
 		return parent::_testQueryVars();
 	}
 	

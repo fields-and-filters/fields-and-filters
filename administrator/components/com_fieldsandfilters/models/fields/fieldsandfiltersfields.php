@@ -271,7 +271,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	protected function getOptions()
 	{
 		$options = (array) JHtml::_('FieldsandfiltersHtml.options.fields', $this->modes, $this->states);
-		
+
 		// Load the plugin extension.
 		if (!empty($options))
 		{
