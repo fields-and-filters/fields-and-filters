@@ -56,7 +56,7 @@
 			<field
 				name="selector_body_filters"
 				type="text"
-				default="#main"
+				default="#content"
 				label="COM_FIELDSANDFILTERS_SELECTOR_BODY_FILTERS_LBL"
 				description="COM_FIELDSANDFILTERS_SELECTOR_BODY_FILTERS_DESC"
 			/>

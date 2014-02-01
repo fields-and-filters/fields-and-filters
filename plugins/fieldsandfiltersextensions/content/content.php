@@ -746,7 +746,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function onFieldsandfiltersRequestJSON( $context )
+	public function onFieldsandfiltersRequestJSON( $context, JObject $data )
 	{
 		if( $context != 'com_fieldsandfilters.filters.content' )
 		{
@@ -807,11 +807,11 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$extensionsParams->set( 'plugin.value', $this->params->get( 'comparison_between_values_filters' ) );
 			$betweenValues = FieldsandfiltersExtensionsHelper::getParams( 'comparison_between_values_filters', $extensionsParams, 'OR' );
 			
-			$itemsID = FieldsandfiltersFilters::getItemsIDByFilters( $extension->content_type_id, $fieldsandfilters, 1, $betweenFilters, $betweenValues );
+			$itemsID = FieldsandfiltersFiltersHelper::getItemsIDByFilters( $extension->content_type_id, $fieldsandfilters, 1, $betweenFilters, $betweenValues );
 		}
 		else
 		{
-			$itemsID = FieldsandfiltersFilters::getSimpleItemsID( false );
+			$itemsID = FieldsandfiltersFiltersHelper::getSimpleItemsID( false );
 		}
 		
 		// set new jinput values
@@ -863,21 +863,18 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		$itemsID 	= $model->getState( 'fieldsandfilters.itemsID', array() );
 		$fieldsID 	= $jinput->get( 'fields', array(), 'array' );
-
-		// [TODO] jak wyzej
-		$jregistry	= JRegistry::getInstance( 'fieldsandfilters' );
 		
 		if( !empty( $itemsID ) && !empty( $fieldsID ) && !$emptyItemsID  )
 		{
 			// Load Filters Helper
-			$counts = (array) FieldsandfiltersFilters::getFiltersValuesCount( $extension->content_type_id, $fieldsID, $itemsID );
-			
-			$jregistry->set( 'filters.counts', $counts );
+			$counts = (array) FieldsandfiltersFiltersHelper::getFiltersValuesCount( $extension->content_type_id, $fieldsID, $itemsID );
+
+			$data->set( 'counts', $counts );
 		}
 		else if( $emptyItemsID )
 		{
 			// [TODO] when is empty display all fields with 0 counts or display special buttons to reset filters
-			$jregistry->set( 'filters.empty', $emptyItemsID );
+			$data->set( 'empty', $emptyItemsID );
 		}
 		
 		$document->setBuffer( $body, array( 'type' => 'component', 'name' => 'fieldsandfilters', 'title' => null ) );

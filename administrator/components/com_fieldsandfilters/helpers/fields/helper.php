@@ -54,7 +54,7 @@ class FieldsandfiltersFieldsHelper
 		{
 			$extensions[] = FieldsandfiltersExtensions::EXTENSION_DEFAULT;
 		}
-		
+
 		$extensionsID = $extensionsHelper->getExtensionsByOptionColumn( 'content_type_id', $extensions );
 		
 		if( empty( $extensionsID ) )
@@ -64,14 +64,17 @@ class FieldsandfiltersFieldsHelper
 
 		// Load elements Helper
 		$element = false;
-		if( !( $isNullItemID = is_null( $itemID ) ) && !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionsID, $itemID, 1, 3 )->get( $itemID ) ) )
+		if( (!( $isNullItemID = is_null( $itemID ) ) && !( $element = FieldsandfiltersFactory::getElements()->getElementsByItemIDPivot( 'item_id', $extensionsID, $itemID, 1, FieldsandfiltersElements::VALUES_BOTH )->get( $itemID ) )))
 		{
-			return self::_returnEmpty();
+			if (empty($fieldsID))
+			{
+				return self::_returnEmpty();
+			}
 		}
 		
 		if( !( $isNullFieldsID = is_null( $fieldsID ) ) && $element )
 		{
-			$values = 3;
+			$values = FieldsandfiltersFields::VALUES_BOTH;
 		}
 		else if( $isNullFieldsID && $element )
 		{
@@ -82,11 +85,16 @@ class FieldsandfiltersFieldsHelper
 				return self::_returnEmpty();
 			}
 			
-			$values = 1;	
+			$values = FieldsandfiltersFields::VALUES_VALUES;
 		}
-		else if( !$isNullFieldsID && $isNullItemID )
+		else if( (!$isNullFieldsID && $isNullItemID) || !empty($fieldsID))
 		{
-			$values = 2;
+			$values = FieldsandfiltersFields::VALUES_BOTH;
+
+			if (!$element)
+			{
+				$element = new stdClass(); // when element not exist an we have allextension with fields
+			}
 		}
 		else
 		{
@@ -108,14 +116,14 @@ class FieldsandfiltersFieldsHelper
 	public static function getFieldsLayouts( JObject $object, $context = '', JRegistry $params = null, $ordering = 'ordering' )
 	{
 		$templateFields = new JObject;
-		
-		if( !isset( $object->fields ) || !isset( $object->element ) )
+
+		if( !isset( $object->fields ) || !( $object->element ) )
 		{
 			return $templateFields;
 		}
 		
 		$fields = $object->fields->getProperties();
-		
+
 		if( empty( $fields ) )
 		{
 			return $templateFields;
@@ -294,7 +302,7 @@ class FieldsandfiltersFieldsHelper
 				while( $combination = array_shift( $combinations ) )
 				{
 					$object = self::getFieldsByItemID( $combination['option'], $combination['item_id'], $combination['fields_id'], $getAllextensions );
-					
+
 					if( $isExtended )
 					{
 						$isFields	= $object->fields->getProperties(true);

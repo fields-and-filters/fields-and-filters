@@ -54,7 +54,7 @@ $id = 'faf-filters-' . $field->id;
         ?>
         
         <legend <?php echo JArrayHelper::toString( $attribsDiv ); ?>>
-                <?php echo htmlspecialchars( $field->name, ENT_QUOTES, 'UTF-8' ); ?>
+	        <?php echo ($field->params->get( 'base.prepare_name', 0 ) ? $field->name : htmlspecialchars( $field->name, ENT_QUOTES, 'UTF-8' )); ?>
         </legend>
         <?php endif; ?>
                 
@@ -71,7 +71,7 @@ $id = 'faf-filters-' . $field->id;
                         data-alias="<?php echo htmlspecialchars( $value->alias ); ?>" />
                         
                 <label for="<?php echo ( $id . '-' . $value->id ); ?>" class="checkbox">
-                        <?php echo htmlspecialchars( $value->value ); ?>
+		                <?php echo ($field->params->get( 'type.prepare_values', 0 ) ? $value->value : htmlspecialchars( $value->value, ENT_QUOTES, 'UTF-8' )); ?>
                         <span class="faf-filters-count badge"></span>
                 </label>
         </div>

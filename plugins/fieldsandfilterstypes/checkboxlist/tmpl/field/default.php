@@ -66,7 +66,9 @@ if( $field->params->get( 'base.site_enabled_description', 0 ) && !empty( $field-
 		<ul class="faf-list">
 			<?php foreach( $connections AS &$connection ) : ?>
 				<?php if( $value = $values->get( $connection ) ) : ?>
-					<li><?php echo $value->value; ?></li>
+					<li>
+						<?php echo ($field->params->get( 'type.prepare_values', 0 ) ? $value->value : htmlspecialchars( $value->value, ENT_QUOTES, 'UTF-8' )); ?>
+					</li>
 				<?php endif; ?>
 			<?php endforeach; ?>
 		</ul>

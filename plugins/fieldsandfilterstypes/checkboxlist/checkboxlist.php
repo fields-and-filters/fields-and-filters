@@ -93,7 +93,7 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 				$element = $root->addChild( 'field'  );
 				$element->addAttribute( 'fieldset', $fieldset );
 			}
-			
+
 			$label = '<strong>' . $field->name . '</strong> ' . sprintf($syntax,$field->id);
 				
 			if( $field->state == -1 )
@@ -172,8 +172,8 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 		{
 			$modeName 	= FieldsandfiltersModes::getModeName( $field->mode );
 			$isStaticMode 	= (  $modeName == FieldsandfiltersModes::MODE_STATIC );
-			
-			if( ( $isStaticMode && empty( $field->connections ) ) || ( $modeName == 'field' && ( !isset( $element->connections ) || !property_exists( $element->connections, $field->id ) ) ) )
+
+			if( ( $isStaticMode && empty( $field->connections ) ) || ( $modeName == 'filter' && ( !isset( $element->connections ) || !property_exists( $element->connections, $field->id ) ) ) )
 			{
 				continue;
 			}

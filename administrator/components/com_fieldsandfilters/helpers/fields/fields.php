@@ -295,7 +295,6 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			) );
 		}
 		/* @end deprecated 1.2.0 */
-		
 		return $query;
 	}
 	
@@ -382,7 +381,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 				->where( $this->_db->quoteName( 'element_id' ) . ' = ' .  0 )
 				->where( $this->_db->quoteName( 'content_type_id' ) . ' IN(' . implode( ',', $this->_types ) . ')' );
 		}
-		
+
 		return $query;
 	}
 	
@@ -432,6 +431,18 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			unset( $_values );
 		}
         }
+
+	/**
+	 *
+	 * @since       1.2.0
+	 */
+	protected function _prepareValuesElement($element)
+	{
+		if( $this->methodValues == self::VALUES_VALUES )
+		{
+			parent::_prepareValuesElement($element);
+		}
+	}
 	
 	/**
 	 * 
@@ -451,7 +462,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 				$element->$valuesName->set( $_value->id, $_value );
 			}
 		}
-		else if( $this->methodValues == self::VALUES_DATA )
+		elseif( $this->methodValues == self::VALUES_DATA )
 		{
 			if( isset( $_value->field_id ) && isset( $_value->data ) )
 			{
@@ -460,7 +471,7 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 					$element->$valuesName = $_value->data;
 				}
 			}
-			else if( !isset( $element->$valuesName ) )
+			elseif( !isset( $element->$valuesName ) )
 			{
 				$element->$valuesName = '';
 			}

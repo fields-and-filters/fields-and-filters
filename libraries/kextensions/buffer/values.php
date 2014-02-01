@@ -46,6 +46,8 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 	protected function _prepareBuffer()
         {
 		parent::_prepareBuffer();
+
+
                 
                 $getValues = $this->config->get( 'getValues' );
                 

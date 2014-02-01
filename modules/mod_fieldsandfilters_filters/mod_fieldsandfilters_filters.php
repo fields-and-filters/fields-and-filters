@@ -62,7 +62,7 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		
 		// get selectors
 		$extensionsParams->set( 'module.value', $params->get( 'selector_body_filters' ) );
-		if( $selectorBody = trim( FieldsandfiltersExtensionsHelper::getParams( 'selector_body_filters', $extensionsParams ) ) )
+		if( $selectorBody = trim( FieldsandfiltersExtensionsHelper::getParams( 'selector_body_filters', $extensionsParams, '#content' ) ) )
 		{
 			$selectors['body'] = $selectorBody;
 		}

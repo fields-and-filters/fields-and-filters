@@ -40,40 +40,38 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		$extensionTypeID = $app->input->get('extensionID', 0, 'int');
 		$requestID       = $app->input->get('requestID', 0, 'alnum');
 
-		// Check if exist requestID and extention type id
-		if (!$requestID)
-		{
-			$this->sendResponse(new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_REQUEST_ID'), 403));
-		}
-		else
-		{
-			if (!$extensionTypeID)
-			{
-				$this->sendResponse(new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_REQUEST_ID'), 403));
-			}
-		}
-
-		// Load PluginExtensions Helper
-		$extensions = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID($extensionTypeID);
-
-		if (!($extension = $extensions->get($extensionTypeID)))
-		{
-			$this->sendResponse(new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_EXTENSION_NOT_EXISTS'), 403));
-		}
-
-		self::_prepareDocument();
-
 		try
 		{
+			// Check if exist requestID and extention type id
+			if (!$requestID)
+			{
+				throw new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_REQUEST_ID'), 403);
+			}
+			elseif (!$extensionTypeID)
+			{
+				throw new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_REQUEST_ID'), 403);
+			}
+
+			// Load PluginExtensions Helper
+			$extensions = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID($extensionTypeID);
+
+			if (!($extension = $extensions->get($extensionTypeID)))
+			{
+				throw new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_EXTENSION_NOT_EXISTS'), 403);
+			}
+
+			self::_prepareDocument();
+
 			JPluginHelper::importPlugin('fieldsandfiltersextensions');
 
 			// Trigger the onFieldsandfiltersPrepareFormField event.
 			$context = 'com_fieldsandfilters.filters.' . $extension->name;
 
-			$app->triggerEvent('onFieldsandfiltersRequestJSON', array($context));
+			$data = new JObject();
+			$app->triggerEvent('onFieldsandfiltersRequestJSON', array($context, $data));
 
 			// Send the response.
-			$this->sendResponse(null, 'filters');
+			$this->sendResponse($data);
 		} catch (Exception $e)
 		{
 			$this->sendResponse($e);
@@ -96,52 +94,44 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		$fieldID         = $app->input->get('fieldID', 0, 'int');
 		$extensionTypeID = $app->input->get('extensionID', 0, 'int');
 
-		// Check if exist requestID and extention type id
-		if (!$requestID)
-		{
-			$this->sendResponse(new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_REQUEST_ID'), 403));
-		}
-		else
-		{
-			if (!$extensionTypeID)
-			{
-				$this->sendResponse(new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_REQUEST_ID'), 403));
-			}
-			else
-			{
-				if (!$fieldID)
-				{
-					$this->sendResponse(new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_FIELD_ID'), 403));
-				}
-			}
-		}
-
-		// Load PluginExtensions Helper
-		if (!($extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID($extensionTypeID)->get($extensionTypeID)))
-		{
-			$this->sendResponse(new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_EXTENSION_NOT_EXISTS'), 403));
-		}
-		else
-		{
-			if (!($field = FieldsandfiltersFactory::getFields()->getFieldsByID($extension->extension_type_id, $fieldID)->get($fieldID)))
-			{
-				$this->sendResponse(new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_FIELD_NOT_EXISTS'), 403));
-			}
-		}
-
-		self::_prepareDocument();
-
 		try
 		{
+			// Check if exist requestID and extention type id
+			if (!$requestID)
+			{
+				throw new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_REQUEST_ID'), 403);
+			}
+			elseif (!$extensionTypeID)
+			{
+				throw new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_REQUEST_ID'), 403);
+			}
+			elseif (!$fieldID)
+			{
+				throw new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_FIELD_ID'), 403);
+			}
+
+			// Load PluginExtensions Helper
+			if (!($extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID($extensionTypeID)->get($extensionTypeID)))
+			{
+				throw new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_EXTENSION_NOT_EXISTS'), 403);
+			}
+			elseif (!($field = FieldsandfiltersFactory::getFields()->getFieldsByID($extension->extension_type_id, $fieldID)->get($fieldID)))
+			{
+				throw new Exception(JText::_('COM_FILEDSANDFILTERS_FILTERS_ERROR_FIELD_NOT_EXISTS'), 403);
+			}
+
+			self::_prepareDocument();
+
 			JPluginHelper::importPlugin('fieldsandfilterstypes');
 
 			// Trigger the onFieldsandfiltersPrepareFormField event.
 			$context = 'com_fieldsandfilters.fields.' . $field->field_type;
 
-			$app->triggerEvent('onFieldsandfiltersRequestJSON', array($context, $field));
+			$data = new JObject();
+			$app->triggerEvent('onFieldsandfiltersRequestJSON', array($context, $field, $data));
 
 			// Send the response.
-			$this->sendResponse(null, 'fields');
+			$this->sendResponse($data);
 		} // Catch an exception and return the response.
 		catch (Exception $e)
 		{
@@ -181,7 +171,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		self::$app_swap = clone(JFactory::getApplication());
 
 		// Get the site app.
-		include_once JPATH_SITE . '/includes/application.php';
+		// include_once JPATH_SITE . '/includes/application.php';
 		$site = JApplication::getInstance('site');
 		$site->input->set('format', 'html');
 
@@ -201,7 +191,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 	 *
 	 * @since       1.1.0
 	 */
-	public static function sendResponse($data = null, $type = null)
+	public static function sendResponse($data = null)
 	{
 		$app = JFactory::getApplication();
 		// Create the response object.
@@ -223,21 +213,16 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		}
 		else
 		{
-			if ($type)
-			{
 
-				$document = JFactory::getDocument();
+			$document = JFactory::getDocument();
 
-				// Prepare the response data.
-				$response->head = $document->getHeadData();
-				$response->body = $document->getBuffer('component', 'fieldsandfilters');
-				$response->hash = md5(serialize($app->input->get('fieldsandfilters', array(), 'array')));
+			// Prepare the response data.
+			$response->head = $document->getHeadData();
+			$response->body = $document->getBuffer('component', 'fieldsandfilters');
+			$response->hash = md5(serialize($app->input->get('fieldsandfilters', array(), 'array')));
 
-				$jregistry = JRegistry::getInstance('fieldsandfilters')->get($type, array());
+			$response->setProperties($data->getProperties(true));
 
-				$response->setProperties($jregistry);
-
-			}
 		}
 
 		// The old token is invalid so send a new one.

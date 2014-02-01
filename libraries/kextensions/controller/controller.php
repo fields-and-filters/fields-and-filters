@@ -56,6 +56,7 @@ class KextensionsController
 				$paths[] 	= $basePath;
 				
 				$path = JPath::find( $paths, self::createFileName( $nameConfig ) );
+
 				self::$paths[$controllerClass] = $path;
 				
 				// If the controller file path exists, include it.
@@ -86,7 +87,7 @@ class KextensionsController
 	 *
 	 * @since       1.0.0
 	 */
-	protected static function createFileName( $type, $parts = array() )
+	protected static function createFileName( $parts = array() )
 	{
 		if( !empty($parts['format'] ) )
 		{

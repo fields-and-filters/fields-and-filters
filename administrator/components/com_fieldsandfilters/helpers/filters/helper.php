@@ -255,7 +255,7 @@ class FieldsandfiltersFiltersHelper
 				if( count( $unions ) )
 				{
 					$subQuery = '(' . implode( PHP_EOL . ') UNION DISTINCT (', $unions ) . PHP_EOL . ')' ;
-					$query->join( 'INNER', '(' . $subQuery . ') AS `c` ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ) );					
+					$query->join( 'INNER', '(' . $subQuery . ') AS `c` ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.id' ) );
 				}
 
 				
@@ -295,7 +295,7 @@ class FieldsandfiltersFiltersHelper
 					
 					$alias = 'c' . $filter ;
 					$and = array(
-							$db->quoteName( $alias . '.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ),
+							$db->quoteName( $alias . '.element_id' ) . ' = ' . $db->quoteName( 'e.id' ),
 							$db->quoteName( $alias . '.field_id' ) . ' = ' . $filter,
 							$db->quoteName( $alias . '.field_value_id' ) . ' IN(' . implode( ',', $filter_values ) . ')'
 						);
@@ -330,7 +330,7 @@ class FieldsandfiltersFiltersHelper
 		
 		if( $filter && !empty( $filter_values ) )
 		{
-			$query->join( 'INNER', $db->quoteName( '#__fieldsandfilters_connections', 'c' ) . ' ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ) )
+			$query->join( 'INNER', $db->quoteName( '#__fieldsandfilters_connections', 'c' ) . ' ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.id' ) )
 				->where( $db->quoteName( 'c.field_id' ) . ' = ' . $filter )
 				->where( $db->quoteName( 'c.field_value_id' ) . ' IN(' . implode( ',', $filter_values ) . ')' );
 		}
@@ -350,7 +350,7 @@ class FieldsandfiltersFiltersHelper
 		self::_checkArg( self::$filters );
 		if( !empty( self::$filters ) )
 		{
-			$query->join( 'INNER', $db->quoteName( '#__fieldsandfilters_connections', 'c' ) . ' ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ) )
+			$query->join( 'INNER', $db->quoteName( '#__fieldsandfilters_connections', 'c' ) . ' ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.id' ) )
 				->where( $db->quoteName( 'c.field_id' ) . ' IN(' . implode( ',', self::$filters ) . ')' );
 		}
 	}
@@ -416,7 +416,7 @@ class FieldsandfiltersFiltersHelper
 				if( count( $unions ) )
 				{
 					$subQuery = '(' . implode( PHP_EOL . ') UNION DISTINCT (', $unions ) . PHP_EOL . ')' ;
-					$query->join( 'INNER', '(' . $subQuery . ') AS `c` ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ) );					
+					$query->join( 'INNER', '(' . $subQuery . ') AS `c` ON ' . $db->quoteName( 'c.element_id' ) . ' = ' . $db->quoteName( 'e.id' ) );
 				}
 
 				
@@ -439,7 +439,7 @@ class FieldsandfiltersFiltersHelper
 					{
 						$alias = 'c' . $value ;
 						$and = array(
-								$db->quoteName( $alias . '.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ),
+								$db->quoteName( $alias . '.element_id' ) . ' = ' . $db->quoteName( 'e.id' ),
 								$db->quoteName( $alias . '.field_id' ) . ' = ' . $filter,
 								$db->quoteName( $alias . '.field_value_id' ) . ' = ' . $value
 							);
@@ -487,7 +487,7 @@ class FieldsandfiltersFiltersHelper
 					{
 						$alias = 'c' . $value ;
 						$and = array(
-								$db->quoteName( $alias . '.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ),
+								$db->quoteName( $alias . '.element_id' ) . ' = ' . $db->quoteName( 'e.id' ),
 								$db->quoteName( $alias . '.field_id' ) . ' = ' . $filter,
 								$db->quoteName( $alias . '.field_value_id' ) . ' = ' . $value
 							);
@@ -527,7 +527,7 @@ class FieldsandfiltersFiltersHelper
 			{
 				$alias = 'c' . $value ;
 				$and = array(
-						$db->quoteName( $alias . '.element_id' ) . ' = ' . $db->quoteName( 'e.element_id' ),
+						$db->quoteName( $alias . '.element_id' ) . ' = ' . $db->quoteName( 'e.id' ),
 						$db->quoteName( $alias . '.field_id' ) . ' = ' . $filter,
 						$db->quoteName( $alias . '.field_value_id' ) . ' = ' . $value
 					);

@@ -519,7 +519,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML($layoutFields, $fields, $element, $params = false, $ordering = 'ordering')
+	public function getFieldsandfiltersFieldsHTML(JObject $layoutFields, Jobject $fields, stdClass $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering' )
 	{
 		if (!($fields = $fields->get($this->_name)))
 		{
@@ -528,25 +528,18 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 
 		$fields = is_array($fields) ? $fields : array($fields);
 
-		// Load Plugin Types Helper
-		$typesHelper = FieldsandfiltersFactory::getTypes();
-
 		$variables          = new JObject;
 		$variables->type    = $this->_type;
 		$variables->name    = $this->_name;
 		$variables->params  = $this->params;
 		$variables->element = $element;
 
-		$isParams = ($params && $params instanceof JRegistry);
-
-		$jroot = JPATH_ROOT . '/';
-
 		jimport('joomla.filesystem.file');
 
 		while ($field = array_shift($fields))
 		{
-			$modeName     = $typesHelper->getModeName($field->mode);
-			$isStaticMode = ($modeName == 'static');
+			$modeName 	= FieldsandfiltersModes::getModeName( $field->mode );
+			$isStaticMode 	= (  $modeName == FieldsandfiltersModes::MODE_STATIC );
 
 			if (($isStaticMode && empty($field->data)) || ($modeName == 'field' && (!isset($element->data) || !property_exists($element->data, $field->id))))
 			{
@@ -567,7 +560,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				}
 			}
 
-			if ($isParams)
+			if( $params )
 			{
 				$paramsTemp  = $field->params;
 				$paramsField = clone $field->params;
@@ -576,9 +569,14 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				$field->params = $paramsField;
 			}
 
-			if ($field->params->get('base.prepare_description', 0) && $field->params->get('base.site_enabled_description', 0))
+			if ($field->params->get('base.show_name'))
 			{
-				FieldsandfiltersFieldsHelper::preparationConetent($field->description, null, null, null, array($field->id));
+				FieldsandfiltersFieldsField::preparationContent('base.prepare_name', $field, 'name', $context, $field->id, $params);
+			}
+
+			if ($field->params->get('base.site_enabled_description'))
+			{
+				FieldsandfiltersFieldsField::preparationContent('base.prepare_description', $field, 'description', $context, $field->id, $params);
 			}
 
 			// create new image if not exists		
@@ -590,9 +588,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			{
 				$data = $isStaticMode ? $field->data : $element->data->get($field->id, new JRegistry);
 
-				if (($image = $data->get('image')) && file_exists(JPath::clean($jroot . $image)))
+				if (($image = $data->get('image')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$image)))
 				{
-					if ($scaleImage && ($src = $data->get('src')) && !file_exists(JPath::clean($jroot . $src)))
+					if ($scaleImage && ($src = $data->get('src')) && !file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
 					{
 						$imageInfo = self::prepareImageInfo($field, $element, $image, basename($src), $scaleImage);
 
@@ -608,7 +606,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						}
 					}
 
-					if ($createThumb && $scaleThumb && ($src = $data->get('src_thumb')) && !file_exists(JPath::clean($jroot . $src)))
+					if ($createThumb && $scaleThumb && ($src = $data->get('src_thumb')) && !file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
 					{
 						$imageInfo = $this->prepareImageInfo($field, $element, $image, basename($src), $scaleThumb, 'thumb');
 
@@ -631,24 +629,17 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 
 			unset($fieldTypeParams);
 
-			$layoutField = $field->params->get('type.field_layout');
-
-			if (!$layoutField)
-			{
-				$layoutField = $modeName . '-default';
-			}
-
-			$field->params->set('type.field_layout', $layoutField);
+			$layoutField = FieldsandfiltersFieldsField::getLayout('field', ($isStaticMode ? $modeName : 'field'), $field->params);
 
 			$variables->field = $field;
 
 			$layout = KextensionsPlugin::renderLayout($variables, $layoutField);
 			$layoutFields->set(KextensionsArray::getEmptySlotObject($layoutFields, $field->$ordering, false), $layout);
 
-			if ($isParams)
+			if( $params )
 			{
-				$field = $paramsTemp;
-				unset($paramsField);
+				$field->params = $paramsTemp;
+				unset( $paramsField );
 			}
 		}
 

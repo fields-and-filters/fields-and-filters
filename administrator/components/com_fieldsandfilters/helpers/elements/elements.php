@@ -63,7 +63,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 	 * 
 	 * @since       1.1.0
 	 */
-	public function getElements( $types, $states = null, $values = null, $without = true )
+	public function getElements( $types, $states = null, $values = null, $without = false )
 	{
 		$this->method = __FUNCTION__;
 		
@@ -76,7 +76,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 	 * 
 	 * @since       1.1.0
 	 */
-	public function getElementsByID( $types, $ids, $states = null , $values = null, $without = true )
+	public function getElementsByID( $types, $ids, $states = null , $values = null, $without = false )
 	{
 		$this->method = __FUNCTION__;
 		
@@ -91,7 +91,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 	 * 
 	 * @since       1.1.0
 	 */
-	public function getElementsByItemID( $types, $ids, $states = null, $values = null, $without = true )
+	public function getElementsByItemID( $types, $ids, $states = null, $values = null, $without = false )
 	{
 		$this->method = __FUNCTION__;
 		
