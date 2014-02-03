@@ -81,6 +81,23 @@ class FieldsandfiltersFieldsField
 	/**
 	 * @since       1.2.0
 	 **/
+	public static function preparationContentData($preparationName, stdClass $field, stdClass $element, $context, $excluded = array(), JRegistry $params = null)
+	{
+		if (!($type = $field->params->get($preparationName, false)) || $field->params->get(self::_preparationName($preparationName), false) || !(isset($element->data) && ($data = $element->data->get($field->id))))
+		{
+			return;
+		}
+
+		self::preparationContentSimple($type, $data, $context, $excluded, $params);
+
+		$element->data->set($field->id, $data);
+
+		$field->params->set(self::_preparationName($preparationName), true);
+	}
+
+	/**
+	 * @since       1.2.0
+	 **/
 	protected static function _preparetionConent($type, stdClass $field, $dataName, $context, stdClass $other = null, $excluded = array(), JRegistry $params = null)
 	{
 		$object = is_null($other) ? $field : $other;

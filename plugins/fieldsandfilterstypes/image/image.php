@@ -629,7 +629,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 
 			unset($fieldTypeParams);
 
-			$layoutField = FieldsandfiltersFieldsField::getLayout('field', ($isStaticMode ? $modeName : 'field'), $field->params);
+			$layoutField = FieldsandfiltersFieldsField::getLayout('field', $modeName, $field->params);
 
 			$variables->field = $field;
 

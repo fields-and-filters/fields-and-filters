@@ -164,7 +164,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML( $templateFields, $fields, $element, $params = false, $ordering = 'ordering' )
+	public function getFieldsandfiltersFieldsHTML( JObject $layoutFields, Jobject $fields, stdClass $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering' )
 	{
 		if( !( $fields = $fields->get( $this->_name ) ) )
 		{
@@ -173,37 +173,23 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 		
 		$fields = is_array( $fields ) ? $fields : array( $fields );
 		
-		// Load Extensions Helper
-		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
-		
-		// Load Array Helper
-		$arrayHelper = FieldsandfiltersFactory::getArray();
-		
-		// Load Plugin Types Helper
-		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
-		
-		// Load Fields Site Helper
-		$fieldsSiteHelper = FieldsandfiltersFactory::getFieldsSite();
-		
 		$variables 		= new JObject;
 		$variables->type	= $this->_type;
 		$variables->name	= $this->_name;
 		$variables->params	= $this->params;
 		$variables->element 	= $element;
-		
-		$isParams = ( $params && $params instanceof JRegistry );
-		
+
 		while( $field = array_shift( $fields ) )
 		{
-			$modeName	= $pluginTypesHelper->getModeName( $field->mode );
-			$isStaticMode 	= (  $modeName == 'static' );
+			$modeName 	= FieldsandfiltersModes::getModeName( $field->mode );
+			$isStaticMode 	= (  $modeName == FieldsandfiltersModes::MODE_STATIC );
 			
-			if( ( $isStaticMode && empty( $field->data ) ) || ( $modeName == 'field' && ( !isset( $element->data ) || !property_exists( $element->data, $field->field_id ) ) ) )
+			if( ( $isStaticMode && empty( $field->data ) ) || ( $modeName == 'field' && ( !isset( $element->data ) || !property_exists( $element->data, $field->id ) ) ) )
 			{
 				continue;
 			}
 			
-			if( $isParams )
+			if( $params )
 			{
 				$paramsTemp 	= $field->params;
 				$paramsField 	= clone $field->params;
@@ -211,29 +197,36 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 				$paramsField->merge( $params );
 				$field->params 	= $paramsField;
 			}
-			
-			if( $field->params->get( 'base.prepare_description', 0 ) && $field->params->get( 'base.site_enabled_description', 0 ) )
+
+			if ($field->params->get('base.show_name'))
 			{
-				$fieldsSiteHelper->preparationConetent( $field->description, null, ( !$isStaticMode ? $element->item_id : null ), null, array( $field->field_id ) );
+				FieldsandfiltersFieldsField::preparationContent('base.prepare_name', $field, 'name', $context, $field->id, $params);
 			}
-			
-			$layoutField = $field->params->get( 'type.field_layout' );
-			
-			if( !$layoutField )
+
+			if ($field->params->get('base.site_enabled_description'))
 			{
-				$layoutField	= $modeName . '-default';
+				FieldsandfiltersFieldsField::preparationContent('base.prepare_description', $field, 'description', $context, $field->id, $params);
 			}
-			
-			$field->params->set( 'type.field_layout', $layoutField );
-			
+
+			if ($isStaticMode)
+			{
+				FieldsandfiltersFieldsField::preparationContent('type.prepare_data', $field, 'data', $context, $field->id, $params);
+			}
+			else
+			{
+				FieldsandfiltersFieldsField::preparationContentData('type.prepare_data', $field, $element, $context, $field->id, $params);
+			}
+
+			$layoutField = FieldsandfiltersFieldsField::getLayout('field', $modeName, $field->params);
+
 			$variables->field = $field;
-			
-			$template = $extensionsHelper->loadPluginTemplate( $variables, $layoutField );
-			$templateFields->set( $arrayHelper->getEmptySlotObject( $templateFields, $field->$ordering, false ), $template );
-			
-			if( $isParams )
+
+			$layout = KextensionsPlugin::renderLayout( $variables, $layoutField );
+			$layoutFields->set( KextensionsArray::getEmptySlotObject( $layoutFields, $field->$ordering, false ), $layout );
+
+			if( $params )
 			{
-				$field = $paramsTemp;
+				$field->params = $paramsTemp;
 				unset( $paramsField );
 			}
 		}
