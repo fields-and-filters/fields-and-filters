@@ -219,6 +219,12 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 			// Prepare the response data.
 			$response->head = $document->getHeadData();
 			$response->body = $document->getBuffer('component', 'fieldsandfilters');
+
+			JResponse::setBody( $response->body );
+			JPluginHelper::importPlugin( 'system' );
+			$app->triggerEvent( 'onAfterRender' );
+
+			$response->body = JResponse::getBody();
 			$response->hash = md5(serialize($app->input->get('fieldsandfilters', array(), 'array')));
 
 			$response->setProperties($data->getProperties(true));

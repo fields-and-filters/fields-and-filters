@@ -760,12 +760,18 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$id 		= $jinput->get( 'id', 0, 'int' );
 		
 		// Load PluginExtensions Helper
-                $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( $this->_name )->get( $this->_name );
-		
-                if( !$id || !$extension )
-                {
-                        return false;
-                }
+        $extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( $this->_name )->get( $this->_name );
+
+        if( !$id || !$extension )
+        {
+                return false;
+        }
+
+		// set new jinput values
+		$jinput->set( 'option', 'com_content' );
+		$jinput->set( 'view', 'category' );
+		// $jinput->set( 'layout', 'blog' );
+		$jinput->set( 'id', $jinput->get( 'id', 0, 'int' ) );
 		
 		// Include dependancies
 		JLoader::import( 'com_content.helpers.route', JPATH_SITE . '/components' );
@@ -813,12 +819,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		{
 			$itemsID = FieldsandfiltersFiltersHelper::getSimpleItemsID( false );
 		}
-		
-		// set new jinput values
-		$jinput->set( 'option', 'com_content' );
-		$jinput->set( 'view', 'category' );
-		// $jinput->set( 'layout', 'blog' );
-		$jinput->set( 'id', $jinput->get( 'id', 0, 'int' ) );
 		
 		// add model path
 		$prefix = get_class( $this );

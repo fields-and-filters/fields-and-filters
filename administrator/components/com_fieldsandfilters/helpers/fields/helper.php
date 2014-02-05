@@ -184,12 +184,7 @@ class FieldsandfiltersFieldsHelper
 			/* @end deprecated  1.2.0 */
 			else
 			{
-				/**
-				 * [TODO]
-				 * change (?P<item_id>\d+|)(?:-(?P<option>[\w.-]+)|)
-				 * to (?P<item_id>\d+|)(?::(?P<option>[\w.-]+)|) ->  item_id:option
-				 */
-				$regex = '(?P<field_id>\d+)(?:,(?P<item_id>\d+|)(?:-(?P<option>[\w.-]+)|)|)(?:,(?P<context>[\w.-]+)|)(?:,(?P<params>{.*?})|)';
+				$regex = '(?P<field_id>\d+)(?:,(?P<item_id>\d+|)(?::(?P<option>[\w.-]+)|)|)(?:,(?P<context>[\w.-]+)|)(?:,(?P<params>{.*?})|)';
 			}
 			
 			$regex = '/' . sprintf( $syntax, $regex ) . '/i';

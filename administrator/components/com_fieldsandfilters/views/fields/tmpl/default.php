@@ -199,7 +199,7 @@ if ($saveOrder)
 									KextensionsLanguage::load('plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR);
 									$typeName 	= FieldsandfiltersModes::getModeName($item->mode, FieldsandfiltersModes::MODE_NAME_TYPE);
 									$typeForm	= $type->forms->get($typeName, new JObject);
-									
+
 									if (isset($typeForm->group->title))
 									{
 										$titleType =  JText::_($typeForm->title) . ' [' . JText::_($typeForm->group->title) . ']';
