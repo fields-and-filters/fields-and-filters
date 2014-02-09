@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
  * fieldvalue Table class
  * @since	1.0.0
  */
-class FieldsandfiltersTablefieldvalue extends JTable
+class FieldsandfiltersTableFieldvalue extends JTable
 {
 	/**
 	 * Constructor

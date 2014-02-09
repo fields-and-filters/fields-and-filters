@@ -29,7 +29,7 @@ class com_fieldsandfiltersInstallerScript
 			'plg_fieldsandfilterstypes_textarea',
 			'mod_fieldsandfilters_filters'
 	);
-	// dodac tablice do usuniecai plikow
+
 	protected static $remove_folders = array(
 		'/administrator/components/com_fieldsandfilters/helpers',
 		'/components/com_fieldsandfilters/helpers'
@@ -82,7 +82,7 @@ class com_fieldsandfiltersInstallerScript
 		
 		if ($type == 'install' || ($type == 'update'))
 		{
-			$helper->checkContentTypes();
+			$helper->checkContentTypes('com_fieldsandfilters.allextensions');
 			return $this->addExtensions();
 		}
 		
@@ -170,32 +170,55 @@ class com_fieldsandfiltersInstallerScript
 					->set('type_alias', 'com_fieldsandfilters.field')
 					->set('table.special', array(
 						'dbtable' => '#__fieldsandfilters_fields',
-						'key'     => 'field_id',
+						'key'     => 'id',
 						'type'    => 'Field',
 						'prefix'  => 'FieldsandfiltersTable',
 					))
 					->set('field_mappings.common', array(
-						'core_content_item_id'	=> 'field_id',
-						'core_title'		=> 'field_name',
+						'core_content_item_id'	=> 'id',
+						'core_title'		=> 'name',
 						'core_state'		=> 'state',
-						'core_alias'		=> 'field_alias',
-						'core_body'		=> 'description',
+						'core_alias'		=> 'alias',
+						'core_body'		    => 'description',
 						'core_access'		=> 'access',
 						'core_params'		=> 'params',
 						'core_language'		=> 'language',
 						'core_ordering'		=> 'ordering'
 					))
 					->set('field_mappings.special', array(
-						'field_type'		=> 'field_type',
+						'type'		        => 'type',
 						'content_type_id'	=> 'content_type_id',
-						'mode'			=> 'mode',
-						'required'		=> 'required'
+						'mode'			    => 'mode',
+						'required'		    => 'required'
 					))
 					->set('content_history_options.formFile', 'administrator/components/com_fieldsandfilters/models/forms/field.xml')
 					->addHistoryOptions('hideFields', 'mode')
 					->addHistoryOptions('convertToInt', array('content_type_id', 'mode', 'ordering', 'state', 'required'))
 					->addDisplayLookup('content_type_id', '#__content_types', 'type_id', 'type_title');
-				
+
+				/* content type: com_fieldsandfilters.field */
+				$this->helper->getContentType('com_fieldsandfilters.fieldvalue')
+					->set('type_title', 'Fieldsandfilters Field Value')
+					->set('type_alias', 'com_fieldsandfilters.fieldvalue')
+					->set('table.special', array(
+						'dbtable' => '#__fieldsandfilters_field_values',
+						'key'     => 'id',
+						'type'    => 'Fieldvalue',
+						'prefix'  => 'FieldsandfiltersTable',
+					))
+					->set('field_mappings.common', array(
+						'core_content_item_id'	=> 'id',
+						'core_title'		=> 'value',
+						'core_state'		=> 'state',
+						'core_alias'		=> 'alias',
+						'core_body'		    => 'value',
+						'core_ordering'		=> 'ordering',
+						'core_catid'        => 'field_id'
+					))
+					->set('content_history_options.formFile', 'administrator/components/com_fieldsandfilters/models/forms/fieldvalue.xml')
+					->addHistoryOptions('convertToInt', array('field_id', 'ordering', 'state', 'required'))
+					->addDisplayLookup('field_id', '#__fieldsandfilters_fields', 'id', 'name');
+
 				/* content type: com_fieldsandfilters.allextensions */
 				$this->helper->getContentType('com_fieldsandfilters.allextensions')
 					->set('type_title', 'Fieldsandfilters Allextensions')
@@ -329,7 +352,7 @@ class com_fieldsandfiltersInstallerScript
 		return true;
 	}
 	
-	protected static function loadInstallClass($class, $adapter)
+	protected static function loadClass($class, $adapter)
 	{
 		$installerClass = 'FieldsandfiltersInstaller' . ucfirs($class);
 		if (!class_exists($installerClass))

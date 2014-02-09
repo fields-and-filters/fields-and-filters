@@ -35,124 +35,110 @@ class plgFieldsandfiltersExtensionsContentInstallerScript
 		
 		if( $type == 'install' || ( $type == 'update' && version_compare( $helper->getOldVersion(), 1.2, '<' ) ) )
 		{
-			$helper->checkContentType( 'content', 'com_content.article' );
+			$helper->checkContentTypes('com_content.article');
 		}
 		
 		return true;
         }
-	
-	protected function createHelper( $type, $adapter )
+
+	protected function createHelper($type, $adapter)
 	{
-		if( !class_exists( 'FieldsandfiltersInstallerScript' ) )
+		if (!(self::loadClass('script', $adapter) && self::loadClass('contenttype', $adapter)))
 		{
-			JLoader::import( 'com_fieldsandfilters.helpers.installer.script', JPATH_ADMINISTRATOR . '/components' );
-			
-			if( !class_exists( 'FieldsandfiltersInstallerScript' ) )
-			{
-				// FieldsandfiltersInstallerScript error
-				JFactory::getApplication()->enqueueMessage( 'FieldsandfiltersInstallerScript class not exists', 'error' );
-				
-				return false;
-			}
+			return false;
 		}
-		
-		if( !$this->helper instanceof FieldsandfiltersInstallerScript )
+
+		if (!$this->helper instanceof FieldsandfiltersInstallerScript)
 		{
-			$this->helper = new FieldsandfiltersInstallerScript( $type, $adapter );
-			$this->helper->setContentType( self::prepareContentType() );
+			$this->helper 	= new FieldsandfiltersInstallerScript($type, $adapter, 'allextensions');
+			if ($type = 'uninstall')
+			{
+				/* content type: com_fieldsandfilters.field */
+				$this->helper->getContentType('com_content.article')
+					->set('type_title', 'Article')
+					->set('type_alias', 'com_content.article')
+					->set('table.special', array(
+						'dbtable' => '#__content',
+						'key'     => 'id',
+						'type'    => 'Content',
+						'prefix'  => 'JTable',
+					))
+					->set('table.common', array(
+						'dbtable' => '#__ucm_content',
+						'key'     => 'ucm_id',
+						'type'    => 'Corecontent',
+						'prefix'  => 'JTable',
+					))
+					->set('field_mappings.common', array(
+						'core_content_item_id' => 'id',
+			            'core_title' => 'title',
+			            'core_state' => 'state',
+			            'core_alias' => 'alias',
+			            'core_created_time' => 'created',
+			            'core_modified_time' => 'modified',
+			            'core_body' => 'introtext',
+			            'core_hits' => 'hits',
+			            'core_publish_up' => 'publish_up',
+			            'core_publish_down' => 'publish_down',
+			            'core_access' => 'access',
+			            'core_params' => 'attribs',
+			            'core_featured' => 'featured',
+			            'core_metadata' => 'metadata',
+			            'core_language' => 'language',
+			            'core_images' => 'images',
+			            'core_urls' => 'urls',
+			            'core_version' => 'version',
+			            'core_ordering' => 'ordering',
+			            'core_metakey' => 'metakey',
+			            'core_metadesc' => 'metadesc',
+			            'core_catid' => 'catid',
+			            'core_xreference' => 'xreference',
+			            'asset_id' => 'asset_id'
+					))
+					->set('field_mappings.special', array(
+						'fulltext'		        => 'fulltext'
+					))
+					->set('router', 'ContentHelperRoute::getArticleRoute')
+					->set('content_history_options.formFile', 'administrator/components/com_content/models/forms/article.xml')
+					->addHistoryOptions('hideFields', array('asset_id', 'checked_out', 'checked_out_time', 'version'))
+					->addHistoryOptions('ignoreChanges', array('modified_by', 'modified', 'checked_out', 'checked_out_time', 'version', 'hits'))
+					->addHistoryOptions('convertToInt', array('publish_up', 'publish_down', 'featured', 'ordering'))
+
+					->addDisplayLookup('catid', '#__categories', 'id', 'title')
+					->addDisplayLookup('created_by', '#__users', 'id', 'name')
+					->addDisplayLookup('access', '#__viewlevels', 'id', 'title')
+					->addDisplayLookup('modified_by', '#__users', 'id', 'name');
+			}
 		}
 		else
 		{
-			$this->helper->setType( $type );
+			$this->helper->setType($type);
 		}
-		
+
 		return true;
 	}
-	
+
 	protected function getHelper()
 	{
 		return $this->helper;
 	}
-	
-	protected static function prepareContentType()
+
+	protected static function loadClass($class, $adapter)
 	{
-		$contentType = new stdClass();
-		$contentType->type_title = 'Fieldsandfilters Field';
-		$contentType->type_alias = 'com_fieldsandfilters.field';
-		$contentType->table = json_encode(
-			array(
-				'special' => array(
-					'dbtable' => '#__fieldsandfilters_fields',
-					'key'     => 'field_id',
-					'type'    => 'Field',
-					'prefix'  => 'FieldsandfiltersTable',
-					'config'  => 'array()'
-				),
-				'common' => array()
-			)
-		);
-		
-		$contentType->rules = '';
-		
-		$contentType->field_mappings = json_encode(
-			array(
-				'common' => array(
-					'core_content_item_id'	=> 'field_id',
-					'core_title'		=> 'field_name',
-					'core_state'		=> 'state',
-					'core_alias'		=> 'field_alias',
-					'core_created_time'	=> 'null', // null
-					'core_modified_time'	=> 'null', // null
-					'core_body'		=> 'description',
-					'core_hits'		=> 'null', // null
-					'core_publish_up'	=> 'null', // null
-					'core_publish_down'	=> 'null', // null
-					'core_access'		=> 'access',
-					'core_params'		=> 'params',
-					'core_featured'		=> 'null', // null
-					'core_metadata'		=> 'null', // null
-					'core_language'		=> 'language',
-					'core_images'		=> 'null', // null
-					'core_urls'		=> 'null', // null
-					'core_version'		=> 'null', // null
-					'core_ordering'		=> 'ordering',
-					'core_metakey'		=> 'null', // null
-					'core_metadesc'		=> 'null', // null
-					'core_catid'		=> 'null', // null
-					'core_xreference'	=> 'null', // null
-					'asset_id'		=> 'null' // null
-				),
-				'special' => array(
-					'field_type'		=> 'field_type',
-					'content_type_id'	=> 'content_type_id',
-					'mode'			=> 'mode',
-					'required'		=> 'required'
-				)
-			)
-		);
-		
-		$contentType->router = '';
-		
-		$contentType->content_history_options = json_encode(
-			array(
-				'formFile' 		=> 'administrator/components/com_fieldsandfilters/models/forms/field.xml',
-				'hideFields' 		=> array( 'mode' ),
-				'ignoreChanges' 	=> array(),
-				'convertToInt'		=> array( 'content_type_id', 'mode', 'ordering', 'state', 'required' ),
-				'displayLookup'		=> array(
-					array(
-						'sourceColumn'		=> 'content_type_id',
-						'targetTable'		=> '#__content_types',
-						'targetColumn'		=> 'type_id',
-						'displayColumn'		=> 'type_title'
-					)
-				)
-				
-				
-				
-			)
-		);
-		
-		return (array) $contentType;
+		$installerClass = 'FieldsandfiltersInstaller' . ucfirs($class);
+		if (!class_exists($installerClass))
+		{
+			$path = 'administrator.helpers.installer.' . strtolower($class);
+			JLoader::import($path, $adapter->getParent()->getPath('source'));
+
+			if (!class_exists($installerClass))
+			{
+				// FieldsandfiltersInstallerScript error
+				JFactory::getApplication()->enqueueMessage($installerClass . ' class not exists', 'error');
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

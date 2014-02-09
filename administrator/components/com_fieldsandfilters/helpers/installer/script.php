@@ -89,18 +89,16 @@ class FieldsandfiltersInstallerScript
 		return $oldVersion;
 	}
         
-        protected function checkContentTypes()
+        protected function checkContentTypes($type)
 	{
-		$contentTypes = $this->getContentType();
-		
-		foreach( $contentTypes AS &$contentType )
+		foreach( $this->contentType AS &$contentType )
 		{
 			self::checkContentType( $contentType );
 		}
 		
 		if( $this->type == 'update' && version_compare( $this->getOldVersion(), 1.2, '<' ) )
 		{
-			self::updateContentType();
+			self::updateContentType($type);
 		}
 	}
 	
@@ -138,9 +136,9 @@ class FieldsandfiltersInstallerScript
 		}
 	}
         
-        protected function updateContentType()
+    protected function updateContentType($type)
 	{
-		$contentType = $this->getContentType();
+		$contentType = $this->getContentType($type);
 		
 		if( !( $contentTypeAlias = $contentType->get( 'type_alias' ) ) || $this->oldExtensionType )
 		{
