@@ -32,7 +32,7 @@ class KextensionsPlugin
 		{
 			return null;
 		}
-		
+
 		// Start capturing output into a buffer
 		ob_start();
 		

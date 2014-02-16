@@ -35,6 +35,11 @@ $.fn[faf] = function( type, options )
 			
 			$fn.pagination( $this, options );
 		break;
+		case 'reset':
+			$this.on('click', function(){
+				$( $fn.selector( 'form' )+":eq(0)" ).trigger( 'clear' );
+			});
+		break;
 		case 'filters' :
 		default:
 			options = $.extend( true, {
@@ -74,23 +79,31 @@ $.fn[faf] = function( type, options )
 			// $fn.setCounts( $this );
 			
 			// add event submint form
-			$this.submit( function( event ){
-				/* stop form from submitting normally */
-				event.preventDefault();
-				
-				$fn.pagination( 'reset' );
-				$fn.ajax( $( this ) );
-			}).removeClass( $fn.selector( 'loadingClass' ) )
-			.find( $fn.selector( 'reset' ) ).add( $fn.selector( 'empty' ) ).on( 'click', function( event ) {
-				event.preventDefault();
-				
-				if( $this.serialize() || !$this.find( $fn.selector( 'input' ) + ':visible' ).size() )
-				{
-					$( $fn.selector( 'form' ) ).trigger( 'reset' );
-					$this.trigger( 'submit' );
+			$this.on({
+				"submit": function( e ){
+					/* stop form from submitting normally */
+					e.preventDefault();
+
+					$fn.pagination( 'reset' );
+					$fn.ajax( $( this ) );
+				},
+				"clear": function(e){
+					e.preventDefault();
+
+					if( $(this).serialize() || !$(this).find( $fn.selector( 'input' ) + ':visible' ).size() )
+					{
+						$( $fn.selector( 'form' ) ).trigger( 'reset' );
+						$(this).triggerHandler( 'submit' );
+					}
 				}
-			}).filter( $fn.selector( 'empty' ) ).hide();
-		
+			})
+			.removeClass( $fn.selector( 'loadingClass' ) )
+			.find([$fn.selector( 'reset'), $fn.selector( 'empty' )].join()).on( 'click', function( e ) {
+				e.preventDefault();
+				$this.trigger( 'clear' );
+			})
+			.filter( $fn.selector( 'empty' ) ).hide();
+
 		break;
 	}
 	

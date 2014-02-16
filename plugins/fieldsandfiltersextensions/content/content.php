@@ -849,18 +849,26 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( !$emptyItemsID )
 		{
 			ob_start();
-				
+
 			$view->display();
-			
+
 			$body = ob_get_contents();
-			
+
 			ob_end_clean();
 		}
 		else
 		{
-			$body = JText::_( 'PLG_FAF_ES_CT_ERROR_NOT_MATCH_TO_FILTERS' );
+			$this->loadLanguage();
+
+			$variables 		= new JObject;
+			$variables->type	= $this->_type;
+			$variables->name	= $this->_name;
+			$variables->params	= $this->params;
+			$variables->extension 	= $extension;
+
+			$body = KextensionsPlugin::renderLayout( $variables, FieldsandfiltersLayout::getLayout($this->params, 'empty_layout', 'empty'));
 		}
-		
+
 		$itemsID 	= $model->getState( 'fieldsandfilters.itemsID', array() );
 		$fieldsID 	= $jinput->get( 'fields', array(), 'array' );
 		
@@ -881,13 +889,13 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		
 		if( !$emptyItemsID )
 		{
-			$js[] = 'jQuery(document).ready(function($) {';
-			$js[] = '	$("' . $this->params->get( 'selector_pagination_filters', '.pagination' ) . '").fieldsandfilters("pagination"'
+			$script[] = 'jQuery(document).ready(function($) {';
+			$script[] = '	$("' . $this->params->get( 'selector_pagination_filters', '.pagination' ) . '").fieldsandfilters("pagination"'
 						. ( $app->get( 'sef', 0 ) ? ',{pagination: "start"}' : '' )
 						. ');';
-			$js[] = '});';
+			$script[] = '});';
 			
-			$document->addScriptDeclaration( implode( "\n", $js ) );
+			$document->addScriptDeclaration( implode( "\n", $script ) );
 		}
 	}
 }

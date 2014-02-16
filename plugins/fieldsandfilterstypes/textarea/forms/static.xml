@@ -89,7 +89,7 @@
 					<field
 						name="field_layout"
 						type="fieldsandfiltersPluginLayout"
-						modeType="static"
+						layoutFolder="static"
 						label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
 						description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
 					/>

@@ -73,7 +73,7 @@
 					<field
 						name="field_layout"
 						type="fieldsandfiltersPluginLayout"
-						modeType="field"
+						layoutFolder="field"
 						label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
 						description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
 					/>

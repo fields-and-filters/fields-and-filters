@@ -12,7 +12,6 @@ defined( '_JEXEC' ) or die;
 
 if( JFactory::getConfig()->get('debug') )
 {
-        $field  = $plugin->field;
-        $layout = $field->params->get( 'type.field_layout' );
-        echo JText::sprintf( 'PLG_FAF_TS_ERROR_TEMPLATE_NOT_EXISTS', $field->field_name, $layout );
+	KextensionsLanguage::load('com_fieldsandfilters');
+	echo JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_LAYOUT_PLUGIN_NOT_EXISTS', $plugin->field->params->get( 'type.field_layout' ), $plugin->type.'/'.$plugin->name.'/'.$plugin->field->name );
 }

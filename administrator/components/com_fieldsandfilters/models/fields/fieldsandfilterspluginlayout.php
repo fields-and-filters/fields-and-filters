@@ -59,7 +59,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 	 * @var    mixed
 	 * @since  1.2.0
 	 */
-	protected $modeType;
+	protected $layoutFolder;
 	
 	/**
 	 * The size of the form field.
@@ -94,7 +94,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 		{
 			case 'parentField':
 			case 'pluginType':
-			case 'modeType':
+			case 'layoutFolder':
 				return $this->$name;
 			
 			/* @deprecated >= J3.2 */
@@ -127,8 +127,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 			
 			case 'pluginType':
 			case 'pluginName':
-			case 'modeType':
-				case 'pluginType':
+			case 'layoutFolder':
 				$value = (string) $value;
 				$this->$name = preg_replace('#\W#', '', $value);
 				break;
@@ -174,7 +173,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 		
 		if ($return)
 		{
-			$attributes = array('parentField', 'pluginType', 'modeType', 'size', 'class'); /* class is @deprecated >= J3.2 */
+			$attributes = array('parentField', 'pluginType', 'layoutFolder', 'size', 'class'); /* class is @deprecated >= J3.2 */
 			foreach ($attributes as $attributeName)
 			{
 				if (isset($element[$attributeName]))
@@ -183,7 +182,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 				}
 			}
 			
-			if ($this->form instanceof JForm)
+			if ($this->form instanceof JForm && !$this->pluginName)
 			{
 				$this->__set('pluginName', $this->form->getValue($this->parentField));
 			}
@@ -227,7 +226,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 			$templates = $db->setQuery($query)->loadObjectList('element');
 
 			// Build the search paths for module layouts.
-			$plugin_path = JPath::clean(JPATH_PLUGINS . "/{$this->pluginType}/{$this->pluginName}/tmpl/{$this->modeType}");
+			$plugin_path = JPath::clean(JPATH_PLUGINS . "/{$this->pluginType}/{$this->pluginName}/tmpl/{$this->layoutFolder}");
 			
 			// Prepare array of component layouts
 			$plugin_layouts = array();
@@ -261,7 +260,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 					// Load language file
 					KextensionsLanguage::load('tpl_' . $template->element, JPATH_SITE);
 					
-					$template_path = JPath::clean(JPATH_SITE . "/templates/{$template->element}/html/$extension/{$this->modeType}");
+					$template_path = JPath::clean(JPATH_SITE . "/templates/{$template->element}/html/$extension/{$this->layoutFolder}");
 					
 					// Add the layout options from the template path.
 					if (is_dir($template_path) && ($files = JFolder::files($template_path, '^[^_]*\.php$')))

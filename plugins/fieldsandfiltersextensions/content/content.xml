@@ -21,6 +21,7 @@
 	<files>
 		<filename plugin="content">content.php</filename>
 		<filename>index.html</filename>
+		<folder>tmpl</folder>
 		<folder>forms</folder>
 		<folder>overrides</folder>
 	</files>
@@ -66,6 +67,7 @@
 					type="spacer"
 					label="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_LBL"
 					description="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_DESC"
+					addfieldpath="/administrator/components/com_fieldsandfilters/models/fields"
 				/>
 					<!--
 					<field
@@ -126,6 +128,39 @@
 						<option value="">JDEFAULT</option>
 						<option value="OR">COM_FIELDSANDFILTERS_OR</option>
 						<option value="AND">COM_FIELDSANDFILTERS_AND</option>
+					</field>
+
+					<field
+						name="empty_layout"
+						type="fieldsandfiltersPluginLayout"
+						layoutFolder="empty"
+						parentField="element"
+						pluginType="fieldsandfiltersextensions"
+						label="PLG_FAF_ES_CT_FORM_EMPTY_LAYOUT_LBL"
+						description="PLG_FAF_ES_CT_FORM_EMPTY_LAYOUT_DESC"
+					/>
+
+					<field
+						name="empty_layout"
+						type="fieldsandfiltersPluginLayout"
+						layoutFolder="empty"
+						parentField="element"
+						pluginType="fieldsandfiltersextensions"
+						label="PLG_FAF_ES_CT_FORM_EMPTY_LAYOUT_LBL"
+						description="PLG_FAF_ES_CT_FORM_EMPTY_LAYOUT_DESC"
+					/>
+
+					<field
+							name="show_reset"
+							type="radio"
+							class="btn-group"
+							label="PLG_FAF_ES_CT_FORM_SHOW_RESET_LBL"
+							description="PLG_FAF_ES_CT_FORM_SHOW_RESET_DESC"
+							default="0"
+							filter="int"
+							>
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
 					</field>
 			</fieldset>
 		</fields>

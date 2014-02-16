@@ -34,22 +34,22 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 	{
 		// Initiliase variables.
 		$app 		= JFactory::getApplication(  );
-		$pk		= $app->input->get( 'id', 0, 'int' );
-		$Itemid 	= $app->input->get( 'Itemid', 0, 'int' );
-		
+		$pk  = $app->input->getInt('id');
+
 		$this->setState( 'category.id', $pk );
 		
 		// Load the parameters. Merge Global and Menu Item params into new object
 		$params = $app->getParams( 'com_content' );
-		$menuParams = new JRegistry;
 
 		if( $menu = $app->getMenu()->getActive() )
 		{
-			$menuParams = $menu->params;
-			// $menuParams->loadString( $menu->params );
+			$mergedParams = ($menu->params instanceof JRegistry) ? clone $menu->params : new JRegistry($menu->params);
+		}
+		else
+		{
+			$mergedParams = new JRegistry();
 		}
 		
-		$mergedParams = clone $menuParams;
 		$mergedParams->merge( $params );
 		
 		$this->setState( 'params', $mergedParams );
@@ -58,7 +58,6 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 		// Create a new query object.
 		$db	= $this->getDbo();
 		$query	= $db->getQuery(true);
-		$groups	= implode( ',', $user->getAuthorisedViewLevels() );
 
 		if ((!$user->authorise( 'core.edit.state', 'com_content' ) ) &&  (!$user->authorise( 'core.edit', 'com_content' ) )){
 			// limit to published for people who can't edit or edit.state.
@@ -67,10 +66,11 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 			$nullDate = $db->Quote($db->getNullDate() );
 			$nowDate = $db->Quote(JFactory::getDate()->toSQL() );
 
-			$query->where( '(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')' );
-			$query->where( '(a.publish_down = ' . $nullDate . ' OR a.publish_down >= ' . $nowDate . ')' );
+			$query->where('(a.publish_up = ' . $nullDate . ' OR a.publish_up <= ' . $nowDate . ')')
+				->where('(a.publish_down = ' . $nullDate . ' OR a.publish_down >= ' . $nowDate . ')');
 		}
-		else {
+		else
+		{
 			$this->setState( 'filter.published', array( 0, 1, 2 ) );
 		}
 
@@ -87,10 +87,10 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 		$this->setState( 'list.filter', $app->input->getString( 'filter-search' ) );
 
 		// filter.order
-		$itemid = $pk. ':' . $Itemid;
+		$itemid = $app->input->get('id', 0, 'int') . ':' . $app->input->get('Itemid', 0, 'int');
 		$orderCol = $app->getUserStateFromRequest( 'com_content.category.list.' . $itemid . '.filter_order', 'filter_order', '', 'string' );
-		
-		if( !in_array( $orderCol, $this->filter_fields ) ) {
+		if( !in_array( $orderCol, $this->filter_fields ) )
+		{
 			$orderCol = 'a.ordering';
 		}
 		$this->setState( 'list.ordering', $orderCol);
@@ -140,7 +140,6 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 	 */
 	public function getItems()
 	{
-		$params = $this->getState()->get( 'params' );
 		$limit = $this->getState( 'list.limit' );
 		
 		if( $this->_articles === null && $category = $this->getCategory() )
