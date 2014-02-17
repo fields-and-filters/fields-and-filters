@@ -123,6 +123,6 @@ class FieldsandfiltersFieldsField
 	 **/
 	public static function getLayout($type, $mode, JRegistry $params)
 	{
-		return FieldsandfiltersLayout::getLayout($params, $type.'_layout', $mode, 'type');
+		return FieldsandfiltersPlugin::getLayout($params, $type.'_layout', $mode, 'type');
 	}
 }

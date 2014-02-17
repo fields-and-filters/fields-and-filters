@@ -11,12 +11,12 @@
 defined('_JEXEC') or die;
 
 /**
- * FieldsandfiltersLayout
+ * FieldsandfiltersPlugin
  *
  * @package     com_fieldsandfilters
  * @since       1.2.0
  */
-abstract class FieldsandfiltersLayout
+abstract class FieldsandfiltersPlugin
 {
 	/**
 	 * @since       1.2.0

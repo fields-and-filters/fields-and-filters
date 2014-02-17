@@ -321,7 +321,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$attribs = new JRegistry( $attribs );
 			$item->attribs = (string) $attribs;
 		}
-		elseif($this->params->get('frontend_edit', false) && $context == 'com_content.form')
+		elseif($context == 'com_content.form' && $this->params->get('frontend_edit', false))
 		{
 			$jform = JFactory::getApplication()->input->post->get('jform', array(), 'array');
 
@@ -876,7 +876,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$variables->params	= $this->params;
 			$variables->extension 	= $extension;
 
-			$body = KextensionsPlugin::renderLayout( $variables, FieldsandfiltersLayout::getLayout($this->params, 'empty_layout', 'empty'));
+			$body = KextensionsPlugin::renderLayout( $variables, FieldsandfiltersPlugin::getLayout($this->params, 'empty_layout', 'empty'));
 		}
 
 		$itemsID 	= $model->getState( 'fieldsandfilters.itemsID', array() );
