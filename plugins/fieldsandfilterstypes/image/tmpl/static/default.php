@@ -119,7 +119,7 @@ if( $src ) :
                                         // open in a modal window
                                         JHtml::_( 'behavior.modal', 'a.faf-modal' );
                                         $attribs['class']       = $attribs['class'] . ' faf-modal';
-                                        $attribs['rel']         = "{handler: 'iframe', size: {x:600, y:600}}'";
+                                        $attribs['rel']         = "{handler: 'iframe', size: {x:600, y:600}}";
                                 break;
                                 case 4:
                                 default:
