@@ -104,7 +104,7 @@ if( $src ) :
         elseif( $link = $image->get( 'link' ) )
         {
                 $attribs = array( 'class' => 'faf-link', 'alt' => $title );
-                switch( $image->def( 'target', $field->params->get( 'target' ) ) )
+                switch( $image->def( 'target', $field->params->get( 'base.target' ) ) )
                 {
                                 case 1:
                                         // open in a new window
