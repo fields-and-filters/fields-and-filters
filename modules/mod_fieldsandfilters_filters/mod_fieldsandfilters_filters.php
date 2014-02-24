@@ -45,7 +45,8 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 				'task' 		=> 'request.filters',
 				'tmpl' 		=> 'component',
 				'format'	=> 'json',
-				'Itemid'	=> $app->input->get( 'Itemid', 0, 'int' )
+				'Itemid'	=> $app->input->get( 'Itemid', 0, 'int' ),
+				'context'   => $context
 		);
 		
 		$request = array_merge( $request, $filtersRequest );

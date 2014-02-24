@@ -647,7 +647,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	 */
 	public function onFieldsandfiltersPrepareFiltersHTML( $context, Jobject $filters, $fieldsID = null, $getAllextensions = true, JRegistry $params = null, $ordering = 'ordering' )
 	{
-		if( $context != 'com_content.category' )
+		if( !($contextOptions = $this->getContextOptions($context) ))
 		{
 			return;
 		}
@@ -660,16 +660,15 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 		$extensionContent = $extensionsHelper->getExtensionsByName( $this->_name )->get( $this->_name );
 
-		if( !$id || !$extensionContent )
+		if( ($contextOptions->isCategory && !$id) || !$extensionContent )
 		{
 			return;
 		}
 
 		// add model path
-		$prefix = get_class( $this );
-		JModelLegacy::addIncludePath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $prefix . 'Model' ) );
+		JModelLegacy::addIncludePath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $contextOptions->prefix . 'Model' ) );
 
-		if( !( $model = JModelLegacy::getInstance( 'category', ( $prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
+		if( !( $model = JModelLegacy::getInstance( $contextOptions->class, ( $contextOptions->prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
 		{
 			return;
 		}
@@ -682,7 +681,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 
 		// Load Filters Helper
-		$counts = FieldsandfiltersFiltersHelper::getFiltersValuesCount( $extensionContent->content_type_id, $fieldsID, $itemsID );
+		$counts = FieldsandfiltersFiltersHelper::getFiltersValuesCount( $extensionContent->content_type_id, $fieldsID, $itemsID, $contextOptions->state );
 
 		if( empty( $counts ) )
 		{
@@ -750,6 +749,28 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$filters->set( 'pagination', array( 'limitstart' => 0 ) );
 		}
 
+		// [TODO] przniesc do fieldsandfilters.js
+		/* [TEST]
+		if( $isArchive )
+		{
+			$selector = $this->params->get('selector_content_archive_form', '#adminForm' );
+			$script = array( $jregistry->get( 'filters.script', '') );
+			$script[] = 'jQuery(document).ready(function($){';
+			$script[] = '	$.fieldsandfilters.onSerialize = function(data){';
+			$script[] = '		$("' . $selector . '").each( function(){';
+			$script[] = '			$.each($(this).serializeArray(), function(k, obj){';
+			$script[] = '				if( $.inArray( obj.name, ["month", "year", "limit"] ) != -1 && obj.value ){';
+			$script[] = '					data[obj.name] = obj.value;';
+			$script[] = '				}';
+			$script[] = '			});';
+			$script[] = '		});';
+			$script[] = '	};';
+			$script[] = '});';
+
+			$jregistry->set( 'filters.script', implode( "\n", $script ) );
+		}
+		@end [TEST] */
+
 		return implode( "\n", $templateFields );
 	}
 
@@ -768,18 +789,24 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$document	= JFactory::getDocument();
 		$basePath	= JPATH_SITE . '/components/com_content';
 		$id 		= $jinput->get( 'id', 0, 'int' );
+		$context    = $jinput->get( 'context' );
+
+		if (!($contextOptions = $this->getContextOptions($jinput->get('context'))))
+		{
+			return false;
+		}
 
 		// Load PluginExtensions Helper
 		$extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( $this->_name )->get( $this->_name );
 
-		if( !$id || !$extension )
+		if( ($contextOptions->isCategory && !$id) || !$extension )
 		{
 			return false;
 		}
 
 		// set new jinput values
 		$jinput->set( 'option', 'com_content' );
-		$jinput->set( 'view', 'category' );
+		$jinput->set( 'view', $contextOptions->class );
 		// $jinput->set( 'layout', 'blog' );
 		$jinput->set( 'id', $jinput->get( 'id', 0, 'int' ) );
 
@@ -794,7 +821,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 
 		// load view
-		if( !( $view = $controller->getView( 'category', 'html', '', array( 'base_path' => $basePath, 'layout' => $jinput->get( 'layout', 'default' ) ) ) ) )
+		if( !( $view = $controller->getView( $contextOptions->class, 'html', '', array( 'base_path' => $basePath, 'layout' => $jinput->get( 'layout', 'default' ) ) ) ) )
 		{
 			return false;
 		}
@@ -802,7 +829,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// For joomla 2.5 && Key Reference
 		if( !FieldsandfiltersFactory::isVersion() )
 		{
-			$view->addTemplatePath( JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_content/category' );
+			$view->addTemplatePath( JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_content/' . $contextOptions->class );
 		}
 
 		$fieldsandfilters = $jinput->get( 'fieldsandfilters', array(), 'array' );
@@ -823,7 +850,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$extensionsParams->set( 'plugin.value', $this->params->get( 'comparison_between_values_filters' ) );
 			$betweenValues = FieldsandfiltersExtensionsHelper::getParams( 'comparison_between_values_filters', $extensionsParams, 'OR' );
 
-			$itemsID = FieldsandfiltersFiltersHelper::getItemsIDByFilters( $extension->content_type_id, $fieldsandfilters, 1, $betweenFilters, $betweenValues );
+			$itemsID = FieldsandfiltersFiltersHelper::getItemsIDByFilters( $extension->content_type_id, $fieldsandfilters, $contextOptions->state, $betweenFilters, $betweenValues );
 		}
 		else
 		{
@@ -831,10 +858,9 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 
 		// add model path
-		$prefix = get_class( $this );
-		$controller->addModelPath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $prefix . 'Model' ) );
+		$controller->addModelPath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $contextOptions->prefix . 'Model' ) );
 
-		if( !( $model = $controller->getModel( 'category', ( $prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
+		if( !( $model = $controller->getModel( $contextOptions->class, ( $contextOptions->prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
 		{
 			return false;
 		}
@@ -885,7 +911,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( !empty( $itemsID ) && !empty( $fieldsID ) && !$emptyItemsID  )
 		{
 			// Load Filters Helper
-			$counts = (array) FieldsandfiltersFiltersHelper::getFiltersValuesCount( $extension->content_type_id, $fieldsID, $itemsID );
+			$counts = (array) FieldsandfiltersFiltersHelper::getFiltersValuesCount( $extension->content_type_id, $fieldsID, $itemsID, $contextOptions->state );
 
 			$data->set( 'counts', $counts );
 		}
@@ -903,9 +929,52 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$script[] = '	$("' . $this->params->get( 'selector_pagination_filters', '.pagination' ) . '").fieldsandfilters("pagination"'
 				. ( $app->get( 'sef', 0 ) ? ',{pagination: "start"}' : '' )
 				. ');';
+
+			// todo postarac sie przeniesc do fieldsandfilters.js
+			/*
+			if( $isArchive )
+			{
+				$selector = $this->params->get('selector_content_archive_form', '#adminForm' );
+				$js[] = '	$("' . $selector . '").on( "submit", function(event){';
+				$js[] = '		event.preventDefault();';
+				$js[] = '		$($.fieldsandfilters.selector("form") + ":first").trigger( "submit" );';
+				$js[] = '		return false;';
+				$js[] = '	});';
+			}*/
+
 			$script[] = '});';
 
 			$document->addScriptDeclaration( implode( "\n", $script ) );
 		}
+	}
+
+	protected function getContextOptions($context)
+	{
+		if ($context != 'com_content.category' && $context != 'com_content.archive')
+		{
+			return false;
+		}
+
+		$options = new stdClass();
+		$options->prefix = get_class( $this );
+		$options->isArchive = $options->isCategory = false;
+
+		switch ($context)
+		{
+			case 'com_content.category':
+
+				$options->isCategory = true;
+				$options->class = 'category';
+				$options->state = 1;
+				break;
+			case 'com_content.archive':
+
+				$options->isArchive = true;
+				$options->class = 'archive';
+				$options->state = 2;
+				break;
+		}
+
+		return $options;
 	}
 }
