@@ -15,7 +15,7 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 {
 	$app = JFactory::getApplication();
 	$context = $app->input->get( 'option' ) . '.' . $app->input->get( 'view' );
-	
+
 	// Load Extensions Helper
 	$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 
@@ -27,9 +27,12 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 	
 	$showAllextensions = FieldsandfiltersExtensionsHelper::getParams( 'use_allextensions_filters', $extensionsParams, true );
 
-	$filters = new JObject();
+	$extensionsParams->set( 'module.value', $params->get( 'selector_body_filters' ) );
 
-	JPluginHelper::importPlugin( 'fieldsandfiltersExtensions' );
+	$filters = new JObject();
+	$filters->set('selector_body', trim( FieldsandfiltersExtensionsHelper::getParams( 'selector_body_filters', $extensionsParams, '#content' ) ));
+
+	JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 
 	// Trigger the onFieldsandfiltersPrepareFiltersHTML event.
 	$app->triggerEvent( 'onFieldsandfiltersPrepareFiltersHTML', array( $context, $filters, $fieldsID, $showAllextensions ) );
@@ -62,10 +65,10 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		);
 		
 		// get selectors
-		$extensionsParams->set( 'module.value', $params->get( 'selector_body_filters' ) );
-		if( $selectorBody = trim( FieldsandfiltersExtensionsHelper::getParams( 'selector_body_filters', $extensionsParams, '#content' ) ) )
+
+		if( $filters->get('selector_body') )
 		{
-			$selectors['body'] = $selectorBody;
+			$selectors['body'] = $filters->get('selector_body');
 		}
 		
 		if( !empty( $selectors ) && is_array( $selectors ) )
@@ -100,6 +103,11 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		$script[]       = 'jQuery(document).ready(function($) {';
 		$script[]       = '     $( "#faf-form-' . $module->id . '" ).fieldsandfilters(' .  $options . ');';
 		$script[]       = '});';
+
+		if ($filters->get('callback'))
+		{
+			$script[] = $filters->get('callback');
+		}
 		
 		JFactory::getDocument()->addScriptDeclaration( implode( "\n", $script ) );
 		

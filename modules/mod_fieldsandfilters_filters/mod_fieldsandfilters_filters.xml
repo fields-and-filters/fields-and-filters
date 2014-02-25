@@ -30,7 +30,7 @@
 					label="MOD_FIELDSANDFILTERS_FIELDS_ID_LBL"
 					description="MOD_FIELDSANDFILTERS_FIELDS_ID_DESC"
 					required="true"
-					input="checkboxes"
+					inputType="checkboxes"
 					filter="int_array"
 				/>
 				<field

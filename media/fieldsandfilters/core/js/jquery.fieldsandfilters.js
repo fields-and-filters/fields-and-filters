@@ -37,8 +37,11 @@ $.fn[faf] = function( type, options )
 		break;
 		case 'reset':
 			$this.on('click', function(){
-				$( $fn.selector( 'form' )+":eq(0)" ).trigger( 'clear' );
+				$($fn.selector( 'form' )+':eq(0)').trigger('clear');
 			});
+		break;
+		case 'submit':
+			$($fn.selector('form')+':eq(0)').trigger('submit');
 		break;
 		case 'filters' :
 		default:

@@ -465,7 +465,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 
 		// Load Elements Helper
-		$elementsID = FieldsandfiltersFactory::getElements()->getElementsByIDColumn( 'element_id', $extensionContent->extension_type_id, $pks, $this->_states, false );
+		$elementsID = FieldsandfiltersFactory::getElements()->getElementsByIDColumn( 'id', $extensionContent->content_type_id, $pks, $this->_states, false );
 
 		if( empty( $elementsID ) )
 		{
@@ -749,6 +749,20 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$filters->set( 'pagination', array( 'limitstart' => 0 ) );
 		}
 
+		if( $contextOptions->isArchive && $filters->get('selector_body') && ($selectorArchiveForm = trim($this->params->get('selector_content_archive_form', '#adminForm' ))) )
+		{
+			$script = array();
+			$script[] = 'jQuery(document).ready(function($) {';
+			$script[] = '	$("'.$filters->get('selector_body').'").on( "submit", "'.$selectorArchiveForm.'", function(event){';
+			$script[] = '		event.preventDefault();';
+			$script[] = '		$(this).fieldsandfilters("submit");';
+			$script[] = '		return false;';
+			$script[] = '	});';
+			$script[] = '});';
+
+			$filters->set('callback', $filters->get('callback') . implode("\n", $script));
+		}
+
 		// [TODO] przniesc do fieldsandfilters.js
 		/* [TEST]
 		if( $isArchive )
@@ -873,10 +887,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		JHtml::addIncludePath( JPATH_SITE . '/components/com_content/helpers' );
 		JHtml::addIncludePath( JPATH_SITE . '/components/com_content/helpers/html' );
 
-		// Load Extensions Helper && Load common and local language files.
-		$option = 'com_content';
-
-		KextensionsLanguage::load( $option );
+		KextensionsLanguage::load( $jinput->get('option') );
 
 		$emptyItemsID = $itemsID->get( 'empty', false );
 		$model->setState( 'fieldsandfilters.itemsID', (array) $itemsID->get( 'itemsID' ) );
@@ -925,23 +936,11 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 
 		if( !$emptyItemsID )
 		{
+			// [TODO] move to another place because we need this only once
 			$script[] = 'jQuery(document).ready(function($) {';
 			$script[] = '	$("' . $this->params->get( 'selector_pagination_filters', '.pagination' ) . '").fieldsandfilters("pagination"'
 				. ( $app->get( 'sef', 0 ) ? ',{pagination: "start"}' : '' )
 				. ');';
-
-			// todo postarac sie przeniesc do fieldsandfilters.js
-			/*
-			if( $isArchive )
-			{
-				$selector = $this->params->get('selector_content_archive_form', '#adminForm' );
-				$js[] = '	$("' . $selector . '").on( "submit", function(event){';
-				$js[] = '		event.preventDefault();';
-				$js[] = '		$($.fieldsandfilters.selector("form") + ":first").trigger( "submit" );';
-				$js[] = '		return false;';
-				$js[] = '	});';
-			}*/
-
 			$script[] = '});';
 
 			$document->addScriptDeclaration( implode( "\n", $script ) );

@@ -21,9 +21,11 @@
 	<files>
 		<filename plugin="content">content.php</filename>
 		<filename>index.html</filename>
-		<folder>tmpl</folder>
 		<folder>forms</folder>
 		<folder>overrides</folder>
+		<folder>sql</folder>
+		<folder>tmpl</folder>
+		<folder>views</folder>
 	</files>
 	
 	<languages>
@@ -107,6 +109,13 @@
 						default=".pagination"
 						label="COM_FIELDSANDFILTERS_SELECTOR_PAGINATION_FILTERS_LBL"
 						description="COM_FIELDSANDFILTERS_SELECTOR_PAGINATION_FILTERS_DESC"
+					/>
+					<field
+						name="selector_content_archive_form"
+						type="text"
+						default="#adminForm"
+						label="COM_FIELDSANDFILTERS_SELECTOR_CONTENT_ARCHIVE_FORM_LBL"
+						description="COM_FIELDSANDFILTERS_SELECTOR_CONTENT_ARCHIVE_FORM_DESC"
 					/>
 					<field
 						name="use_allextensions_filters"
