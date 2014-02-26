@@ -803,7 +803,6 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$document	= JFactory::getDocument();
 		$basePath	= JPATH_SITE . '/components/com_content';
 		$id 		= $jinput->get( 'id', 0, 'int' );
-		$context    = $jinput->get( 'context' );
 
 		if (!($contextOptions = $this->getContextOptions($jinput->get('context'))))
 		{
