@@ -30,7 +30,9 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 	$extensionsParams->set( 'module.value', $params->get( 'selector_body_filters' ) );
 
 	$filters = new JObject();
-	$filters->set('selector_body', trim( FieldsandfiltersExtensionsHelper::getParams( 'selector_body_filters', $extensionsParams, '#content' ) ));
+	$filters->set('selectors', array(
+		'body' => trim( FieldsandfiltersExtensionsHelper::getParams( 'selector_body_filters', $extensionsParams, '#content' ) )
+	));
 
 	JPluginHelper::importPlugin( 'fieldsandfiltersextensions' );
 
@@ -65,14 +67,14 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		);
 		
 		// get selectors
-
-		if( $filters->get('selector_body') )
-		{
-			$selectors['body'] = $filters->get('selector_body');
-		}
-		
+		$selectors = $filters->get('selectors');
 		if( !empty( $selectors ) && is_array( $selectors ) )
 		{
+			if (empty($selectors['body']))
+			{
+				unset($selectors['body']);
+			}
+
 			$options['selectors'] = $selectors;
 		}
 		
@@ -103,11 +105,6 @@ if( $fieldsID = $params->get( 'fields_id' ) )
 		$script[]       = 'jQuery(document).ready(function($) {';
 		$script[]       = '     $( "#faf-form-' . $module->id . '" ).fieldsandfilters(' .  $options . ');';
 		$script[]       = '});';
-
-		if ($filters->get('callback'))
-		{
-			$script[] = $filters->get('callback');
-		}
 		
 		JFactory::getDocument()->addScriptDeclaration( implode( "\n", $script ) );
 		

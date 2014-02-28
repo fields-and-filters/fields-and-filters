@@ -111,11 +111,18 @@
 						description="COM_FIELDSANDFILTERS_SELECTOR_PAGINATION_FILTERS_DESC"
 					/>
 					<field
-						name="selector_content_archive_form"
+						name="selector_other_category"
 						type="text"
 						default="#adminForm"
-						label="COM_FIELDSANDFILTERS_SELECTOR_CONTENT_ARCHIVE_FORM_LBL"
-						description="COM_FIELDSANDFILTERS_SELECTOR_CONTENT_ARCHIVE_FORM_DESC"
+						label="COM_FIELDSANDFILTERS_SELECTOR_OTHER_CATEGORY_LBL"
+						description="COM_FIELDSANDFILTERS_SELECTOR_OTHER_CATEGORY_DESC"
+					/>
+					<field
+						name="selector_other_archive"
+						type="text"
+						default="#adminForm"
+						label="COM_FIELDSANDFILTERS_SELECTOR_OTHER_ARCHIVE_LBL"
+						description="COM_FIELDSANDFILTERS_SELECTOR_OTHER_ARCHIVE_DESC"
 					/>
 					<field
 						name="use_allextensions_filters"

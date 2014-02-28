@@ -56,8 +56,10 @@ $.fn[faf] = function( type, options )
 					fieldset: '.faf-filters',
 					empty	: '.faf-form-empty',
 					submit	: '.faf-form-submit',
+					other   : '',
 					loadingClass : 'faf-filters-loading'
 				},
+				excluded: ['view'],
 				setCount : true,
 				hideCount : true
 			}, options );
@@ -93,11 +95,18 @@ $.fn[faf] = function( type, options )
 				"clear": function(e){
 					e.preventDefault();
 
-					if( $(this).serialize() || !$(this).find( $fn.selector( 'input' ) + ':visible' ).size() )
-					{
-						$( $fn.selector( 'form' ) ).trigger( 'reset' );
-						$(this).triggerHandler( 'submit' );
+					if (($other = $fn.selector('other')) && ($($other).serialize())) {
+						$($other)
+							.find('input:text, input:password, input:file, select, textarea')
+							.val('')
+							.end()
+							.find('input:radio, input:checkbox')
+							.removeAttr('checked')
+							.removeAttr('selected');
 					}
+
+					$( $fn.selector( 'form') ).trigger( 'reset' );
+					$(this).triggerHandler( 'submit' );
 				}
 			})
 			.removeClass( $fn.selector( 'loadingClass' ) )
@@ -158,15 +167,32 @@ $.extend( $fn, {
 			// data temporalary for requerst
 			this.set( '$data', {} );
 			this.set( '$url', this.get( options, 'url', '#' ) );
+
 			// token
 			this.token( this.get( options, 'token', null ) );
 			
 			// append function
 			this.fn( this.get( options, 'fn', {} ) );
-			
+
+			// add event for other forms
+			if (this.selector('other')) {
+				$(this.selector('body')).on('submit', this.selector('other'), function(e){
+					e.preventDefault();
+					$(this).fieldsandfilters('submit');
+					return false;
+				});
+			}
+
+			// excluded
+			this.set('$excluded',
+				$.merge($.map(this.get('$request', {}), function(v, key) {
+					return key;
+				}),
+				this.get( options, 'excluded', [])
+			));
+
 			// is init
 			this.set( '$init', true );
-			
 		}
 	},
 	
@@ -375,7 +401,7 @@ $.extend( $fn, {
 	
 	selector : function( name, def )
 	{
-		return this.get( ( '$selectors.' + name ), def );	
+		return $.trim(this.get(('$selectors.'+name), def || ''));
 	},
 	
 	ajax : function( $form )
@@ -395,7 +421,7 @@ $.extend( $fn, {
 			}
 			
 			$fn.set( '$data', {} );
-			$.extend( true, this.get( '$data', {} ), this.serialize() );
+			$.extend( true, this.get( '$data', {} ), serialize );
 			this.set( data, 'module', $fn.get( options, 'module', null ) );
 		}
 		
@@ -624,20 +650,30 @@ $.extend( $fn, {
 	
 	serialize : function( $form )
 	{
-		var obj = {}, prop, name, value;
+		var obj = {}, prop, excluded = this.get('$excluded', []);
 		$form = $form || this.selector( 'form' );
-		
-		$( $form ).serializeArray().each(function( el ) {
-			if( ( prop = $fn.get( obj, el.name ) ) )
+
+		if (this.selector('other')) {
+			$form = [$form, this.selector('other')].join();
+		}
+
+		$($form).serializeArray().each(function( el ) {
+			if ($.inArray(el.name, excluded) != -1) {
+				return false;
+			}
+
+			if ( ( prop = $fn.get( obj, el.name ) ) )
 			{
 				if( !$.isArray( prop ) )
 				{
 					prop = $fn.set( obj, el.name, [ prop ] );
 				}
-				
-				prop.push( el.value || '' );
+
+				if (el.value) {
+					prop.push(el.value);
+				}
 			}
-			else
+			else if (el.value)
 			{
 				$fn.set( obj, el.name, el.value );
 			}

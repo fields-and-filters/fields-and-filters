@@ -749,19 +749,18 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$filters->set( 'pagination', array( 'limitstart' => 0 ) );
 		}
 
-		if( $contextOptions->isArchive && $filters->get('selector_body') && ($selectorArchiveForm = trim($this->params->get('selector_content_archive_form', '#adminForm' ))) )
-		{
-			$script = array();
-			$script[] = 'jQuery(document).ready(function($) {';
-			$script[] = '	$("'.$filters->get('selector_body').'").on( "submit", "'.$selectorArchiveForm.'", function(event){';
-			$script[] = '		event.preventDefault();';
-			$script[] = '		$(this).fieldsandfilters("submit");';
-			$script[] = '		return false;';
-			$script[] = '	});';
-			$script[] = '});';
+		$selectors = $filters->get('selectors');
 
-			$filters->set('callback', $filters->get('callback') . implode("\n", $script));
+		if ($contextOptions->isCategory && ($selector = trim($this->params->get('selector_other_category', '' ))))
+		{
+			$selectors['other'] = $selector;
 		}
+		elseif ($contextOptions->isArchive && ($selector = trim($this->params->get('selector_other_archive', '#adminForm' ))))
+		{
+			$selectors['other'] = $selector;
+		}
+
+		$filters->set('selectors', $selectors);
 
 		// [TODO] przniesc do fieldsandfilters.js
 		/* [TEST]
