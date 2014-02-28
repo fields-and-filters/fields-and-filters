@@ -61,8 +61,6 @@ class plgFieldsandfiltersExtensionsContentModelArchive extends ContentModelArchi
 	protected function getListQuery()
 	{
 		// Create a new query object.
-		$db = $this->getDbo();
-		
 		$query = parent::getListQuery();
 		
 		// Filter Fieldsandfilters itemsID
@@ -72,7 +70,7 @@ class plgFieldsandfiltersExtensionsContentModelArchive extends ContentModelArchi
 		if( !empty( $itemsID ) && !$emptyItemsID  )
 		{
 			JArrayHelper::toInteger( $itemsID );
-			$query->where( $db->quoteName( 'a.id' ) . ' IN( ' . implode( ',', $itemsID ) . ')' );
+			$query->where( $this->getDbo()->quoteName( 'a.id' ) . ' IN( ' . implode( ',', $itemsID ) . ')' );
 		}
 		
 		return $query;
@@ -104,21 +102,6 @@ class plgFieldsandfiltersExtensionsContentModelArchive extends ContentModelArchi
 		}
 
 		return $this->_data;
-	}
-
-	// JModelLegacy override to add alternating value for $odd
-	protected function _getList($query, $limitstart=0, $limit=0)
-	{
-		$result = parent::_getList($query, $limitstart, $limit);
-
-		$odd = 1;
-		foreach ($result as $k => $row)
-		{
-			$result[$k]->odd = $odd;
-			$odd = 1 - $odd;
-		}
-
-		return $result;
 	}
 	
 	/**

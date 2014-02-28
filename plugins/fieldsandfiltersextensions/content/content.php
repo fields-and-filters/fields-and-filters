@@ -647,6 +647,10 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	 */
 	public function onFieldsandfiltersPrepareFiltersHTML( $context, Jobject $filters, $fieldsID = null, $getAllextensions = true, JRegistry $params = null, $ordering = 'ordering' )
 	{
+		echo '<pre>';
+		print_r($context); // com_content.featured
+		echo '</pre>';
+
 		if( !($contextOptions = $this->getContextOptions($context) ))
 		{
 			return;
@@ -681,7 +685,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 
 		// Load Filters Helper
-		$counts = FieldsandfiltersFiltersHelper::getFiltersValuesCount( $extensionContent->content_type_id, $fieldsID, $itemsID, $contextOptions->state );
+		$counts = FieldsandfiltersFiltersHelper::getFiltersValuesCount( $extensionContent->content_type_id, $fieldsID, $itemsID, $model->getState('filter.published'));
 
 		if( empty( $counts ) )
 		{
@@ -832,16 +836,12 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			return false;
 		}
 
-		// load view
-		if( !( $view = $controller->getView( $contextOptions->class, 'html', '', array( 'base_path' => $basePath, 'layout' => $jinput->get( 'layout', 'default' ) ) ) ) )
+		// add model path
+		$controller->addModelPath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $contextOptions->prefix . 'Model' ) );
+
+		if( !( $model = $controller->getModel( $contextOptions->class, ( $contextOptions->prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
 		{
 			return false;
-		}
-
-		// For joomla 2.5 && Key Reference
-		if( !FieldsandfiltersFactory::isVersion() )
-		{
-			$view->addTemplatePath( JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_content/' . $contextOptions->class );
 		}
 
 		$fieldsandfilters = $jinput->get( 'fieldsandfilters', array(), 'array' );
@@ -862,19 +862,23 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 			$extensionsParams->set( 'plugin.value', $this->params->get( 'comparison_between_values_filters' ) );
 			$betweenValues = FieldsandfiltersExtensionsHelper::getParams( 'comparison_between_values_filters', $extensionsParams, 'OR' );
 
-			$itemsID = FieldsandfiltersFiltersHelper::getItemsIDByFilters( $extension->content_type_id, $fieldsandfilters, $contextOptions->state, $betweenFilters, $betweenValues );
+			$itemsID = FieldsandfiltersFiltersHelper::getItemsIDByFilters( $extension->content_type_id, $fieldsandfilters, $model->getState('filter.published'), $betweenFilters, $betweenValues );
 		}
 		else
 		{
 			$itemsID = FieldsandfiltersFiltersHelper::getSimpleItemsID( false );
 		}
 
-		// add model path
-		$controller->addModelPath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $contextOptions->prefix . 'Model' ) );
-
-		if( !( $model = $controller->getModel( $contextOptions->class, ( $contextOptions->prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
+		// load view
+		if( !( $view = $controller->getView( $contextOptions->class, 'html', '', array( 'base_path' => $basePath, 'layout' => $jinput->get( 'layout', 'default' ) ) ) ) )
 		{
 			return false;
+		}
+
+		// For joomla 2.5 && Key Reference
+		if( !FieldsandfiltersFactory::isVersion() )
+		{
+			$view->addTemplatePath( JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_content/' . $contextOptions->class );
 		}
 
 		// set module to view
@@ -920,7 +924,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		if( !empty( $itemsID ) && !empty( $fieldsID ) && !$emptyItemsID  )
 		{
 			// Load Filters Helper
-			$counts = (array) FieldsandfiltersFiltersHelper::getFiltersValuesCount( $extension->content_type_id, $fieldsID, $itemsID, $contextOptions->state );
+			$counts = (array) FieldsandfiltersFiltersHelper::getFiltersValuesCount( $extension->content_type_id, $fieldsID, $itemsID, $model->getState('filter.published'));
 
 			$data->set( 'counts', $counts );
 		}
@@ -956,19 +960,18 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$options->prefix = get_class( $this );
 		$options->isArchive = $options->isCategory = false;
 
+		// [TODO] $options->class change to variable model
 		switch ($context)
 		{
 			case 'com_content.category':
 
 				$options->isCategory = true;
 				$options->class = 'category';
-				$options->state = 1;
 				break;
 			case 'com_content.archive':
 
 				$options->isArchive = true;
 				$options->class = 'archive';
-				$options->state = 2;
 				break;
 		}
 

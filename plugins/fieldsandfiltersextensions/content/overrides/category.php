@@ -13,8 +13,6 @@ defined( '_JEXEC' ) or die;
 
 JLoader::import( 'com_content.models.category', JPATH_SITE . '/components' );
 
-// JLoader::import( 'fieldsandfiltersExtensions.content.overrides.articles', JPATH_PLUGINS );
-
 /**
 * @since       1.0.0
 */
