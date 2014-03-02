@@ -28,6 +28,45 @@ class plgFieldsandfiltersExtensionsContentModelFeatured extends ContentModelFeat
 	protected $context = 'com_content.featured';
 
 	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * This method should only be called once per instantiation and is designed
+	 * to be called on the first call to the getState() method unless the model
+	 * configuration flag to ignore the request is set.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
+	 *
+	 * @return  void
+	 *
+	 * @since   12.2
+	 */
+	protected function populateState($ordering = 'ordering', $direction = 'ASC')
+	{
+		parent::populateState($ordering, $direction);
+
+		$params = JFactory::getApplication()->getParams('com_content');
+		$this->setState('params', $params);
+
+		// Process show_noauth parameter
+		$this->setState('filter.access', !$params->get('show_noauth'));
+
+		$limit = $params->get('num_leading_articles') + $params->get('num_intro_articles') + $params->get('num_links');
+		$this->setState('list.limit', $limit);
+		$this->setState('list.links', $params->get('num_links'));
+
+
+		// check for category selection
+		if ($params->get('featured_categories') && implode(',', $params->get('featured_categories')) == true)
+		{
+			$featuredCategories = $params->get('featured_categories');
+			$this->setState('filter.frontpage.categories', $featuredCategories);
+		}
+	}
+
+	/**
 	 * @return  JDatabaseQuery
 	 */
 	protected function getListQuery()

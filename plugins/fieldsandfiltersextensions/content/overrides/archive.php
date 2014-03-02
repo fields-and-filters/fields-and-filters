@@ -25,40 +25,25 @@ class plgFieldsandfiltersExtensionsContentModelArchive extends ContentModelArchi
 	 */
 	protected $context = 'com_content.archive';
 
+	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @since   1.6
+	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-		parent::populateState();
-		
-		$app = JFactory::getApplication();
-		
+		parent::populateState($ordering, $direction);
 
-		$params = $app->getParams('com_content');
+		$params = JFactory::getApplication()->getParams('com_content');
 		$this->setState('params', $params);
 
-		// process show_noauth parameter
-		if (!$params->get('show_noauth'))
-		{
-			$this->setState('filter.access', true);
-		}
-		else
-		{
-			$this->setState('filter.access', false);
-		}
-		
-		// Add archive properties
-		$params = $this->state->params;
-
-		// Filter on archived articles
-		$this->setState('filter.published', 2);
-
-		// Filter on month, year
-		$this->setState('filter.month', $app->input->getInt('month'));
-		$this->setState('filter.year', $app->input->getInt('year'));
-
-		// Optional filter text
-		$this->setState('list.filter', $app->input->getString('filter-search'));
+		// Process show_noauth parameter
+		$this->setState('filter.access', !$params->get('show_noauth'));
 
 		// Get list limit
+		$app = JFactory::getApplication();
 		$itemid = $app->input->get('Itemid', 0, 'int');
 		$limit = $app->getUserStateFromRequest('com_content.archive.list' . $itemid . '.limit', 'limit', $params->get('display_num'), 'uint');
 		$this->setState('list.limit', $limit);
