@@ -18,6 +18,15 @@ JLoader::import( 'com_content.models.articles', JPATH_SITE . '/components' );
 class plgFieldsandfiltersExtensionsContentModelArticles extends ContentModelArticles
 {
 	/**
+	 * Context string for the model type.  This is used to handle uniqueness
+	 * when dealing with the getStoreId() method and caching data structures.
+	 *
+	 * @var    string
+	 * @since  12.2
+	 */
+	protected $context = 'com_content.articles';
+
+	/**
 	 * Get the master query for retrieving a list of articles subject to the model state.
 	 *
 	 * @return	JDatabaseQuery

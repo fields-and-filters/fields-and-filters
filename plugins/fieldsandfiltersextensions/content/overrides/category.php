@@ -19,7 +19,16 @@ JLoader::import( 'com_content.models.category', JPATH_SITE . '/components' );
 class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCategory
 {
 	protected $_model_articles;
-	
+
+	/**
+	 * Context string for the model type.  This is used to handle uniqueness
+	 * when dealing with the getStoreId() method and caching data structures.
+	 *
+	 * @var    string
+	 * @since  12.2
+	 */
+	protected $context = 'com_content.category';
+
 	/**
 	 * Method to auto-populate the model state.
 	 *

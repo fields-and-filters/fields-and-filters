@@ -31,6 +31,16 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	protected $_states = array( 1, 0 , 2, -2 );
 
 	/**
+	 * @var		string	Content state.
+	 * @since	1.2.0
+	 */
+	protected $_contexts = array(
+		'category'  => 'com_content.category',
+		'archive'  => 'com_content.archive',
+		'featured'  => 'com_content.featured',
+	);
+
+	/**
 	 * Constructor
 	 *
 	 * @access      protected
@@ -647,11 +657,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 	 */
 	public function onFieldsandfiltersPrepareFiltersHTML( $context, Jobject $filters, $fieldsID = null, $getAllextensions = true, JRegistry $params = null, $ordering = 'ordering' )
 	{
-		echo '<pre>';
-		print_r($context); // com_content.featured
-		echo '</pre>';
-
-		if( !($contextOptions = $this->getContextOptions($context) ))
+		if( !in_array($context, $this->_contexts))
 		{
 			return;
 		}
@@ -664,15 +670,18 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$extensionsHelper = FieldsandfiltersFactory::getExtensions();
 		$extensionContent = $extensionsHelper->getExtensionsByName( $this->_name )->get( $this->_name );
 
-		if( ($contextOptions->isCategory && !$id) || !$extensionContent )
+		if( ($context == $this->_contexts['category'] && !$id) || !$extensionContent )
 		{
 			return;
 		}
 
 		// add model path
-		JModelLegacy::addIncludePath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $contextOptions->prefix . 'Model' ) );
+		$prefix = get_class($this);
+		list($option, $class) = explode('.', $context);
 
-		if( !( $model = JModelLegacy::getInstance( $contextOptions->class, ( $contextOptions->prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
+		JModelLegacy::addIncludePath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $prefix . 'Model' ) );
+
+		if( !( $model = JModelLegacy::getInstance( $class, ( $prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR.'/components/'.$option.'/tables'))))
 		{
 			return;
 		}
@@ -755,38 +764,20 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 
 		$selectors = $filters->get('selectors');
 
-		if ($contextOptions->isCategory && ($selector = trim($this->params->get('selector_other_category', '' ))))
+		if ($context == $this->_contexts['category'] && ($selector = trim($this->params->get('selector_other_category', ''))))
 		{
 			$selectors['other'] = $selector;
 		}
-		elseif ($contextOptions->isArchive && ($selector = trim($this->params->get('selector_other_archive', '#adminForm' ))))
+		elseif ($context == $this->_contexts['archive'] && ($selector = trim($this->params->get('selector_other_archive', '#adminForm'))))
+		{
+			$selectors['other'] = $selector;
+		}
+		elseif ($context == $this->_contexts['featured'] && ($selector = trim($this->params->get('selector_other_featured', ''))))
 		{
 			$selectors['other'] = $selector;
 		}
 
 		$filters->set('selectors', $selectors);
-
-		// [TODO] przniesc do fieldsandfilters.js
-		/* [TEST]
-		if( $isArchive )
-		{
-			$selector = $this->params->get('selector_content_archive_form', '#adminForm' );
-			$script = array( $jregistry->get( 'filters.script', '') );
-			$script[] = 'jQuery(document).ready(function($){';
-			$script[] = '	$.fieldsandfilters.onSerialize = function(data){';
-			$script[] = '		$("' . $selector . '").each( function(){';
-			$script[] = '			$.each($(this).serializeArray(), function(k, obj){';
-			$script[] = '				if( $.inArray( obj.name, ["month", "year", "limit"] ) != -1 && obj.value ){';
-			$script[] = '					data[obj.name] = obj.value;';
-			$script[] = '				}';
-			$script[] = '			});';
-			$script[] = '		});';
-			$script[] = '	};';
-			$script[] = '});';
-
-			$jregistry->set( 'filters.script', implode( "\n", $script ) );
-		}
-		@end [TEST] */
 
 		return implode( "\n", $templateFields );
 	}
@@ -806,8 +797,9 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$document	= JFactory::getDocument();
 		$basePath	= JPATH_SITE . '/components/com_content';
 		$id 		= $jinput->get( 'id', 0, 'int' );
+		$context    = $jinput->get('context');
 
-		if (!($contextOptions = $this->getContextOptions($jinput->get('context'))))
+		if (!in_array($context, $this->_contexts))
 		{
 			return false;
 		}
@@ -815,15 +807,16 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// Load PluginExtensions Helper
 		$extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByName( $this->_name )->get( $this->_name );
 
-		if( ($contextOptions->isCategory && !$id) || !$extension )
+		if( ($context == $this->_contexts['category'] && !$id) || !$extension )
 		{
 			return false;
 		}
 
+		list($option, $class) = explode('.', $context);
+
 		// set new jinput values
-		$jinput->set( 'option', 'com_content' );
-		$jinput->set( 'view', $contextOptions->class );
-		// $jinput->set( 'layout', 'blog' );
+		$jinput->set( 'option', $option );
+		$jinput->set( 'view', $class );
 		$jinput->set( 'id', $jinput->get( 'id', 0, 'int' ) );
 
 		// Include dependancies
@@ -837,9 +830,11 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 
 		// add model path
-		$controller->addModelPath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $contextOptions->prefix . 'Model' ) );
+		$prefix = get_class($this);
 
-		if( !( $model = $controller->getModel( $contextOptions->class, ( $contextOptions->prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $jinput->get( 'option' ) . '/tables' ) ) ) )
+		$controller->addModelPath( ( JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides' ), ( $prefix . 'Model' ) );
+
+		if( !( $model = $controller->getModel( $class, ( $prefix . 'Model' ), array( 'ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR.'/components/'.$option.'/tables'))))
 		{
 			return false;
 		}
@@ -870,7 +865,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 
 		// load view
-		if( !( $view = $controller->getView( $contextOptions->class, 'html', '', array( 'base_path' => $basePath, 'layout' => $jinput->get( 'layout', 'default' ) ) ) ) )
+		if( !( $view = $controller->getView( $class, 'html', '', array( 'base_path' => $basePath, 'layout' => $jinput->get( 'layout', 'default' ) ) ) ) )
 		{
 			return false;
 		}
@@ -878,7 +873,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// For joomla 2.5 && Key Reference
 		if( !FieldsandfiltersFactory::isVersion() )
 		{
-			$view->addTemplatePath( JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_content/' . $contextOptions->class );
+			$view->addTemplatePath( JPATH_THEMES . '/' . $app->getTemplate() . '/html/com_content/' . $class );
 		}
 
 		// set module to view
@@ -889,7 +884,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		JHtml::addIncludePath( JPATH_SITE . '/components/com_content/helpers' );
 		JHtml::addIncludePath( JPATH_SITE . '/components/com_content/helpers/html' );
 
-		KextensionsLanguage::load( $jinput->get('option') );
+		KextensionsLanguage::load( $option );
 
 		$emptyItemsID = $itemsID->get( 'empty', false );
 		$model->setState( 'fieldsandfilters.itemsID', (array) $itemsID->get( 'itemsID' ) );
@@ -947,34 +942,5 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 
 			$document->addScriptDeclaration( implode( "\n", $script ) );
 		}
-	}
-
-	protected function getContextOptions($context)
-	{
-		if ($context != 'com_content.category' && $context != 'com_content.archive')
-		{
-			return false;
-		}
-
-		$options = new stdClass();
-		$options->prefix = get_class( $this );
-		$options->isArchive = $options->isCategory = false;
-
-		// [TODO] $options->class change to variable model
-		switch ($context)
-		{
-			case 'com_content.category':
-
-				$options->isCategory = true;
-				$options->class = 'category';
-				break;
-			case 'com_content.archive':
-
-				$options->isArchive = true;
-				$options->class = 'archive';
-				break;
-		}
-
-		return $options;
 	}
 }
