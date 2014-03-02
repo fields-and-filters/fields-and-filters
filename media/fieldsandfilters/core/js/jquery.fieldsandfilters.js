@@ -90,23 +90,31 @@ $.fn[faf] = function( type, options )
 					e.preventDefault();
 
 					$fn.pagination( 'reset' );
+
 					$fn.ajax( $( this ) );
 				},
-				"clear": function(e){
+				"clear": function(e, not){
 					e.preventDefault();
 
-					if (($other = $fn.selector('other')) && ($($other).serialize())) {
-						$($other)
-							.find('input:text, input:password, input:file, select, textarea')
-							.val('')
-							.end()
-							.find('input:radio, input:checkbox')
-							.removeAttr('checked')
-							.removeAttr('selected');
+					not = not === false || not === undefined ? false : true;
+
+					if ($.isEmptyObject($fn.get('$data', {}))) {
+						return;
 					}
 
-					$( $fn.selector( 'form') ).trigger( 'reset' );
-					$(this).triggerHandler( 'submit' );
+					$fn.reset($(this));
+
+					if (!not) {
+						$($fn.selector('form')).not($(this)).triggerHandler('reset', not);
+
+						if ($fn.selector('other')) {
+							$fn.reset($($fn.selector('other'), $fn.selector('body')));
+						}
+
+						$(this).triggerHandler( 'submit' );
+					}
+
+					return false;
 				}
 			})
 			.removeClass( $fn.selector( 'loadingClass' ) )
@@ -414,7 +422,7 @@ $.extend( $fn, {
 		{
 			var options = this.options( $form ),
 			serialize = this.serialize();
-			
+
 			if( $.param( this.get( '$data', {} ) ) == $.param( serialize ) )
 			{
 				return false;
@@ -651,13 +659,13 @@ $.extend( $fn, {
 	serialize : function( $form )
 	{
 		var obj = {}, prop, excluded = this.get('$excluded', []);
-		$form = $form || this.selector( 'form' );
+		$form = $($form || this.selector( 'form' ));
 
 		if (this.selector('other')) {
-			$form = [$form, this.selector('other')].join();
+			$form = $form.add(this.selector('other'), this.selector('body'));
 		}
 
-		$($form).serializeArray().each(function( el ) {
+		$form.serializeArray().each(function( el ) {
 			if ($.inArray(el.name, excluded) != -1) {
 				return false;
 			}
@@ -680,6 +688,19 @@ $.extend( $fn, {
 		});
 		
 		return obj;
+	},
+
+	reset: function($form) {
+		$form
+			.find('input:text, input:password, input:file, select, textarea')
+			.val('');
+
+		$form
+			.find('input:radio, input:checkbox')
+			.removeAttr('checked')
+			.removeAttr('selected');
+
+		return $form;
 	}
 } );
 
