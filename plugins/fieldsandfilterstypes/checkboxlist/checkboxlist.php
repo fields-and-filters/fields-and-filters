@@ -107,9 +107,23 @@ class plgFieldsandfiltersTypesCheckboxlist extends JPlugin
 			$element->addAttribute( 'labelclass' , 'control-label' );
 			$element->addAttribute( 'label', $label );
 			$element->addAttribute( 'translate_label', 'false' );
-			$element->addAttribute( 'type', 'fieldsandfiltersCheckboxes' );
 			$element->addAttribute( 'filter', 'int_array' );
 			$element->addAttribute( 'translate_options', 'false' );
+
+			switch ($field->params->get('type.style', 'checkbox'))
+			{
+				case 'multiselect':
+					$element->addAttribute( 'multiple', 'true' );
+				case 'select':
+					$type = 'fieldsandfiltersList';
+					break;
+				case 'checkbox':
+				default:
+					$type = 'fieldsandfiltersCheckboxes';
+					break;
+			}
+
+			$element->addAttribute( 'type', $type );
 			
 			if( $field->required )
 			{

@@ -113,17 +113,24 @@
 					<field
 						name="selector_other_category"
 						type="text"
-						default="#adminForm"
-						label="COM_FIELDSANDFILTERS_SELECTOR_OTHER_CATEGORY_LBL"
-						description="COM_FIELDSANDFILTERS_SELECTOR_OTHER_CATEGORY_DESC"
+						default=""
+						label="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_CATEGORY_LBL"
+						description="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_CATEGORY_DESC"
 					/>
 					<field
 						name="selector_other_archive"
 						type="text"
 						default="#adminForm"
-						label="COM_FIELDSANDFILTERS_SELECTOR_OTHER_ARCHIVE_LBL"
-						description="COM_FIELDSANDFILTERS_SELECTOR_OTHER_ARCHIVE_DESC"
+						label="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_ARCHIVE_LBL"
+						description="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_ARCHIVE_DESC"
 					/>
+					<field
+						name="selector_other_featured"
+						type="text"
+						default=""
+						label="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_FEATURED_LBL"
+						description="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_FEATURED_DESC"
+						/>
 					<field
 						name="use_allextensions_filters"
 						type="radio"

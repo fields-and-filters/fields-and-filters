@@ -40,17 +40,6 @@
 						translate_options="false"
 					/>
 					<field
-						name="readonly"
-						type="radio"
-						class="btn-group btn-group-yesno"
-						label="PLG_FAF_TS_CBLT_FORM_READONLY_LBL"
-						description="PLG_FAF_TS_CBLT_FORM_READONLY_DESC"
-						default="0"
-					>
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-					</field>
-					<field
 						name="disabled"
 						type="radio"
 						class="btn-group btn-group-yesno"
@@ -83,10 +72,22 @@
 							filter="intval"
 							label="PLG_FAF_TS_CBLT_FORM_PREPARE_NAME_LBL"
 							description="PLG_FAF_TS_CBLT_FORM_PREPARE_NAME_DESC"
-							>
+						>
 						<option value="">JNO</option>
 						<option value="1">COM_FIELDSANDFILTERS_OPTION_PREPARE_CONTENT_FIELDS</option>
 						<option value="2">COM_FIELDSANDFILTERS_OPTION_PREPARE_CONTENT_SYSTEM</option>
+					</field>
+					<field
+							name="style"
+							type="list"
+							class="inputbox"
+							label="PLG_FAF_TS_CBLT_FORM_STYLE_LBL"
+							description="PLG_FAF_TS_CBLT_FORM_STYLE_DESC"
+							default="checkbox"
+						>
+						<option value="checkbox">PLG_FAF_TS_CBLT_OPTION_CHECKBOX</option>
+						<option value="select">PLG_FAF_TS_CBLT_OPTION_SELECT</option>
+						<option value="multiselect">PLG_FAF_TS_CBLT_OPTION_MULTISELECT</option>
 					</field>
 				</fieldset>
 			</fields>

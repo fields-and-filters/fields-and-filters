@@ -724,7 +724,12 @@ $fn.fn( {
 		{
 			this.each( function() {
 				count = $( this ).data( 'count' );
-				$( this ).parents( group ).find( spanSel ).text( count !== false ? count : 0 );
+
+				if ($(this).is('option')) {
+					$(this).text($(this).text().replace(/\(\d\)/, '('+count+')'))
+				} else {
+					$( this ).parents( group ).find( spanSel ).text( count !== false ? count : 0 );
+				}
 			} );
 		}
 	},
@@ -735,6 +740,10 @@ $fn.fn( {
 		if( group )
 		{
 			this.each( function() {
+				if($(this).data('default')) {
+					return;
+				}
+
 				if( !$( this ).data( 'count' ) )
 				{
 					$( this ).attr( 'disabled', true ).parents( group ).hide();
