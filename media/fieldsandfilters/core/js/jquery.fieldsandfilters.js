@@ -726,7 +726,7 @@ $fn.fn( {
 				count = $( this ).data( 'count' );
 
 				if ($(this).is('option')) {
-					$(this).text($(this).text().replace(/\(\d\)/, '('+count+')'))
+					$(this).text($(this).text().replace(/(\()(?!.*\()\d+\)/g, '('+count+')'))
 				} else {
 					$( this ).parents( group ).find( spanSel ).text( count !== false ? count : 0 );
 				}
