@@ -36,7 +36,7 @@ if( $field->params->get( 'base.site_enabled_description', 0 ) && !empty( $field-
 }
 
 $options = array();
-$options[] = JHtml::_('select.option', '', JText::_('JGLOBAL_SELECT_SOME_OPTIONS'), array(
+$options[] = JHtml::_('select.option', '', JText::_('JGLOBAL_SELECT_AN_OPTION'), array(
 	'option.attr' => 'option.attr',
 	'attr' => array(
 		'class' => 'faf-filters-input inputbox',
@@ -44,7 +44,7 @@ $options[] = JHtml::_('select.option', '', JText::_('JGLOBAL_SELECT_SOME_OPTIONS
 	)
 ));
 foreach ($field->values AS $value) {
-	$options[] = JHtml::_('select.option', (string) $value->id, (string) $value->value.' (0)', array(
+	$options[] = JHtml::_('select.option', (string) $value->id, (string) $value->value.'(0)', array(
 		'option.attr' => 'option.attr',
 		'attr' => array(
 			'class' => 'faf-filters-input inputbox',
@@ -56,7 +56,7 @@ foreach ($field->values AS $value) {
 $id = 'faf-filters-' . $field->id;
 ?>
 
-<fieldset id="<?php echo $id; ?>" class="faf-filters faf-filters-checkboxlist <?php echo htmlspecialchars( $field->params->get( 'base.class', '' ) ); ?>">
+<fieldset id="<?php echo $id; ?>" class="faf-filters faf-filters-selectlist <?php echo htmlspecialchars( $field->params->get( 'base.class', '' ) ); ?>">
 	<?php if( $field->params->get( 'base.show_name', 1 ) ) :
 
 		$attribsDiv = array( 'class' => 'faf-name' );
@@ -80,16 +80,17 @@ $id = 'faf-filters-' . $field->id;
 		</div>
 	<?php endif; ?>
 
+	<div class="control-group faf-control-group">
 	<?php
 		echo JHtml::_('select.genericlist', $options, 'fieldsandfilters['.$field->id.']', array(
 				'id' => $id.'-select',
 				'list.attr' => array(
-					'class'     => 'faf-filters-select inputbox chzn-done',
-					'multiple'  => 'multiple'
+					'class'     => 'faf-filters-select inputbox chzn-done'
 				),
 				'option.attr' => 'option.attr'
 		));
 	?>
+	</div>
 
 	<?php if( $isDescriptionAfter ) : ?>
 		<div class="faf-description">

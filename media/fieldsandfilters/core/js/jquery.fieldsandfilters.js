@@ -96,7 +96,7 @@ $.fn[faf] = function( type, options )
 				"clear": function(e, not){
 					e.preventDefault();
 
-					not = not === false || not === undefined ? false : true;
+					not = !(not === false || not === undefined);
 
 					if ($.isEmptyObject($fn.get('$data', {}))) {
 						return;
@@ -701,6 +701,10 @@ $.extend( $fn, {
 			.removeAttr('selected');
 
 		return $form;
+	},
+
+	isSelectEnabled: function(option) {
+		return Boolean($(option).parents('select').find(':enabled:not([data-default])').size());
 	}
 } );
 
@@ -709,7 +713,7 @@ $fn.fn( {
 	dataCount : function( form, options, forAll )
 	{
 		var counts = ( forAll ? $fn.get( '$counts', {} ) : $fn.get( options, 'counts', {} ) ), value;
-		this.each( function() {
+		$(this).each( function() {
 			$( this ).data( 'count', counts.hasOwnProperty( value = $( this ).val() ) ? counts[value] : 0 );
 		} );
 	},
@@ -722,7 +726,7 @@ $fn.fn( {
 		
 		if( spanSel && spanSel )
 		{
-			this.each( function() {
+			$(this).each( function() {
 				count = $( this ).data( 'count' );
 
 				if ($(this).is('option')) {
@@ -739,23 +743,34 @@ $fn.fn( {
 		var group = $fn.selector( 'group' );
 		if( group )
 		{
-			this.each( function() {
+			$(this).each( function() {
 				if($(this).data('default')) {
 					return;
 				}
 
 				if( !$( this ).data( 'count' ) )
 				{
-					$( this ).attr( 'disabled', true ).parents( group ).hide();
+					// $( this ).attr( 'disabled', true );
+					$( this ).attr( 'disabled', true );
+
+					if ($(this).is('option') && $fn.isSelectEnabled(this)) {
+						return;
+					}
+
+					$(this).parents( group ).hide();
 				}
 				else
 				{
-					$( this ).attr( 'disabled', false ).parents( group ).show();
+					$( this ).attr( 'disabled', false );
+					if ($(this).is('option') && !$fn.isSelectEnabled(this)) {
+						return;
+					}
+					$(this).parents( group ).show();
 				}
 			}).parents( $fn.selector( 'fieldset' ) ).each( function(){
-				var counts = $(this).find( $fn.selector( 'input' ) + ':enabled' ).size();
+				var counts = $(this).find( $fn.selector( 'input' ) + ':enabled:not([data-default])').size();
 				visible = $(this).is( ':visible' );
-				
+
 				if( !visible && counts )
 				{
 					$(this).show();
@@ -764,7 +779,7 @@ $fn.fn( {
 				{
 					$(this).hide();
 				}
-			})
+			});
 		}
 	}
 	
