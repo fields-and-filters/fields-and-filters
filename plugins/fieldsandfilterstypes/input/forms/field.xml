@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
 	<layout
-		title="PLG_FAF_ES_IT_FORM_TITLE"
-		option="PLG_FAF_ES_IT_FORM_OPTION"
+		title="PLG_FAF_TS_IT_FORM_TITLE"
+		option="PLG_FAF_TS_IT_FORM_OPTION"
 	>
 		<message>
-			<![CDATA[PLG_FAF_ES_IT_FORM_DESC]]>
+			<![CDATA[PLG_FAF_TS_IT_FORM_DESC]]>
 		</message>
 	</layout>
 	
@@ -68,14 +68,14 @@
 						description="PLG_FAF_TS_IT_FORM_FIELD_LAYOUT_DESC"
 					/>
 					<field
-							name="prepare_data"
-							type="list"
-							class="inputbox"
-							default="0"
-							filter="intval"
-							label="PLG_FAF_TS_CBLT_FORM_PREPARE_DATA_LBL"
-							description="PLG_FAF_TS_CBLT_FORM_PREPARE_DATA_DESC"
-							>
+						name="prepare_data"
+						type="list"
+						class="inputbox"
+						default="0"
+						filter="intval"
+						label="PLG_FAF_TS_CBLT_FORM_PREPARE_DATA_LBL"
+						description="PLG_FAF_TS_CBLT_FORM_PREPARE_DATA_DESC"
+					>
 						<option value="">JNO</option>
 						<option value="1">COM_FIELDSANDFILTERS_OPTION_PREPARE_CONTENT_FIELDS</option>
 						<option value="2">COM_FIELDSANDFILTERS_OPTION_PREPARE_CONTENT_SYSTEM</option>

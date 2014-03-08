@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="2.5" type="plugin" group="fieldsandfiltersTypes" method="upgrade">
+<extension version="2.5" type="plugin" group="fieldsandfilterstypes" method="upgrade">
         <name>plg_fieldsandfilters_types_image</name>
         <creationDate>2013-08-27</creationDate>
         <copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
@@ -17,11 +17,11 @@
 		<folder>tmpl</folder>
 	</files>
 	<languages>
-		<language tag="en-GB">language/en-GB.plg_fieldsandfiltersTypes_image.ini</language>
-		<language tag="en-GB">language/en-GB.plg_fieldsandfiltersTypes_image.sys.ini</language>
+		<language tag="en-GB">language/en-GB.plg_fieldsandfilterstypes_image.ini</language>
+		<language tag="en-GB">language/en-GB.plg_fieldsandfilterstypes_image.sys.ini</language>
 	</languages>
 	<config>
-	<fields name="params">
+		<fields name="params">
 			<fieldset name="basic">
 				<field
 					type="spacer"
@@ -45,7 +45,7 @@
 					<option value="5">PLG_FAF_TS_IE_FORM_CROP_RESIZE</option>
 					<option value="6">PLG_FAF_TS_IE_FORM_SCALE_FIT</option>
 				</field>
-				
+
 				<field
 					name="width"
 					type="text"
@@ -54,7 +54,7 @@
 					filter="intval"
 					default="400"
 				/>
-				
+
 				<field
 					name="height"
 					type="text"
@@ -63,7 +63,7 @@
 					filter="intval"
 					default="400"
 				/>
-				
+
 				<field
 					name="quality"
 					type="text"
@@ -72,14 +72,14 @@
 					filter="intval"
 					default="75"
 				/>
-				
+
 				<field
 					type="spacer"
 					name="thumb_spacer"
 					label="PLG_FAF_TS_IE_FORM_THUMB_SPACR_LBL"
 					class="text"
 				/>
-				
+
 				<field
 					name="scale_thumb"
 					type="list"
@@ -96,7 +96,7 @@
 					<option value="5">PLG_FAF_TS_IE_FORM_CROP_RESIZE</option>
 					<option value="6">PLG_FAF_TS_IE_FORM_SCALE_FIT</option>
 				</field>
-				
+
 				<field
 					name="width_thumb"
 					type="text"
@@ -105,7 +105,7 @@
 					filter="intval"
 					default="100"
 				/>
-				
+
 				<field
 					name="height_thumb"
 					type="text"
@@ -114,7 +114,7 @@
 					filter="intval"
 					default="100"
 				/>
-				
+
 				<field
 					name="quality_thumb"
 					type="text"

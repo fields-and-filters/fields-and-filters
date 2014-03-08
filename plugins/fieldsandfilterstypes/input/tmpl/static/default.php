@@ -2,7 +2,7 @@
 /**
  * @version     1.1.1
  * @package     fieldsandfilters.plugin
- * @subpackage  fieldsandfilters_type.textarea
+ * @subpackage  fieldsandfilters_type.input
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
@@ -36,7 +36,7 @@ if( $field->params->get( 'base.site_enabled_description', 0 ) && !empty( $field-
 ?>
 
 <?php if( !empty( $field->data ) ) : ?>
-<div id="faf-field-<?php echo $field->id; ?>" class="faf-field faf-field-textarea <?php echo htmlspecialchars( $field->params->get( 'base.class', '' ) ); ?>">
+<div id="faf-field-<?php echo $field->id; ?>" class="faf-field faf-field-input <?php echo htmlspecialchars( $field->params->get( 'base.class', '' ) ); ?>">
         <?php if( $field->params->get( 'base.show_name', 1 ) ) :
                 
                 $attribsDiv = array( 'class' => 'faf-name' );

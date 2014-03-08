@@ -60,16 +60,19 @@ elseif( $src && $createThumb )
 }
 
 if( $src ) :
-        $attribs        = array( 'class' => 'faf-image' );
-        $title          = htmlspecialchars( $image->get( 'alt', $document->getTitle() ) );
-        
-        if( $caption = $image->get( 'caption' ) )
-        {
-                $attribs['class'] = $attribs['class'] . ' caption';
-                $attribs['title'] = htmlspecialchars( $caption );
-        }
-        
-        $imageHTML = JHtml::image( htmlspecialchars( $src ), $title, $attribs );
+	$title = htmlspecialchars( $image->get( 'alt', $document->getTitle() ) );
+	$attribs        = array(
+		'class' => 'faf-image',
+		'alt'   => $title
+	);
+
+    if( $caption = $image->get( 'caption' ) )
+    {
+            $attribs['class'] = $attribs['class'] . ' caption';
+            $attribs['title'] = htmlspecialchars( $caption );
+    }
+
+    $imageHTML = JHtml::image( htmlspecialchars( $src ), $title, $attribs );
 ?>        
 <div id="faf-field-<?php echo $field->id; ?>" class="faf-field faf-field-image <?php echo htmlspecialchars( $field->params->get( 'base.class', '' ) ); ?>">
         <?php if( $field->params->get( 'base.show_name', 1 ) ) :
@@ -99,11 +102,10 @@ if( $src ) :
         if( $src_thumb )
         {
                 JHtml::_( 'behavior.modal', 'a.faf-modal' );
-                echo JHtml::link( htmlspecialchars( $src ), JHtml::image( htmlspecialchars( $src_thumb ), $title, $attribs ), array( 'class' => 'faf-link faf-modal', 'alt' => $title ) );
+                echo JHtml::link( htmlspecialchars( $src ), JHtml::image( htmlspecialchars( $src_thumb ), $title, array( 'class' => 'faf-image' ) ), $attribs );
         }
         elseif( $link = $image->get( 'link' ) )
         {
-                $attribs = array( 'class' => 'faf-link', 'alt' => $title );
                 switch( $image->def( 'target', $field->params->get( 'base.target' ) ) )
                 {
                                 case 1:
