@@ -206,8 +206,8 @@
 						name="field_layout"
 						type="fieldsandfiltersPluginLayout"
 						layoutFolder="static"
-						label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
-						description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
+						label="PLG_FAF_TS_IE_FORM_FIELD_LAYOUT_LBL"
+						description="PLG_FAF_IE_TA_FORM_FIELD_LAYOUT_DESC"
 					/>
 				</fieldset>
 			</fields>

@@ -73,8 +73,8 @@
 						class="inputbox"
 						default="0"
 						filter="intval"
-						label="PLG_FAF_TS_CBLT_FORM_PREPARE_DATA_LBL"
-						description="PLG_FAF_TS_CBLT_FORM_PREPARE_DATA_DESC"
+						label="PLG_FAF_TS_IT_FORM_PREPARE_DATA_LBL"
+						description="PLG_FAF_TS_IT_FORM_PREPARE_DATA_DESC"
 					>
 						<option value="">JNO</option>
 						<option value="1">COM_FIELDSANDFILTERS_OPTION_PREPARE_CONTENT_FIELDS</option>

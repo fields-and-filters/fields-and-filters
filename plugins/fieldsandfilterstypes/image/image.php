@@ -10,9 +10,6 @@
 
 defined('_JEXEC') or die;
 
-// Load the Factory Helper
-JLoader::import('fieldsandfilters.factory', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers');
-
 /**
  * Checkbox type fild
  *
@@ -65,18 +62,6 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		$staticMode = (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC);
 
 		$syntax = KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
-
-		JHtml::_('behavior.formvalidation');
-		$script[] = 'window.addEvent("domready", function() {';
-		$script[] = '	if( document.formvalidator ) {';
-		$script[] = '		document.formvalidator.setHandler("url", function(value) {';
-		$script[] = '			regex = new RegExp("^(https?|ftp|rmtp|mms):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(:(\d+))?\/?", "i");';
-		$script[] = '			return regex.test(value);';
-		$script[] = '		});';
-		$script[] = '	};';
-		$script[] = '});';
-
-		JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
 
 		while ($field = array_shift($fields))
 		{
@@ -199,11 +184,11 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 					$element = $rootJson->addChild('field');
 					$element->addAttribute('name', 'link');
 					$element->addAttribute('type', 'text');
-					$element->addAttribute('class', 'validate-url');
+					$element->addAttribute('class', 'inputbox');
 					$element->addAttribute('labelclass', 'control-label');
 					$element->addAttribute('label', 'PLG_FAF_TS_IE_FORM_LINK_LBL');
 					$element->addAttribute('description', 'PLG_FAF_TS_IE_FORM_LINK_DESC');
-					$element->addAttribute('validate', 'url');
+					$element->addAttribute('filter', 'safehtml');
 					$element->addAttribute('fieldset', $fieldset);
 
 					// link target
