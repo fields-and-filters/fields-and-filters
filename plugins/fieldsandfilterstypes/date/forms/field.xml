@@ -37,12 +37,11 @@
 						label="PLG_FAF_TS_DE_FORM_FORMAT_LBL"
 						description="PLG_FAF_TS_DE_FORM_FORMAT_DESC"
 					>
-						<option value="DATE_FORMAT_LC">DATE_FORMAT_LC</option>
-						<option value="DATE_FORMAT_LC1">DATE_FORMAT_LC1</option>
-						<option value="DATE_FORMAT_LC2">DATE_FORMAT_LC2</option>
-						<option value="DATE_FORMAT_LC3">DATE_FORMAT_LC3</option>
-						<option value="DATE_FORMAT_LC4">DATE_FORMAT_LC4</option>
-						<option value="custom">PLG_FAF_TS_DE_CUSTOM</option>
+						<option value="l, d F Y">PLG_FAF_TS_DE_DATE_FORMAT_LDFY</option>
+						<option value="l, d F Y H:i">PLG_FAF_TS_DE_DATE_FORMAT_LDFYHI</option>
+						<option value="d F Y">PLG_FAF_TS_DE_DATE_FORMAT_DFY</option>
+						<option value="Y-m-d">PLG_FAF_TS_DE_DATE_FORMAT_YMD</option>
+						<option value="custom">PLG_FAF_TS_DE_OPTION_CUSTOM</option>
 					</field>
 					<field
 						name="format_custom"

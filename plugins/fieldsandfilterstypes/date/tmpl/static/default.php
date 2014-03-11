@@ -62,8 +62,8 @@ if( $field->params->get( 'base.site_enabled_description', 0 ) && !empty( $field-
 
 	<div class="faf-text">
 		<?php
-			$format = $field->params->get('type.format', 'DATE_FORMAT_LC');
-			echo JHtml::_('date', $field->data, ($format != 'custom' ? JText::_($format) : $field->params->get('type.format_custom', 'l, d F Y')));
+			$format = $field->params->get('type.format', 'l, d F Y');
+			echo JHtml::_('date', $field->data, ($format != 'custom' ? $format : $field->params->get('type.format_custom', 'l, d F Y')));
 		?>
 	</div>
         

@@ -24,36 +24,15 @@ class FieldsandfiltersHelper
 	public static function addSubmenu( $vName = '' )
 	{
 		$htmlClass = FieldsandfiltersFactory::isVersion() ? 'JHtmlSidebar' : 'JSubMenuHelper';
-		
-		$htmlClass::addEntry(
-			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_PANEL' ),
-			'index.php?option=com_fieldsandfilters',
-			$vName == 'cpanel'
-		);
-		
-		$htmlClass::addEntry(
-			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_FIELDS' ),
-			'index.php?option=com_fieldsandfilters&view=fields',
-			$vName == 'fields'
-		);
-		
-		$htmlClass::addEntry(
-			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_ELEMENTS' ),
-			'index.php?option=com_fieldsandfilters&view=elements',
-			$vName == 'elements'
-		);
-		
-		$htmlClass::addEntry(
-			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_PLUGIN_TYPES' ),
-			'index.php?option=com_plugins&filter_folder=fieldsandfiltersTypes',
-			$vName == 'plugin_types'
-		);
-		
-		$htmlClass::addEntry(
-			JText::_( 'COM_FIELDSANDFILTERS_LEGEND_PLUGIN_EXTENSIONS' ),
-			'index.php?option=com_plugins&filter_folder=fieldsandfiltersExtensions',
-			$vName == 'plugin_extensions'
-		);
+
+		foreach (self::getButtons() AS $name => $button)
+		{
+			$htmlClass::addEntry(
+				$button['text'],
+				$button['link'],
+				$vName == $name
+			);
+		}
 	}
 
 	/**
@@ -79,5 +58,107 @@ class FieldsandfiltersHelper
 		}
 		
 		return $result;
+	}
+
+	/**
+	 * Gets a list of the buttons.
+	 *
+	 * @param bool $groups
+	 * @param array $exclude
+	 *
+	 * @return array
+	 * @since       1.2.0
+	 */
+	public static function getButtons($groups = false, $exclude = array())
+	{
+		$buttons = array(
+			'cpanel' => array(
+				'link' 		=> JRoute::_('index.php?option=com_fieldsandfilters'),
+				'image' 	=> '',
+				'icon'		=> '',
+				'text' 		=> JText::_('COM_FIELDSANDFILTERS_LEGEND_PANEL'),
+				'access' 	=> array('core.manage', 'com_fieldsandfilters', 'core.create', 'com_fieldsandfilters'),
+				'group'     => 'COM_FIELDSANDFILTERS_HEADER_BASE'
+			),
+			'field' => array(
+				'link' 		=> JRoute::_('index.php?option=com_fieldsandfilters&task=field.add'),
+				'image' 	=> '',
+				'icon'		=> 'media/fieldsandfilters/administrator/images/icons/icon-48-add-field.png',
+				'text' 		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_ADD_NEW_FIELD'),
+				'access' 	=> array('core.manage', 'com_fieldsandfilters', 'core.create', 'com_fieldsandfilters'),
+				'group'     => 'COM_FIELDSANDFILTERS_HEADER_BASE'
+			),
+			'fields' => array(
+				'link' 		=> JRoute::_('index.php?option=com_fieldsandfilters&view=fields'),
+				'image' 	=> '',
+				'icon'		=> 'media/fieldsandfilters/administrator/images/icons/icon-48-fields.png',
+				'text'		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_FIELDS'),
+				'access'	=> array('core.manage', 'com_fieldsandfilters', 'core.create', 'com_fieldsandfilters'),
+				'group'     => 'COM_FIELDSANDFILTERS_HEADER_BASE'
+			),
+			'elements' => array(
+				'link' 		=> JRoute::_('index.php?option=com_fieldsandfilters&view=elements'),
+				'image'		=> '',
+				'icon'		=> 'media/fieldsandfilters/administrator/images/icons/icon-48-elements.png',
+				'text'		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_ELEMENTS'),
+				'access' 	=> array('core.manage', 'com_fieldsandfilters', 'core.create', 'com_fieldsandfilters'),
+				'group'     => 'COM_FIELDSANDFILTERS_HEADER_BASE'
+			),
+			'module.filters' => array(
+				'link' 		=> JRoute::_('index.php?option=com_modules&filter_module=mod_fieldsandfilters_filters'),
+				'image'		=> '',
+				'icon'	 	=> 'media/fieldsandfilters/administrator/images/icons/icon-48-fields.png',
+				'text' 		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_MODULE_FILTERS'),
+				'access' 	=> array('core.manage', 'com_modules', 'core.create', 'com_modules'),
+				'group'     => 'COM_FIELDSANDFILTERS_HEADER_MODULES'
+			),
+			'plugin.types' => array(
+				'link' 		=> JRoute::_('index.php?option=com_plugins&filter_folder=fieldsandfilterstypes&filter_search='),
+				'image'		=> '',
+				'icon'		=> 'media/fieldsandfilters/administrator/images/icons/icon-48-plugin-types.png',
+				'text' 		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_PLUGIN_TYPES'),
+				'access'	=> array('core.manage', 'com_plugins', 'core.create', 'com_plugins'),
+				'group'     => 'COM_FIELDSANDFILTERS_HEADER_PLUGINS'
+			),
+			'plugin.extensions' => array(
+				'link' 		=> JRoute::_('index.php?option=com_plugins&filter_folder=fieldsandfiltersextensions&filter_search='),
+				'image'		=> '',
+				'icon'	 	=> 'media/fieldsandfilters/administrator/images/icons/icon-48-plugin-extensions.png',
+				'text' 		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_PLUGIN_EXTENSIONS'),
+				'access' 	=> array('core.manage', 'com_plugins', 'core.create', 'com_plugins'),
+				'group'     => 'COM_FIELDSANDFILTERS_HEADER_PLUGINS'
+			),
+			'plugin.system' => array(
+				'link'		=> JRoute::_('index.php?option=com_plugins&filter_folder=system&filter_search=fieldsandfilters'),
+				'image'		=> '',
+				'icon'		=> 'media/fieldsandfilters/administrator/images/icons/icon-48-plugin-extensions.png',
+				'text' 		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_PLUGIN_SYSTEM'),
+				'access' 	=> array('core.manage', 'com_plugins', 'core.create', 'com_plugins'),
+				'group'     => 'COM_FIELDSANDFILTERS_HEADER_PLUGINS'
+			)
+		);
+
+		if (!empty($exclude))
+		{
+			$buttons = array_diff_key($buttons, array_flip($exclude));
+		}
+
+		if ($groups)
+		{
+			foreach ($buttons AS $name => $button)
+			{
+				$group = $button['group'];
+
+				if (!isset($buttons[$group]))
+				{
+					$buttons[$group] = array();
+				}
+				$buttons[$group][$name] = $button;
+
+				unset($buttons[$name]);
+			}
+		}
+
+		return $buttons;
 	}
 }
