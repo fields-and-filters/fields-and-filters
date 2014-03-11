@@ -329,7 +329,7 @@ class FieldsandfiltersFieldsHelper
 							
 							foreach( $element['matches'] AS $fieldID => &$match )
 							{
-								$text = str_replace( $match, addcslashes( $fieldsLayouts->get( $fieldID, '' ), '\\$' ), $text );
+								$text = str_replace( $match, $fieldsLayouts->get( $fieldID, '' ), $text );
 							}
 						}
 					}
@@ -339,7 +339,7 @@ class FieldsandfiltersFieldsHelper
 
 						foreach( $combination['matches'] AS $fieldID => &$match )
 						{
-							$text = str_replace( $match, addcslashes( $fieldsLayouts->get( $fieldID, '' ), '\\$' ), $text );
+							$text = str_replace( $match, $fieldsLayouts->get( $fieldID, '' ), $text );
 						}
 					}
 				}
@@ -347,7 +347,7 @@ class FieldsandfiltersFieldsHelper
 			
 			if( !empty( $excludes ) )
 			{
-				$text = str_replace( array_unique( $excludes ), addcslashes( '', '\\$' ), $text );
+				$text = str_replace( array_unique( $excludes ), '', $text );
 			}
 		}
 		
