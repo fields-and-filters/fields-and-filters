@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
 JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true);
 $html = JHtml::_('links.linksgroups', $this->buttons);
 ?>
-<div class="row-fluid">
+<div class="row-fluid faf">
 	<div class="span3">
 		<div class="cpanel-links">
 			<?php if (!empty($html)) : ?>

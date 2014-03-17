@@ -94,7 +94,7 @@ class FieldsandfiltersViewFieldvalues extends JViewLegacy
 	{		
 		$canDo = FieldsandfiltersHelper::getActions();
 		
-		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS_TITLE_FIELDVALUES'), 'field-values.png');
+		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS_TITLE_FIELDVALUES'), 'faf-field-values');
 		
 		if (FieldsandfiltersFactory::isVersion() && FieldsandfiltersFactory::isVersion('<', 3.2))
 		{

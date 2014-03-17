@@ -56,7 +56,7 @@ class FieldsandfiltersViewElement extends JViewLegacy
 	{
 		JFactory::getApplication()->input->set( 'hidemainmenu', true );
 		
-		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_ELEMENT' ), 'element.png' );
+		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_ELEMENT' ), 'faf-content' );
 		
 		$canDo = FieldsandfiltersHelper::getActions();
 		

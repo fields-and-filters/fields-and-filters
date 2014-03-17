@@ -82,7 +82,7 @@ class FieldsandfiltersHelper
 			),
 			'field' => array(
 				'link' 		=> JRoute::_('index.php?option=com_fieldsandfilters&task=field.add'),
-				'image' 	=> '',
+				'image' 	=> 'faf-field',
 				'icon'		=> 'media/fieldsandfilters/administrator/images/icons/icon-48-add-field.png',
 				'text' 		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_ADD_NEW_FIELD'),
 				'access' 	=> array('core.manage', 'com_fieldsandfilters', 'core.create', 'com_fieldsandfilters'),
@@ -90,7 +90,7 @@ class FieldsandfiltersHelper
 			),
 			'fields' => array(
 				'link' 		=> JRoute::_('index.php?option=com_fieldsandfilters&view=fields'),
-				'image' 	=> '',
+				'image' 	=> 'faf-fields',
 				'icon'		=> 'media/fieldsandfilters/administrator/images/icons/icon-48-fields.png',
 				'text'		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_FIELDS'),
 				'access'	=> array('core.manage', 'com_fieldsandfilters', 'core.create', 'com_fieldsandfilters'),
@@ -98,7 +98,7 @@ class FieldsandfiltersHelper
 			),
 			'elements' => array(
 				'link' 		=> JRoute::_('index.php?option=com_fieldsandfilters&view=elements'),
-				'image'		=> '',
+				'image'		=> 'faf-contents',
 				'icon'		=> 'media/fieldsandfilters/administrator/images/icons/icon-48-elements.png',
 				'text'		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_ELEMENTS'),
 				'access' 	=> array('core.manage', 'com_fieldsandfilters', 'core.create', 'com_fieldsandfilters'),
@@ -106,7 +106,7 @@ class FieldsandfiltersHelper
 			),
 			'module.filters' => array(
 				'link' 		=> JRoute::_('index.php?option=com_modules&filter_module=mod_fieldsandfilters_filters'),
-				'image'		=> '',
+				'image'		=> 'faf-module-filters',
 				'icon'	 	=> 'media/fieldsandfilters/administrator/images/icons/icon-48-fields.png',
 				'text' 		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_MODULE_FILTERS'),
 				'access' 	=> array('core.manage', 'com_modules', 'core.create', 'com_modules'),
@@ -114,7 +114,7 @@ class FieldsandfiltersHelper
 			),
 			'plugin.types' => array(
 				'link' 		=> JRoute::_('index.php?option=com_plugins&filter_folder=fieldsandfilterstypes&filter_search='),
-				'image'		=> '',
+				'image'		=> 'faf-plugin-types',
 				'icon'		=> 'media/fieldsandfilters/administrator/images/icons/icon-48-plugin-types.png',
 				'text' 		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_PLUGIN_TYPES'),
 				'access'	=> array('core.manage', 'com_plugins', 'core.create', 'com_plugins'),
@@ -122,7 +122,7 @@ class FieldsandfiltersHelper
 			),
 			'plugin.extensions' => array(
 				'link' 		=> JRoute::_('index.php?option=com_plugins&filter_folder=fieldsandfiltersextensions&filter_search='),
-				'image'		=> '',
+				'image'		=> 'faf-plugin-extensions',
 				'icon'	 	=> 'media/fieldsandfilters/administrator/images/icons/icon-48-plugin-extensions.png',
 				'text' 		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_PLUGIN_EXTENSIONS'),
 				'access' 	=> array('core.manage', 'com_plugins', 'core.create', 'com_plugins'),
@@ -130,7 +130,7 @@ class FieldsandfiltersHelper
 			),
 			'plugin.system' => array(
 				'link'		=> JRoute::_('index.php?option=com_plugins&filter_folder=system&filter_search=fieldsandfilters'),
-				'image'		=> '',
+				'image'		=> 'faf-plugin-system',
 				'icon'		=> 'media/fieldsandfilters/administrator/images/icons/icon-48-plugin-extensions.png',
 				'text' 		=> JText::_('COM_FIELDSANDFILTERS_QUICKICON_PLUGIN_SYSTEM'),
 				'access' 	=> array('core.manage', 'com_plugins', 'core.create', 'com_plugins'),

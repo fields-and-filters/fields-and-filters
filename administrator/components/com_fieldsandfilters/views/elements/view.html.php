@@ -113,7 +113,7 @@ class FieldsandfiltersViewElements extends JViewLegacy
 	{		
 		$canDo = FieldsandfiltersHelper::getActions();
 		
-		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_ELEMENTS' ), 'elements.png' );
+		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_TITLE_ELEMENTS' ), 'faf-contents' );
 		
 		if( FieldsandfiltersFactory::isVersion() && FieldsandfiltersFactory::isVersion('<', 3.2))
 		{

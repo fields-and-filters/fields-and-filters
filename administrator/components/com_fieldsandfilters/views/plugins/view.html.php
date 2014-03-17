@@ -56,6 +56,6 @@ class FieldsandfiltersViewPlugins extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS_HEADER_PLUGIN_' . strtoupper($this->getLayout())));
+		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS_HEADER_PLUGIN_'.strtoupper($this->getLayout())), 'faf-plugin-'.strtolower($this->getLayout()));
 	}
 }

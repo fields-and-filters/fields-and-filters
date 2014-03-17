@@ -14,6 +14,7 @@ $app			= JFactory::getApplication();
 // Checking if loaded via index.php or component.php
 $recordId		= $app->input->get('recordId', 0, 'int');
 $tmpl 			= $app->input->get('tmpl', '', 'cmd');
+$option         = $app->input->get('option');
 
 // Import CSS
 JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true);
@@ -32,18 +33,8 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 </script>
 
 <!-- Header -->
-<header class="header">
-	<div class="container-fluid">
-		<div class="row-fluid">
-			<div class="span10">
-				<?php if (isset($app->JComponentTitle)) : ?>
-					<h1 class="page-title"><?php echo JHtml::_('string.truncate', $app->JComponentTitle, 0, false, false);?></h1>
-				<?php else : ?>
-					<h1 class="page-title"><?php echo JHtml::_('string.truncate', '', 0, false, false);?></h1>
-				<?php endif; ?>
-			</div>
-		</div>
-	</div>
+<header class="header <?php echo $option; ?>">
+	<?php echo (isset($app->JComponentTitle) ? $app->JComponentTitle : ''); ?>
 </header>
 
 <?php echo JHtml::_('bootstrap.startAccordion', 'pluginTypes', array('active' => 'collapse0')); ?>
@@ -54,7 +45,7 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 			$group = $pluginType->forms->get($nameGroup)->group;
 			echo JHtml::_('bootstrap.addSlide', 'pluginTypes', JText::_($group->title), 'type' . $nameGroup);
 		?>
-		<ul class="nav nav-tabs nav-stacked">
+		<ul class="nav nav-tabs nav-stacked <?php echo $option; ?>">
 		<?php foreach ($pluginTypes AS &$type) : ?>
 			<?php
 				if ($pluginType != $type) :

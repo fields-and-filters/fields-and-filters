@@ -45,7 +45,7 @@ class FieldsandfiltersViewCpanel extends JViewLegacy
 	{
 		$canDo = FieldsandfiltersHelper::getActions();
 		
-		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS'), 'fieldsandfilters.png');
+		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS'), 'faf-fieldsandfilters');
 		
 		if ($canDo->get('core.admin'))
 		{
