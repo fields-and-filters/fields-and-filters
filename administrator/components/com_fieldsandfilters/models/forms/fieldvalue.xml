@@ -25,6 +25,7 @@
 			name="field_id"
 			type="fieldsandfiltersFields"
 			modes="filter"
+			states="-1,0,1"
 			size="1"
 			class="inputbox"
 			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD"

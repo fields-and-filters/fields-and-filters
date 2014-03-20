@@ -54,31 +54,9 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
-		// Initialise variables.
-		$app 			= JFactory::getApplication();
-		$filterUserState 	= (array) $app->getUserState($this->context . '.filter');
-		
-		if ($fieldID = $app->input->getInt('field_id'))
+		if (FieldsandfiltersHelper::setUserStateFieldID($this->context.'.filter'))
 		{
-			if ($fieldID != JArrayHelper::getValue($filterUserState, 'filed_id'))
-			{
-				$filterUserState['field_id'] = $fieldID;
-				$app->setUserState($this->context . '.filter', $filterUserState);
-				$this->setState('list.start', 0);
-			}
-		}
-		else
-		{
-			if (!JArrayHelper::getValue($filterUserState, 'filed_id'))
-			{
-				$filterMode 	= FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER);
-				$extensionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsColumn('content_type_id');
-				$fieldsID 	= FieldsandfiltersFactory::getFields()->getFieldsByModeIDColumn('id', $extensionsID, $filterMode, array(1, -1));
-				$fieldID 	= current($fieldsID);
-				
-				$filterUserState['field_id'] = $fieldID;
-				$app->setUserState($this->context . '.filter', $filterUserState);
-			}
+			$this->setState('list.start', 0);
 		}
 		
 		// If the context is set, assume that stateful lists are used.
@@ -86,7 +64,7 @@ class FieldsandfiltersModelFieldvalues extends JModelList
 		if (!FieldsandfiltersFactory::isVersion() && $this->context)
 		{
 			// Receive & set filters
-			if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
+			if ($filters = JFactory::getApplication()->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
 			{
 				foreach ($filters as $name => $value)
 				{

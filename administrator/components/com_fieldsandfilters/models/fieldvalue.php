@@ -42,6 +42,20 @@ class FieldsandfiltersModelFieldvalue extends JModelAdmin
 	}
 
 	/**
+	 * Stock method to auto-populate the model state.
+	 *
+	 * @return  void
+	 *
+	 * @since   12.2
+	 */
+	protected function populateState()
+	{
+		FieldsandfiltersHelper::setUserStateFieldID(sprintf('%s.%ss.filter', $this->option, $this->name));
+
+		parent::populateState();
+	}
+
+	/**
 	 * Method to get the record form.
 	 *
 	 * @param	array	$data		An optional array of data for the form to interogate.

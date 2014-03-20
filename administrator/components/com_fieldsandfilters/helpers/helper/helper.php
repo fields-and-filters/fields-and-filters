@@ -161,4 +161,38 @@ class FieldsandfiltersHelper
 
 		return $buttons;
 	}
+
+	public static function setUserStateFieldID($context, $name = 'field_id')
+	{
+		$app = JFactory::getApplication();
+		$userState = (array) $app->getUserState($context);
+
+		if ($fieldID = $app->input->getInt($name))
+		{
+			if ($fieldID != JArrayHelper::getValue($userState, $name))
+			{
+				$userState[$name] = $fieldID;
+				$app->setUserState($context, $userState);
+
+				return true;
+			}
+		}
+		else
+		{
+			if (!JArrayHelper::getValue($userState, $name))
+			{
+				$filterMode 	= FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER);
+				$extensionsID 	= FieldsandfiltersFactory::getExtensions()->getExtensionsColumn('content_type_id');
+				$fieldsID 	= FieldsandfiltersFactory::getFields()->getFieldsByModeIDColumn('id', $extensionsID, $filterMode, array(1, -1));
+				$fieldID 	= current($fieldsID);
+
+				$userState[$name] = $fieldID;
+				$app->setUserState($context, $userState);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

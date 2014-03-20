@@ -51,7 +51,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	 * @var    mixed
 	 * @since  1.2.0
 	 */
-	protected $context = 'com_fieldsandfilters.fieldvalues.filter.';
+	protected $context = 'com_fieldsandfilters.fieldvalues.filter';
 	
 	/**
 	 * The states of the form field
@@ -273,12 +273,10 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 		$options = (array) JHtml::_('FieldsandfiltersHtml.options.fields', $this->modes, $this->states);
 
 		// Load the plugin extension.
-		if (!empty($options))
+		if (!empty($options) && !$this->value)
 		{
-			if (!$this->value && ($value = (int) JFactory::getApplication()->getUserState($this->context . $this->name, 0)))
-			{
-				$this->value = $value;
-			}
+			$userState = (array) JFactory::getApplication()->getUserState($this->context);
+			$this->value = JArrayHelper::getValue($userState, $this->fieldname);
 		}
 
 		// Merge any additional options in the XML definition.

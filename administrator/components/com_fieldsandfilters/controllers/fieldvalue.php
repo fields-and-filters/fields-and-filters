@@ -32,7 +32,7 @@ class FieldsandfiltersControllerFieldvalue extends JControllerForm
 	{
 		$append = parent::getRedirectToListAppend();
 
-		$filter = (array) JFactory::getApplication()->getUserState($this->option.'.'.$this->view_list.'.filter', array());
+		$filter = (array) JFactory::getApplication()->getUserState(sprintf('%s.%s.filter', $this->option, $this->view_list), array());
 		$field_id = (int) JArrayHelper::getValue($filter, 'field_id');
 
 		if ($field_id)

@@ -169,7 +169,7 @@ if ($saveOrder)
 							</div>
 						</td>
 						
-						<td class="nowrap has-context">
+						<td class="nowrap">
 							<div class="pull-left">
 								<?php if ($canEdit) : ?>
 									<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&task=field.edit&id=' . (int) $item->id); ?>">
@@ -180,15 +180,32 @@ if ($saveOrder)
 								<?php endif; ?>
 								
 								<?php if (in_array($item->mode, $valuesMode)) : ?>
-								<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
-								<div>
-									<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&field_id=' . (int) $item->id); ?>">
-										<span class="label label-info">
-											<i class="icon-list"></i>
-											<?php echo JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES'); ?>
-										</span>
-									</a>
-								</p>
+									<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
+									<div class="btn-toolbar">
+										<div class="btn-group">
+											<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&field_id=' . (int) $item->id); ?>" class="btn btn-micro">
+												<i class="icon-faf-field-values"></i>
+												<?php echo JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES'); ?>
+											</a>
+											<button class="btn btn-micro dropdown-toggle" data-toggle="dropdown">
+												<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu">
+												<li>
+													<a tabindex="-1" href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalue&layout=edit&field_id=' . (int) $item->id); ?>">
+														<i class="icon-faf-field-value"></i>
+														<?php echo JText::_('COM_FIELDSANDFILTERS_QUICKICON_ADD_NEW_FIELD'); ?>
+													</a>
+												</li>
+												<li>
+													<a tabindex="-1" href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&view=fieldvalues&field_id=' . (int) $item->id); ?>">
+														<i class="icon-faf-field-values"></i>
+														<?php echo JText::_('COM_FIELDSANDFILTERS_FIELDS_FIELD_VALUES'); ?>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</div>
 								<?php endif; ?>
 							</div>
 						</td>
