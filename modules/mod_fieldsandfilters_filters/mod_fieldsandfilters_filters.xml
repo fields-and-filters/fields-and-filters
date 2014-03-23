@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="module" client="site" method="upgrade">
-        <name>mod_fieldsandfilters</name>
+        <name>mod_fieldsandfilters_filters</name>
         <creationDate>2013-08-27</creationDate>
         <copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
         <license>GNU General Public License version 3 or later; see License.txt</license>
@@ -8,7 +8,7 @@
         <authorEmail>kes@kextensions.com</authorEmail>
         <authorUrl>http://www.kextensions.com</authorUrl>
         <version>1.1.1</version>
-        <description>MOD_FIELDSANDFILTERS_XML_DESCRIPTION</description>
+        <description>MOD_FIELDSANDFILTERS_FILTERS_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_fieldsandfilters">mod_fieldsandfilters.php</filename>
 		<filename>index.html</filename>
@@ -27,8 +27,8 @@
 					type="fieldsandfiltersFields"
 					modes="filter"
 					class="inputbox"
-					label="MOD_FIELDSANDFILTERS_FIELDS_ID_LBL"
-					description="MOD_FIELDSANDFILTERS_FIELDS_ID_DESC"
+					label="MOD_FIELDSANDFILTERS_FILTERS_FIELDS_ID_LBL"
+					description="MOD_FIELDSANDFILTERS_FILTERS_FIELDS_ID_DESC"
 					required="true"
 					inputType="checkboxes"
 					filter="int_array"
@@ -37,8 +37,8 @@
 					name="show_submit"
 					type="radio"
 					class="btn-group"
-					label="MOD_FIELDSANDFILTERS_SHOW_SUBMIT_LBL"
-					description="MOD_FIELDSANDFILTERS_SHOW_SUBMIT_DESC"
+					label="MOD_FIELDSANDFILTERS_FILTERS_SHOW_SUBMIT_LBL"
+					description="MOD_FIELDSANDFILTERS_FILTERS_SHOW_SUBMIT_DESC"
 					default="1"
 					filter="int"
 				>
@@ -49,8 +49,8 @@
 					name="show_reset"
 					type="radio"
 					class="btn-group"
-					label="MOD_FIELDSANDFILTERS_SHOW_RESET_LBL"
-					description="MOD_FIELDSANDFILTERS_SHOW_RESET_DESC"
+					label="MOD_FIELDSANDFILTERS_FILTERS_SHOW_RESET_LBL"
+					description="MOD_FIELDSANDFILTERS_FILTERS_SHOW_RESET_DESC"
 					default="0"
 					filter="int"
 				>

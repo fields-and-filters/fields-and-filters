@@ -41,7 +41,7 @@
 					class="inputbox"
 					labelclass="control-label"
 					label="PLG_FAF_TS_UL_FORM_TITLE_LBL"
-					description="PLG_FAF_TS_UL_FORM_TITLE_LBL"
+					description="PLG_FAF_TS_UL_FORM_TITLE_DESC"
 					filter="safehtml"
 				/>
 				<field
