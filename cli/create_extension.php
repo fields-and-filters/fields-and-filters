@@ -131,86 +131,126 @@ class CreateExtensionCli extends JApplicationCli
 		$path = sprintf('%s/%s_%s.%s', $temp, $extension->get('xml')->get('name'), $extension->get('version', $extension->get('xml')->get('version')), $adapter);
 		$path = JPath::clean($path);
 
-		$archive = JArchive::getAdapter($adapter);
+		$files = self::_getFiles($extension);
 
-		$files = array(
-			array(
-				'name' => 'cli/garbagecron.php',
-				'data' => file_get_contents(JPATH_ROOT.'/cli/garbagecron.php')
-			)
-		);
-
-		$files = self::getFiles($extension);
-
-		if (!$archive->create($path, $files))
+		if (!$this->input->getBool('not-archive'))
 		{
-			throw new Exception(sprintf('File "%s" does not crated.', $path));
+			if (!JArchive::getAdapter($adapter)->create($path, $files))
+			{
+				throw new Exception(sprintf('File "%s" does not crated.', $path));
+			}
+		}
+
+		if ($this->input->get('list'))
+		{
+			foreach($files AS $file)
+			{
+				$this->out($file['name']);
+			}
 		}
 	}
 
-	protected static function getFiles(JRegistry $extension)
+	protected static function _getFiles(JRegistry $extension)
 	{
-		// print_r($extension);
 		$xml = $extension->get('xml');
-
-		// print_r($xml->get('files.@attributes.folder'));
-
-		$path = JPath::clean(JPATH_ROOT.'/components/com_fieldsandfilters');
-
-		// print_r(JFolder::files($path, '.', true, true));
-
-		$files = self::_getFiles($path, $xml->get('files'));
-
-		// add xml file + script file
-
-		return $files;
-	}
-
-	protected static function _getFiles($base, $object, array $exclude = array())
-	{
-		$paths = array();
-		$object = new JRegistry($object);
-
-		print_r($object);
-
-		if ($object->get('folder'))
-		{
-			foreach ($object->get('folder') AS $folder)
-			{
-				$paths = array_merge($paths, JFolder::files($base.'/'.$folder, '.', true, true));
-			}
-		}
-
-		if ($object->get('filename'))
-		{
-			foreach ($object->get('filename') AS $filename)
-			{
-				$file = JPath::clean($base.'/'.$filename);
-
-				if (is_file($file))
-				{
-					$paths[] = $file;
-				}
-			}
-		}
-
 		$files = array();
-		$folder = $object->get('@attributes.folder') ? $object->get('@attributes.folder').'/' : '';
-		while ($file = array_shift($paths))
-		{
-			if (in_array($file, $exclude))
-			{
-				continue;
-			}
 
-			$files[] = array(
-				'name' => $folder.trim(str_replace($base, '', $file), '/'),
-				'data' => file_get_contents($file)
-			);
+		switch(strtolower($xml->get('@attributes.type')))
+		{
+			case 'component':
+				$path = '/components/'.$xml->get('name');
+				$files = array_merge($files, self::getFiles(JPATH_SITE.$path, $xml->get('files')));
+				$files = array_merge($files, self::getFiles(JPATH_ADMINISTRATOR.$path, $xml->get('administration.files')));
+				$path = JPath::clean(JPATH_ADMINISTRATOR.$path);
+				break;
+			default:
+				throw new InvalidArgumentException(sprintf('Extension type "%s" does not support.', $extension->get('xml')->get('@attributes.type')));
+		}
+
+		$files[] = self::getFile($extension->get('path'), $path);
+
+		if ($xml->get('scriptfile') && ($script = JPath::clean($path.'/'.$xml->get('scriptfile'))) && is_file($script))
+		{
+			$files[] = self::getFile($script, $path);
+		}
+
+		if ($media = $xml->get('media'))
+		{
+			$files = array_merge($files, self::getFiles(JPATH_ROOT.'/media/'.$xml->get('media.@attributes.destination'), $xml->get('media')));
+		}
+
+		if ($languages = $xml->get('languages'))
+		{
+			$files = array_merge($files, self::getLanguages(JPATH_SITE.'/language', $languages));
+		}
+
+		if ($languages = $xml->get('administration.languages'))
+		{
+			$files = array_merge($files, self::getLanguages(JPATH_ADMINISTRATOR.'/language', $languages));
 		}
 
 		return $files;
 	}
+
+	protected static function getFiles($base, $object)
+	{
+		$files = array();
+		$object = new JRegistry($object);
+		$base = JPath::clean($base);
+
+		foreach ((array)$object->get('folder') AS $folder)
+		{
+			foreach ((array) JFolder::files($base.'/'.$folder, '.', true, true) AS $file)
+			{
+				$files[] = self::getFile($file, $base, $object->get('@attributes.folder'));
+			}
+		}
+
+		foreach ((array) $object->get('filename') AS $filename)
+		{
+			$file = JPath::clean($base.'/'.$filename);
+
+			if (is_file($file))
+			{
+				$files[] = self::getFile($file, $base, $object->get('@attributes.folder'));
+			}
+		}
+
+		return $files;
+	}
+
+	protected static function getLanguages($base, $object)
+	{
+		$files = array();
+		$object = new JRegistry($object);
+		$base = JPath::clean($base);
+
+		foreach ((array) $object->get('language') AS $path)
+		{
+			$filename = basename($path);
+			$lang = strstr($filename, '.', true);
+			$file = JPath::clean($base.'/'.$lang.'/'.$filename);
+
+			if (is_file($file))
+			{
+				$files[] = self::getFile($file, $base, $object->get('@attributes.folder').'/'.dirname($path), $lang.'/');
+			}
+		}
+
+		return $files;
+	}
+
+	protected static function getFile($file, $base, $folder = '', $exclude = '')
+	{
+		$name = $folder ? $folder.'/' : '';
+		$name .= trim(str_replace(array($base, $exclude), '', $file), '/');
+
+		return array(
+			'name' => JPath::clean($name),
+			'data' => file_get_contents($file)
+		);
+	}
+
 
 	protected function error($text)
 	{

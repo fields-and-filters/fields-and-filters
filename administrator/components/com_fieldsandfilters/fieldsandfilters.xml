@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="2.5" method="upgrade">
+<extension type="component"
+           version="2.5"
+           method="upgrade">
 	<name>com_fieldsandfilters</name>
 	<creationDate>2013-08-27</creationDate>
 	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
@@ -9,34 +11,54 @@
 	<authorUrl>http://www.kextensions.com</authorUrl>
 	<version>1.1.1</version>
 	<description>COM_FIELDSANDFILTERS_XML_DESCRIPTION</description>
-	
-	 <!-- Runs on install/uninstall/update; -->
-        <scriptfile>fieldsandfilters.script.php</scriptfile>
-	
+
+	<!-- Runs on install/uninstall/update; -->
+	<scriptfile>fieldsandfilters.script.php</scriptfile>
+
 	<install> <!-- Runs on install -->
 		<sql>
-			<file driver="mysql" charset="utf8">sql/install/mysql/install.sql</file>
-			<file driver="mysqli" charset="utf8">sql/install/mysql/install.sql</file>
+			<file driver="mysql"
+			      charset="utf8">sql/install/mysql/install.sql
+			</file>
+			<file driver="mysqli"
+			      charset="utf8">sql/install/mysql/install.sql
+			</file>
 
-			<file driver="sqlazure" charset="utf8">sql/install/sqlazure/install.sql</file>
-			<file driver="sqlsrv" charset="utf8">sql/install/sqlazure/install.sql</file>
-			
-			<file driver="postgresql" charset="utf8">sql/install/postgresql/install.sql</file>
+			<file driver="sqlazure"
+			      charset="utf8">sql/install/sqlazure/install.sql
+			</file>
+			<file driver="sqlsrv"
+			      charset="utf8">sql/install/sqlazure/install.sql
+			</file>
+
+			<file driver="postgresql"
+			      charset="utf8">sql/install/postgresql/install.sql
+			</file>
 		</sql>
 	</install>
 
 	<uninstall> <!-- Runs on uninstall -->
 		<sql>
-			<file driver="mysql" charset="utf8">sql/install/mysql/uninstall.sql</file>
-			<file driver="mysqli" charset="utf8">sql/install/mysql/uninstall.sql</file>
-			
-			<file driver="sqlazure" charset="utf8">sql/install/sqlazure/uninstall.sql</file>
-			<file driver="sqlsrv" charset="utf8">sql/install/sqlazure/uninstall.sql</file>
-			
-			<file driver="postgresql" charset="utf8">sql/install/postgresql/uninstall.sql</file>
+			<file driver="mysql"
+			      charset="utf8">sql/install/mysql/uninstall.sql
+			</file>
+			<file driver="mysqli"
+			      charset="utf8">sql/install/mysql/uninstall.sql
+			</file>
+
+			<file driver="sqlazure"
+			      charset="utf8">sql/install/sqlazure/uninstall.sql
+			</file>
+			<file driver="sqlsrv"
+			      charset="utf8">sql/install/sqlazure/uninstall.sql
+			</file>
+
+			<file driver="postgresql"
+			      charset="utf8">sql/install/postgresql/uninstall.sql
+			</file>
 		</sql>
 	</uninstall>
-	
+
 	<update> <!-- SQL files to run on update -->
 		<schemas>
 			<schemapath type="mysql">sql/updates/mysql</schemapath>
@@ -46,7 +68,7 @@
 			<schemapath type="postgresql">sql/updates/postgresql</schemapath>
 		</schemas>
 	</update>
-    
+
 	<files folder="site">
 		<filename>index.html</filename>
 		<filename>fieldsandfilters.php</filename>
@@ -59,11 +81,13 @@
 	<languages folder="site">
 		<language tag="en-GB">language/en-GB.com_fieldsandfilters.ini</language>
 	</languages>
-	
+
 	<media folder="media" destination="fieldsandfilters">
-                <folder>component</folder>
+		<folder>administrator</folder>
+		<folder>core</folder>
+		<folder>filters</folder>
 		<filename>index.html</filename>
-        </media>
+	</media>
 	<administration>
 		<menu img="../media/fieldsandfilters/component/images/icons/icon-16-fieldsandfilters.png">COM_FIELDSANDFILTERS</menu>
 		<files folder="administrator">
@@ -73,18 +97,18 @@
 			<filename>index.html</filename>
 			<filename>fieldsandfilters.php</filename>
 			<folder>controllers</folder>
-			<folder>extensions</folder>
 			<folder>helpers</folder>
+			<folder>layouts</folder>
 			<folder>models</folder>
 			<folder>sql</folder>
 			<folder>tables</folder>
 			<folder>views</folder>
-		 </files>
+		</files>
 		<languages folder="administrator">
-		    <language tag="en-GB">language/en-GB/en-GB.com_fieldsandfilters.ini</language>
-		    <language tag="en-GB">language/en-GB/en-GB.com_fieldsandfilters.sys.ini</language>
+			<language tag="en-GB">language/en-GB/en-GB.com_fieldsandfilters.ini</language>
+			<language tag="en-GB">language/en-GB/en-GB.com_fieldsandfilters.sys.ini</language>
 		</languages>
 	</administration>
 </extension>
-<!-- Component built by the Joomla Component Creator -->
-<!-- http://www.notwebdesign.com/joomla-component-creator/ -->
+		<!-- Component built by the Joomla Component Creator -->
+		<!-- http://www.notwebdesign.com/joomla-component-creator/ -->
