@@ -140,10 +140,76 @@ class CreateExtensionCli extends JApplicationCli
 			)
 		);
 
+		$files = self::getFiles($extension);
+
 		if (!$archive->create($path, $files))
 		{
 			throw new Exception(sprintf('File "%s" does not crated.', $path));
 		}
+	}
+
+	protected static function getFiles(JRegistry $extension)
+	{
+		// print_r($extension);
+		$xml = $extension->get('xml');
+
+		// print_r($xml->get('files.@attributes.folder'));
+
+		$path = JPath::clean(JPATH_ROOT.'/components/com_fieldsandfilters');
+
+		// print_r(JFolder::files($path, '.', true, true));
+
+		$files = self::_getFiles($path, $xml->get('files'));
+
+		// add xml file + script file
+
+		return $files;
+	}
+
+	protected static function _getFiles($base, $object, array $exclude = array())
+	{
+		$paths = array();
+		$object = new JRegistry($object);
+
+		print_r($object);
+
+		if ($object->get('folder'))
+		{
+			foreach ($object->get('folder') AS $folder)
+			{
+				$paths = array_merge($paths, JFolder::files($base.'/'.$folder, '.', true, true));
+			}
+		}
+
+		if ($object->get('filename'))
+		{
+			foreach ($object->get('filename') AS $filename)
+			{
+				$file = JPath::clean($base.'/'.$filename);
+
+				if (is_file($file))
+				{
+					$paths[] = $file;
+				}
+			}
+		}
+
+		$files = array();
+		$folder = $object->get('@attributes.folder') ? $object->get('@attributes.folder').'/' : '';
+		while ($file = array_shift($paths))
+		{
+			if (in_array($file, $exclude))
+			{
+				continue;
+			}
+
+			$files[] = array(
+				'name' => $folder.trim(str_replace($base, '', $file), '/'),
+				'data' => file_get_contents($file)
+			);
+		}
+
+		return $files;
 	}
 
 	protected function error($text)
