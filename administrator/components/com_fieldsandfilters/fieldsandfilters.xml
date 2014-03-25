@@ -105,8 +105,8 @@
 			<folder>views</folder>
 		</files>
 		<languages folder="administrator">
-			<language tag="en-GB">language/en-GB/en-GB.com_fieldsandfilters.ini</language>
-			<language tag="en-GB">language/en-GB/en-GB.com_fieldsandfilters.sys.ini</language>
+			<language tag="en-GB">language/en-GB.com_fieldsandfilters.ini</language>
+			<language tag="en-GB">language/en-GB.com_fieldsandfilters.sys.ini</language>
 		</languages>
 	</administration>
 </extension>

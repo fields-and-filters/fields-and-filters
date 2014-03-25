@@ -37,6 +37,8 @@ ini_set('display_errors', 1);
 
 class CreateExtensionCli extends JApplicationCli
 {
+	const ADMINISTRATOR = 'administrator';
+
 	protected static $error = array(
 		'foregroundColors' => 37,
 		'backgroundColors' => 41
@@ -50,7 +52,7 @@ class CreateExtensionCli extends JApplicationCli
 		}
 		catch (Exception $e)
 		{
-			$this->out($this->error($e->getMessage()));
+			$this->out(self::error($e->getMessage()));
 		}
 	}
 
@@ -131,7 +133,7 @@ class CreateExtensionCli extends JApplicationCli
 		$path = sprintf('%s/%s_%s.%s', $temp, $extension->get('xml')->get('name'), $extension->get('version', $extension->get('xml')->get('version')), $adapter);
 		$path = JPath::clean($path);
 
-		$files = self::_getFiles($extension);
+		$files =$this->_getFiles($extension);
 
 		if (!$this->input->getBool('not-archive'))
 		{
@@ -150,7 +152,7 @@ class CreateExtensionCli extends JApplicationCli
 		}
 	}
 
-	protected static function _getFiles(JRegistry $extension)
+	protected function _getFiles(JRegistry $extension)
 	{
 		$xml = $extension->get('xml');
 		$files = array();
@@ -159,9 +161,19 @@ class CreateExtensionCli extends JApplicationCli
 		{
 			case 'component':
 				$path = '/components/'.$xml->get('name');
-				$files = array_merge($files, self::getFiles(JPATH_SITE.$path, $xml->get('files')));
-				$files = array_merge($files, self::getFiles(JPATH_ADMINISTRATOR.$path, $xml->get('administration.files')));
+				$files = array_merge($files, $this->getFiles(JPATH_SITE.$path, $xml->get('files')));
+				$files = array_merge($files, $this->getFiles(JPATH_ADMINISTRATOR.$path, $xml->get('administration.files')));
 				$path = JPath::clean(JPATH_ADMINISTRATOR.$path);
+				$langauges = array(
+					'languages' => JPATH_SITE,
+					'administration.languages' => JPATH_ADMINISTRATOR
+				);
+				break;
+			case 'module':
+				$langauges['languages'] = $path = ($xml->get('@attributes.client') == self::ADMINISTRATOR ? JPATH_ADMINISTRATOR : JPATH_SITE);
+
+				$path .= '/modules/'.$xml->get('name');
+				$files = array_merge($files, $this->getFiles($path, $xml->get('files')));
 				break;
 			default:
 				throw new InvalidArgumentException(sprintf('Extension type "%s" does not support.', $extension->get('xml')->get('@attributes.type')));
@@ -176,23 +188,21 @@ class CreateExtensionCli extends JApplicationCli
 
 		if ($media = $xml->get('media'))
 		{
-			$files = array_merge($files, self::getFiles(JPATH_ROOT.'/media/'.$xml->get('media.@attributes.destination'), $xml->get('media')));
+			$files = array_merge($files, $this->getFiles(JPATH_ROOT.'/media/'.$xml->get('media.@attributes.destination'), $xml->get('media')));
 		}
 
-		if ($languages = $xml->get('languages'))
+		foreach($langauges AS $key => $base)
 		{
-			$files = array_merge($files, self::getLanguages(JPATH_SITE.'/language', $languages));
-		}
-
-		if ($languages = $xml->get('administration.languages'))
-		{
-			$files = array_merge($files, self::getLanguages(JPATH_ADMINISTRATOR.'/language', $languages));
+			if ($language = $xml->get($key))
+			{
+				$files = array_merge($files, $this->getLanguages($base.'/language', $language));
+			}
 		}
 
 		return $files;
 	}
 
-	protected static function getFiles($base, $object)
+	protected function getFiles($base, $object)
 	{
 		$files = array();
 		$object = new JRegistry($object);
@@ -200,9 +210,16 @@ class CreateExtensionCli extends JApplicationCli
 
 		foreach ((array)$object->get('folder') AS $folder)
 		{
-			foreach ((array) JFolder::files($base.'/'.$folder, '.', true, true) AS $file)
+			if ($paths = JFolder::files($base.'/'.$folder, '.', true, true))
 			{
-				$files[] = self::getFile($file, $base, $object->get('@attributes.folder'));
+				foreach ((array) $paths AS $file)
+				{
+					$files[] = self::getFile($file, $base, $object->get('@attributes.folder'));
+				}
+			}
+			else
+			{
+				$this->out(self::error(sprintf('Folder "%s" is empty or does not exists', $base.'/'.$folder)));
 			}
 		}
 
@@ -214,12 +231,16 @@ class CreateExtensionCli extends JApplicationCli
 			{
 				$files[] = self::getFile($file, $base, $object->get('@attributes.folder'));
 			}
+			else
+			{
+				$this->out(self::error(sprintf('File "%s" does not exists', $file)));
+			}
 		}
 
 		return $files;
 	}
 
-	protected static function getLanguages($base, $object)
+	protected function getLanguages($base, $object)
 	{
 		$files = array();
 		$object = new JRegistry($object);
@@ -234,6 +255,10 @@ class CreateExtensionCli extends JApplicationCli
 			if (is_file($file))
 			{
 				$files[] = self::getFile($file, $base, $object->get('@attributes.folder').'/'.dirname($path), $lang.'/');
+			}
+			else
+			{
+				$this->out(self::error(sprintf('File "%s" does not exists', $file)));
 			}
 		}
 
@@ -252,7 +277,7 @@ class CreateExtensionCli extends JApplicationCli
 	}
 
 
-	protected function error($text)
+	protected static function error($text)
 	{
 		return sprintf("\033[%sm%s\033[0m", implode(';', self::$error), $text);
 	}
