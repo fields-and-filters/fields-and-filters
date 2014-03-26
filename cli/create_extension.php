@@ -82,17 +82,23 @@ class CreateExtensionCli extends JApplicationCli
 			throw new Exception(sprintf('File "%s" does not exists', $path));
 		}
 
-		$extension = self::getExtension($path);
+		$data = self::loadJSON($path);
 
-		$this->cloneExtension($extension);
+		$extension = self::getExtension($data->get('xml'));
+
+		$this->archiveExtension($extension);
 	}
 
-	protected static function getExtension($json)
+	protected static function loadJSON($path)
 	{
 		$data = new JRegistry();
-		$data->loadFile($json);
+		$data->loadFile($path);
 
-		$path = $data->get('xml');
+		return $data;
+	}
+
+	protected static function getExtension($path)
+	{
 		if (!$path)
 		{
 			throw new InvalidArgumentException(sprintf('Property "xml" does not exists in "%s"', $json));
@@ -105,13 +111,14 @@ class CreateExtensionCli extends JApplicationCli
 			throw new Exception(sprintf('File "%s" does not exists.', $path));
 		}
 
+		$data = new JObject();
 		$data->set('path', $path);
 		$data->set('xml', simplexml_load_file($path));
 
 		return $data;
 	}
 
-	protected function cloneExtension(JRegistry $extension)
+	protected function archiveExtension(JObject $extension)
 	{
 		$temp = JPath::clean($this->get('tmp_path'));
 
@@ -152,7 +159,7 @@ class CreateExtensionCli extends JApplicationCli
 		}
 	}
 
-	protected function _getFiles(JRegistry $extension)
+	protected function _getFiles(JObject $extension)
 	{
 		$xml = $extension->get('xml');
 		$language = '/language';
