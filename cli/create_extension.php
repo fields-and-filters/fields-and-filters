@@ -138,6 +138,8 @@ class CreateExtensionCli extends JApplicationCli
 			{
 				throw new Exception(sprintf('File "%s" does not crated.', $path));
 			}
+
+			$extension->set('archive', basename($path));
 		}
 
 		if ($this->input->get('list'))
@@ -152,6 +154,7 @@ class CreateExtensionCli extends JApplicationCli
 	protected function _getFiles(JRegistry $extension)
 	{
 		$xml = $extension->get('xml');
+		$language = '/language';
 
 		switch(strtolower((string) $xml->attributes()->type))
 		{
@@ -160,23 +163,20 @@ class CreateExtensionCli extends JApplicationCli
 				$files = $this->getFiles(JPATH_SITE.$path, $xml->files);
 				$files = array_merge($files, $this->getFiles(JPATH_ADMINISTRATOR.$path, $xml->administration->files));
 				$path = JPath::clean(JPATH_ADMINISTRATOR.$path);
-				$langauges = array(
-					JPATH_SITE => $xml->languages,
-					JPATH_ADMINISTRATOR => $xml->administration->languages
-				);
+				$files = array_merge($files, $this->getLanguages(JPATH_SITE.$language, $xml->languages));
+				$files = array_merge($files, $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->administration->languages));
 				break;
 			case 'module':
-				$path = ((string) $xml->attributes()->client == self::ADMINISTRATOR ? JPATH_ADMINISTRATOR : JPATH_SITE);
-				$langauges[$path] = $xml->languages;
+				$base = ((string) $xml->attributes()->client == self::ADMINISTRATOR ? JPATH_ADMINISTRATOR : JPATH_SITE);
 
-				$path .= '/modules/'.(string) $xml->name;
+				$path = $base.'/modules/'.(string) $xml->name;
 				$files = $this->getFiles($path, $xml->files);
+				$files = array_merge($files, $this->getLanguages($base.$language, $xml->languages));
 				break;
 			case 'plugin':
-				$langauges[JPATH_ADMINISTRATOR] = $xml->languages;
-
 				$path = JPATH_SITE.'/plugins/'.(string) $xml->attributes()->group.'/'.$xml->files->filename->attributes()->plugin;
 				$files = $this->getFiles($path, $xml->files);
+				$files = array_merge($files, $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages));
 				break;
 			default:
 				throw new InvalidArgumentException(sprintf('Extension type "%s" does not support.', (string) $xml->attributes()->type));
@@ -192,11 +192,6 @@ class CreateExtensionCli extends JApplicationCli
 		if (isset($xml->media))
 		{
 			$files = array_merge($files, $this->getFiles(JPATH_ROOT.'/media/'.(string) $xml->media->attributes()->destination, $xml->media));
-		}
-
-		foreach($langauges AS $base => $object)
-		{
-			$files = array_merge($files, $this->getLanguages($base.'/language', $object));
 		}
 
 		return $files;
