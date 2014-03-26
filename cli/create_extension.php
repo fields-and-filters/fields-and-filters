@@ -101,7 +101,7 @@ class CreateExtensionCli extends JApplicationCli
 	{
 		if (!$path)
 		{
-			throw new InvalidArgumentException(sprintf('Property "xml" does not exists in "%s"', $json));
+			throw new InvalidArgumentException('Property "path" is empty');
 		}
 
 		$path = JPath::clean(sprintf('%s/%s.xml', JPATH_ROOT, $path));
