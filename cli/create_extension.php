@@ -125,15 +125,16 @@ class CreateExtensionCli extends JApplicationCli
 			throw new Exception(sprintf('Dir "%s" does not writable.', $temp));
 		}
 
-		$adapter = $this->input->get('adapter', 'zip');
-
-		$path = sprintf('%s/%s_%s.%s', $temp, (string) $extension->get('xml')->name, $extension->get('version', (string) $extension->get('xml')->version), $adapter);
-		$path = JPath::clean($path);
-
 		$files =$this->_getFiles($extension);
 
 		if (!$this->input->getBool('not-archive'))
 		{
+			$adapter = $this->input->get('adapter', 'zip');
+			$xml = $extension->get('xml');
+
+			$path = sprintf('%s/%s_%s.%s', $temp, (string) $xml->name, $extension->get('version', (string) $xml->version), $adapter);
+			$path = JPath::clean($path);
+
 			if (!JArchive::getAdapter($adapter)->create($path, $files))
 			{
 				throw new Exception(sprintf('File "%s" does not crated.', $path));
