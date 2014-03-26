@@ -37,8 +37,6 @@ ini_set('display_errors', 1);
 
 class CreateExtensionCli extends JApplicationCli
 {
-	const ADMINISTRATOR = 'administrator';
-
 	protected static $error = array(
 		'foregroundColors' => 37,
 		'backgroundColors' => 41
@@ -83,10 +81,20 @@ class CreateExtensionCli extends JApplicationCli
 		}
 
 		$data = self::loadJSON($path);
+		$xml = (array) $data->get('xml');
 
-		$extension = self::getExtension($data->get('xml'));
+		foreach ($xml AS $path)
+		{
+			$this->archive($path);
+		}
+	}
 
+	protected function archive($path)
+	{
+		$extension = self::getExtension($path);
 		$this->archiveExtension($extension);
+
+		return $extension;
 	}
 
 	protected static function loadJSON($path)
@@ -139,7 +147,8 @@ class CreateExtensionCli extends JApplicationCli
 			$adapter = $this->input->get('adapter', 'zip');
 			$xml = $extension->get('xml');
 
-			$path = sprintf('%s/%s_%s.%s', $temp, (string) $xml->name, $extension->get('version', (string) $xml->version), $adapter);
+			$name = isset($xml->libraryname) ? (string) $xml->libraryname : (string) $xml->name;
+			$path = sprintf('%s/%s_%s.%s', $temp, $name, $extension->get('version', (string) $xml->version), $adapter);
 			$path = JPath::clean($path);
 
 			if (!JArchive::getAdapter($adapter)->create($path, $files))
@@ -170,19 +179,23 @@ class CreateExtensionCli extends JApplicationCli
 				$path = '/components/'.(string) $xml->name;
 				$files = $this->getFiles(JPATH_SITE.$path, $xml->files);
 				$files = array_merge($files, $this->getFiles(JPATH_ADMINISTRATOR.$path, $xml->administration->files));
-				$path = JPath::clean(JPATH_ADMINISTRATOR.$path);
 				$files = array_merge($files, $this->getLanguages(JPATH_SITE.$language, $xml->languages));
 				$files = array_merge($files, $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->administration->languages));
+				$path = JPath::clean(JPATH_ADMINISTRATOR.$path);
 				break;
 			case 'module':
-				$base = ((string) $xml->attributes()->client == self::ADMINISTRATOR ? JPATH_ADMINISTRATOR : JPATH_SITE);
-
-				$path = $base.'/modules/'.(string) $xml->name;
+				$client = JApplicationHelper::getClientInfo((string) $xml->attributes()->client, true);
+				$path = $client->path.'/modules/'.(string) $xml->name;
 				$files = $this->getFiles($path, $xml->files);
-				$files = array_merge($files, $this->getLanguages($base.$language, $xml->languages));
+				$files = array_merge($files, $this->getLanguages($client->path.$language, $xml->languages));
 				break;
 			case 'plugin':
 				$path = JPATH_SITE.'/plugins/'.(string) $xml->attributes()->group.'/'.$xml->files->filename->attributes()->plugin;
+				$files = $this->getFiles($path, $xml->files);
+				$files = array_merge($files, $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages));
+				break;
+			case 'library':
+				$path = JPATH_LIBRARIES.'/'.(string) $xml->libraryname;
 				$files = $this->getFiles($path, $xml->files);
 				$files = array_merge($files, $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages));
 				break;
@@ -190,7 +203,7 @@ class CreateExtensionCli extends JApplicationCli
 				throw new InvalidArgumentException(sprintf('Extension type "%s" does not support.', (string) $xml->attributes()->type));
 		}
 
-		$files[] = self::getFile($extension->get('path'), $path);
+		$files[] = self::getFile($extension->get('path'), dirname($extension->get('path')));
 
 		if (isset($xml->scriptfile) && ($script = JPath::clean($path.'/'.(string) $xml->scriptfile)) && is_file($script))
 		{

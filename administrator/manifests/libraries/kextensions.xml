@@ -13,8 +13,11 @@
 		<filename>index.html</filename>
 		<folder>array</folder>
 		<folder>buffer</folder>
-		<folder>extensions</folder>
+		<folder>controller</folder>
 		<folder>file</folder>
+		<folder>form</folder>W
+		<folder>joomla</folder>
+		<folder>language</folder>
 		<folder>log</folder>
 		<folder>module</folder>
 		<folder>user</folder>

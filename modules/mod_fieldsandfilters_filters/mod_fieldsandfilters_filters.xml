@@ -12,7 +12,6 @@
 	<files>
 		<filename module="mod_fieldsandfilters_filters">mod_fieldsandfilters_filters.php</filename>
 		<filename>index.html</filename>
-		<filename>mod_fieldsandfilters_filters.xml</filename>
 		<folder>tmpl</folder>
 	</files>
 	<languages>

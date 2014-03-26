@@ -1,6 +1,9 @@
 {
-//	"xml": "administrator/modules/mod_login/mod_login"
-//	"xml": "administrator/components/com_fieldsandfilters/fieldsandfilters"
-//	"xml": "modules/mod_fieldsandfilters_filters/mod_fieldsandfilters_filters"
-	"xml": "plugins/fieldsandfiltersextensions/content/content"
+	"xml": [
+		"administrator/modules/mod_login/mod_login",
+		"administrator/components/com_fieldsandfilters/fieldsandfilters",
+		"modules/mod_fieldsandfilters_filters/mod_fieldsandfilters_filters",
+		"plugins/fieldsandfiltersextensions/content/content",
+		"administrator/manifests/libraries/kextensions"
+	]
 }
