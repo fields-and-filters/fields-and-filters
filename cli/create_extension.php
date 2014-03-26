@@ -106,10 +106,7 @@ class CreateExtensionCli extends JApplicationCli
 		}
 
 		$data->set('path', $path);
-
-		$xml = simplexml_load_file($path);
-		$xml = json_encode($xml);
-		$data->set('xml', new JRegistry($xml));
+		$data->set('xml', simplexml_load_file($path));
 
 		return $data;
 	}
@@ -130,7 +127,7 @@ class CreateExtensionCli extends JApplicationCli
 
 		$adapter = $this->input->get('adapter', 'zip');
 
-		$path = sprintf('%s/%s_%s.%s', $temp, $extension->get('xml')->get('name'), $extension->get('version', $extension->get('xml')->get('version')), $adapter);
+		$path = sprintf('%s/%s_%s.%s', $temp, (string) $extension->get('xml')->name, $extension->get('version', (string) $extension->get('xml')->version), $adapter);
 		$path = JPath::clean($path);
 
 		$files =$this->_getFiles($extension);
@@ -155,123 +152,131 @@ class CreateExtensionCli extends JApplicationCli
 	protected function _getFiles(JRegistry $extension)
 	{
 		$xml = $extension->get('xml');
-		$files = array();
 
-		switch(strtolower($xml->get('@attributes.type')))
+		switch(strtolower((string) $xml->attributes()->type))
 		{
 			case 'component':
-				$path = '/components/'.$xml->get('name');
-				$files = array_merge($files, $this->getFiles(JPATH_SITE.$path, $xml->get('files')));
-				$files = array_merge($files, $this->getFiles(JPATH_ADMINISTRATOR.$path, $xml->get('administration.files')));
+				$path = '/components/'.(string) $xml->name;
+				$files = $this->getFiles(JPATH_SITE.$path, $xml->files);
+				$files = array_merge($files, $this->getFiles(JPATH_ADMINISTRATOR.$path, $xml->administration->files));
 				$path = JPath::clean(JPATH_ADMINISTRATOR.$path);
 				$langauges = array(
-					'languages' => JPATH_SITE,
-					'administration.languages' => JPATH_ADMINISTRATOR
+					JPATH_SITE => $xml->languages,
+					JPATH_ADMINISTRATOR => $xml->administration->languages
 				);
 				break;
 			case 'module':
-				$langauges['languages'] = $path = ($xml->get('@attributes.client') == self::ADMINISTRATOR ? JPATH_ADMINISTRATOR : JPATH_SITE);
+				$path = ((string) $xml->attributes()->client == self::ADMINISTRATOR ? JPATH_ADMINISTRATOR : JPATH_SITE);
+				$langauges[$path] = $xml->languages;
 
-				$path .= '/modules/'.$xml->get('name');
-				$files = array_merge($files, $this->getFiles($path, $xml->get('files')));
+				$path .= '/modules/'.(string) $xml->name;
+				$files = $this->getFiles($path, $xml->files);
+				break;
+			case 'plugin':
+				$langauges[JPATH_ADMINISTRATOR] = $xml->languages;
+
+				$path = JPATH_SITE.'/plugins/'.(string) $xml->attributes()->group.'/'.$xml->files->filename->attributes()->plugin;
+				$files = $this->getFiles($path, $xml->files);
 				break;
 			default:
-				throw new InvalidArgumentException(sprintf('Extension type "%s" does not support.', $extension->get('xml')->get('@attributes.type')));
+				throw new InvalidArgumentException(sprintf('Extension type "%s" does not support.', (string) $xml->attributes()->type));
 		}
 
 		$files[] = self::getFile($extension->get('path'), $path);
 
-		if ($xml->get('scriptfile') && ($script = JPath::clean($path.'/'.$xml->get('scriptfile'))) && is_file($script))
+		if (isset($xml->scriptfile) && ($script = JPath::clean($path.'/'.(string) $xml->scriptfile)) && is_file($script))
 		{
 			$files[] = self::getFile($script, $path);
 		}
 
-		if ($media = $xml->get('media'))
+		if (isset($xml->media))
 		{
-			$files = array_merge($files, $this->getFiles(JPATH_ROOT.'/media/'.$xml->get('media.@attributes.destination'), $xml->get('media')));
+			$files = array_merge($files, $this->getFiles(JPATH_ROOT.'/media/'.(string) $xml->media->attributes()->destination, $xml->media));
 		}
 
-		foreach($langauges AS $key => $base)
+		foreach($langauges AS $base => $object)
 		{
-			if ($language = $xml->get($key))
-			{
-				$files = array_merge($files, $this->getLanguages($base.'/language', $language));
-			}
+			$files = array_merge($files, $this->getLanguages($base.'/language', $object));
 		}
 
 		return $files;
 	}
 
-	protected function getFiles($base, $object)
+	protected function getFiles($base, SimpleXMLElement $object)
 	{
 		$files = array();
-		$object = new JRegistry($object);
 		$base = JPath::clean($base);
 
-		foreach ((array)$object->get('folder') AS $folder)
+		if (isset($object->folder))
 		{
-			if ($paths = JFolder::files($base.'/'.$folder, '.', true, true))
+			foreach ($object->folder AS $folder)
 			{
-				foreach ((array) $paths AS $file)
+				if ($paths = JFolder::files($base.'/'.(string) $folder, '.', true, true))
 				{
-					$files[] = self::getFile($file, $base, $object->get('@attributes.folder'));
+					foreach ((array) $paths AS $file)
+					{
+						$files[] = self::getFile($file, $base, (string) $object->attributes()->folder);
+					}
+				}
+				else
+				{
+					$this->out(self::error(sprintf('Folder "%s" is empty or does not exists', $base.'/'.(string) $folder)));
 				}
 			}
-			else
-			{
-				$this->out(self::error(sprintf('Folder "%s" is empty or does not exists', $base.'/'.$folder)));
-			}
 		}
 
-		foreach ((array) $object->get('filename') AS $filename)
+		if (isset($object->filename))
 		{
-			$file = JPath::clean($base.'/'.$filename);
+			foreach ($object->filename AS $filename)
+			{
+				$file = JPath::clean($base.'/'.(string) $filename);
 
-			if (is_file($file))
-			{
-				$files[] = self::getFile($file, $base, $object->get('@attributes.folder'));
-			}
-			else
-			{
-				$this->out(self::error(sprintf('File "%s" does not exists', $file)));
+				if (is_file($file))
+				{
+					$files[] = self::getFile($file, $base, (string) $object->attributes()->folder);
+				}
+				else
+				{
+					$this->out(self::error(sprintf('File "%s" does not exists', $file)));
+				}
 			}
 		}
 
 		return $files;
 	}
 
-	protected function getLanguages($base, $object)
+	protected function getLanguages($base, SimpleXMLElement $object)
 	{
 		$files = array();
-		$object = new JRegistry($object);
 		$base = JPath::clean($base);
 
-		foreach ((array) $object->get('language') AS $path)
+		if (isset($object->language))
 		{
-			$filename = basename($path);
-			$lang = strstr($filename, '.', true);
-			$file = JPath::clean($base.'/'.$lang.'/'.$filename);
+			foreach ($object->language AS $path)
+			{
+				$filename = basename((string) $path);
+				$file = JPath::clean($base.'/'.(string) $path->attributes()->tag.'/'.$filename);
 
-			if (is_file($file))
-			{
-				$files[] = self::getFile($file, $base, $object->get('@attributes.folder').'/'.dirname($path), $lang.'/');
-			}
-			else
-			{
-				$this->out(self::error(sprintf('File "%s" does not exists', $file)));
+				if (is_file($file))
+				{
+					$files[] = self::getFile($file, $base, (string) $object->attributes()->folder, (string) $path);
+				}
+				else
+				{
+					$this->out(self::error(sprintf('File "%s" does not exists', $file)));
+				}
 			}
 		}
 
 		return $files;
 	}
 
-	protected static function getFile($file, $base, $folder = '', $exclude = '')
+	protected static function getFile($file, $base, $folder = '', $name = null)
 	{
-		$name = $folder ? $folder.'/' : '';
-		$name .= trim(str_replace(array($base, $exclude), '', $file), '/');
+		$name = is_string($name) ? $name : trim(str_replace($base, '', $file), '/');
 
 		return array(
-			'name' => JPath::clean($name),
+			'name' => JPath::clean(($folder ?: '').'/'.$name),
 			'data' => file_get_contents($file)
 		);
 	}

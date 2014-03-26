@@ -1,4 +1,6 @@
 {
-	"xml": "administrator/components/com_fieldsandfilters/fieldsandfilters"
+//	"xml": "administrator/modules/mod_login/mod_login"
+//	"xml": "administrator/components/com_fieldsandfilters/fieldsandfilters"
 //	"xml": "modules/mod_fieldsandfilters_filters/mod_fieldsandfilters_filters"
+	"xml": "plugins/fieldsandfiltersextensions/content/content"
 }
