@@ -85,16 +85,13 @@ class CreateExtensionCli extends JApplicationCli
 
 		foreach ($xml AS $path)
 		{
-			$this->archive($path);
+			$this->out('-------- Start Archive --------');
+
+			$extension = $this->getExtension($path);
+			$this->archiveExtension($extension);
+
+			$this->out('-------- End Archive --------');
 		}
-	}
-
-	protected function archive($path)
-	{
-		$extension = self::getExtension($path);
-		$this->archiveExtension($extension);
-
-		return $extension;
 	}
 
 	protected static function loadJSON($path)
@@ -105,7 +102,7 @@ class CreateExtensionCli extends JApplicationCli
 		return $data;
 	}
 
-	protected static function getExtension($path)
+	protected function getExtension($path)
 	{
 		if (!$path)
 		{
@@ -123,32 +120,39 @@ class CreateExtensionCli extends JApplicationCli
 		$data->set('path', $path);
 		$data->set('xml', simplexml_load_file($path));
 
+		$this->out('Extension: '.(string) $data->get('xml')->name);
+
 		return $data;
 	}
 
 	protected function archiveExtension(JObject $extension)
 	{
-		$temp = JPath::clean($this->get('tmp_path'));
+		$temp = $this->getTempPath();
 
-		if (!is_dir($temp))
-		{
-			throw new Exception(sprintf('Dir "%s" does not exists.', $temp));
-		}
-
-		if (!is_writable($temp))
-		{
-			throw new Exception(sprintf('Dir "%s" does not writable.', $temp));
-		}
-
-		$files =$this->_getFiles($extension);
+		$files = $this->_getFiles($extension);
 
 		if (!$this->input->getBool('not-archive'))
 		{
 			$adapter = $this->input->get('adapter', 'zip');
 			$xml = $extension->get('xml');
 
-			$name = isset($xml->libraryname) ? (string) $xml->libraryname : (string) $xml->name;
-			$path = sprintf('%s/%s_%s.%s', $temp, $name, $extension->get('version', (string) $xml->version), $adapter);
+			if ($extension->get('archive'))
+			{
+				$path = $extension->get('archive');
+			}
+			else
+			{
+				$name = $extension->get('name', ($xml->libraryname ? (string) $xml->libraryname : (string) $xml->name));
+				$path = sprintf('%s/%s', $temp, $name);
+
+				if ($this->input->get('with-version'))
+				{
+					$path .= '_'.$extension->get('version', (string) $xml->version);
+				}
+
+				$path .= '.'.$adapter;
+			}
+
 			$path = JPath::clean($path);
 
 			if (!JArchive::getAdapter($adapter)->create($path, $files))
@@ -190,7 +194,7 @@ class CreateExtensionCli extends JApplicationCli
 				$files = array_merge($files, $this->getLanguages($client->path.$language, $xml->languages));
 				break;
 			case 'plugin':
-				$path = JPATH_SITE.'/plugins/'.(string) $xml->attributes()->group.'/'.$xml->files->filename->attributes()->plugin;
+				$path = JPATH_PLUGINS.'/'.(string) $xml->attributes()->group.'/'.$xml->files->filename->attributes()->plugin;
 				$files = $this->getFiles($path, $xml->files);
 				$files = array_merge($files, $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages));
 				break;
@@ -198,6 +202,12 @@ class CreateExtensionCli extends JApplicationCli
 				$path = JPATH_LIBRARIES.'/'.(string) $xml->libraryname;
 				$files = $this->getFiles($path, $xml->files);
 				$files = array_merge($files, $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages));
+				$extension->set('name', 'lib_'.$xml->libraryname);
+				break;
+			case 'package':
+				$files = $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages);
+				$files = array_merge($files,$this->preparePackage($xml->files));
+				$extension->set('name', 'pkg_'.$xml->packagename);
 				break;
 			default:
 				throw new InvalidArgumentException(sprintf('Extension type "%s" does not support.', (string) $xml->attributes()->type));
@@ -205,12 +215,12 @@ class CreateExtensionCli extends JApplicationCli
 
 		$files[] = self::getFile($extension->get('path'), dirname($extension->get('path')));
 
-		if (isset($xml->scriptfile) && ($script = JPath::clean($path.'/'.(string) $xml->scriptfile)) && is_file($script))
+		if ($xml->scriptfile && ($script = JPath::clean($path.'/'.(string) $xml->scriptfile)) && is_file($script))
 		{
 			$files[] = self::getFile($script, $path);
 		}
 
-		if (isset($xml->media))
+		if ($xml->media)
 		{
 			$files = array_merge($files, $this->getFiles(JPATH_ROOT.'/media/'.(string) $xml->media->attributes()->destination, $xml->media));
 		}
@@ -218,20 +228,50 @@ class CreateExtensionCli extends JApplicationCli
 		return $files;
 	}
 
-	protected function getFiles($base, SimpleXMLElement $object)
+	protected function preparePackage(SimpleXMLElement $xml)
+	{
+		$files = array();
+		$temp = $this->getTempPath();
+
+		if ($xml->file) {
+			foreach ($xml->file AS $file)
+			{
+				$this->out('-------- Start Prepare Package --------');
+
+				$attributes = $file->attributes();
+				$extension = $this->getExtension(self::getXmlPath((string) $attributes->type, (string) $attributes->id, (string) $attributes->group, (string) $attributes->client));
+
+				$extension->set('archive', $temp.'/'.(string) $file);
+
+				$this->archiveExtension($extension);
+
+				$path = $temp.'/'.$extension->get('archive');
+
+				$files[] = self::getFile($path, $temp);
+
+				JFile::delete($path);
+
+				$this->out('-------- End Prepare Package --------');
+			}
+		}
+
+		return $files;
+	}
+
+	protected function getFiles($base, SimpleXMLElement $xml)
 	{
 		$files = array();
 		$base = JPath::clean($base);
 
-		if (isset($object->folder))
+		if ($xml->folder)
 		{
-			foreach ($object->folder AS $folder)
+			foreach ($xml->folder AS $folder)
 			{
 				if ($paths = JFolder::files($base.'/'.(string) $folder, '.', true, true))
 				{
 					foreach ((array) $paths AS $file)
 					{
-						$files[] = self::getFile($file, $base, (string) $object->attributes()->folder);
+						$files[] = self::getFile($file, $base, (string) $xml->attributes()->folder);
 					}
 				}
 				else
@@ -241,15 +281,15 @@ class CreateExtensionCli extends JApplicationCli
 			}
 		}
 
-		if (isset($object->filename))
+		if ($xml->filename)
 		{
-			foreach ($object->filename AS $filename)
+			foreach ($xml->filename AS $filename)
 			{
 				$file = JPath::clean($base.'/'.(string) $filename);
 
 				if (is_file($file))
 				{
-					$files[] = self::getFile($file, $base, (string) $object->attributes()->folder);
+					$files[] = self::getFile($file, $base, (string) $xml->attributes()->folder);
 				}
 				else
 				{
@@ -261,21 +301,21 @@ class CreateExtensionCli extends JApplicationCli
 		return $files;
 	}
 
-	protected function getLanguages($base, SimpleXMLElement $object)
+	protected function getLanguages($base, SimpleXMLElement $xml)
 	{
 		$files = array();
 		$base = JPath::clean($base);
 
-		if (isset($object->language))
+		if ($xml->language)
 		{
-			foreach ($object->language AS $path)
+			foreach ($xml->language AS $path)
 			{
 				$filename = basename((string) $path);
 				$file = JPath::clean($base.'/'.(string) $path->attributes()->tag.'/'.$filename);
 
 				if (is_file($file))
 				{
-					$files[] = self::getFile($file, $base, (string) $object->attributes()->folder, (string) $path);
+					$files[] = self::getFile($file, $base, (string) $xml->attributes()->folder, (string) $path);
 				}
 				else
 				{
@@ -293,10 +333,50 @@ class CreateExtensionCli extends JApplicationCli
 
 		return array(
 			'name' => JPath::clean(($folder ?: '').'/'.$name),
-			'data' => file_get_contents($file)
+			'data' => file_get_contents(JPath::clean($file))
 		);
 	}
 
+	protected static function getXmlPath($type, $name, $group = '', $client = '', $reference = true)
+	{
+		switch($type)
+		{
+			case 'component':
+				$path = JPATH_ADMINISTRATOR.'/components/'.$name.'/'.preg_replace('/^com_/', '', $name);
+				break;
+			case 'module':
+				$path =  JApplicationHelper::getClientInfo($client, true)->path.'/modules/'.$name.'/'.$name;
+				break;
+			case 'plugin':
+				$name = preg_replace(sprintf('/^plg_%s_/', $group), '', $name);
+				$path = JPATH_PLUGINS.'/'.$group.'/'.$name.'/'.$name;
+				break;
+			case 'library':
+				$path = JPATH_MANIFESTS.'/libraries/'.preg_replace('/^lib_/', '', $name);
+				break;
+			default:
+				throw new InvalidArgumentException(sprintf('Extension type "%s" does not support.', $type));
+		}
+
+		return Jpath::clean($reference ? str_replace(JPATH_ROOT, '', $path) : $path);
+	}
+
+	protected function getTempPath()
+	{
+		$path = JPath::clean($this->get('tmp_path'));
+
+		if (!is_dir($path))
+		{
+			throw new Exception(sprintf('Dir "%s" does not exists.', $path));
+		}
+
+		if (!is_writable($path))
+		{
+			throw new Exception(sprintf('Dir "%s" does not writable.', $path));
+		}
+
+		return $path;
+	}
 
 	protected static function error($text)
 	{

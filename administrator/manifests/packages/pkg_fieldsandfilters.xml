@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" version="2.5">
+	<name>Fields and Filter</name>
+	<packagename>fieldsandfilters</packagename>
+	<creationDate>2013-08-27</creationDate>
+	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
+	<license>GNU General Public License version 3 or later; see License.txt</license>
+	<author>KES - Kulka Tomasz</author>
+	<authorEmail>kes@kextensions.com</authorEmail>
+	<authorUrl>http://www.kextensions.com</authorUrl>
+	<version>1.1.1</version>
+	<description></description>
+	<packager>KES - Kulka Tomasz</packager>
+	<packagerurl>http://www.kextensions.com</packagerurl>
+
+	<files>
+		<file type="component" id="com_fieldsandfilters">com_fieldsandfilters.zip</file>
+		<file type="library" id="lib_kextensions">lib_kextensions.zip</file>
+		<file type="module" id="mod_fieldsandfilters_filters" client="site">mod_fieldsandfilters_filters.zip</file>
+		<file type="plugin" id="plg_fieldsandfiltersextensions_content" group="fieldsandfiltersextensions">plg_fieldsandfiltersextensions_content.zip</file>
+		<file type="plugin" id="plg_fieldsandfilterstypes_checkboxlist" group="fieldsandfilterstypes">plg_fieldsandfilterstypes_checkboxlist.zip</file>
+		<file type="plugin" id="plg_fieldsandfilterstypes_date" group="fieldsandfilterstypes">plg_fieldsandfilterstypes_date.zip</file>
+		<file type="plugin" id="plg_fieldsandfilterstypes_image" group="fieldsandfilterstypes">plg_fieldsandfilterstypes_image.zip</file>
+		<file type="plugin" id="plg_fieldsandfilterstypes_input" group="fieldsandfilterstypes">plg_fieldsandfilterstypes_input.zip</file>
+		<file type="plugin" id="plg_fieldsandfilterstypes_textarea" group="fieldsandfilterstypes">plg_fieldsandfilterstypes_textarea.zip</file>
+		<file type="plugin" id="plg_fieldsandfilterstypes_url" group="fieldsandfilterstypes">plg_fieldsandfilterstypes_url.zip</file>
+		<file type="plugin" id="plg_system_fieldsandfilters" group="system">plg_system_fieldsandfilters.zip</file>
+	</files>
+</extension>

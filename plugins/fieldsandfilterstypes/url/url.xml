@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="fieldsandfilterstypes" method="upgrade">
-        <name>plg_fieldsandfilters_types_url</name>
+        <name>plg_fieldsandfilterstypes_url</name>
         <creationDate>2013-08-27</creationDate>
         <copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
         <license>GNU General Public License version 3 or later; see License.txt</license>
@@ -11,7 +11,6 @@
         <description>PLG_FIELDSANDFILTERS_TYPES_URL_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="url">url.php</filename>
-		<filename>helper.php</filename>
 		<filename>index.html</filename>
 		<folder>forms</folder>
 		<folder>tmpl</folder>
