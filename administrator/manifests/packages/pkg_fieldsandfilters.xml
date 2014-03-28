@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension type="package" version="2.5">
-	<name>Fields and Filter</name>
+	<name>Fields and Filters</name>
 	<packagename>fieldsandfilters</packagename>
 	<creationDate>2013-08-27</creationDate>
 	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>

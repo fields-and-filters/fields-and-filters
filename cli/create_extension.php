@@ -142,7 +142,7 @@ class CreateExtensionCli extends JApplicationCli
 			}
 			else
 			{
-				$name = $extension->get('name', ($xml->libraryname ? (string) $xml->libraryname : (string) $xml->name));
+				$name = $extension->get('name', (string) $xml->name);
 				$path = sprintf('%s/%s', $temp, $name);
 
 				if ($this->input->get('with-version'))
@@ -161,6 +161,8 @@ class CreateExtensionCli extends JApplicationCli
 			}
 
 			$extension->set('archive', basename($path));
+
+			$this->out('Created archive: ' . basename($path));
 		}
 
 		if ($this->input->get('list'))
@@ -236,7 +238,7 @@ class CreateExtensionCli extends JApplicationCli
 		if ($xml->file) {
 			foreach ($xml->file AS $file)
 			{
-				$this->out('-------- Start Prepare Package --------');
+				$this->out('--- Start Prepare Package ---');
 
 				$attributes = $file->attributes();
 				$extension = $this->getExtension(self::getXmlPath((string) $attributes->type, (string) $attributes->id, (string) $attributes->group, (string) $attributes->client));
@@ -251,7 +253,7 @@ class CreateExtensionCli extends JApplicationCli
 
 				JFile::delete($path);
 
-				$this->out('-------- End Prepare Package --------');
+				$this->out('--- End Prepare Package ---');
 			}
 		}
 
