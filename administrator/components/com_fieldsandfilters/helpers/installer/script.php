@@ -47,7 +47,7 @@ class FieldsandfiltersInstallerScript
 	
 	public function getContentType( $name )
 	{
-		if( isset( $this->contentType[$name] ) && !$this->contentType[$name] instanceof FieldsandfiltersInstallerContenttype )
+		if( !isset( $this->contentType[$name] ) || !$this->contentType[$name] instanceof FieldsandfiltersInstallerContenttype )
 		{
 			$this->contentType[$name] = new FieldsandfiltersInstallerContenttype;
 		}
@@ -89,7 +89,7 @@ class FieldsandfiltersInstallerScript
 		return $oldVersion;
 	}
         
-        protected function checkContentTypes($type)
+        public function checkContentTypes($type)
 	{
 		foreach( $this->contentType AS &$contentType )
 		{

@@ -19,12 +19,6 @@ defined('_JEXEC') or die;
 class plgSystemFieldsandfilters extends JPlugin
 {
 	/**
-	 * @var		string	Folder plugin extensions types name.
-	 * @since	1.0.0 [delete ?] [TODO] FieldsandfiltersExtesions::ExtensionDefault ?
-	 */
-	protected $_folder_plugin_extensions = 'fieldsandfiltersExtensions';
-	
-	/**
 	 * The application
 	 *
 	 * @var    JApplication
@@ -235,5 +229,21 @@ class plgSystemFieldsandfilters extends JPlugin
 		FieldsandfiltersFieldsHelper::preparationContent( $buffer, 'system', null, null, array(), $syntax, $this->params->get( 'syntax_type', FieldsandfiltersFieldsHelper::SYNTAX_SIMPLE ) );
 	
 		JResponse::setBody( $buffer );
+	}
+
+	/**
+	 * @since       1.2.0
+	 */
+	public function onExtensionBeforeUninstall($eid)
+	{
+		$table = JTable::getInstance('extension');
+
+		if (($table->load(array('extension_id' => (int) $eid, 'type' => 'component', 'element' => 'com_fieldsandfilters')) || $table->load(array('extension_id' => (int) $eid, 'type' => 'library', 'element' => 'kextensions')))
+			&& $table->load(array('type' => 'plugin', 'element' => $this->_name, 'folder' => $this->_type), true))
+		{
+			$table->enabled = 0;
+			$table->store();
+
+		}
 	}
 }

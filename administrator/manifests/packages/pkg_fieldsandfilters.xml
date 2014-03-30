@@ -13,6 +13,9 @@
 	<packager>KES - Kulka Tomasz</packager>
 	<packagerurl>http://www.kextensions.com</packagerurl>
 
+	<!-- Runs on install/uninstall/update; -->
+	<scriptfile>fieldsandfilters.script.php</scriptfile>
+
 	<files>
 		<file type="component" id="com_fieldsandfilters">com_fieldsandfilters.zip</file>
 		<file type="library" id="lib_kextensions">lib_kextensions.zip</file>

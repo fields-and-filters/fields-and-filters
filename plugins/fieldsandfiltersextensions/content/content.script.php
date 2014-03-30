@@ -125,7 +125,7 @@ class plgFieldsandfiltersExtensionsContentInstallerScript
 
 	protected static function loadClass($class, $adapter)
 	{
-		$installerClass = 'FieldsandfiltersInstaller' . ucfirs($class);
+		$installerClass = 'FieldsandfiltersInstaller' . ucfirst($class);
 		if (!class_exists($installerClass))
 		{
 			$path = 'administrator.helpers.installer.' . strtolower($class);

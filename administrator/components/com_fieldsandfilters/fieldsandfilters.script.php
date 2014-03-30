@@ -186,7 +186,7 @@ class com_fieldsandfiltersInstallerScript
 	
 	protected static function loadClass($class, $adapter)
 	{
-		$installerClass = 'FieldsandfiltersInstaller' . ucfirs($class);
+		$installerClass = 'FieldsandfiltersInstaller' . ucfirst($class);
 		if (!class_exists($installerClass))
 		{
 			$path = 'administrator.helpers.installer.' . strtolower($class);
@@ -205,6 +205,12 @@ class com_fieldsandfiltersInstallerScript
 	
 	protected static function changePlugins($folder)
 	{
+		$path = JPath::clean(JPATH_PLUGINS . '/' . $folder);
+		if (!is_dir($path))
+		{
+			return;
+		}
+
 		$db = JFactory::getDbo();
 		
 		// change folder and name plugins in table extensions
@@ -244,12 +250,8 @@ class com_fieldsandfiltersInstallerScript
 		}
 		
 		// change plugin folder name to lower case
-		$path = JPath::clean(JPATH_PLUGINS . '/' . $folder);
-		if (is_dir($path))
-		{
-			$newPath = JPath::clean(JPATH_PLUGINS . '/' . strtolower($folder));
-			@rename($path, $newPath);
-		}
+		$newPath = JPath::clean(JPATH_PLUGINS . '/' . strtolower($folder));
+		@rename($path, $newPath);
 		
 		// change plugin folder ane to lowe case in templates
 		$templates = self::getTempaltes();
@@ -275,7 +277,13 @@ class com_fieldsandfiltersInstallerScript
 	
 	protected static function changeLayoutsPlugins($folder)
 	{
-		$plugins = JFolder::folders(JPATH_PLUGINS . '/' . $folder);
+		$path = JPath::clean(JPATH_PLUGINS . '/' . $folder);
+		if (!is_dir($path))
+		{
+			return;
+		}
+
+		$plugins = JFolder::folders($path);
 		
 		if (empty($plugins))
 		{

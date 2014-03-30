@@ -207,6 +207,7 @@ class CreateExtensionCli extends JApplicationCli
 				$extension->set('name', 'lib_'.$xml->libraryname);
 				break;
 			case 'package':
+				$path = JPATH_MANIFESTS.'/packages';
 				$files = $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages);
 				$files = array_merge($files,$this->preparePackage($xml->files));
 				$extension->set('name', 'pkg_'.$xml->packagename);
