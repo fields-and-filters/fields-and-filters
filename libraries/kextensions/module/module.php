@@ -1,6 +1,5 @@
 <?php
 /**
- * @version     1.0.0
  * @package     lib_kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
