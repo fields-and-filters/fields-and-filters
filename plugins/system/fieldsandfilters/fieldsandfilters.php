@@ -238,12 +238,11 @@ class plgSystemFieldsandfilters extends JPlugin
 	{
 		$table = JTable::getInstance('extension');
 
-		if (($table->load(array('extension_id' => (int) $eid, 'type' => 'component', 'element' => 'com_fieldsandfilters')) || $table->load(array('extension_id' => (int) $eid, 'type' => 'library', 'element' => 'kextensions')))
+		if ($table->load((int) $eid) && (($table->type == 'component' && $table->element == 'com_fieldsandfilters') || ($table->type == 'library' && $table->element == 'kextensions'))
 			&& $table->load(array('type' => 'plugin', 'element' => $this->_name, 'folder' => $this->_type), true))
 		{
 			$table->enabled = 0;
 			$table->store();
-
 		}
 	}
 }
