@@ -201,6 +201,81 @@ class com_fieldsandfiltersInstallerScript
 		
 		return true;
 	}
+
+	// [TODO] For test
+	protected static function changePluginName($folder, $oldName, $newName)
+	{
+		$path = JPath::clean(JPATH_PLUGINS.'/'.$folder.'/'.$oldName);
+		if (!is_dir($path))
+		{
+			return;
+		}
+
+		$table = JTable::getInstance('extension');
+
+		if (!$table->load(array('type' => 'plugin', 'element' => $oldName, 'folder' => $folder), true))
+		{
+			return;
+		}
+
+		$table->element     = $newName;
+		$table->name        = 'plg_' . $table->folder . '_' . $table->element;
+		$table->store();
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->update($db->quoteName('#__fieldsandfilters_fields'))
+			->set($db->quoteName('type') . ' = ' . $db->quote($table->element))
+			->where($db->quoteName('type') . ' = ' . $db->quote($oldName));
+
+		$db->setQuery($query)->execute();
+
+		$langs = JLanguage::getKnownLanguages(JPATH_ADMINISTRATOR);
+
+		// change language name files to lower case
+		foreach ($langs AS $lang)
+		{
+			$pathLang = JPATH_ADMINISTRATOR . '/language/' . $lang['tag'] . '/';
+			$filter = '^' . $lang['tag'].'.plg_'.$table->folder.'_'.$oldName.'(.*).ini$';
+			$files = JFolder::files($pathLang, $filter);
+
+			foreach ($files AS $file)
+			{
+				list($langFile, , $ext) = explode('.', $file, 3);
+				$newFile = $langFile . '.' . $table->name.'.'.$ext;
+				@rename(JPath::clean($pathLang . $file), JPath::clean($pathLang . $newFile));
+			}
+		}
+
+		// change plugin folder and file names
+		$newPath = JPath::clean(JPATH_PLUGINS.'/'.$table->folder.'/'.$table->element);
+		@rename($path, $newPath);
+
+		$filter = '^'.$oldName;
+		$files = JFolder::files($newPath, $filter);
+
+		foreach ($files AS $file)
+		{
+			list(,$ext) = explode('.', $file, 2);
+			@rename(JPath::clean($newPath.'/'.$file), JPath::clean($newPath.'/'.$table->element.'.'.$ext));
+		}
+
+		$templates = self::getTempaltes();
+
+		if (!empty($templates))
+		{
+			foreach ($templates as $template)
+			{
+				$path = JPath::clean(JPATH_SITE . '/templates/'.$template->element.'/html/');
+				$oldPath = $path = JPath::clean($path.'plg_'.$table->folder.'_'.$oldName);
+
+				if (is_dir($oldPath))
+				{
+					@rename($oldPath, JPath::clean($path.'/'.$table->name));
+				}
+			}
+		}
+	}
 	
 	protected static function changePlugins($folder)
 	{
@@ -236,15 +311,15 @@ class com_fieldsandfiltersInstallerScript
 		// change language name files to lower case
 		foreach ($langs AS $lang)
 		{
-			$path = JPATH_ADMINISTRATOR . '/language/' . $lang['tag'] . '/';
+			$pathLang = JPATH_ADMINISTRATOR . '/language/' . $lang['tag'] . '/';
 			$filter = '^' . $lang['tag'] . '.plg_' . $folder . '_(.*).ini$'; 
-			$files = JFolder::files($path, $filter);
+			$files = JFolder::files($pathLang, $filter);
 			
 			foreach ($files AS $file)
 			{
 				list($langFile, $newFile) = explode('.', $file, 2);
 				$newFile = $langFile . '.' . strtolower($newFile);
-				@rename($path . $file, $path . $newFile);
+				@rename(JPath::clean($pathLang . $file), JPath::clean($pathLang . $newFile));
 			}
 		}
 		
@@ -372,7 +447,7 @@ class com_fieldsandfiltersInstallerScript
 			foreach ($files AS $file)
 			{
 				$newFile = str_replace($old_module, $new_module, $file);
-				@rename($path . $file, $path . $newFile);
+				@rename(JPath::clean($path . $file), JPath::clean($path . $newFile));
 			}
 		}
 		
