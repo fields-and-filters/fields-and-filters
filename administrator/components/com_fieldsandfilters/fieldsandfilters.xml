@@ -18,9 +18,9 @@
 			<file driver="mysql" charset="utf8">sql/mysql/install.sql</file>
 
 			<!--<file driver="sqlazure" charset="utf8">sql/install/sqlazure/install.sql</file>
-			<file driver="sqlsrv" charset="utf8">sql/install/sqlazure/install.sql</file>
+			<file driver="sqlsrv" charset="utf8">sql/sqlazure/install.sql</file>
 
-			<file driver="postgresql" charset="utf8">sql/install/postgresql/install.sql </file>-->
+			<file driver="postgresql" charset="utf8">sql/postgresql/install.sql </file>-->
 		</sql>
 	</install>
 
@@ -28,19 +28,19 @@
 		<sql>
 			<file driver="mysql" charset="utf8">sql/mysql/uninstall.sql</file>
 
-			<!--<file driver="sqlazure" charset="utf8">sql/install/sqlazure/uninstall.sql</file>
-			<file driver="sqlsrv" charset="utf8">sql/install/sqlazure/uninstall.sql</file>
+			<!--<file driver="sqlazure" charset="utf8">sql/sqlazure/uninstall.sql</file>
+			<file driver="sqlsrv" charset="utf8">sql/sqlazure/uninstall.sql</file>
 
-			<file driver="postgresql" charset="utf8">sql/install/postgresql/uninstall.sql</file>-->
+			<file driver="postgresql" charset="utf8">sql/postgresql/uninstall.sql</file>-->
 		</sql>
 	</uninstall>
 
 	<update> <!-- SQL files to run on update -->
 		<schemas>
-			<schemapath type="mysql">sql/updates/mysql</schemapath>
-			<!--<schemapath type="sqlsrv">sql/updates/sqlsrv</schemapath>
-			<schemapath type="sqlazure">sql/updates/sqlsrv</schemapath>
-			<schemapath type="postgresql">sql/updates/postgresql</schemapath>-->
+			<schemapath type="mysql">sql/mysql/updates</schemapath>
+			<!--<schemapath type="sqlsrv">sql/sqlsrv/updates</schemapath>
+			<schemapath type="sqlazure">sql/sqlsrv/updates</schemapath>
+			<schemapath type="postgresql">sql/postgresql/updates</schemapath>-->
 		</schemas>
 	</update>
 
