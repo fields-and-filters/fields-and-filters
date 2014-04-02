@@ -48,7 +48,8 @@ class com_fieldsandfiltersInstallerScript
 			self::changeLayoutsPlugins('fieldsandfiltersTypes');
 			self::changePlugins('fieldsandfiltersExtensions');
 			self::changePlugins('fieldsandfiltersTypes');
-			
+			self::changePluginName('fieldsandfilterstypes', 'checkboxlist', 'list');
+
 			self::changeModules('mod_fieldsandfilters', 'mod_fieldsandfilters_filters');
 		}
 	}
@@ -202,7 +203,6 @@ class com_fieldsandfiltersInstallerScript
 		return true;
 	}
 
-	// [TODO] For test
 	protected static function changePluginName($folder, $oldName, $newName)
 	{
 		$path   = JPath::clean(JPATH_PLUGINS.'/'.$folder.'/'.$oldName);
@@ -262,7 +262,7 @@ class com_fieldsandfiltersInstallerScript
 			foreach ($templates as $template)
 			{
 				$path = JPath::clean(JPATH_SITE . '/templates/'.$template->element.'/html/');
-				$oldPath = $path = JPath::clean($path.'plg_'.$table->folder.'_'.$oldName);
+				$oldPath = JPath::clean($path.'plg_'.$table->folder.'_'.$oldName);
 
 				if (is_dir($oldPath))
 				{

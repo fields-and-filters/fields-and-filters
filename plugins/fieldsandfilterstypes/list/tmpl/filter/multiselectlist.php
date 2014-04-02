@@ -1,14 +1,13 @@
 <?php
 /**
  * @package     fieldsandfilters.plugin
- * @subpackage  fieldsandfilters_type.checkbox
+ * @subpackage  fieldsandfilters_type.list
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
 defined( '_JEXEC' ) or die;
-
 
 $field = $plugin->field;
 
@@ -35,7 +34,7 @@ if( $field->params->get( 'base.site_enabled_description', 0 ) && !empty( $field-
 }
 
 $options = array();
-$options[] = JHtml::_('select.option', '', JText::_('JGLOBAL_SELECT_AN_OPTION'), array(
+$options[] = JHtml::_('select.option', '', JText::_('JGLOBAL_SELECT_SOME_OPTIONS'), array(
 	'option.attr' => 'option.attr',
 	'attr' => array(
 		'class' => 'faf-filters-input inputbox',
@@ -43,7 +42,7 @@ $options[] = JHtml::_('select.option', '', JText::_('JGLOBAL_SELECT_AN_OPTION'),
 	)
 ));
 foreach ($field->values AS $value) {
-	$options[] = JHtml::_('select.option', (string) $value->id, (string) $value->value.'(0)', array(
+	$options[] = JHtml::_('select.option', (string) $value->id, (string) $value->value.' (0)', array(
 		'option.attr' => 'option.attr',
 		'attr' => array(
 			'class' => 'faf-filters-input inputbox',
@@ -55,7 +54,7 @@ foreach ($field->values AS $value) {
 $id = 'faf-filters-' . $field->id;
 ?>
 
-<fieldset id="<?php echo $id; ?>" class="faf-filters faf-filters-selectlist <?php echo htmlspecialchars( $field->params->get( 'base.class', '' ) ); ?>">
+<fieldset id="<?php echo $id; ?>" class="faf-filters faf-filters-multiselectlist <?php echo htmlspecialchars( $field->params->get( 'base.class', '' ) ); ?>">
 	<?php if( $field->params->get( 'base.show_name', 1 ) ) :
 
 		$attribsDiv = array( 'class' => 'faf-name' );
@@ -79,17 +78,16 @@ $id = 'faf-filters-' . $field->id;
 		</div>
 	<?php endif; ?>
 
-	<div class="control-group faf-control-group">
 	<?php
 		echo JHtml::_('select.genericlist', $options, 'fieldsandfilters['.$field->id.']', array(
 				'id' => $id.'-select',
 				'list.attr' => array(
-					'class'     => 'faf-filters-select inputbox chzn-done'
+					'class'     => 'faf-filters-select inputbox chzn-done',
+					'multiple'  => 'multiple'
 				),
 				'option.attr' => 'option.attr'
 		));
 	?>
-	</div>
 
 	<?php if( $isDescriptionAfter ) : ?>
 		<div class="faf-description">
