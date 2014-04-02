@@ -15,7 +15,7 @@
 
 	<install> <!-- Runs on install -->
 		<sql>
-			<file driver="mysql" charset="utf8">sql/install/mysql/install.sql</file>
+			<file driver="mysql" charset="utf8">sql/mysql/install.sql</file>
 
 			<!--<file driver="sqlazure" charset="utf8">sql/install/sqlazure/install.sql</file>
 			<file driver="sqlsrv" charset="utf8">sql/install/sqlazure/install.sql</file>
@@ -26,7 +26,7 @@
 
 	<uninstall> <!-- Runs on uninstall -->
 		<sql>
-			<file driver="mysql" charset="utf8">sql/install/mysql/uninstall.sql</file>
+			<file driver="mysql" charset="utf8">sql/mysql/uninstall.sql</file>
 
 			<!--<file driver="sqlazure" charset="utf8">sql/install/sqlazure/uninstall.sql</file>
 			<file driver="sqlsrv" charset="utf8">sql/install/sqlazure/uninstall.sql</file>
