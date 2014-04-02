@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="library"
-           version="2.5"
-           method="upgrade">
+<extension type="library" version="2.5" method="upgrade">
 	<name>Kextensions Library</name>
 	<libraryname>kextensions</libraryname>
 	<creationDate>2014-04-05</creationDate>

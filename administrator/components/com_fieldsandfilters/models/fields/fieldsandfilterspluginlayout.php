@@ -237,7 +237,7 @@ class JFormFieldFieldsandfiltersPluginLayout extends JFormField
 			if (is_dir($plugin_path) && ($plugin_layouts = JFolder::files($plugin_path, '^[^_]*\.php$')))
 			{
 				// Create the group for the plgin
-				$group        = JHtml::_('select.option', $this->id, JText::sprintf('COM_FIELDSANDFILTERS_OPTION_FROM_PLUGIN'));
+				$group        = JHtml::_('select.option', $this->id, JText::_('COM_FIELDSANDFILTERS_OPTION_FROM_PLUGIN'));
 				$group->items = array();
 
 				foreach ($plugin_layouts as $file)
