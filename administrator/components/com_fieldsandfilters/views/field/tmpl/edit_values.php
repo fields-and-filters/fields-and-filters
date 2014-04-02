@@ -16,14 +16,14 @@ foreach ($fieldSets AS $name => $fieldSet)
 
 	if (isset($fieldSet->description) && trim($fieldSet->description))
 	{
-		echo '<p class="tip">' . $this->escape(JText::_($fieldSet->description)). '</p>';
+		echo '<p class="tip">' . $this->escape(JText::_($fieldSet->description)) . '</p>';
 	}
 
 	foreach ($this->form->getFieldset($name) AS $field)
 	{
 		if (strpos((string) $field->labelclass, 'controls-disabled') !== false)
 		{
-			echo '<div class="control-group">'.$field->label.$field->input.'</div>';
+			echo '<div class="control-group">' . $field->label . $field->input . '</div>';
 		}
 		else
 		{

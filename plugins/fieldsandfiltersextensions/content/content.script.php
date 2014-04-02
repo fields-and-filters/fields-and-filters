@@ -10,35 +10,35 @@
 defined('_JEXEC') or die;
 
 /**
-* @since       1.0.0
-*/
+ * @since       1.0.0
+ */
 class plgFieldsandfiltersExtensionsContentInstallerScript
 {
 	protected $helper;
-	
+
 	/**
-         * Method to run after an install/update/uninstall method
-         * $adapter is the class calling this method
-         * $type is the type of change (install, update or discover_install)
-         *
-         * @return void
-         */
-        function postflight( $type, $adapter ) 
-        {
-		if( !$this->createHelper( $type, $adapter ) )
+	 * Method to run after an install/update/uninstall method
+	 * $adapter is the class calling this method
+	 * $type is the type of change (install, update or discover_install)
+	 *
+	 * @return void
+	 */
+	function postflight($type, $adapter)
+	{
+		if (!$this->createHelper($type, $adapter))
 		{
 			return;
 		}
-		
-		$helper = $this->getHelper( $type, $adapter );
-		
-		if( $type == 'install' || ( $type == 'update' && version_compare( $helper->getOldVersion(), 1.2, '<' ) ) )
+
+		$helper = $this->getHelper($type, $adapter);
+
+		if ($type == 'install' || ($type == 'update' && version_compare($helper->getOldVersion(), 1.2, '<')))
 		{
 			$helper->checkContentTypes('com_content.article');
 		}
-		
+
 		return true;
-        }
+	}
 
 	protected function createHelper($type, $adapter)
 	{
@@ -49,7 +49,7 @@ class plgFieldsandfiltersExtensionsContentInstallerScript
 
 		if (!$this->helper instanceof FieldsandfiltersInstallerScript)
 		{
-			$this->helper 	= new FieldsandfiltersInstallerScript($type, $adapter, 'allextensions');
+			$this->helper = new FieldsandfiltersInstallerScript($type, $adapter, 'allextensions');
 			if ($type = 'uninstall')
 			{
 				/* content type: com_fieldsandfilters.field */
@@ -70,32 +70,32 @@ class plgFieldsandfiltersExtensionsContentInstallerScript
 					))
 					->set('field_mappings.common', array(
 						'core_content_item_id' => 'id',
-			            'core_title' => 'title',
-			            'core_state' => 'state',
-			            'core_alias' => 'alias',
-			            'core_created_time' => 'created',
-			            'core_modified_time' => 'modified',
-			            'core_body' => 'introtext',
-			            'core_hits' => 'hits',
-			            'core_publish_up' => 'publish_up',
-			            'core_publish_down' => 'publish_down',
-			            'core_access' => 'access',
-			            'core_params' => 'attribs',
-			            'core_featured' => 'featured',
-			            'core_metadata' => 'metadata',
-			            'core_language' => 'language',
-			            'core_images' => 'images',
-			            'core_urls' => 'urls',
-			            'core_version' => 'version',
-			            'core_ordering' => 'ordering',
-			            'core_metakey' => 'metakey',
-			            'core_metadesc' => 'metadesc',
-			            'core_catid' => 'catid',
-			            'core_xreference' => 'xreference',
-			            'asset_id' => 'asset_id'
+						'core_title'           => 'title',
+						'core_state'           => 'state',
+						'core_alias'           => 'alias',
+						'core_created_time'    => 'created',
+						'core_modified_time'   => 'modified',
+						'core_body'            => 'introtext',
+						'core_hits'            => 'hits',
+						'core_publish_up'      => 'publish_up',
+						'core_publish_down'    => 'publish_down',
+						'core_access'          => 'access',
+						'core_params'          => 'attribs',
+						'core_featured'        => 'featured',
+						'core_metadata'        => 'metadata',
+						'core_language'        => 'language',
+						'core_images'          => 'images',
+						'core_urls'            => 'urls',
+						'core_version'         => 'version',
+						'core_ordering'        => 'ordering',
+						'core_metakey'         => 'metakey',
+						'core_metadesc'        => 'metadesc',
+						'core_catid'           => 'catid',
+						'core_xreference'      => 'xreference',
+						'asset_id'             => 'asset_id'
 					))
 					->set('field_mappings.special', array(
-						'fulltext'		        => 'fulltext'
+						'fulltext' => 'fulltext'
 					))
 					->set('router', 'ContentHelperRoute::getArticleRoute')
 					->set('content_history_options.formFile', 'administrator/components/com_content/models/forms/article.xml')
@@ -134,6 +134,7 @@ class plgFieldsandfiltersExtensionsContentInstallerScript
 			{
 				// FieldsandfiltersInstallerScript error
 				JFactory::getApplication()->enqueueMessage($installerClass . ' class not exists', 'error');
+
 				return false;
 			}
 		}

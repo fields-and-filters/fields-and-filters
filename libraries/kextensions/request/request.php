@@ -6,7 +6,7 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-defined( 'JPATH_PLATFORM' ) or die;
+defined('JPATH_PLATFORM') or die;
 
 /**
  * KextensionsRequest
@@ -20,6 +20,6 @@ class KextensionsRequest
 	 */
 	public static function isAjax()
 	{
-		return !empty( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest';
+		return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 	}
 }

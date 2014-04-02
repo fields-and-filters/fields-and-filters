@@ -10,10 +10,10 @@
 defined('_JEXEC') or die;
 
 /**
- * @package		fieldsandfilters.administrator
- * @subpackage		com_fieldsandfilters
+ * @package           fieldsandfilters.administrator
+ * @subpackage        com_fieldsandfilters
  *
- * @since       1.2.0
+ * @since             1.2.0
  */
 abstract class FieldsandfiltersHtmlJoomla
 {
@@ -22,11 +22,11 @@ abstract class FieldsandfiltersHtmlJoomla
 	 * @since  1.2.0
 	 */
 	protected static $loaded = array();
-	
+
 	/**
 	 * Internal method to get a JavaScript object notation string from an array
 	 *
-	 * @param   array  $array  The array to convert to JavaScript object notation
+	 * @param   array $array The array to convert to JavaScript object notation
 	 *
 	 * @return  string  JavaScript object notation representation of the array
 	 *
@@ -73,17 +73,17 @@ abstract class FieldsandfiltersHtmlJoomla
 				$elements[] = $key . ': ' . static::getJSObject(is_object($v) ? get_object_vars($v) : $v);
 			}
 		}
-		
+
 		return '{' . implode(',', $elements) . '}';
 	}
-	
+
 	/**
 	 * Method to load the jQuery JavaScript framework into the document head
 	 *
 	 * If debugging mode is on an uncompressed version of jQuery is included for easier debugging.
 	 *
-	 * @param   boolean  $noConflict  True to load jQuery in noConflict mode [optional]
-	 * @param   mixed    $debug       Is debugging mode on? [optional]
+	 * @param   boolean $noConflict True to load jQuery in noConflict mode [optional]
+	 * @param   mixed   $debug      Is debugging mode on? [optional]
 	 *
 	 * @return  void
 	 *

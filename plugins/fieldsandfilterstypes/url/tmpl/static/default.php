@@ -86,7 +86,7 @@ if ($field->params->get('base.site_enabled_description', 0) && !empty($field->de
 				// open in parent window
 				$attribs['rel'] = 'nofollow';
 		}
-		echo JHtml::link(htmlspecialchars($data->get('url')), htmlspecialchars( $data->get('title', JFactory::getDocument()->getTitle())), $attribs);
+		echo JHtml::link(htmlspecialchars($data->get('url')), htmlspecialchars($data->get('title', JFactory::getDocument()->getTitle())), $attribs);
 		?>
 
 		<?php if ($isDescriptionAfter) : ?>

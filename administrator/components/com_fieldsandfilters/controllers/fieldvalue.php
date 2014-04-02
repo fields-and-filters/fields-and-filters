@@ -3,7 +3,7 @@
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
- * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> - 
+ * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> -
  */
 
 // No direct access
@@ -16,7 +16,8 @@ if (!FieldsandfiltersFactory::isVersion())
 
 /**
  * Fieldvalue controller class.
- * @since	1.0.0
+ *
+ * @since    1.0.0
  */
 class FieldsandfiltersControllerFieldvalue extends JControllerForm
 {
@@ -31,7 +32,7 @@ class FieldsandfiltersControllerFieldvalue extends JControllerForm
 	{
 		$append = parent::getRedirectToListAppend();
 
-		$filter = (array) JFactory::getApplication()->getUserState(sprintf('%s.%s.filter', $this->option, $this->view_list), array());
+		$filter   = (array) JFactory::getApplication()->getUserState(sprintf('%s.%s.filter', $this->option, $this->view_list), array());
 		$field_id = (int) JArrayHelper::getValue($filter, 'field_id');
 
 		if ($field_id)

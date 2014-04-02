@@ -10,7 +10,7 @@ defined('JPATH_PLATFORM') or die;
 
 /**
  * KextensionsLanguage
- * 
+ *
  * @since       1.0.0
  */
 class KextensionsLanguage
@@ -20,9 +20,9 @@ class KextensionsLanguage
 	 */
 	public static function load($extension, $basePath = JPATH_BASE)
 	{
-		$lang 	= JFactory::getLanguage();
-		$type 	= strtolower(substr($extension, 0, 3));
-		
+		$lang = JFactory::getLanguage();
+		$type = strtolower(substr($extension, 0, 3));
+
 		switch ($type)
 		{
 			case 'com' :
@@ -41,10 +41,10 @@ class KextensionsLanguage
 			default :
 				return;
 		}
-		
+
 		return $lang->load($extension, $basePath, null, false, false)
-			|| $lang->load($extension, $basePath, $lang->getDefault(), false, false)
-			|| $lang->load($extension, $path, null, false, false)
-			|| $lang->load($extension, $path, $lang->getDefault(), false, false);
+		|| $lang->load($extension, $basePath, $lang->getDefault(), false, false)
+		|| $lang->load($extension, $path, null, false, false)
+		|| $lang->load($extension, $path, $lang->getDefault(), false, false);
 	}
 }

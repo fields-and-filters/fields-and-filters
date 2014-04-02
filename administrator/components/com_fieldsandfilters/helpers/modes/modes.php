@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
  */
 abstract class FieldsandfiltersModes
 {
-        /**
+	/**
 	 * @since       1.2.0
 	 **/
 	const MODE_FILTER = 'filter';
@@ -47,26 +47,26 @@ abstract class FieldsandfiltersModes
 	 **/
 	const MODE_NAME_PATH = 3;
 
-    protected static $modes = array(
-            'filter' => array(
-                    'single' 	=> 1,
-                    'multi' 	=> 2
-           ),
-            'field'	=> array(
-                    'text' 		=> -1,
-                    'json' 		=> -2
-           ),
-            'static' => array(
-                    'text'	 	=> -6,
-                    'json' 		=> -7
-           )
-   );
+	protected static $modes = array(
+		'filter' => array(
+			'single' => 1,
+			'multi'  => 2
+		),
+		'field'  => array(
+			'text' => -1,
+			'json' => -2
+		),
+		'static' => array(
+			'text' => -6,
+			'json' => -7
+		)
+	);
 
 	/**
 	 * Get a mode type value.
 	 *
-	 * @param   string  $path     Mode path (e.g. values.single)
-	 * @param   mixed   $default  Optional default value, returned if the internal value is null.
+	 * @param   string $path    Mode path (e.g. values.single)
+	 * @param   mixed  $default Optional default value, returned if the internal value is null.
 	 *
 	 * @return  mixed  Value of entry or null
 	 *
@@ -82,6 +82,7 @@ abstract class FieldsandfiltersModes
 		{
 			// Explode the mode path into an array
 			list($type, $name) = explode('.', $path, 2);
+
 			return isset(self::$modes[$type][$name]) ? self::$modes[$type][$name] : $default;
 		}
 
@@ -91,11 +92,11 @@ abstract class FieldsandfiltersModes
 	/**
 	 * Get a mode type values.
 	 *
-	 * @param   string  $paths     		Array mode paths (e.g. array(values.single, values.multi)
-	 * @param   mixed   $default  		Optional default value, returned if the internal value is null.
-	 * @param   boolean   $pathKey  	Keys of array is the name of modes
-	 * @param   boolean   $flatten  	Flatten array
-	 * @param   array     $excluded		Excluded items array
+	 * @param   string  $paths    Array mode paths (e.g. array(values.single, values.multi)
+	 * @param   mixed   $default  Optional default value, returned if the internal value is null.
+	 * @param   boolean $pathKey  Keys of array is the name of modes
+	 * @param   boolean $flatten  Flatten array
+	 * @param   array   $excluded Excluded items array
 	 *
 	 * @return  mixed  Value of entry or null
 	 *
@@ -103,33 +104,39 @@ abstract class FieldsandfiltersModes
 	 */
 	public static function getModes($paths = null, $default = array(), $flatten = false, $excluded = false, $pathKey = false)
 	{
-		$modes 		= array();
-		$isExcluded	= ($excluded && is_array($excluded));
+		$modes      = array();
+		$isExcluded = ($excluded && is_array($excluded));
 
 		if (is_null($paths))
 		{
 			$modes = self::$modes;
 		}
-		else if (is_array($paths))
+		else
 		{
-			while ($path = array_shift($paths))
+			if (is_array($paths))
 			{
-				if ($mode = self::getMode($path, false))
+				while ($path = array_shift($paths))
 				{
-					if ($pathKey)
+					if ($mode = self::getMode($path, false))
 					{
-						$modes[$path] = $mode;
-					}
-					else
-					{
-						$modes[] = $mode;
+						if ($pathKey)
+						{
+							$modes[$path] = $mode;
+						}
+						else
+						{
+							$modes[] = $mode;
+						}
 					}
 				}
 			}
-		}
-		else if (is_string($paths))
-		{
-			$modes = (array) self::getMode($paths);
+			else
+			{
+				if (is_string($paths))
+				{
+					$modes = (array) self::getMode($paths);
+				}
+			}
 		}
 
 		if (!empty($modes))
@@ -154,7 +161,7 @@ abstract class FieldsandfiltersModes
 
 	/**
 	 * @since       1.0.0
-	**/
+	 **/
 	public static function getModeName($id, $name = FieldsandfiltersModes::MODE_NAME_TYPE, $default = null)
 	{
 		if ($id = (int) $id)
@@ -167,13 +174,13 @@ abstract class FieldsandfiltersModes
 					{
 						case self::MODE_NAME_TYPE:
 							return $typeName;
-						break;
+							break;
 						case self::MODE_NAME_MODE:
 							return $modeName;
-						break;
+							break;
 						case self::MODE_NAME_PATH:
 							return ($typeName . '.' . $modeName);
-						break;
+							break;
 					}
 
 					break;

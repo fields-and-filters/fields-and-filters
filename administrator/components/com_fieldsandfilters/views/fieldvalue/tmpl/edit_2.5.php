@@ -3,7 +3,7 @@
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
- * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> - 
+ * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> -
  */
 
 // no direct access
@@ -17,14 +17,11 @@ JHtml::_('behavior.keepalive');
 JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true);
 ?>
 <script type="text/javascript">
-	Joomla.submitbutton = function(task)
-	{
-		if (task == 'fieldvalue.cancel' || document.formvalidator.isValid(document.id('fieldvalue-form')))
-		{
+	Joomla.submitbutton = function (task) {
+		if (task == 'fieldvalue.cancel' || document.formvalidator.isValid(document.id('fieldvalue-form'))) {
 			Joomla.submitform(task, document.getElementById('fieldvalue-form'));
 		}
-		else
-		{
+		else {
 			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
@@ -58,7 +55,7 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 			</ul>
 		</fieldset>
 	</div>
-	
+
 	<input type="hidden" name="task" value="" />
 	<?php echo JHtml::_('form.token'); ?>
 	<div class="clr"></div>

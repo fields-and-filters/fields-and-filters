@@ -9,35 +9,36 @@
 
 defined('_JEXEC') or die;
 
-jimport( 'joomla.filesystem.file' );
+jimport('joomla.filesystem.file');
 
-KextensionsLanguage::load( 'com_fieldsandfilters' );
+KextensionsLanguage::load('com_fieldsandfilters');
 
 /**
  * Image Helper
+ *
  * @since       1.0.0
  */
 class FieldsandfiltersImage
-{       
+{
 	/**
-	* @since       1.0.0
-	*/
-        protected static $cache_folder = 'fieldsandfilters';
-        
+	 * @since       1.0.0
+	 */
+	protected static $cache_folder = 'fieldsandfilters';
+
 	/**
-	* @since       1.0.0
-	*/
-        public static function getCacheFolder()
-        {
-                return JPATH_ROOT . '/cache/' . self::$cache_folder;
-        }
-        
-	/**
-	* @since       1.0.0
-	*/
-        public static function createImage( $name, JObject $jobject )
+	 * @since       1.0.0
+	 */
+	public static function getCacheFolder()
 	{
-		if( FieldsandfiltersFactory::isVersion( '>=', 3.2  ) )
+		return JPATH_ROOT . '/cache/' . self::$cache_folder;
+	}
+
+	/**
+	 * @since       1.0.0
+	 */
+	public static function createImage($name, JObject $jobject)
+	{
+		if (FieldsandfiltersFactory::isVersion('>=', 3.2))
 		{
 			$jimage = new JImage();
 		}
@@ -45,108 +46,107 @@ class FieldsandfiltersImage
 		{
 			$jimage = new KextensionsJoomlaImageImage();
 		}
-		
-		$jimage->loadFile( JPath::clean( JPATH_ROOT . '/' . $jobject->get( 'path' ) ) );
 
-		if( !$jimage->isLoaded() )
+		$jimage->loadFile(JPath::clean(JPATH_ROOT . '/' . $jobject->get('path')));
+
+		if (!$jimage->isLoaded())
 		{
-			throw new RuntimeException( JText::_( 'COM_FIELDSANDFILTERS_ERROR_IMAGE_FILE_NOT_EXIST' ) );
+			throw new RuntimeException(JText::_('COM_FIELDSANDFILTERS_ERROR_IMAGE_FILE_NOT_EXIST'));
 		}
-		
+
 		// If the parent folder doesn't exist we must create it
-		$folder = JPath::clean( self::getCacheFolder() . '/' . $jobject->get( 'folder' ) );
-		$src = '';
+		$folder = JPath::clean(self::getCacheFolder() . '/' . $jobject->get('folder'));
+		$src    = '';
 
 		try
 		{
-			if( !( $isFolder = is_dir( $folder ) ) )
+			if (!($isFolder = is_dir($folder)))
 			{
-				jimport( 'joomla.filesystem.folder' );
-				$isFolder = JFolder::create( $folder );
+				jimport('joomla.filesystem.folder');
+				$isFolder = JFolder::create($folder);
 			}
 
-			if( $isFolder )
+			if ($isFolder)
 			{
-				$width 	= (int) $jobject->get( 'width' );
-				$height = (int) $jobject->get( 'height' );
-				$method = (int) $jobject->get( 'method' );
+				$width  = (int) $jobject->get('width');
+				$height = (int) $jobject->get('height');
+				$method = (int) $jobject->get('method');
 
-				if( !$width || !$height )
+				if (!$width || !$height)
 				{
-					throw new UnexpectedValueException( JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_UNEXPECTED_VALUE_WIDTH_OR_HEIGHT', $name ) );
+					throw new UnexpectedValueException(JText::sprintf('COM_FIELDSANDFILTERS_ERROR_UNEXPECTED_VALUE_WIDTH_OR_HEIGHT', $name));
 				}
 				else
 				{
-					switch( $method )
+					switch ($method)
 					{
 						// Generate cropping resize image
 						case $jimage::CROP_RESIZE:
-							$jimage->crop( $width, $height, null, null, false );
-						break;
+							$jimage->crop($width, $height, null, null, false);
+							break;
 						// Generate cropping image
 						case $jimage::CROP:
-							$jimage->crop( $width, $height, null, null, false );
-						break;
+							$jimage->crop($width, $height, null, null, false);
+							break;
 						// Generate resizing image
 						case $jimage::SCALE_FILL:
 						case $jimage::SCALE_INSIDE:
 						case $jimage::SCALE_OUTSIDE:
 						case $jimage::SCALE_FIT:
 						default:
-							$jimage->resize( $width, $height, false, $method );
-						break;
+							$jimage->resize($width, $height, false, $method);
+							break;
 					}
 
 					// Parent image properties
-					$properties 	= $jimage::getImageFileProperties( $jimage->getPath() );
-					$quality 	= (int) $jobject->get( 'quality', 75 );
-					$quality 	= (int) min( max( $quality, 0 ), 100 );
+					$properties = $jimage::getImageFileProperties($jimage->getPath());
+					$quality    = (int) $jobject->get('quality', 75);
+					$quality    = (int) min(max($quality, 0), 100);
 
-					if( $properties->type == IMAGETYPE_PNG )
+					if ($properties->type == IMAGETYPE_PNG)
 					{
-						$quality = (int) min( max( floor( $quality / 10 ), 0 ), 9 );
-						$quality = abs( 9 - $quality );
+						$quality = (int) min(max(floor($quality / 10), 0), 9);
+						$quality = abs(9 - $quality);
 					}
 
-					if( !( $name = $jobject->get( 'name' ) ) )
+					if (!($name = $jobject->get('name')))
 					{
-						$name = self::createNameImage( $jobject );
+						$name = self::createNameImage($jobject);
 					}
 
-					$imagePath = JPath::clean( $folder . '/' . JFile::makeSafe( $name ) ) ;
+					$imagePath = JPath::clean($folder . '/' . JFile::makeSafe($name));
 
 					// Save image file to disk
-					$jimage->toFile( $imagePath, $properties->type, array( 'quality' => $quality ) );
+					$jimage->toFile($imagePath, $properties->type, array('quality' => $quality));
 
-					if( is_file( $imagePath ) )
+					if (is_file($imagePath))
 					{
-						$src = str_replace(JPath::clean(JPATH_ROOT.'/'), '', $imagePath);
+						$src = str_replace(JPath::clean(JPATH_ROOT . '/'), '', $imagePath);
 					}
 				}
 			}
-		}
-		catch (Exception $e)
+		} catch (Exception $e)
 		{
 			$jimage->destroy();
 			throw new Exception($e->getMessage());
 		}
 
 		$jimage->destroy();
-		
+
 		return $src;
 	}
-        
-        public static function createNameImage( JObject $jobject )
+
+	public static function createNameImage(JObject $jobject)
 	{
-		if( $path = $jobject->get( 'path' ) )
+		if ($path = $jobject->get('path'))
 		{
-			$filename 	= pathinfo( $path, PATHINFO_FILENAME );
-			$fileExtension 	= pathinfo( $path, PATHINFO_EXTENSION );
-			$imageName 	= ( ( $prefix = $jobject->get( 'prefixName' ) ) ? $prefix . '_' . $filename : $filename ) . '.' . $fileExtension;
-			
-			return JFile::makeSafe( $imageName );
+			$filename      = pathinfo($path, PATHINFO_FILENAME);
+			$fileExtension = pathinfo($path, PATHINFO_EXTENSION);
+			$imageName     = (($prefix = $jobject->get('prefixName')) ? $prefix . '_' . $filename : $filename) . '.' . $fileExtension;
+
+			return JFile::makeSafe($imageName);
 		}
-		
+
 		return JFactory::getDate()->toUnix();
 	}
 }

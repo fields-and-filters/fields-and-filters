@@ -3,7 +3,7 @@
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
- * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> - 
+ * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> -
  */
 
 // No direct access
@@ -16,16 +16,16 @@ class FieldsandfiltersViewPlugins extends JViewLegacy
 {
 	// Array of plugin types or groups plugin types
 	protected $plugins = null;
-	
+
 	/**
 	 * Display the view
-	 * 
-	 * @since	1.1.0
+	 *
+	 * @since    1.1.0
 	 */
 	public function display($tpl = null)
 	{
 		$tpl = is_null($tpl) && !FieldsandfiltersFactory::isVersion() ? '2.5' : $tpl;
-		
+
 		switch ($this->getLayout())
 		{
 			case 'types':
@@ -37,24 +37,25 @@ class FieldsandfiltersViewPlugins extends JViewLegacy
 				$this->plugins = FieldsandfiltersFactory::getExtensions()->getExtensionsGroup();
 				break;
 		}
-		
+
 		if (is_null($this->plugins))
 		{
 			echo JText::sprintf('COM_FIELDSANDFILTERS_ERROR_NOT_PLUGINS_TPL', $this->getLayout());
+
 			return false;
 		}
-		
+
 		$this->addToolbar();
 		parent::display($tpl);
 	}
-	
+
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since	1.0.0
+	 * @since    1.0.0
 	 */
 	protected function addToolbar()
 	{
-		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS_HEADER_PLUGIN_'.strtoupper($this->getLayout())), 'faf-plugin-'.strtolower($this->getLayout()));
+		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS_HEADER_PLUGIN_' . strtoupper($this->getLayout())), 'faf-plugin-' . strtolower($this->getLayout()));
 	}
 }

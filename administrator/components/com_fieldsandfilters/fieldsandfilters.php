@@ -10,7 +10,7 @@
 defined('_JEXEC') or die;
 
 // Access check.
-if (!JFactory::getUser()->authorise('core.manage', 'com_fieldsandfilters')) 
+if (!JFactory::getUser()->authorise('core.manage', 'com_fieldsandfilters'))
 {
 	throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
 }

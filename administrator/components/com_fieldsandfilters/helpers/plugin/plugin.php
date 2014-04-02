@@ -22,17 +22,17 @@ abstract class FieldsandfiltersPlugin
 	 **/
 	public static function getLayout(JRegistry $params, $name, $folder = null, $path = null)
 	{
-		$path = ($path) ? $path.'.'.$name : $name;
+		$path   = ($path) ? $path . '.' . $name : $name;
 		$layout = $params->get($path, 'default');
 
-		if(!$params->get('is.'.$name, false))
+		if (!$params->get('is.' . $name, false))
 		{
 			if ($folder)
 			{
-				$layout = (strpos($layout, ':') !== false) ? str_replace(':', ':'.$folder.'/', $layout) : $folder.'/'.$layout;
+				$layout = (strpos($layout, ':') !== false) ? str_replace(':', ':' . $folder . '/', $layout) : $folder . '/' . $layout;
 			}
 
-			$params->set('is.'.$name, true);
+			$params->set('is.' . $name, true);
 			$params->set($path, $layout);
 		}
 

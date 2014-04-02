@@ -60,7 +60,7 @@ class plgFieldsandfiltersTypesUrl extends JPlugin
 		$fields     = is_array($fields) ? $fields : array($fields);
 		$staticMode = (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC);
 
-		$syntax = KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
+		$syntax = KextensionsPlugin::getParams('system', 'fieldsandfilters')->get('syntax', '#{%s}');
 
 		while ($field = array_shift($fields))
 		{
@@ -70,11 +70,11 @@ class plgFieldsandfiltersTypesUrl extends JPlugin
 			$rootJson = $root->addChild('fields');
 			$rootJson->addAttribute('name', $field->id);
 
-			$label = '<strong>'.$field->name.'</strong> '.sprintf($syntax,$field->id);
+			$label = '<strong>' . $field->name . '</strong> ' . sprintf($syntax, $field->id);
 
 			if ($field->state == -1)
 			{
-				$label .= ' ['.JText::_('PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN').']';
+				$label .= ' [' . JText::_('PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN') . ']';
 			}
 
 			if (!($isStaticMode = in_array($field->mode, $staticMode)))
@@ -115,7 +115,7 @@ class plgFieldsandfiltersTypesUrl extends JPlugin
 
 			if ($isStaticMode)
 			{
-				$label .= ' ['.JText::_('PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_TITLE').']';
+				$label .= ' [' . JText::_('PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_TITLE') . ']';
 
 				$element->addAttribute('type', 'spacer');
 				$element->addAttribute('description', $field->data);
@@ -189,7 +189,7 @@ class plgFieldsandfiltersTypesUrl extends JPlugin
 			$element->addAttribute('fieldset', $fieldset);
 
 			$form->addOrder($field->id, $field->ordering)
-				->setField( $field->id, $root );
+				->setField($field->id, $root);
 		}
 
 		return true;
@@ -203,7 +203,7 @@ class plgFieldsandfiltersTypesUrl extends JPlugin
 		if ($context == 'com_fieldsandfilters.field' && $newItem->type == $this->_name && FieldsandfiltersModes::getModeName($newItem->mode) == FieldsandfiltersModes::MODE_STATIC)
 		{
 			$newItem->params = new JRegistry($newItem->params);
-			$_data = new JRegistry($newItem->values);
+			$_data           = new JRegistry($newItem->values);
 
 			if (!$_data->get('url'))
 			{
@@ -214,7 +214,7 @@ class plgFieldsandfiltersTypesUrl extends JPlugin
 		}
 		elseif ($context == 'com_fieldsandfilters.element')
 		{
-			$data = $newItem->get('fields')->get('data', new JObject);
+			$data   = $newItem->get('fields')->get('data', new JObject);
 			$fields = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($newItem->get('content_type_id'))->get($this->_name);
 
 			if ($fields)
@@ -293,27 +293,27 @@ class plgFieldsandfiltersTypesUrl extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML( JObject $layoutFields, Jobject $fields, stdClass $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering' )
+	public function getFieldsandfiltersFieldsHTML(JObject $layoutFields, Jobject $fields, stdClass $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering')
 	{
-		if( !( $fields = $fields->get( $this->_name ) ) )
+		if (!($fields = $fields->get($this->_name)))
 		{
 			return;
 		}
 
-		$fields = is_array( $fields ) ? $fields : array( $fields );
+		$fields = is_array($fields) ? $fields : array($fields);
 
-		$variables 		= new JObject;
-		$variables->type	= $this->_type;
-		$variables->name	= $this->_name;
-		$variables->params	= $this->params;
-		$variables->element 	= $element;
+		$variables          = new JObject;
+		$variables->type    = $this->_type;
+		$variables->name    = $this->_name;
+		$variables->params  = $this->params;
+		$variables->element = $element;
 
-		while( $field = array_shift( $fields ) )
+		while ($field = array_shift($fields))
 		{
-			$modeName 	= FieldsandfiltersModes::getModeName( $field->mode );
-			$isStaticMode 	= (  $modeName == FieldsandfiltersModes::MODE_STATIC );
+			$modeName     = FieldsandfiltersModes::getModeName($field->mode);
+			$isStaticMode = ($modeName == FieldsandfiltersModes::MODE_STATIC);
 
-			if( ( $isStaticMode && empty( $field->data ) ) || ( $modeName == 'field' && ( !isset( $element->data ) || !property_exists( $element->data, $field->id ) ) ) )
+			if (($isStaticMode && empty($field->data)) || ($modeName == 'field' && (!isset($element->data) || !property_exists($element->data, $field->id))))
 			{
 				continue;
 			}
@@ -332,13 +332,13 @@ class plgFieldsandfiltersTypesUrl extends JPlugin
 				}
 			}
 
-			if( $params )
+			if ($params)
 			{
-				$paramsTemp 	= $field->params;
-				$paramsField 	= clone $field->params;
+				$paramsTemp  = $field->params;
+				$paramsField = clone $field->params;
 
-				$paramsField->merge( $params );
-				$field->params 	= $paramsField;
+				$paramsField->merge($params);
+				$field->params = $paramsField;
 			}
 
 			if ($field->params->get('base.show_name'))
@@ -364,16 +364,16 @@ class plgFieldsandfiltersTypesUrl extends JPlugin
 
 			$variables->field = $field;
 
-			$layout = KextensionsPlugin::renderLayout( $variables, $layoutField );
-			$layoutFields->set( KextensionsArray::getEmptySlotObject( $layoutFields, $field->$ordering, false ), $layout );
+			$layout = KextensionsPlugin::renderLayout($variables, $layoutField);
+			$layoutFields->set(KextensionsArray::getEmptySlotObject($layoutFields, $field->$ordering, false), $layout);
 
-			if( $params )
+			if ($params)
 			{
 				$field->params = $paramsTemp;
-				unset( $paramsField );
+				unset($paramsField);
 			}
 		}
 
-		unset( $variables );
+		unset($variables);
 	}
 }

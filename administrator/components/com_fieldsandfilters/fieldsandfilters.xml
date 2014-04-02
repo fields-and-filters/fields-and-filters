@@ -24,7 +24,7 @@
 			      charset="utf8">sql/install/mysql/install.sql
 			</file>
 
-			<file driver="sqlazure"
+			<!--<file driver="sqlazure"
 			      charset="utf8">sql/install/sqlazure/install.sql
 			</file>
 			<file driver="sqlsrv"
@@ -33,7 +33,7 @@
 
 			<file driver="postgresql"
 			      charset="utf8">sql/install/postgresql/install.sql
-			</file>
+			</file>-->
 		</sql>
 	</install>
 
@@ -46,7 +46,7 @@
 			      charset="utf8">sql/install/mysql/uninstall.sql
 			</file>
 
-			<file driver="sqlazure"
+			<!--<file driver="sqlazure"
 			      charset="utf8">sql/install/sqlazure/uninstall.sql
 			</file>
 			<file driver="sqlsrv"
@@ -55,7 +55,7 @@
 
 			<file driver="postgresql"
 			      charset="utf8">sql/install/postgresql/uninstall.sql
-			</file>
+			</file>-->
 		</sql>
 	</uninstall>
 
@@ -63,39 +63,42 @@
 		<schemas>
 			<schemapath type="mysql">sql/updates/mysql</schemapath>
 			<schemapath type="mysqli">sql/updates/mysql</schemapath>
-			<schemapath type="sqlsrv">sql/updates/sqlsrv</schemapath>
+			<!--<schemapath type="sqlsrv">sql/updates/sqlsrv</schemapath>
 			<schemapath type="sqlazure">sql/updates/sqlsrv</schemapath>
-			<schemapath type="postgresql">sql/updates/postgresql</schemapath>
+			<schemapath type="postgresql">sql/updates/postgresql</schemapath>-->
 		</schemas>
 	</update>
 
 	<files folder="site">
-		<filename>index.html</filename>
-		<filename>fieldsandfilters.php</filename>
 		<filename>controller.php</filename>
+		<filename>fieldsandfilters.php</filename>
+		<filename>index.html</filename>
 		<filename>router.php</filename>
-		<folder>views</folder>
-		<folder>models</folder>
 		<folder>controllers</folder>
+		<folder>models</folder>
+		<folder>views</folder>
 	</files>
 	<languages folder="site">
 		<language tag="en-GB">language/en-GB.com_fieldsandfilters.ini</language>
 	</languages>
 
-	<media folder="media" destination="fieldsandfilters">
+	<media folder="media"
+	       destination="fieldsandfilters">
 		<folder>administrator</folder>
 		<folder>core</folder>
 		<folder>filters</folder>
 		<filename>index.html</filename>
 	</media>
 	<administration>
-		<menu img="../media/fieldsandfilters/component/images/icons/icon-16-fieldsandfilters.png">COM_FIELDSANDFILTERS</menu>
+		<menu img="../media/fieldsandfilters/component/images/icons/icon-16-fieldsandfilters.png">COM_FIELDSANDFILTERS
+		</menu>
 		<files folder="administrator">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>
 			<filename>controller.php</filename>
-			<filename>index.html</filename>
 			<filename>fieldsandfilters.php</filename>
+			<filename>index.html</filename>
+			<filename>License.txt</filename>
 			<folder>controllers</folder>
 			<folder>helpers</folder>
 			<folder>layouts</folder>

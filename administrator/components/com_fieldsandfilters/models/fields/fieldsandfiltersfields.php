@@ -23,11 +23,11 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	/**
 	 * The form field type.
 	 *
-	 * @var		string
+	 * @var        string
 	 * @since       1.0.0
 	 */
 	protected $type = 'FieldsandfiltersFields';
-	
+
 	/**
 	 * The input type of the form field
 	 *
@@ -35,7 +35,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	 * @since  1.2.0
 	 */
 	protected $inputType;
-	
+
 	/**
 	 * The checked of the form field
 	 *
@@ -43,7 +43,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	 * @since  1.2.0
 	 */
 	protected $checked = array();
-	
+
 	/**
 	 * The context of the form field
 	 *
@@ -51,7 +51,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	 * @since  1.2.0
 	 */
 	protected $context = 'com_fieldsandfilters.fieldvalues.filter';
-	
+
 	/**
 	 * The states of the form field
 	 *
@@ -59,7 +59,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	 * @since  1.2.0
 	 */
 	protected $states = 1;
-	
+
 	/**
 	 * The modes of the form field
 	 *
@@ -67,20 +67,20 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	 * @since  1.2.0
 	 */
 	protected $modes;
-	
+
 	/**
 	 * The class of the form field
 	 *
 	 * @var    mixed
-	 * @since  1.2.0
+	 * @since      1.2.0
 	 * @deprecated >= J3.2
 	 */
 	protected $class;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
-	 * @param   string  $name  The property name for which to the the value.
+	 * @param   string $name The property name for which to the the value.
 	 *
 	 * @return  mixed  The property value or null.
 	 *
@@ -96,21 +96,21 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 			case 'states':
 			case 'modes':
 				return $this->$name;
-			
+
 			/* @deprecated >= J3.2 */
 			case 'class':
 				return $this->$name;
 			/* @enddeprecated >= J3.2 */
 		}
-		
+
 		return parent::__get($name);
 	}
-	
+
 	/**
 	 * Method to set certain otherwise inaccessible properties of the form field object.
 	 *
-	 * @param   string  $name   The property name for which to the the value.
-	 * @param   mixed   $value  The value of the property.
+	 * @param   string $name  The property name for which to the the value.
+	 * @param   mixed  $value The value of the property.
 	 *
 	 * @return  void
 	 *
@@ -124,25 +124,25 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 			case 'context':
 				$this->$name = (string) $value;
 				break;
-			
+
 			case 'checked':
 			case 'modes':
-				$value = (string) $value;
+				$value       = (string) $value;
 				$this->$name = array_map('trim', explode(',', $value));
 				break;
-			
+
 			case 'states':
 				$this->$name = explode(',', (string) $value);
 				JArrayHelper::toInteger($this->$name);
 				break;
-			
+
 			/* @deprecated >= J3.2 */
 			case 'class':
 				// Removes spaces from left & right and extra spaces from middle
-				$value = preg_replace('/\s+/', ' ', trim((string) $value));
+				$value       = preg_replace('/\s+/', ' ', trim((string) $value));
 				$this->$name = (string) $value;
 				break;
-			
+
 			default:
 				if (FieldsandfiltersFactory::isVersion('>=', 3.2))
 				{
@@ -152,13 +152,13 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 			/* @end deprecated >= J3.2 */
 		}
 	}
-	
+
 	/**
 	 * Method to attach a JForm object to the field.
 	 *
-	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
-	 * @param   mixed             $value    The form field value to validate.
-	 * @param   string            $group    The field name group control value. This acts as as an array container for the field.
+	 * @param   SimpleXMLElement $element   The SimpleXMLElement object representing the <field /> tag for the form field object.
+	 * @param   mixed            $value     The form field value to validate.
+	 * @param   string           $group     The field name group control value. This acts as as an array container for the field.
 	 *                                      For example if the field has name="foo" and the group value is set to "bar" then the
 	 *                                      full field name would end up being "bar[foo]".
 	 *
@@ -170,22 +170,22 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 	public function setup(SimpleXMLElement $element, $value, $group = null)
 	{
 		$return = parent::setup($element, $value, $group);
-		
+
 		if ($return)
 		{
 			$attributes = array('inputType', 'checked', 'context', 'states', 'modes', 'class'); /* class is @deprecated >= J3.2 */
 			foreach ($attributes as $attributeName)
 			{
-				if(isset($element[$attributeName]))
+				if (isset($element[$attributeName]))
 				{
 					$this->__set($attributeName, $element[$attributeName]);
 				}
 			}
 		}
-		
+
 		return $return;
 	}
-	
+
 	/**
 	 * Method to get the field input markup for a generic list.
 	 * Use the multiple attribute to enable multiselect.
@@ -201,22 +201,22 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 			case 'checkboxes' :
 				// Initialize variables.
 				$html = array();
-				
+
 				$this->multiple = true;
-				$this->name = $this->getName($this->fieldname);
-				
+				$this->name     = $this->getName($this->fieldname);
+
 				// Initialize some field attributes.
-				$class 			= $this->class ? ' class="checkboxes ' . $this->class . '"' : ' class="checkboxes"';
-				
+				$class = $this->class ? ' class="checkboxes ' . $this->class . '"' : ' class="checkboxes"';
+
 				// Start the checkbox field output.
 				$html[] = '<fieldset id="' . $this->id . '"' . $class . '>';
-				
+
 				// Get the field options.
 				if (!($options = $this->getOptions()))
 				{
 					return '<span class="readonly">' . JText::_('COM_FIELDSANDFILTERS_ERROR_FIELD_VALUES_EMPTY') . '</span>';
 				}
-				
+
 				// Build the checkbox field output.
 				$html[] = '<ul class="nav nav-list">';
 				foreach ($options as $i => $option)
@@ -228,38 +228,38 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 					}
 					else
 					{
-						$value = !is_array($this->value) ? explode(',', $this->value) : $this->value;
+						$value   = !is_array($this->value) ? explode(',', $this->value) : $this->value;
 						$checked = (in_array((string) $option->value, $value) ? ' checked="checked"' : '');
 					}
-					$class = !empty($option->class) ? ' class="checkbox ' . $option->class . '"' : ' class="checkbox"';
+					$class    = !empty($option->class) ? ' class="checkbox ' . $option->class . '"' : ' class="checkbox"';
 					$required = !empty($option->required) ? ' required="required" aria-required="true"' : '';
 					$disabled = !empty($option->disable) ? ' disabled="disabled"' : '';
-					
+
 					// Initialize some JavaScript option attributes.
 					$onclick = !empty($option->onclick) ? ' onclick="' . $option->onclick . '"' : '';
-					
+
 					$html[] = '<li>';
 					$html[] = '	<label' . $class . '>';
 					$html[] = '		<input type="checkbox" id="' . $this->id . $i . '" name="' . $this->name . '" value="'
-									. htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8') . '"' . $checked . $class . $onclick . $disabled . $required . '/>';
-					$html[] = 			$option->text;
+						. htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8') . '"' . $checked . $class . $onclick . $disabled . $required . '/>';
+					$html[] = $option->text;
 					$html[] = '	</label>';
 					$html[] = '</li>';
 				}
 				$html[] = '</ul>';
-				
+
 				// End the checkbox field output.
 				$html[] = '</fieldset>';
-				
+
 				return implode($html);
-			break;
+				break;
 			case 'select' :
 			default :
 				return parent::getInput();
-			break;
+				break;
 		}
 	}
-	
+
 	/**
 	 * Method to get the field options.
 	 *
@@ -274,7 +274,7 @@ class JFormFieldFieldsandfiltersFields extends JFormFieldList
 		// Load the plugin extension.
 		if (!empty($options) && !$this->value)
 		{
-			$userState = (array) JFactory::getApplication()->getUserState($this->context);
+			$userState   = (array) JFactory::getApplication()->getUserState($this->context);
 			$this->value = JArrayHelper::getValue($userState, $this->fieldname);
 		}
 

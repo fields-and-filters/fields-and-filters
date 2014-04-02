@@ -1,33 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="2.5" type="plugin" group="fieldsandfiltersextensions" method="upgrade">
-        <name>plg_fieldsandfilters_extensions_content</name>
-        <creationDate>2013-08-27</creationDate>
-        <copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
-        <license>GNU General Public License version 3 or later; see License.txt</license>
-        <author>KES - Kulka Tomasz</author>
-        <authorEmail>kes@kextensions.com</authorEmail>
-        <authorUrl>http://www.kextensions.com</authorUrl>
-        <version>1.1.1</version>
-        <description>PLG_FIELDSANDFILTERS_EXTENSIONS_CONTENT_XML_DESCRIPTION</description>
-	
+<extension version="2.5"
+           type="plugin"
+           group="fieldsandfiltersextensions"
+           method="upgrade">
+	<name>plg_fieldsandfilters_extensions_content</name>
+	<creationDate>2013-08-27</creationDate>
+	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
+	<license>GNU General Public License version 3 or later; see License.txt</license>
+	<author>KES - Kulka Tomasz</author>
+	<authorEmail>kes@kextensions.com</authorEmail>
+	<authorUrl>http://www.kextensions.com</authorUrl>
+	<version>1.1.1</version>
+	<description>PLG_FIELDSANDFILTERS_EXTENSIONS_CONTENT_XML_DESCRIPTION</description>
+
 	<scriptfile>content.script.php</scriptfile>
-	
+
 	<install> <!-- Runs on install -->
 		<sql>
-			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+			<file driver="mysql"
+			      charset="utf8">sql/install.mysql.utf8.sql
+			</file>
 		</sql>
 	</install>
-	
+
 	<files>
 		<filename plugin="content">content.php</filename>
 		<filename>index.html</filename>
+		<filename>License.txt</filename>
 		<folder>forms</folder>
 		<folder>overrides</folder>
 		<folder>sql</folder>
 		<folder>tmpl</folder>
 		<folder>views</folder>
 	</files>
-	
+
 	<languages>
 		<language tag="en-GB">language/en-GB.plg_fieldsandfiltersextensions_content.ini</language>
 		<language tag="en-GB">language/en-GB.plg_fieldsandfiltersextensions_content.sys.ini</language>
@@ -35,17 +41,17 @@
 	<config>
 		<fields name="params">
 			<fieldset
-				name="fields"
-				label="COM_FIELDSANDFILTERS_FIELDS_LBL"
-				description="COM_FIELDSANDFILTERS_FIELDS_DESC"
-			>
+					name="fields"
+					label="COM_FIELDSANDFILTERS_FIELDS_LBL"
+					description="COM_FIELDSANDFILTERS_FIELDS_DESC"
+					>
 				<field
-					name="site_fields_spacer"
-					type="spacer"
-					label="COM_FIELDSANDFILTERS_SITE_FIELDS_SPACER_LBL"
-					description="COM_FIELDSANDFILTERS_SITE_FIELDS_SPACER_DESC"
-				/>
-					<field
+						name="site_fields_spacer"
+						type="spacer"
+						label="COM_FIELDSANDFILTERS_SITE_FIELDS_SPACER_LBL"
+						description="COM_FIELDSANDFILTERS_SITE_FIELDS_SPACER_DESC"
+						/>
+				<field
 						name="use_static_fields"
 						type="radio"
 						size="1"
@@ -53,13 +59,13 @@
 						label="COM_FIELDSANDFILTERS_USE_STATIC_FIELDS_LBL"
 						description="COM_FIELDSANDFILTERS_USE_STATIC_FIELDS_DESC"
 						default=""
-					>
-						<option value="">JDEFAULT</option>
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-					</field>
+						>
+					<option value="">JDEFAULT</option>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
 
-					<field
+				<field
 						name="frontend_edit"
 						type="radio"
 						class="btn-group"
@@ -67,106 +73,106 @@
 						description="PLG_FAF_ES_CT_FORM_FRONTEND_EDIT_DESC"
 						default="0"
 						filter="int"
-					>
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-					</field>
+						>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
 			</fieldset>
 			<fieldset
-				name="filters"
-				label="COM_FIELDSANDFILTERS_FILTERS_LBL"
-				description="COM_FIELDSANDFILTERS_FILTERS_DESC"
-			>
+					name="filters"
+					label="COM_FIELDSANDFILTERS_FILTERS_LBL"
+					description="COM_FIELDSANDFILTERS_FILTERS_DESC"
+					>
 				<field
-					name="site_filters_spacer"
-					type="spacer"
-					label="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_LBL"
-					description="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_DESC"
-					addfieldpath="/administrator/components/com_fieldsandfilters/models/fields"
+						name="site_filters_spacer"
+						type="spacer"
+						label="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_LBL"
+						description="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_DESC"
+						addfieldpath="/administrator/components/com_fieldsandfilters/models/fields"
+						/>
+				<!--
+				<field
+					name="selector_body_filters"
+					type="text"
+					default=""
+					label="COM_FIELDSANDFILTERS_SELECTOR_BODY_FILTERS_LBL"
+					description="COM_FIELDSANDFILTERS_SELECTOR_BODY_FILTERS_DESC"
 				/>
-					<!--
-					<field
-						name="selector_body_filters"
-						type="text"
-						default=""
-						label="COM_FIELDSANDFILTERS_SELECTOR_BODY_FILTERS_LBL"
-						description="COM_FIELDSANDFILTERS_SELECTOR_BODY_FILTERS_DESC"
-					/>
-					<field
-						name="function_done_filters"
-						type="textarea"
-						class="inputbox"
-						rows="3"
-						cols="30"
-						default=""
-						label="COM_FIELDSANDFILTERS_FUNCTION_DONE_FILTERS_LBL"
-						description="COM_FIELDSANDFILTERS_FUNCTION_DONE_FILTERS_DESC"
-					/>
-					-->
-					<field
+				<field
+					name="function_done_filters"
+					type="textarea"
+					class="inputbox"
+					rows="3"
+					cols="30"
+					default=""
+					label="COM_FIELDSANDFILTERS_FUNCTION_DONE_FILTERS_LBL"
+					description="COM_FIELDSANDFILTERS_FUNCTION_DONE_FILTERS_DESC"
+				/>
+				-->
+				<field
 						name="selector_pagination_filters"
 						type="text"
 						default=".pagination"
 						label="COM_FIELDSANDFILTERS_SELECTOR_PAGINATION_FILTERS_LBL"
 						description="COM_FIELDSANDFILTERS_SELECTOR_PAGINATION_FILTERS_DESC"
-					/>
-					<field
+						/>
+				<field
 						name="selector_other_category"
 						type="text"
 						default=""
 						label="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_CATEGORY_LBL"
 						description="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_CATEGORY_DESC"
-					/>
-					<field
+						/>
+				<field
 						name="selector_other_archive"
 						type="text"
 						default="#adminForm"
 						label="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_ARCHIVE_LBL"
 						description="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_ARCHIVE_DESC"
-					/>
-					<field
+						/>
+				<field
 						name="selector_other_featured"
 						type="text"
 						default=""
 						label="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_FEATURED_LBL"
 						description="PLG_FAF_ES_CT_FORM_SELECTOR_OTHER_FEATURED_DESC"
 						/>
-					<field
+				<field
 						name="use_allextensions_filters"
 						type="radio"
 						class="btn-group"
 						label="COM_FIELDSANDFILTERS_USE_ALLEXTENSIONS_FILTERS_LBL"
 						description="COM_FIELDSANDFILTERS_USE_ALLEXTENSIONS_FILTERS_DESC"
 						default=""
-					>
-						<option value="">JDEFAULT</option>
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-					</field>
-					<field
+						>
+					<option value="">JDEFAULT</option>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field
 						name="comparison_between_filters"
 						type="list"
 						label="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_FILTERS_LBL"
 						description="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_FILTERS_DESC"
 						default=""
-					>
-						<option value="">JDEFAULT</option>
-						<option value="OR">COM_FIELDSANDFILTERS_OR</option>
-						<option value="AND">COM_FIELDSANDFILTERS_AND</option>
-					</field>
-					<field
+						>
+					<option value="">JDEFAULT</option>
+					<option value="OR">COM_FIELDSANDFILTERS_OR</option>
+					<option value="AND">COM_FIELDSANDFILTERS_AND</option>
+				</field>
+				<field
 						name="comparison_between_values_filters"
 						type="list"
 						label="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_VALUES_FILTERS_LBL"
 						description="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_VALUES_FILTERS_DESC"
 						default=""
-					>
-						<option value="">JDEFAULT</option>
-						<option value="OR">COM_FIELDSANDFILTERS_OR</option>
-						<option value="AND">COM_FIELDSANDFILTERS_AND</option>
-					</field>
+						>
+					<option value="">JDEFAULT</option>
+					<option value="OR">COM_FIELDSANDFILTERS_OR</option>
+					<option value="AND">COM_FIELDSANDFILTERS_AND</option>
+				</field>
 
-					<field
+				<field
 						name="empty_layout"
 						type="fieldsandfiltersPluginLayout"
 						layoutFolder="empty"
@@ -174,9 +180,9 @@
 						pluginType="fieldsandfiltersextensions"
 						label="PLG_FAF_ES_CT_FORM_EMPTY_LAYOUT_LBL"
 						description="PLG_FAF_ES_CT_FORM_EMPTY_LAYOUT_DESC"
-					/>
+						/>
 
-					<field
+				<field
 						name="empty_layout"
 						type="fieldsandfiltersPluginLayout"
 						layoutFolder="empty"
@@ -184,9 +190,9 @@
 						pluginType="fieldsandfiltersextensions"
 						label="PLG_FAF_ES_CT_FORM_EMPTY_LAYOUT_LBL"
 						description="PLG_FAF_ES_CT_FORM_EMPTY_LAYOUT_DESC"
-					/>
+						/>
 
-					<field
+				<field
 						name="show_reset"
 						type="radio"
 						class="btn-group"
@@ -194,10 +200,10 @@
 						description="PLG_FAF_ES_CT_FORM_SHOW_RESET_DESC"
 						default="0"
 						filter="int"
-					>
-						<option value="0">JNO</option>
-						<option value="1">JYES</option>
-					</field>
+						>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
 			</fieldset>
 		</fields>
 	</config>

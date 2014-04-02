@@ -195,7 +195,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 				}
 
 				// load plugin language
-				KextensionsLanguage::load('plg_'.$type->type.'_'.$type->name, JPATH_ADMINISTRATOR);
+				KextensionsLanguage::load('plg_' . $type->type . '_' . $type->name, JPATH_ADMINISTRATOR);
 			}
 
 			$contentTypeId = $data->get('content_type_id', $this->getState($this->getName() . '.content_type_id'));
@@ -213,7 +213,7 @@ class FieldsandfiltersModelField extends JModelAdmin
 				}
 
 				// load plugin language
-				KextensionsLanguage::load('plg_'.$extension->type.'_'.$extension->name, JPATH_ADMINISTRATOR);
+				KextensionsLanguage::load('plg_' . $extension->type . '_' . $extension->name, JPATH_ADMINISTRATOR);
 			}
 		} catch (Exception $e)
 		{

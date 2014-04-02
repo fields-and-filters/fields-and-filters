@@ -10,18 +10,18 @@
 defined('_JEXEC') or die;
 
 /**
- * @package		fieldsandfilters.administrator
- * @subpackage		com_fieldsandfilters
+ * @package           fieldsandfilters.administrator
+ * @subpackage        com_fieldsandfilters
  *
- * @since       1.2.0
+ * @since             1.2.0
  */
 abstract class FieldsandfiltersHtmlDropdown
 {
 	/**
 	 * Append a required item to the current dropdown menu
 	 *
-	 * @param   string  $checkboxId  ID of corresponding checkbox of the record
-	 * @param   string  $prefix      The task prefix
+	 * @param   string $checkboxId ID of corresponding checkbox of the record
+	 * @param   string $prefix     The task prefix
 	 *
 	 * @return  void
 	 *
@@ -30,7 +30,7 @@ abstract class FieldsandfiltersHtmlDropdown
 	public static function required($checkboxId, $prefix = '')
 	{
 		$task = $prefix . 'required';
-		
+
 		if (FieldsandfiltersFactory::isVersion('>=', 3.2))
 		{
 			JHtml::_('actionsdropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM'), 'star', $checkboxId, $task);
@@ -39,15 +39,15 @@ abstract class FieldsandfiltersHtmlDropdown
 		{
 			JHtml::_('dropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM'), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"');
 		}
-		
+
 		return;
 	}
 
 	/**
 	 * Append an unrequired item to the current dropdown menu
 	 *
-	 * @param   string  $checkboxId  ID of corresponding checkbox of the record
-	 * @param   string  $prefix      The task prefix
+	 * @param   string $checkboxId ID of corresponding checkbox of the record
+	 * @param   string $prefix     The task prefix
 	 *
 	 * @return  void
 	 *
@@ -62,17 +62,18 @@ abstract class FieldsandfiltersHtmlDropdown
 		}
 		else
 		{
-			JHtml::_('dropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM'), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"');JHtml::_('dropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM'), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"');
+			JHtml::_('dropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM'), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"');
+			JHtml::_('dropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM'), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"');
 		}
-		
+
 		return;
 	}
-	
+
 	/**
 	 * Append an published only admin item to the current dropdown menu
 	 *
-	 * @param   string  $checkboxId  ID of corresponding checkbox of the record
-	 * @param   string  $prefix      The task prefix
+	 * @param   string $checkboxId ID of corresponding checkbox of the record
+	 * @param   string $prefix     The task prefix
 	 *
 	 * @return  void
 	 *
@@ -89,7 +90,7 @@ abstract class FieldsandfiltersHtmlDropdown
 		{
 			JHtml::_('dropdown.addCustomItem', JText::_('COM_FIELDSANDFILTERS_HTML_ONLYADMIN'), 'javascript:void(0)', 'onclick="contextAction(\'' . $checkboxId . '\', \'' . $task . '\')"');
 		}
-		
+
 		return;
 	}
 }

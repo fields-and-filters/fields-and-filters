@@ -11,40 +11,41 @@ defined('_JEXEC') or die;
 
 /**
  * Fieldsandfilters Factory.
+ *
  * @since       1.1.0
  */
 class FieldsandfiltersFactory
 {
-        /**
+	/**
 	 * @var    FieldsandfiltersFields
 	 * @since  1.2.0
 	 */
 	public static $fields = null;
-	
+
 	/**
 	 * @var    FieldsandfiltersElements
 	 * @since  1.2.0
 	 */
 	public static $elements = null;
-	
+
 	/**
 	 * @var    FieldsandfiltersExtensions
 	 * @since  1.2.0
 	 */
 	public static $extensions = null;
-	
+
 	/**
 	 * @var    FieldsandfiltersTypes
 	 * @since  1.2.0
 	 */
 	public static $types = null;
-	
+
 	/**
 	 * @var    JEventDispatcher or JDispatcher
 	 * @since  1.1.0
 	 */
 	public static $dispatcher = null;
-	
+
 	/**
 	 * Get a fields object.
 	 *
@@ -53,14 +54,14 @@ class FieldsandfiltersFactory
 	 */
 	public static function getFields()
 	{
-		if( !self::$fields )
+		if (!self::$fields)
 		{
 			self::$fields = FieldsandfiltersFields::getInstance();
 		}
-		
+
 		return self::$fields;
 	}
-	
+
 	/**
 	 * Get a elements object.
 	 *
@@ -69,14 +70,14 @@ class FieldsandfiltersFactory
 	 */
 	public static function getElements()
 	{
-		if( !self::$elements )
+		if (!self::$elements)
 		{
 			self::$elements = FieldsandfiltersElements::getInstance();
 		}
-		
+
 		return self::$elements;
 	}
-	
+
 	/**
 	 * Get a extensions object.
 	 *
@@ -85,14 +86,14 @@ class FieldsandfiltersFactory
 	 */
 	public static function getExtensions()
 	{
-		if( !self::$extensions )
+		if (!self::$extensions)
 		{
 			self::$extensions = FieldsandfiltersExtensions::getInstance();
 		}
-		
+
 		return self::$extensions;
 	}
-	
+
 	/**
 	 * Get a types object.
 	 *
@@ -101,57 +102,57 @@ class FieldsandfiltersFactory
 	 */
 	public static function getTypes()
 	{
-		if( !self::$types )
+		if (!self::$types)
 		{
 			self::$types = FieldsandfiltersTypes::getInstance();
 		}
-		
+
 		return self::$types;
 	}
-	
+
 	/**
 	 * Get version compare.
 	 *
-	 * @param   string   $operator		The possible operators are: <, lt, <=, le, >, gt, >=, ge, ==, =, eq, !=, <>, ne respectively. Default: >=
-	 * @param   string   $need		First version number. Default: 3.0
-	 * @param   string   $version		Second version number. . Default: JVERSION
+	 * @param   string $operator The possible operators are: <, lt, <=, le, >, gt, >=, ge, ==, =, eq, !=, <>, ne respectively. Default: >=
+	 * @param   string $need     First version number. Default: 3.0
+	 * @param   string $version  Second version number. . Default: JVERSION
 	 *
 	 * @since   1.1.0
 	 */
-        public static function isVersion( $operator = '>=', $need = 3.0, $version = JVERSION )
-        {
-                static $versions;
-		
-                $key = ( $operator . $need . $version );
-                if( !isset( $versions[$key] ) )
-                {
-                        $versions[$key] = version_compare( $version, $need, $operator );
-                }
-		
-                return $versions[$key];
-        }
-	
+	public static function isVersion($operator = '>=', $need = 3.0, $version = JVERSION)
+	{
+		static $versions;
+
+		$key = ($operator . $need . $version);
+		if (!isset($versions[$key]))
+		{
+			$versions[$key] = version_compare($version, $need, $operator);
+		}
+
+		return $versions[$key];
+	}
+
 	/**
-	 * @since   	1.2.0
-	 * @deprecated	1.2.0
+	 * @since         1.2.0
+	 * @deprecated    1.2.0
 	 */
 	public static function useOldStructure()
 	{
 		static $useOldStructure;
-		
-		if(is_null($useOldStructure))
+
+		if (is_null($useOldStructure))
 		{
 			$useOldStructure = JComponentHelper::getParams('com_fieldsandfilters')->get('use_old_structure', false);
 		}
-		
+
 		return $useOldStructure;
 	}
-	
+
 	/**
 	 * Get dispatcher object.
 	 *
-	 * @see     JEventDispatcher or JDispatcher
-	 * @since   1.1.0
+	 * @see         JEventDispatcher or JDispatcher
+	 * @since       1.1.0
 	 * @deprecated  1.2.0
 	 */
 	/*
@@ -172,8 +173,7 @@ class FieldsandfiltersFactory
 		return self::$dispatcher;
 	}
 	*/
-	
-	
+
 	/**
 	 * @since       1.0.0
 	 * @deprecated  1.2.0
@@ -207,7 +207,7 @@ class FieldsandfiltersFactory
 		return self::$instances[$key];
 	}
 	*/
-	
+
 	/**
 	 * @since       1.1.0
 	 * @deprecated  1.2.0

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
 	<fieldset
-		name="fields"
-		label="COM_FIELDSANDFILTERS_FIELDS_LBL"
-		description="COM_FIELDSANDFILTERS_FIELDS_DESC"
-	>
+			name="fields"
+			label="COM_FIELDSANDFILTERS_FIELDS_LBL"
+			description="COM_FIELDSANDFILTERS_FIELDS_DESC"
+			>
 		<field
-			name="site_fields_spacer"
-			type="spacer"
-			label="COM_FIELDSANDFILTERS_SITE_FIELDS_SPACER_LBL"
-			description="COM_FIELDSANDFILTERS_SITE_FIELDS_SPACER_DESC"
-		/>
-			<field
+				name="site_fields_spacer"
+				type="spacer"
+				label="COM_FIELDSANDFILTERS_SITE_FIELDS_SPACER_LBL"
+				description="COM_FIELDSANDFILTERS_SITE_FIELDS_SPACER_DESC"
+				/>
+		<field
 				name="use_static_fields"
 				type="radio"
 				size="1"
@@ -19,48 +19,48 @@
 				label="COM_FIELDSANDFILTERS_USE_STATIC_FIELDS_LBL"
 				description="COM_FIELDSANDFILTERS_USE_STATIC_FIELDS_DESC"
 				default="1"
-			>
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-		
+				>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
 		<field
-			name="admin_fields_spacer"
-			type="spacer"
-			label="COM_FIELDSANDFILTERS_ADMIN_FIELDS_SPACER_LBL"
-			description="COM_FIELDSANDFILTERS_ADMIN_FIELDS_SPACER_DESC"
-		/>
-			<field
+				name="admin_fields_spacer"
+				type="spacer"
+				label="COM_FIELDSANDFILTERS_ADMIN_FIELDS_SPACER_LBL"
+				description="COM_FIELDSANDFILTERS_ADMIN_FIELDS_SPACER_DESC"
+				/>
+		<field
 				name="show_static_fields"
 				type="radio"
 				class="btn-group btn-group-yesno"
 				label="COM_FIELDSANDFILTERS_SHOW_STATIC_FIELDS_LBL"
 				description="COM_FIELDSANDFILTERS_SHOW_STATIC_FIELDS_DESC"
 				default="1"
-			>
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
+				>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
 	</fieldset>
 	<fieldset
-		name="filters"
-		label="COM_FIELDSANDFILTERS_FILTERS_LBL"
-		description="COM_FIELDSANDFILTERS_FILTERS_DESC"
-	>
+			name="filters"
+			label="COM_FIELDSANDFILTERS_FILTERS_LBL"
+			description="COM_FIELDSANDFILTERS_FILTERS_DESC"
+			>
 		<field
-			name="site_filters_spacer"
-			type="spacer"
-			label="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_LBL"
-			description="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_DESC"
-		/>
-			<field
+				name="site_filters_spacer"
+				type="spacer"
+				label="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_LBL"
+				description="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_DESC"
+				/>
+		<field
 				name="selector_body_filters"
 				type="text"
 				default="#content"
 				label="COM_FIELDSANDFILTERS_SELECTOR_BODY_FILTERS_LBL"
 				description="COM_FIELDSANDFILTERS_SELECTOR_BODY_FILTERS_DESC"
-			/>
-			<field
+				/>
+		<field
 				name="function_done_filters"
 				type="textarea"
 				class="inputbox"
@@ -69,39 +69,39 @@
 				default=""
 				label="COM_FIELDSANDFILTERS_FUNCTION_DONE_FILTERS_LBL"
 				description="COM_FIELDSANDFILTERS_FUNCTION_DONE_FILTERS_DESC"
-			/>
-			<field
+				/>
+		<field
 				name="use_allextensions_filters"
 				type="radio"
 				class="btn-group btn-group-yesno"
 				label="COM_FIELDSANDFILTERS_USE_ALLEXTENSIONS_FILTERS_LBL"
 				description="COM_FIELDSANDFILTERS_USE_ALLEXTENSIONS_FILTERS_DESC"
 				default="1"
-			>
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-			</field>
-			<field
+				>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field
 				name="comparison_between_filters"
 				type="list"
 				label="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_FILTERS_LBL"
 				description="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_FILTERS_DESC"
 				default="OR"
-			>
-				<option value="OR">COM_FIELDSANDFILTERS_OR</option>
-				<option value="AND">COM_FIELDSANDFILTERS_AND</option>
-			</field>
-			<field
+				>
+			<option value="OR">COM_FIELDSANDFILTERS_OR</option>
+			<option value="AND">COM_FIELDSANDFILTERS_AND</option>
+		</field>
+		<field
 				name="comparison_between_values_filters"
 				type="list"
 				label="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_VALUES_FILTERS_LBL"
 				description="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_VALUES_FILTERS_DESC"
 				default="OR"
-			>
-				<option value="OR">COM_FIELDSANDFILTERS_OR</option>
-				<option value="AND">COM_FIELDSANDFILTERS_AND</option>
-			</field>
-			<field
+				>
+			<option value="OR">COM_FIELDSANDFILTERS_OR</option>
+			<option value="AND">COM_FIELDSANDFILTERS_AND</option>
+		</field>
+		<field
 				name="loading_background_filters"
 				type="filelist"
 				class="inputbox"
@@ -113,64 +113,64 @@
 				hide_default="1"
 				filter="^loading\-.*\.css$"
 				size="10"
-			>
-			</field>
+				>
+		</field>
 	</fieldset>
 	<fieldset name="other">
 		<field
-			name="load_noconflict_javascript"
-			type="radio"
-			class="btn-group btn-group-yesno"
-			label="COM_FIELDSANDFILTERS_LOAD_NOCONFLICT_JAVASCRIPT_LBL"
-			description="COM_FIELDSANDFILTERS_LOAD_NOCONFLICT_JAVASCRIPT_DESC"
-			default="1"
-			filter="int"
-		>
+				name="load_noconflict_javascript"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				label="COM_FIELDSANDFILTERS_LOAD_NOCONFLICT_JAVASCRIPT_LBL"
+				description="COM_FIELDSANDFILTERS_LOAD_NOCONFLICT_JAVASCRIPT_DESC"
+				default="1"
+				filter="int"
+				>
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
 		<field
-			name="load_jquery_javascript"
-			type="radio"
-			class="btn-group btn-group-yesno"
-			label="COM_FIELDSANDFILTERS_LOAD_JQUERY_JAVASCRIPT_LBL"
-			description="COM_FIELDSANDFILTERS_LOAD_JQUERY_JAVASCRIPT_DESC"
-			default="1"
-			filter="int"
-		>
+				name="load_jquery_javascript"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				label="COM_FIELDSANDFILTERS_LOAD_JQUERY_JAVASCRIPT_LBL"
+				description="COM_FIELDSANDFILTERS_LOAD_JQUERY_JAVASCRIPT_DESC"
+				default="1"
+				filter="int"
+				>
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
 		<field
-			name="use_old_structure"
-			type="radio"
-			class="btn-group btn-group-yesno"
-			label="COM_FIELDSANDFILTERS_USE_OLD_STRUCTURE_LBL"
-			description="COM_FIELDSANDFILTERS_USE_OLD_STRUCTURE_DESC"
-			default="0"
-			filter="int"
-		>
+				name="use_old_structure"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				label="COM_FIELDSANDFILTERS_USE_OLD_STRUCTURE_LBL"
+				description="COM_FIELDSANDFILTERS_USE_OLD_STRUCTURE_DESC"
+				default="0"
+				filter="int"
+				>
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
-		</field>	
+		</field>
 	</fieldset>
 
 	<fieldset
-		name="permissions"
-		label="JCONFIG_PERMISSIONS_LABEL"
-		description="JCONFIG_PERMISSIONS_DESC"
-	>
+			name="permissions"
+			label="JCONFIG_PERMISSIONS_LABEL"
+			description="JCONFIG_PERMISSIONS_DESC"
+			>
 
-		<field 
-			name="rules" 
-			type="rules"
-			component="com_fieldsandfilters"
-			class="inputbox"
-			filter="rules"
-			validate="rules"
-			label="JCONFIG_PERMISSIONS_LBL"
-			section="component"
-		/>
+		<field
+				name="rules"
+				type="rules"
+				component="com_fieldsandfilters"
+				class="inputbox"
+				filter="rules"
+				validate="rules"
+				label="JCONFIG_PERMISSIONS_LBL"
+				section="component"
+				/>
 	</fieldset>
 
 </config>

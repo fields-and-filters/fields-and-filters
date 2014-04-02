@@ -10,15 +10,15 @@
 defined('_JEXEC') or die;
 
 /**
- * @package		fieldsandfilters.administrator
- * @subpackage		com_fieldsandfilters
+ * @package           fieldsandfilters.administrator
+ * @subpackage        com_fieldsandfilters
  *
- * @since       1.2.0
+ * @since             1.2.0
  */
 abstract class FieldsandfiltersHtmlGrid
 {
 	/**
-	 * @param   int $value	The state value
+	 * @param   int $value The state value
 	 * @param   int $i
 	 *
 	 * @since       1.0.0
@@ -28,10 +28,10 @@ abstract class FieldsandfiltersHtmlGrid
 	public static function published($value = 0, $i, $prefix = '', $enabled = true, $checkbox = 'cb')
 	{
 		JHtml::_('bootstrap.tooltip');
-				
+
 		// Array of image, task, title, action
 		$states = array(
-			0 => array(
+			0  => array(
 				'publish',
 				'JUNPUBLISHED',
 				'JLIB_HTML_PUBLISH_ITEM',
@@ -40,7 +40,7 @@ abstract class FieldsandfiltersHtmlGrid
 				'unpublish',
 				'unpublish',
 			),
-			1 => array(
+			1  => array(
 				'unpublish',
 				'JPUBLISHED',
 				'JLIB_HTML_UNPUBLISH_ITEM',
@@ -59,12 +59,12 @@ abstract class FieldsandfiltersHtmlGrid
 				'dashboard'
 			)
 		);
-		
+
 		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
 	}
-	
+
 	/**
-	 * @param   int $value	The state value
+	 * @param   int $value The state value
 	 * @param   int $i
 	 *
 	 * @since       1.0.0
@@ -72,46 +72,46 @@ abstract class FieldsandfiltersHtmlGrid
 	public static function required($value = 0, $i, $prefix = '', $enabled = true, $checkbox = 'cb')
 	{
 		JHtml::_('bootstrap.tooltip');
-		
+
 		// Array of image, task, title, action
 		$states = array(
-				0 => array(
-						'star-empty',
-						'required',
-						'COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM',
-						'COM_FIELDSANDFILTERS_HTML_TOGGLE_TO_REQUIRED_ITEM'
-					),
-				1 => array(
-						'star',
-						'unrequired',
-						'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM',
-						'COM_FIELDSANDFILTERS_HTML_TOGGLE_TO_UNREQUIRED_ITEM'
-					)
+			0 => array(
+				'star-empty',
+				'required',
+				'COM_FIELDSANDFILTERS_HTML_UNREQUIRED_ITEM',
+				'COM_FIELDSANDFILTERS_HTML_TOGGLE_TO_REQUIRED_ITEM'
+			),
+			1 => array(
+				'star',
+				'unrequired',
+				'COM_FIELDSANDFILTERS_HTML_REQUIRED_ITEM',
+				'COM_FIELDSANDFILTERS_HTML_TOGGLE_TO_UNREQUIRED_ITEM'
+			)
 		);
-		
-		$state	= JArrayHelper::getValue($states, (int) $value, $states[1]);
-		
+
+		$state = JArrayHelper::getValue($states, (int) $value, $states[1]);
+
 		if ($enabled)
 		{
-			$html[]	= '<a href="#" class="btn btn-micro hasTooltip' . ($value == 1 ? ' active' : '') . '" title="' . JText::_($state[3]) . '"';
+			$html[] = '<a href="#" class="btn btn-micro hasTooltip' . ($value == 1 ? ' active' : '') . '" title="' . JText::_($state[3]) . '"';
 			$html[] = ' onclick="return listItemTask(\'' . $checkbox . $i . '\',\'' . $prefix . $state[1] . '\')">';
 			$html[] = '	<i class="icon-' . $state[0] . '"> </i>';
 			$html[] = '</a>';
 		}
 		else
 		{
-			$html[]	= '<a class="btn btn-micro hasTooltip disabled' . ($value == 1 ? ' active' : '') . '" title="' . JText::_($state[2]) . '">';
+			$html[] = '<a class="btn btn-micro hasTooltip disabled' . ($value == 1 ? ' active' : '') . '" title="' . JText::_($state[2]) . '">';
 			$html[] = '	<i class="icon-' . $state[0] . '"></i>';
 			$html[] = '</a>';
 		}
-		
+
 		return implode("\n", $html);
 	}
-	
+
 	/**
 	 * Method to generate html code for a list of buttons
 	 *
-	 * @param   array   $buttons  Array of buttons
+	 * @param   array $buttons Array of buttons
 	 *
 	 * @return  string
 	 *
@@ -122,15 +122,16 @@ abstract class FieldsandfiltersHtmlGrid
 		$html = array();
 		foreach ($buttons as $button)
 		{
-			$html[] =  self::button($button);
+			$html[] = self::button($button);
 		}
+
 		return implode($html);
 	}
 
 	/**
 	 * Method to generate html code for a list of buttons
 	 *
-	 * @param   array|object   $button  Button properties
+	 * @param   array|object $button Button properties
 	 *
 	 * @return  string
 	 *
@@ -153,7 +154,7 @@ abstract class FieldsandfiltersHtmlGrid
 				// Take each pair of permission, context values.
 				for ($i = 0, $n = count($button['access']); $i < $n; $i += 2)
 				{
-					if (!$user->authorise($button['access'][$i], $button['access'][$i+1]))
+					if (!$user->authorise($button['access'][$i], $button['access'][$i + 1]))
 					{
 						return '';
 					}
@@ -171,6 +172,7 @@ abstract class FieldsandfiltersHtmlGrid
 		$html[] = (empty($button['text'])) ? '' : ('<span>' . $button['text'] . '</span>');
 		$html[] = '</a>';
 		$html[] = '</div>';
+
 		return implode($html);
 	}
 }

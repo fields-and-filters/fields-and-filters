@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="2.5" type="module" client="site" method="upgrade">
-        <name>mod_fieldsandfilters_filters</name>
-        <creationDate>2013-08-27</creationDate>
-        <copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
-        <license>GNU General Public License version 3 or later; see License.txt</license>
-        <author>KES - Kulka Tomasz</author>
-        <authorEmail>kes@kextensions.com</authorEmail>
-        <authorUrl>http://www.kextensions.com</authorUrl>
-        <version>1.1.1</version>
-        <description>MOD_FIELDSANDFILTERS_FILTERS_XML_DESCRIPTION</description>
+<extension version="2.5"
+           type="module"
+           client="site"
+           method="upgrade">
+	<name>mod_fieldsandfilters_filters</name>
+	<creationDate>2013-08-27</creationDate>
+	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
+	<license>GNU General Public License version 3 or later; see License.txt</license>
+	<author>KES - Kulka Tomasz</author>
+	<authorEmail>kes@kextensions.com</authorEmail>
+	<authorUrl>http://www.kextensions.com</authorUrl>
+	<version>1.1.1</version>
+	<description>MOD_FIELDSANDFILTERS_FILTERS_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_fieldsandfilters_filters">mod_fieldsandfilters_filters.php</filename>
 		<filename>index.html</filename>
+		<filename>License.txt</filename>
 		<folder>tmpl</folder>
 	</files>
 	<languages>
@@ -20,39 +24,40 @@
 	</languages>
 	<config>
 		<fields name="params">
-			<fieldset name="basic" addfieldpath="/administrator/components/com_fieldsandfilters/models/fields">
+			<fieldset name="basic"
+			          addfieldpath="/administrator/components/com_fieldsandfilters/models/fields">
 				<field
-					name="fields_id"
-					type="fieldsandfiltersFields"
-					modes="filter"
-					class="inputbox"
-					label="MOD_FIELDSANDFILTERS_FILTERS_FIELDS_ID_LBL"
-					description="MOD_FIELDSANDFILTERS_FILTERS_FIELDS_ID_DESC"
-					required="true"
-					inputType="checkboxes"
-					filter="int_array"
-				/>
+						name="fields_id"
+						type="fieldsandfiltersFields"
+						modes="filter"
+						class="inputbox"
+						label="MOD_FIELDSANDFILTERS_FILTERS_FIELDS_ID_LBL"
+						description="MOD_FIELDSANDFILTERS_FILTERS_FIELDS_ID_DESC"
+						required="true"
+						inputType="checkboxes"
+						filter="int_array"
+						/>
 				<field
-					name="show_submit"
-					type="radio"
-					class="btn-group"
-					label="MOD_FIELDSANDFILTERS_FILTERS_SHOW_SUBMIT_LBL"
-					description="MOD_FIELDSANDFILTERS_FILTERS_SHOW_SUBMIT_DESC"
-					default="1"
-					filter="int"
-				>
+						name="show_submit"
+						type="radio"
+						class="btn-group"
+						label="MOD_FIELDSANDFILTERS_FILTERS_SHOW_SUBMIT_LBL"
+						description="MOD_FIELDSANDFILTERS_FILTERS_SHOW_SUBMIT_DESC"
+						default="1"
+						filter="int"
+						>
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
 				<field
-					name="show_reset"
-					type="radio"
-					class="btn-group"
-					label="MOD_FIELDSANDFILTERS_FILTERS_SHOW_RESET_LBL"
-					description="MOD_FIELDSANDFILTERS_FILTERS_SHOW_RESET_DESC"
-					default="0"
-					filter="int"
-				>
+						name="show_reset"
+						type="radio"
+						class="btn-group"
+						label="MOD_FIELDSANDFILTERS_FILTERS_SHOW_RESET_LBL"
+						description="MOD_FIELDSANDFILTERS_FILTERS_SHOW_RESET_DESC"
+						default="0"
+						filter="int"
+						>
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
@@ -78,35 +83,35 @@
 				/>
 				-->
 				<field
-					name="use_allextensions_filters"
-					type="radio"
-					class="btn-group"
-					label="COM_FIELDSANDFILTERS_USE_ALLEXTENSIONS_FILTERS_LBL"
-					description="COM_FIELDSANDFILTERS_USE_ALLEXTENSIONS_FILTERS_DESC"
-					default=""
-				>
+						name="use_allextensions_filters"
+						type="radio"
+						class="btn-group"
+						label="COM_FIELDSANDFILTERS_USE_ALLEXTENSIONS_FILTERS_LBL"
+						description="COM_FIELDSANDFILTERS_USE_ALLEXTENSIONS_FILTERS_DESC"
+						default=""
+						>
 					<option value="">JDEFAULT</option>
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
 				<field
-					name="comparison_between_filters"
-					type="list"
-					label="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_FILTERS_LBL"
-					description="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_FILTERS_DESC"
-					default=""
-				>
+						name="comparison_between_filters"
+						type="list"
+						label="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_FILTERS_LBL"
+						description="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_FILTERS_DESC"
+						default=""
+						>
 					<option value="">JDEFAULT</option>
 					<option value="OR">COM_FIELDSANDFILTERS_OR</option>
 					<option value="AND">COM_FIELDSANDFILTERS_AND</option>
 				</field>
 				<field
-					name="comparison_between_values_filters"
-					type="list"
-					label="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_VALUES_FILTERS_LBL"
-					description="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_VALUES_FILTERS_DESC"
-					default=""
-				>
+						name="comparison_between_values_filters"
+						type="list"
+						label="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_VALUES_FILTERS_LBL"
+						description="COM_FIELDSANDFILTERS_COMPARISON_BETWEEN_VALUES_FILTERS_DESC"
+						default=""
+						>
 					<option value="">JDEFAULT</option>
 					<option value="OR">COM_FIELDSANDFILTERS_OR</option>
 					<option value="AND">COM_FIELDSANDFILTERS_AND</option>
@@ -114,40 +119,40 @@
 			</fieldset>
 			<fieldset name="advanced">
 				<field
-					name="layout"
-					type="modulelayout"
-					label="JFIELD_ALT_LAYOUT_LABEL"
-					description="JFIELD_ALT_MODULE_LAYOUT_DESC"
-				/>
+						name="layout"
+						type="modulelayout"
+						label="JFIELD_ALT_LAYOUT_LABEL"
+						description="JFIELD_ALT_MODULE_LAYOUT_DESC"
+						/>
 				<field
-					name="moduleclass_sfx"
-					type="text"
-					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
-					description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"
-				/>
+						name="moduleclass_sfx"
+						type="text"
+						label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+						description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"
+						/>
 				<field
-					name="cache"
-					type="list"
-					default="1"
-					label="COM_MODULES_FIELD_CACHING_LABEL"
-					description="COM_MODULES_FIELD_CACHING_DESC"
-				>
+						name="cache"
+						type="list"
+						default="1"
+						label="COM_MODULES_FIELD_CACHING_LABEL"
+						description="COM_MODULES_FIELD_CACHING_DESC"
+						>
 					<option value="1">JGLOBAL_USE_GLOBAL</option>
 					<option value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
 				</field>
 
 				<field
-					name="cache_time"
-					type="text"
-					default="900"
-					label="COM_MODULES_FIELD_CACHE_TIME_LABEL"
-					description="COM_MODULES_FIELD_CACHE_TIME_DESC"
-				/>
+						name="cache_time"
+						type="text"
+						default="900"
+						label="COM_MODULES_FIELD_CACHE_TIME_LABEL"
+						description="COM_MODULES_FIELD_CACHE_TIME_DESC"
+						/>
 				<field
-					name="cachemode"
-					type="hidden"
-					default="static"
-				>
+						name="cachemode"
+						type="hidden"
+						default="static"
+						>
 					<option value="static"></option>
 				</field>
 			</fieldset>

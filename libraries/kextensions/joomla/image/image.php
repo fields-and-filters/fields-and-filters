@@ -40,8 +40,8 @@ class KextensionsJoomlaImageImage extends JImage
 	 * Method to generate thumbnails from the current image. It allows
 	 * creation by resizing or cropping the original image.
 	 *
-	 * @param   mixed    $thumbSizes      String or array of strings. Example: $thumbSizes = array('150x75','250x150');
-	 * @param   integer  $creationMethod  1-3 resize $scaleMethod | 4 create croppping | 5 resize then crop
+	 * @param   mixed   $thumbSizes     String or array of strings. Example: $thumbSizes = array('150x75','250x150');
+	 * @param   integer $creationMethod 1-3 resize $scaleMethod | 4 create croppping | 5 resize then crop
 	 *
 	 * @return  array
 	 *
@@ -110,9 +110,9 @@ class KextensionsJoomlaImageImage extends JImage
 	 * Method to create thumbnails from the current image and save them to disk. It allows creation by resizing
 	 * or croppping the original image.
 	 *
-	 * @param   mixed    $thumbSizes      string or array of strings. Example: $thumbSizes = array('150x75','250x150');
-	 * @param   integer  $creationMethod  1-3 resize $scaleMethod | 4 create croppping
-	 * @param   string   $thumbsFolder    destination thumbs folder. null generates a thumbs folder in the image folder
+	 * @param   mixed   $thumbSizes     string or array of strings. Example: $thumbSizes = array('150x75','250x150');
+	 * @param   integer $creationMethod 1-3 resize $scaleMethod | 4 create croppping
+	 * @param   string  $thumbsFolder   destination thumbs folder. null generates a thumbs folder in the image folder
 	 *
 	 * @return  array
 	 *
@@ -151,13 +151,13 @@ class KextensionsJoomlaImageImage extends JImage
 			foreach ($thumbs as $thumb)
 			{
 				// Get thumb properties
-				$thumbWidth     = $thumb->getWidth();
-				$thumbHeight    = $thumb->getHeight();
+				$thumbWidth  = $thumb->getWidth();
+				$thumbHeight = $thumb->getHeight();
 
 				// Generate thumb name
-				$filename       = pathinfo($this->getPath(), PATHINFO_FILENAME);
-				$fileExtension  = pathinfo($this->getPath(), PATHINFO_EXTENSION);
-				$thumbFileName  = $filename . '_' . $thumbWidth . 'x' . $thumbHeight . '.' . $fileExtension;
+				$filename      = pathinfo($this->getPath(), PATHINFO_FILENAME);
+				$fileExtension = pathinfo($this->getPath(), PATHINFO_EXTENSION);
+				$thumbFileName = $filename . '_' . $thumbWidth . 'x' . $thumbHeight . '.' . $fileExtension;
 
 				// Save thumb file to disk
 				$thumbFileName = $thumbsFolder . '/' . $thumbFileName;
@@ -165,7 +165,7 @@ class KextensionsJoomlaImageImage extends JImage
 				if ($thumb->toFile($thumbFileName, $imgProperties->type))
 				{
 					// Return JImage object with thumb path to ease further manipulation
-					$thumb->path = $thumbFileName;
+					$thumb->path     = $thumbFileName;
 					$thumbsCreated[] = $thumb;
 				}
 			}
@@ -177,11 +177,11 @@ class KextensionsJoomlaImageImage extends JImage
 	/**
 	 * Method to crop the current image.
 	 *
-	 * @param   mixed    $width      The width of the image section to crop in pixels or a percentage.
-	 * @param   mixed    $height     The height of the image section to crop in pixels or a percentage.
-	 * @param   integer  $left       The number of pixels from the left to start cropping.
-	 * @param   integer  $top        The number of pixels from the top to start cropping.
-	 * @param   boolean  $createNew  If true the current image will be cloned, cropped and returned; else
+	 * @param   mixed   $width       The width of the image section to crop in pixels or a percentage.
+	 * @param   mixed   $height      The height of the image section to crop in pixels or a percentage.
+	 * @param   integer $left        The number of pixels from the left to start cropping.
+	 * @param   integer $top         The number of pixels from the top to start cropping.
+	 * @param   boolean $createNew   If true the current image will be cloned, cropped and returned; else
 	 *                               the current image will be cropped and returned.
 	 *
 	 * @return  JImage
@@ -230,7 +230,7 @@ class KextensionsJoomlaImageImage extends JImage
 		if ($this->isTransparent())
 		{
 			// Get the transparent color values for the current image.
-			$rgba = imageColorsForIndex($this->handle, imagecolortransparent($this->handle));
+			$rgba  = imageColorsForIndex($this->handle, imagecolortransparent($this->handle));
 			$color = imageColorAllocate($this->handle, $rgba['red'], $rgba['green'], $rgba['blue']);
 
 			// Set the transparent color values for the new image.
@@ -269,11 +269,11 @@ class KextensionsJoomlaImageImage extends JImage
 	/**
 	 * Method to resize the current image.
 	 *
-	 * @param   mixed    $width        The width of the resized image in pixels or a percentage.
-	 * @param   mixed    $height       The height of the resized image in pixels or a percentage.
-	 * @param   boolean  $createNew    If true the current image will be cloned, resized and returned; else
+	 * @param   mixed   $width         The width of the resized image in pixels or a percentage.
+	 * @param   mixed   $height        The height of the resized image in pixels or a percentage.
+	 * @param   boolean $createNew     If true the current image will be cloned, resized and returned; else
 	 *                                 the current image will be resized and returned.
-	 * @param   integer  $scaleMethod  Which method to use for scaling
+	 * @param   integer $scaleMethod   Which method to use for scaling
 	 *
 	 * @return  JImage
 	 *
@@ -298,15 +298,15 @@ class KextensionsJoomlaImageImage extends JImage
 		$dimensions = $this->prepareDimensions($width, $height, $scaleMethod);
 
 		// Instantiate offset.
-		$offset = new stdClass;
+		$offset    = new stdClass;
 		$offset->x = $offset->y = 0;
 
 		// Center image if needed and create the new truecolor image handle.
 		if ($scaleMethod == self::SCALE_FIT)
 		{
 			// Get the offsets
-			$offset->x	= round(($width - $dimensions->width) / 2);
-			$offset->y	= round(($height - $dimensions->height) / 2);
+			$offset->x = round(($width - $dimensions->width) / 2);
+			$offset->y = round(($height - $dimensions->height) / 2);
 
 			$handle = imagecreatetruecolor($width, $height);
 
@@ -329,7 +329,7 @@ class KextensionsJoomlaImageImage extends JImage
 		if ($this->isTransparent())
 		{
 			// Get the transparent color values for the current image.
-			$rgba = imageColorsForIndex($this->handle, imagecolortransparent($this->handle));
+			$rgba  = imageColorsForIndex($this->handle, imagecolortransparent($this->handle));
 			$color = imageColorAllocateAlpha($this->handle, $rgba['red'], $rgba['green'], $rgba['blue'], $rgba['alpha']);
 
 			// Set the transparent color values for the new image.
@@ -369,9 +369,9 @@ class KextensionsJoomlaImageImage extends JImage
 	 * Method to crop an image after resizing it to maintain
 	 * proportions without having to do all the set up work.
 	 *
-	 * @param   integer  $width      The desired width of the image in pixels or a percentage.
-	 * @param   integer  $height     The desired height of the image in pixels or a percentage.
-	 * @param   integer  $createNew  If true the current image will be cloned, resized, cropped and returned.
+	 * @param   integer $width     The desired width of the image in pixels or a percentage.
+	 * @param   integer $height    The desired height of the image in pixels or a percentage.
+	 * @param   integer $createNew If true the current image will be cloned, resized, cropped and returned.
 	 *
 	 * @return  object  JImage Object for chaining.
 	 *
@@ -379,8 +379,8 @@ class KextensionsJoomlaImageImage extends JImage
 	 */
 	public function cropResize($width, $height, $createNew = true)
 	{
-		$width   = $this->sanitizeWidth($width, $height);
-		$height  = $this->sanitizeHeight($height, $width);
+		$width  = $this->sanitizeWidth($width, $height);
+		$height = $this->sanitizeHeight($height, $width);
 
 		if (($this->getWidth() / $width) < ($this->getHeight() / $height))
 		{
@@ -397,9 +397,9 @@ class KextensionsJoomlaImageImage extends JImage
 	/**
 	 * Method to get the new dimensions for a resized image.
 	 *
-	 * @param   integer  $width        The width of the resized image in pixels.
-	 * @param   integer  $height       The height of the resized image in pixels.
-	 * @param   integer  $scaleMethod  The method to use for scaling
+	 * @param   integer $width       The width of the resized image in pixels.
+	 * @param   integer $height      The height of the resized image in pixels.
+	 * @param   integer $scaleMethod The method to use for scaling
 	 *
 	 * @return  stdClass
 	 *
@@ -414,7 +414,7 @@ class KextensionsJoomlaImageImage extends JImage
 		switch ($scaleMethod)
 		{
 			case self::SCALE_FILL:
-				$dimensions->width = (int) round($width);
+				$dimensions->width  = (int) round($width);
 				$dimensions->height = (int) round($height);
 				break;
 
@@ -433,7 +433,7 @@ class KextensionsJoomlaImageImage extends JImage
 					$ratio = min($rx, $ry);
 				}
 
-				$dimensions->width = (int) round($this->getWidth() / $ratio);
+				$dimensions->width  = (int) round($this->getWidth() / $ratio);
 				$dimensions->height = (int) round($this->getHeight() / $ratio);
 				break;
 

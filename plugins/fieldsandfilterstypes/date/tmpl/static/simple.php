@@ -7,16 +7,16 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-defined( '_JEXEC' ) or die;
+defined('_JEXEC') or die;
 
-$field  = $plugin->field;
+$field = $plugin->field;
 ?>
 
-<?php if( !empty( $field->data ) ) : ?>
-<div id="faf-field-<?php echo $field->id; ?>" class="faf-field faf-field-date <?php echo htmlspecialchars( $field->params->get( 'base.class', '' ) ); ?>">
-	<?php
+<?php if (!empty($field->data)) : ?>
+	<div id="faf-field-<?php echo $field->id; ?>" class="faf-field faf-field-date <?php echo htmlspecialchars($field->params->get('base.class', '')); ?>">
+		<?php
 		$format = $field->params->get('type.format', 'l, d F Y');
 		echo JHtml::_('date', $field->data, ($format != 'custom' ? $format : $field->params->get('type.format_custom', 'l, d F Y')));
-	?>
-</div>
+		?>
+	</div>
 <?php endif; ?>

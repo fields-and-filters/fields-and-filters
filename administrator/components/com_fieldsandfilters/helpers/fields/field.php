@@ -35,7 +35,7 @@ class FieldsandfiltersFieldsField
 		switch ($type)
 		{
 			case self::PREPARE_CONTENT_FIELDS :
-				FieldsandfiltersFieldsHelper::preparationContent($data, $context, null, null, (array) $excluded );
+				FieldsandfiltersFieldsHelper::preparationContent($data, $context, null, null, (array) $excluded);
 				break;
 			case self::PREPARE_CONTENT_SYSTEM :
 				$data = JHtml::_('content.prepare', $data, $params, $context);
@@ -69,7 +69,7 @@ class FieldsandfiltersFieldsField
 
 		unset($field->values->_error);
 
-		foreach($field->values AS $value)
+		foreach ($field->values AS $value)
 		{
 			self::_preparetionConent($type, $field, 'value', $context, $value, $excluded, $params);
 		}
@@ -114,7 +114,7 @@ class FieldsandfiltersFieldsField
 	 **/
 	protected static function _preparationName($preparationName)
 	{
-		return 'is.'.str_replace('.', '_', $preparationName);
+		return 'is.' . str_replace('.', '_', $preparationName);
 	}
 
 	/**
@@ -122,6 +122,6 @@ class FieldsandfiltersFieldsField
 	 **/
 	public static function getLayout($type, $mode, JRegistry $params)
 	{
-		return FieldsandfiltersPlugin::getLayout($params, $type.'_layout', $mode, 'type');
+		return FieldsandfiltersPlugin::getLayout($params, $type . '_layout', $mode, 'type');
 	}
 }

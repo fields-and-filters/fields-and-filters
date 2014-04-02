@@ -6,7 +6,7 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-defined( 'JPATH_PLATFORM' ) or die;
+defined('JPATH_PLATFORM') or die;
 
 /**
  * KextensionsUser
@@ -15,43 +15,58 @@ defined( 'JPATH_PLATFORM' ) or die;
  */
 class KextensionsUser
 {
-        /**
-        * @since       1.0.0
-        */
-        public static function getIP()
+	/**
+	 * @since       1.0.0
+	 */
+	public static function getIP()
 	{
 		static $ip;
-		
-		if( is_null( $ip ) )
+
+		if (is_null($ip))
 		{
 			// Check for proxies as well.
 			$ip = false;
-			if( isset( $_SERVER['HTTP_CLIENT_IP'] ) )
+			if (isset($_SERVER['HTTP_CLIENT_IP']))
 			{
 				$ip = $_SERVER['HTTP_CLIENT_IP'];
 			}
-			else if( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) )
+			else
 			{
-				$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-			}
-			else if( isset( $_SERVER['HTTP_X_FORWARDED'] ) )
-			{
-				$ip = $_SERVER['HTTP_X_FORWARDED'];
-			}
-			else if( isset( $_SERVER['HTTP_FORWARDED_FOR'] ) )
-			{
-				$ip = $_SERVER['HTTP_FORWARDED_FOR'];
-			}
-			else if( isset( $_SERVER['HTTP_FORWARDED'] ) )
-			{
-				$ip = $_SERVER['HTTP_FORWARDED'];
-			}
-			else if( isset( $_SERVER['REMOTE_ADDR'] ) )
-			{
-				$ip = $_SERVER['REMOTE_ADDR'];
+				if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+				{
+					$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+				}
+				else
+				{
+					if (isset($_SERVER['HTTP_X_FORWARDED']))
+					{
+						$ip = $_SERVER['HTTP_X_FORWARDED'];
+					}
+					else
+					{
+						if (isset($_SERVER['HTTP_FORWARDED_FOR']))
+						{
+							$ip = $_SERVER['HTTP_FORWARDED_FOR'];
+						}
+						else
+						{
+							if (isset($_SERVER['HTTP_FORWARDED']))
+							{
+								$ip = $_SERVER['HTTP_FORWARDED'];
+							}
+							else
+							{
+								if (isset($_SERVER['REMOTE_ADDR']))
+								{
+									$ip = $_SERVER['REMOTE_ADDR'];
+								}
+							}
+						}
+					}
+				}
 			}
 		}
-		
+
 		return $ip;
 	}
 }

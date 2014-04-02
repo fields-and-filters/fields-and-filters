@@ -7,7 +7,7 @@
  */
 
 // No direct access
-defined( 'JPATH_PLATFORM' ) or die;
+defined('JPATH_PLATFORM') or die;
 
 /**
  * KextensionsBufferInterfaceValues.
@@ -16,13 +16,13 @@ defined( 'JPATH_PLATFORM' ) or die;
  */
 interface KextensionsBufferInterfaceValues
 {
-        /**
-         * @since       1.0.0
-         */
-        public function getForeignName();
-        
-        /**
-         * @since       1.0.0
-         */
-        public function getValuesName();
+	/**
+	 * @since       1.0.0
+	 */
+	public function getForeignName();
+
+	/**
+	 * @since       1.0.0
+	 */
+	public function getValuesName();
 }

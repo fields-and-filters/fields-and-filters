@@ -60,7 +60,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		$fields     = is_array($fields) ? $fields : array($fields);
 		$staticMode = (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_STATIC);
 
-		$syntax = KextensionsPlugin::getParams( 'system', 'fieldsandfilters' )->get( 'syntax', '#{%s}' );
+		$syntax = KextensionsPlugin::getParams('system', 'fieldsandfilters')->get('syntax', '#{%s}');
 
 		while ($field = array_shift($fields))
 		{
@@ -70,11 +70,11 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			$rootJson = $root->addChild('fields');
 			$rootJson->addAttribute('name', $field->id);
 
-			$label = '<strong>'.$field->name.'</strong> '.sprintf($syntax,$field->id);
+			$label = '<strong>' . $field->name . '</strong> ' . sprintf($syntax, $field->id);
 
 			if ($field->state == -1)
 			{
-				$label .= ' ['.JText::_('PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN').']';
+				$label .= ' [' . JText::_('PLG_FIELDSANDFILTERS_FORM_ONLY_ADMIN') . ']';
 			}
 
 			if (!($isStaticMode = in_array($field->mode, $staticMode)))
@@ -115,7 +115,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 
 			if ($isStaticMode)
 			{
-				$label .= ' ['.JText::_('PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_TITLE').']';
+				$label .= ' [' . JText::_('PLG_FIELDSANDFILTERS_FORM_GROUP_STATIC_TITLE') . ']';
 
 				$element->addAttribute('type', 'spacer');
 				$element->addAttribute('description', $field->data);
@@ -219,7 +219,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			$element->addAttribute('fieldset', $fieldset);
 
 			$form->addOrder($field->id, $field->ordering)
-				->setField( $field->id, $root );
+				->setField($field->id, $root);
 		}
 
 		return true;
@@ -237,7 +237,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		}
 		elseif ($context == 'com_fieldsandfilters.element')
 		{
-			$data = $newItem->get('fields')->get('data', new JObject);
+			$data   = $newItem->get('fields')->get('data', new JObject);
 			$fields = FieldsandfiltersFieldsHelper::getFieldsByTypeIDColumnFieldType($newItem->get('content_type_id'))->get($this->_name);
 
 			if ($fields)
@@ -267,7 +267,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 
 		$app = JFactory::getApplication();
 
-		if (($image = $_data->get('image')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$image)))
+		if (($image = $_data->get('image')) && file_exists(JPath::clean(JPATH_ROOT . '/' . $image)))
 		{
 			$_data = new JRegistry($_data->getProperties(true));
 
@@ -280,7 +280,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				$isCreated      = true;
 				$isCreatedThumb = true;
 
-				$folder    = FieldsandfiltersImage::getCacheFolder().'/'.$field->id.'/';
+				$folder    = FieldsandfiltersImage::getCacheFolder() . '/' . $field->id . '/';
 				$imageInfo = $this->prepareImageInfo($field, $element, $image, false, $scaleImage);
 
 				if ($scaleImage)
@@ -288,11 +288,11 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 					$src    = JPath::clean($folder . $imageInfo->name);
 					$srcOld = $_data->get('src', false);
 
-					if ($src != $srcOld || !file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
+					if ($src != $srcOld || !file_exists(JPath::clean(JPATH_ROOT . '/' . $src)))
 					{
 						try
 						{
-							if ($srcOld && file_exists($srcOld = JPath::clean(JPATH_ROOT.'/'.$srcOld)))
+							if ($srcOld && file_exists($srcOld = JPath::clean(JPATH_ROOT . '/' . $srcOld)))
 							{
 								JFile::delete($srcOld);
 							}
@@ -319,16 +319,16 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 
 				if ($createThumb && $scaleThumb)
 				{
-					$src    = JPath::clean($folder.'thumbs/'.$imageInfo->name);
+					$src    = JPath::clean($folder . 'thumbs/' . $imageInfo->name);
 					$srcOld = $_data->get('src_thumb', false);
 
-					if ($scaleThumb && ($src != $srcOld || !file_exists(JPath::clean(JPATH_ROOT.'/'.$src))))
+					if ($scaleThumb && ($src != $srcOld || !file_exists(JPath::clean(JPATH_ROOT . '/' . $src))))
 					{
 						$imageInfo = $this->prepareImageInfo($field, $element, $image, $imageInfo->name, $scaleThumb, 'thumb');
 
 						try
 						{
-							if ($srcOld && file_exists($srcOld = JPath::clean(JPATH_ROOT.'/'.$srcOld)))
+							if ($srcOld && file_exists($srcOld = JPath::clean(JPATH_ROOT . '/' . $srcOld)))
 							{
 								JFile::delete($srcOld);
 							}
@@ -337,11 +337,11 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 							{
 								$_data->set('src_thumb', $src);
 
-								$app->enqueueMessage(JText::sprintf('COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->name.' Thumb'));
+								$app->enqueueMessage(JText::sprintf('COM_FIELDSANDFILTERS_SUCCESS_CREATE_IMAGE', $field->name . ' Thumb'));
 							}
 							else
 							{
-								throw new RuntimeException(JText::sprintf('COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->name.' Thumb'));
+								throw new RuntimeException(JText::sprintf('COM_FIELDSANDFILTERS_ERROR_NOT_CREATE_IMAGE', $field->name . ' Thumb'));
 							}
 						} catch (Exception $e)
 						{
@@ -363,21 +363,21 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		}
 		else
 		{
-			if (($src = $_data->get('src')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
+			if (($src = $_data->get('src')) && file_exists(JPath::clean(JPATH_ROOT . '/' . $src)))
 			{
 				// delete image
-				if (!JFile::delete(JPATH_ROOT.'/'.$src))
+				if (!JFile::delete(JPATH_ROOT . '/' . $src))
 				{
 					$app->enqueueMessage(JText::sprintf('PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->name, $src), 'error');
 				}
 			}
 
-			if (($src = $_data->get('src_thumb')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
+			if (($src = $_data->get('src_thumb')) && file_exists(JPath::clean(JPATH_ROOT . '/' . $src)))
 			{
 				// delete thumb
-				if (!JFile::delete(JPATH_ROOT.'/'.$src))
+				if (!JFile::delete(JPATH_ROOT . '/' . $src))
 				{
-					$app->enqueueMessage(JText::sprintf('PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->name.' Thumb', $src), 'error');
+					$app->enqueueMessage(JText::sprintf('PLG_FAF_TS_IE_SUCCESS_DELETE_IMAGE', $field->name . ' Thumb', $src), 'error');
 				}
 			}
 
@@ -396,8 +396,8 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 		{
 			jimport('joomla.filesystem.folder');
 
-			$path     = FieldsandfiltersImage::getCacheFolder().'/'.$item->id;
-			$fullname = JPath::clean(JPATH_ROOT.'/'.$path);
+			$path     = FieldsandfiltersImage::getCacheFolder() . '/' . $item->id;
+			$fullname = JPath::clean(JPATH_ROOT . '/' . $path);
 
 			if (is_dir($fullname))
 			{
@@ -424,7 +424,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				{
 					$_data = $data->get($field->id, new JObject);
 
-					if (($src = $_data->get('src')) && file_exists($fullname = JPath::clean(JPATH_ROOT.'/'.$src)))
+					if (($src = $_data->get('src')) && file_exists($fullname = JPath::clean(JPATH_ROOT . '/' . $src)))
 					{
 						if (!JFile::delete($fullname))
 						{
@@ -432,7 +432,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						}
 					}
 
-					if (($src = $_data->get('src_thumb')) && file_exists($fullname = JPath::clean(JPATH_ROOT.'/'.$src)))
+					if (($src = $_data->get('src_thumb')) && file_exists($fullname = JPath::clean(JPATH_ROOT . '/' . $src)))
 					{
 						if (!JFile::delete($fullname))
 						{
@@ -503,7 +503,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML(JObject $layoutFields, Jobject $fields, stdClass $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering' )
+	public function getFieldsandfiltersFieldsHTML(JObject $layoutFields, Jobject $fields, stdClass $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering')
 	{
 		if (!($fields = $fields->get($this->_name)))
 		{
@@ -522,8 +522,8 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 
 		while ($field = array_shift($fields))
 		{
-			$modeName 	= FieldsandfiltersModes::getModeName( $field->mode );
-			$isStaticMode 	= (  $modeName == FieldsandfiltersModes::MODE_STATIC );
+			$modeName     = FieldsandfiltersModes::getModeName($field->mode);
+			$isStaticMode = ($modeName == FieldsandfiltersModes::MODE_STATIC);
 
 			if (($isStaticMode && empty($field->data)) || ($modeName == 'field' && (!isset($element->data) || !property_exists($element->data, $field->id))))
 			{
@@ -544,7 +544,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 				}
 			}
 
-			if( $params )
+			if ($params)
 			{
 				$paramsTemp  = $field->params;
 				$paramsField = clone $field->params;
@@ -572,9 +572,9 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			{
 				$data = $isStaticMode ? $field->data : $element->data->get($field->id, new JRegistry);
 
-				if (($image = $data->get('image')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$image)))
+				if (($image = $data->get('image')) && file_exists(JPath::clean(JPATH_ROOT . '/' . $image)))
 				{
-					if ($scaleImage && ($src = $data->get('src')) && !file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
+					if ($scaleImage && ($src = $data->get('src')) && !file_exists(JPath::clean(JPATH_ROOT . '/' . $src)))
 					{
 						$imageInfo = self::prepareImageInfo($field, $element, $image, basename($src), $scaleImage);
 
@@ -590,7 +590,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 						}
 					}
 
-					if ($createThumb && $scaleThumb && ($src = $data->get('src_thumb')) && !file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
+					if ($createThumb && $scaleThumb && ($src = $data->get('src_thumb')) && !file_exists(JPath::clean(JPATH_ROOT . '/' . $src)))
 					{
 						$imageInfo = $this->prepareImageInfo($field, $element, $image, basename($src), $scaleThumb, 'thumb');
 
@@ -620,10 +620,10 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 			$layout = KextensionsPlugin::renderLayout($variables, $layoutField);
 			$layoutFields->set(KextensionsArray::getEmptySlotObject($layoutFields, $field->$ordering, false), $layout);
 
-			if( $params )
+			if ($params)
 			{
 				$field->params = $paramsTemp;
-				unset( $paramsField );
+				unset($paramsField);
 			}
 		}
 
@@ -636,7 +636,7 @@ class plgFieldsandfiltersTypesImage extends JPlugin
 
 		$info             = new JObject();
 		$info->path       = $image;
-		$info->folder     = $field->id . ($suffix ? '/'.$suffix.'s' : '');
+		$info->folder     = $field->id . ($suffix ? '/' . $suffix . 's' : '');
 		$info->prefixName = $element->id;
 		$info->width      = (int) $field->params->def('type.width' . $paramSuffix, $this->params->get('width' . $paramSuffix, 0));
 		$info->height     = (int) $field->params->def('type.height' . $paramSuffix, $this->params->get('height' . $paramSuffix, 0));

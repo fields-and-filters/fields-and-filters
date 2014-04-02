@@ -2,39 +2,39 @@
 <form>
 	<fieldset>
 		<field
-			name="id"
-			type="hidden"
-			default="0"
-			label="COM_FIELDSANDFILTERS_FORM_LBL_ELEMENT_ID"
-			description="COM_FIELDSANDFILTERS_FORM_DESC_ELEMENT_ID"
-			filter="intval"
-		/>
+				name="id"
+				type="hidden"
+				default="0"
+				label="COM_FIELDSANDFILTERS_FORM_LBL_ELEMENT_ID"
+				description="COM_FIELDSANDFILTERS_FORM_DESC_ELEMENT_ID"
+				filter="intval"
+				/>
 		<field
-			name="content_type_id"
-			type="hidden"
-			default="0"
-			label="COM_FIELDSANDFILTERS_FORM_LBL_ELEMENT_EXTENSION_TYPE_ID"
-			description="COM_FIELDSANDFILTERS_FORM_DESC_ELEMENT_EXTENSION_TYPE_ID"
-			filter="intval"
-		/>
+				name="content_type_id"
+				type="hidden"
+				default="0"
+				label="COM_FIELDSANDFILTERS_FORM_LBL_ELEMENT_EXTENSION_TYPE_ID"
+				description="COM_FIELDSANDFILTERS_FORM_DESC_ELEMENT_EXTENSION_TYPE_ID"
+				filter="intval"
+				/>
 		<field
-			name="item_id"
-			type="hidden"
-			default="0"
-			label="COM_FIELDSANDFILTERS_FORM_LBL_ELEMENT_ITEM_ID"
-			description="COM_FIELDSANDFILTERS_FORM_DESC_ELEMENT_ITEM_ID"
-			filter="intval"
-		/>
+				name="item_id"
+				type="hidden"
+				default="0"
+				label="COM_FIELDSANDFILTERS_FORM_LBL_ELEMENT_ITEM_ID"
+				description="COM_FIELDSANDFILTERS_FORM_DESC_ELEMENT_ITEM_ID"
+				filter="intval"
+				/>
 		<field
-		       name="state"
-		       type="hidden"
-		       label="JSTATUS"
-		       description="JFIELD_PUBLISHED_DESC"
-		       default="0"
-		       filter="intval"
-		/>
+				name="state"
+				type="hidden"
+				label="JSTATUS"
+				description="JFIELD_PUBLISHED_DESC"
+				default="0"
+				filter="intval"
+				/>
 	</fieldset>
-	
+
 	<fields name="fields">
 	</fields>
 </form>

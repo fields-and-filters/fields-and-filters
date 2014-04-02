@@ -17,24 +17,19 @@ JHtml::_('behavior.keepalive');
 JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true);
 ?>
 <script type="text/javascript">
-	Joomla.submitbutton = function(task, type)
-	{
-		if (task == 'field.setType')
-		{
+	Joomla.submitbutton = function (task, type) {
+		if (task == 'field.setType') {
 			document.id('field-form').elements['jform[temp_type]'].value = type;
 			Joomla.submitform('field.setType', document.id('field-form'));
 		}
-		else if (task == 'field.setExtension')
-		{
+		else if (task == 'field.setExtension') {
 			document.id('field-form').elements['jform[temp_extension]'].value = type;
 			Joomla.submitform('field.setExtension', document.id('field-form'));
 		}
-		else if (task == 'field.cancel' || document.formvalidator.isValid(document.id('field-form')))
-		{
+		else if (task == 'field.cancel' || document.formvalidator.isValid(document.id('field-form'))) {
 			Joomla.submitform(task, document.getElementById('field-form'));
 		}
-		else
-		{
+		else {
 			alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));?>');
 		}
 	}
@@ -91,14 +86,14 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 			</ul>
 		</fieldset>
 	</div>
-	
+
 	<div class="width-40 fltlft">
-		<?php echo JHtml::_('sliders.start', 'permissions-sliders-'.$this->item->id, array('useCookie' => 1)); ?>
-			<?php echo $this->loadTemplate('values_2.5'); ?>
-			<?php echo $this->loadTemplate('params_2.5'); ?>
+		<?php echo JHtml::_('sliders.start', 'permissions-sliders-' . $this->item->id, array('useCookie' => 1)); ?>
+		<?php echo $this->loadTemplate('values_2.5'); ?>
+		<?php echo $this->loadTemplate('params_2.5'); ?>
 		<?php echo JHtml::_('sliders.end'); ?>
 	</div>
-    
+
 	<input type="hidden" id="jform_temp_type" name="jform[temp_type]" value="" />
 	<input type="hidden" id="jform_temp_extension" name="jform[temp_extension]" value="" />
 	<input type="hidden" name="task" value="" />
