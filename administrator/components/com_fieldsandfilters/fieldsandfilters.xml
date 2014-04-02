@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component"
-           version="2.5"
-           method="upgrade">
+<extension type="component" version="2.5" method="upgrade">
 	<name>com_fieldsandfilters</name>
-	<creationDate>2013-08-27</creationDate>
+	<creationDate>2014-04-05</creationDate>
 	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see License.txt</license>
 	<author>KES - Kulka Tomasz</author>
 	<authorEmail>kes@kextensions.com</authorEmail>
 	<authorUrl>http://www.kextensions.com</authorUrl>
-	<version>1.1.1</version>
+	<version>1.2.0</version>
 	<description>COM_FIELDSANDFILTERS_XML_DESCRIPTION</description>
 
 	<!-- Runs on install/uninstall/update; -->
@@ -17,11 +15,9 @@
 
 	<install> <!-- Runs on install -->
 		<sql>
-			<file driver="mysql"
-			      charset="utf8">sql/install/mysql/install.sql
+			<file driver="mysql" charset="utf8">sql/install/mysql/install.sql
 			</file>
-			<file driver="mysqli"
-			      charset="utf8">sql/install/mysql/install.sql
+			<file driver="mysqli" charset="utf8">sql/install/mysql/install.sql
 			</file>
 
 			<!--<file driver="sqlazure"
@@ -39,11 +35,9 @@
 
 	<uninstall> <!-- Runs on uninstall -->
 		<sql>
-			<file driver="mysql"
-			      charset="utf8">sql/install/mysql/uninstall.sql
+			<file driver="mysql" charset="utf8">sql/install/mysql/uninstall.sql
 			</file>
-			<file driver="mysqli"
-			      charset="utf8">sql/install/mysql/uninstall.sql
+			<file driver="mysqli" charset="utf8">sql/install/mysql/uninstall.sql
 			</file>
 
 			<!--<file driver="sqlazure"
@@ -82,8 +76,7 @@
 		<language tag="en-GB">language/en-GB.com_fieldsandfilters.ini</language>
 	</languages>
 
-	<media folder="media"
-	       destination="fieldsandfilters">
+	<media folder="media" destination="fieldsandfilters">
 		<folder>administrator</folder>
 		<folder>core</folder>
 		<folder>filters</folder>
@@ -113,5 +106,5 @@
 		</languages>
 	</administration>
 </extension>
-		<!-- Component built by the Joomla Component Creator -->
-		<!-- http://www.notwebdesign.com/joomla-component-creator/ -->
+<!-- Component built by the Joomla Component Creator -->
+<!-- http://www.notwebdesign.com/joomla-component-creator/ -->

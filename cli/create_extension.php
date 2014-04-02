@@ -87,7 +87,7 @@ class CreateExtensionCli extends JApplicationCli
 		{
 			$this->out('-------- Start Archive --------');
 
-			$extension = $this->getExtension($path);
+			$extension = $this->getExtension($path, $data->get('info'));
 			$this->archiveExtension($extension);
 
 			$this->out('-------- End Archive --------');
@@ -102,7 +102,7 @@ class CreateExtensionCli extends JApplicationCli
 		return $data;
 	}
 
-	protected function getExtension($path)
+	protected function getExtension($path, $info = null)
 	{
 		if (!$path)
 		{
@@ -118,11 +118,33 @@ class CreateExtensionCli extends JApplicationCli
 
 		$data = new JObject();
 		$data->set('path', $path);
+		$data->set('info', $info);
 		$data->set('xml', simplexml_load_file($path));
+		$this->changeInfoXml($data, $info);
 
 		$this->out('Extension: '.(string) $data->get('xml')->name);
 
 		return $data;
+	}
+
+	protected function changeInfoXml(JObject $extension, $info = null)
+	{
+		if (!is_object($info))
+		{
+			return;
+		}
+
+		$xml = $extension->get('xml');
+
+		foreach ($info AS $name => $value)
+		{
+			if (isset($xml->$name))
+			{
+				$xml->$name = $value;
+			}
+		}
+
+		$xml->saveXML($extension->get('path'));
 	}
 
 	protected function archiveExtension(JObject $extension)
@@ -209,7 +231,7 @@ class CreateExtensionCli extends JApplicationCli
 			case 'package':
 				$path = JPATH_MANIFESTS.'/packages';
 				$files = $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages);
-				$files = array_merge($files,$this->preparePackage($xml->files));
+				$files = array_merge($files,$this->preparePackage($xml->files, $extension->get('info')));
 				$extension->set('name', 'pkg_'.$xml->packagename);
 				break;
 			default:
@@ -231,7 +253,7 @@ class CreateExtensionCli extends JApplicationCli
 		return $files;
 	}
 
-	protected function preparePackage(SimpleXMLElement $xml)
+	protected function preparePackage(SimpleXMLElement $xml, $info = null)
 	{
 		$files = array();
 		$temp = $this->getTempPath();
@@ -242,7 +264,7 @@ class CreateExtensionCli extends JApplicationCli
 				$this->out('--- Start Prepare Package ---');
 
 				$attributes = $file->attributes();
-				$extension = $this->getExtension(self::getXmlPath((string) $attributes->type, (string) $attributes->id, (string) $attributes->group, (string) $attributes->client));
+				$extension = $this->getExtension(self::getXmlPath((string) $attributes->type, (string) $attributes->id, (string) $attributes->group, (string) $attributes->client), $info);
 
 				$extension->set('archive', $temp.'/'.(string) $file);
 

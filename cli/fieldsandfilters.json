@@ -7,5 +7,9 @@
 //		"administrator/manifests/libraries/kextensions"
 //	]
 
-	"xml": "administrator/manifests/packages/pkg_fieldsandfilters"
+	"xml": "administrator/manifests/packages/pkg_fieldsandfilters",
+	"info": {
+		"creationDate": "2014-04-05",
+		"version": "1.2.0"
+	}
 }

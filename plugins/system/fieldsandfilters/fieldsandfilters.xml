@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="2.5"
-           type="plugin"
-           group="system"
-           method="upgrade">
+<extension version="2.5" type="plugin" group="system" method="upgrade">
 	<name>plg_system_fieldsandfilters</name>
-	<creationDate>2013-08-27</creationDate>
+	<creationDate>2014-04-05</creationDate>
 	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see License.txt</license>
 	<author>KES - Kulka Tomasz</author>
 	<authorEmail>kes@kextensions.com</authorEmail>
 	<authorUrl>http://www.kextensions.com</authorUrl>
-	<version>1.1.1</version>
+	<version>1.2.0</version>
 	<description>PLG_SYSTEM_FIELDSANDFILTERS_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="fieldsandfilters">fieldsandfilters.php</filename>
@@ -24,47 +21,17 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
-				<field
-						name="prepare_content"
-						type="radio"
-						class="btn-group btn-group-yesno"
-						label="PLG_FAF_FORM_PREPARE_CONTENT_LBL"
-						description="PLG_FAF_FORM_PREPARE_CONTENT_DESC"
-						default="1"
-						>
+				<field name="prepare_content" type="radio" class="btn-group btn-group-yesno" label="PLG_FAF_FORM_PREPARE_CONTENT_LBL" description="PLG_FAF_FORM_PREPARE_CONTENT_DESC" default="1">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
-				<field
-						name="prepare_after_render"
-						type="radio"
-						class="btn-group btn-group-yesno"
-						label="PLG_FAF_FORM_PREPARE_PREPARE_AFTER_RENDER_LBL"
-						description="PLG_FAF_FORM_PREPARE_PREPARE_AFTER_RENDER_DESC"
-						default="0"
-						>
+				<field name="prepare_after_render" type="radio" class="btn-group btn-group-yesno" label="PLG_FAF_FORM_PREPARE_PREPARE_AFTER_RENDER_LBL" description="PLG_FAF_FORM_PREPARE_PREPARE_AFTER_RENDER_DESC" default="0">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
-				<field
-						name="syntax"
-						type="test"
-						class="input"
-						label="PLG_FAF_FORM_SYNTAX_LBL"
-						description="PLG_FAF_FORM_SYNTAX_DESC"
-						default="#{%s}"
-						size="40"
-						/>
+				<field name="syntax" type="test" class="input" label="PLG_FAF_FORM_SYNTAX_LBL" description="PLG_FAF_FORM_SYNTAX_DESC" default="#{%s}" size="40"/>
 
-				<field
-						name="syntax_type"
-						type="list"
-						label="PLG_FAF_FORM_SYNTAX_TYPE_LBL"
-						description="PLG_FAF_FORM_SYNTAX_TYPE_DESC"
-						filter="intval"
-						size="1"
-						default="1"
-						>
+				<field name="syntax_type" type="list" label="PLG_FAF_FORM_SYNTAX_TYPE_LBL" description="PLG_FAF_FORM_SYNTAX_TYPE_DESC" filter="intval" size="1" default="1">
 					<option value="1">PLG_FAF_FORM_OPTION_SYNTAX_SIMPLE</option>
 					<option value="2">PLG_FAF_FORM_OPTION_SYNTAX_EXTENDED</option>
 					<option value="-1">PLG_FAF_FORM_OPTION_SYNTAX_OLD</option>
