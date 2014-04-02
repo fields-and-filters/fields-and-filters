@@ -136,5 +136,5 @@ CREATE TABLE IF NOT EXISTS `#__content_types` (
 )
 	ENGINE =InnoDB
 	DEFAULT CHARSET =utf8
-	COLLATE = utf8_general_ci;
-AUTO_INCREMENT=10000;
+	COLLATE = utf8_general_ci
+	AUTO_INCREMENT=10000;
