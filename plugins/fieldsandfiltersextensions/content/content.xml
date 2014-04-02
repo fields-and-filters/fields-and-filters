@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="fieldsandfiltersextensions" method="upgrade">
-	<name>plg_fieldsandfilters_extensions_content</name>
+	<name>plg_fieldsandfiltersextensions_content</name>
 	<creationDate>2014-04-05</creationDate>
 	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see License.txt</license>
@@ -8,7 +8,7 @@
 	<authorEmail>kes@kextensions.com</authorEmail>
 	<authorUrl>http://www.kextensions.com</authorUrl>
 	<version>1.2.0</version>
-	<description>PLG_FIELDSANDFILTERS_EXTENSIONS_CONTENT_XML_DESCRIPTION</description>
+	<description>PLG_FIELDSANDFILTERSEXTENSIONS_CONTENT_XML_DESCRIPTION</description>
 
 	<scriptfile>content.script.php</scriptfile>
 

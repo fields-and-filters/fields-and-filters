@@ -44,16 +44,16 @@ class pkg_fieldsandfiltersInstallerScript
 				continue;
 			}
 
-			$plugins[$attributes->id] = array(
+			$plugins[(string)$attributes->id] = array(
 				'type'      => 'plugin',
-				'element'   => str_replace(sprintf('plg_%s_', $attributes->group), '', $attributes->id),
-				'folder'    => $attributes->group
+				'element'   => str_replace(sprintf('plg_%s_', (string) $attributes->group), '', (string) $attributes->id),
+				'folder'    => (string) $attributes->group
 			);
 		}
 
 		foreach ($results AS $extension)
 		{
-			$name = $extension['name'];
+			$name = (string) $extension['name'];
 			if (!$extension['result'] || !array_key_exists($name, $plugins))
 			{
 				continue;
@@ -61,7 +61,7 @@ class pkg_fieldsandfiltersInstallerScript
 
 			if ($table->load($plugins[$name]))
 			{
-				$table->enabled = 0;
+				$table->enabled = 1;
 				$table->store();
 			}
 		}
