@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="library" version="2.5" method="upgrade">
+<extension type="library"
+           version="2.5"
+           method="upgrade">
 	<name>Kextensions Library</name>
 	<libraryname>kextensions</libraryname>
 	<creationDate>2014-04-05</creationDate>
@@ -11,15 +13,18 @@
 	<version>1.2.0</version>
 	<files>
 		<filename>index.html</filename>
+		<filename>License.txt</filename>
 		<folder>array</folder>
 		<folder>buffer</folder>
 		<folder>controller</folder>
 		<folder>file</folder>
-		<folder>form</folder>W
+		<folder>form</folder>
 		<folder>joomla</folder>
 		<folder>language</folder>
 		<folder>log</folder>
 		<folder>module</folder>
+		<folder>plugin</folder>
+		<folder>request</folder>
 		<folder>user</folder>
 		<folder>xml</folder>
 	</files>
