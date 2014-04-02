@@ -35,7 +35,7 @@ class pkg_fieldsandfiltersInstallerScript
 		$table      = JTable::getInstance('extension');
 		$plugins    = array();
 
-		foreach ($adapter->manifest->files AS $file)
+		foreach ($adapter->manifest->files->file AS $file)
 		{
 			$attributes = $file->attributes();
 
@@ -44,9 +44,9 @@ class pkg_fieldsandfiltersInstallerScript
 				continue;
 			}
 
-			$plugins[(string)$attributes->id] = array(
+			$plugins[sprintf('plg_%s_%s', (string) $attributes->group, (string) $attributes->id)] = array(
 				'type'      => 'plugin',
-				'element'   => str_replace(sprintf('plg_%s_', (string) $attributes->group), '', (string) $attributes->id),
+				'element'   => (string) $attributes->id,
 				'folder'    => (string) $attributes->group
 			);
 		}
@@ -54,16 +54,14 @@ class pkg_fieldsandfiltersInstallerScript
 		foreach ($results AS $extension)
 		{
 			$name = (string) $extension['name'];
-			if (!$extension['result'] || !array_key_exists($name, $plugins))
+
+			if (!$extension['result'] || !array_key_exists($name, $plugins) || !$table->load($plugins[$name]))
 			{
 				continue;
 			}
 
-			if ($table->load($plugins[$name]))
-			{
-				$table->enabled = 1;
-				$table->store();
-			}
+			$table->enabled = 1;
+			$table->store();
 		}
 	}
 }

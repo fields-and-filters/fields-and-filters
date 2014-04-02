@@ -373,11 +373,10 @@ class CreateExtensionCli extends JApplicationCli
 				$path =  JApplicationHelper::getClientInfo($client, true)->path.'/modules/'.$name.'/'.$name;
 				break;
 			case 'plugin':
-				$name = preg_replace(sprintf('/^plg_%s_/', $group), '', $name);
 				$path = JPATH_PLUGINS.'/'.$group.'/'.$name.'/'.$name;
 				break;
 			case 'library':
-				$path = JPATH_MANIFESTS.'/libraries/'.preg_replace('/^lib_/', '', $name);
+				$path = JPATH_MANIFESTS.'/libraries/'.$name;
 				break;
 			default:
 				throw new InvalidArgumentException(sprintf('Extension type "%s" does not support.', $type));
