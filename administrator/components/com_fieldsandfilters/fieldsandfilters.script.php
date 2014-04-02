@@ -205,15 +205,10 @@ class com_fieldsandfiltersInstallerScript
 	// [TODO] For test
 	protected static function changePluginName($folder, $oldName, $newName)
 	{
-		$path = JPath::clean(JPATH_PLUGINS.'/'.$folder.'/'.$oldName);
-		if (!is_dir($path))
-		{
-			return;
-		}
+		$path   = JPath::clean(JPATH_PLUGINS.'/'.$folder.'/'.$oldName);
+		$table  = JTable::getInstance('extension');
 
-		$table = JTable::getInstance('extension');
-
-		if (!$table->load(array('type' => 'plugin', 'element' => $oldName, 'folder' => $folder), true))
+		if (!is_dir($path) || !$table->load(array('type' => 'plugin', 'element' => $oldName, 'folder' => $folder), true))
 		{
 			return;
 		}
