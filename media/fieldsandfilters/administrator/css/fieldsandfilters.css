@@ -82,6 +82,7 @@
   height: 97px;
   width: 108px;
   color: #565656;
+  font-size: 65px;
   vertical-align: middle;
   text-decoration: none;
   border: 1px solid #CCC;
@@ -93,9 +94,15 @@
   -webkit-transition-duration: 0.8s;
   -moz-transition-duration: 0.8s;
 }
+.cpanel div.icon a span {
+  font-size: 12px;
+  display: block;
+  text-align: center;
+}
 .cpanel div.icon a:hover,
 .cpanel div.icon a:focus,
 .cpanel div.icon a:active {
+  color: #146295;
   background-position: 0;
   -webkit-border-bottom-left-radius: 50% 20px;
   -moz-border-radius-bottomleft: 50% 20px;
@@ -106,15 +113,52 @@
   position: relative;
   z-index: 10;
 }
-.cpanel div.icon span {
-  display: block;
-  text-align: center;
+.icon-48-faf-fieldsandfilters:before {
+  content: "\e600";
 }
-.cpanel div.icon img {
-  border: 0 none;
-  height: auto;
-  max-width: 100%;
-  vertical-align: middle;
-  margin: 0 auto;
-  padding: 10px 0;
+.icon-48-faf-fields:before {
+  content: "\e601";
+}
+.icon-48-faf-field:before {
+  content: "\e602";
+}
+.icon-48-faf-field-values:before {
+  content: "\e603";
+}
+.icon-48-faf-field-value:before {
+  content: "\e604";
+}
+.icon-48-faf-contents:before {
+  content: "\e605";
+}
+.icon-48-faf-content:before {
+  content: "\e606";
+}
+.icon-48-faf-module-filters:before {
+  content: "\e607";
+}
+.icon-48-faf-plugin-extensions:before {
+  content: "\e608";
+}
+.icon-48-faf-plugin-types:before {
+  content: "\e609";
+}
+.icon-48-faf-plugin-system:before {
+  content: "\e60a";
+}
+.icon-48-faf-kextensions:before {
+  content: "\e60b";
+}
+.pagetitle[class*="icon-48-faf-"] {
+  position: relative;
+}
+.pagetitle[class*="icon-48-faf-"]:before {
+  position: absolute;
+  left: 0;
+  color: #146295;
+  font-family: 'fieldsandfilters';
+  font-size: 48px;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

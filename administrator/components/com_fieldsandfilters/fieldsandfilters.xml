@@ -64,8 +64,7 @@
 		<filename>index.html</filename>
 	</media>
 	<administration>
-		<menu img="../media/fieldsandfilters/component/images/icons/icon-16-fieldsandfilters.png">COM_FIELDSANDFILTERS
-		</menu>
+		<menu img="../media/fieldsandfilters/administrator/images/icons/icon-16-fieldsandfilters.png">com_fieldsandfilters</menu>
 		<files folder="administrator">
 			<filename>access.xml</filename>
 			<filename>config.xml</filename>

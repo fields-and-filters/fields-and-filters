@@ -27,9 +27,9 @@ class FieldsandfiltersViewCpanel extends JViewLegacy
 
 		$this->addToolbar();
 
-		if (is_null($tpl) && FieldsandfiltersFactory::isVersion('<', 3.2))
+		if (is_null($tpl) && !FieldsandfiltersFactory::isVersion())
 		{
-			$tpl = '3.1';
+			$tpl = '2.5';
 		}
 
 		parent::display($tpl);

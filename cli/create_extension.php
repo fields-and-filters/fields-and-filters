@@ -22,14 +22,33 @@ if (!defined('_JDEFINES'))
 }
 
 // Get the framework.
-require_once JPATH_LIBRARIES . '/import.legacy.php';
+if (file_exists(JPATH_LIBRARIES . '/import.legacy.php'))
+{
+    require_once JPATH_LIBRARIES . '/import.legacy.php';
+}
+else // Joomla! 2.5
+{
+    require_once JPATH_LIBRARIES . '/import.php';
+}
 
 // Bootstrap the CMS libraries.
-require_once JPATH_LIBRARIES . '/cms.php';
+if (file_exists(JPATH_LIBRARIES . '/cms.php'))
+{
+    require_once JPATH_LIBRARIES . '/cms.php';
+}
+else // Joomla! 2.5
+{
+    require_once JPATH_BASE . '/includes/framework.php';
+}
 
 jimport('joomla.filesystem.path');
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
+
+if (version_compare(JVERSION, 3.0, '<'))
+{
+    jimport('joomla.filesystem.archive');
+}
 
 // Configure error reporting to maximum for CLI output.
 error_reporting(E_ALL);

@@ -33,6 +33,11 @@ class plgSystemFieldsandfilters extends JPlugin
 	{
 		JLoader::registerPrefix('Kextensions', JPATH_LIBRARIES . '/kextensions');
 		JLoader::registerPrefix('Fieldsandfilters', JPATH_ADMINISTRATOR . '/components/com_fieldsandfilters/helpers');
+
+		if (!FieldsandfiltersFactory::isVersion())
+		{
+			$this->app = JFactory::getApplication();
+		}
 	}
 
 	/**
