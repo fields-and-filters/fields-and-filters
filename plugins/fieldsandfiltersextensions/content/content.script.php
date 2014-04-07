@@ -32,12 +32,12 @@ class plgFieldsandfiltersExtensionsContentInstallerScript
 
 		$helper = $this->getHelper($type, $adapter);
 
-		if ($type == 'install' || ($type == 'update' && version_compare($helper->getOldVersion(), 1.2, '<')))
+		if ($type == 'install' || $type == 'update')
 		{
 			$helper->checkContentTypes('com_content.article');
 		}
 
-		return true;
+		return;
 	}
 
 	protected function createHelper($type, $adapter)

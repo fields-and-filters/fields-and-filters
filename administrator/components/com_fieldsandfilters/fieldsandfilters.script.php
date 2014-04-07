@@ -69,12 +69,10 @@ class com_fieldsandfiltersInstallerScript
 
 		$helper = $this->getHelper();
 
-		if ($type == 'install' || ($type == 'update'))
+		if ($type == 'install' || $type == 'update')
 		{
 			$helper->checkContentTypes('com_fieldsandfilters.allextensions');
 		}
-
-		return true;
 	}
 
 	protected function createHelper($type, $adapter)

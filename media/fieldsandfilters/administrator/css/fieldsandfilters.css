@@ -63,7 +63,55 @@
 }
 /* ---- @deprecated Joomla 2.5 && Joomla 3.1 ---- */
 /* ---- @deprecated Joomla 2.5 && Joomla 3.1 ---- */
-/* [TODO] change this to new panel */
+.icon-48-faf-fieldsandfilters:before {
+  content: "\e600";
+}
+.icon-48-faf-fields:before {
+  content: "\e601";
+}
+.icon-48-faf-field:before {
+  content: "\e602";
+}
+.icon-48-faf-field-values:before {
+  content: "\e603";
+}
+.icon-48-faf-field-value:before {
+  content: "\e604";
+}
+.icon-48-faf-contents:before {
+  content: "\e605";
+}
+.icon-48-faf-content:before {
+  content: "\e606";
+}
+.icon-48-faf-module-filters:before {
+  content: "\e607";
+}
+.icon-48-faf-plugin-extensions:before {
+  content: "\e608";
+}
+.icon-48-faf-plugin-types:before {
+  content: "\e609";
+}
+.icon-48-faf-plugin-system:before {
+  content: "\e60a";
+}
+.icon-48-faf-kextensions:before {
+  content: "\e60b";
+}
+.pagetitle[class*="icon-48-faf-"] {
+  position: relative;
+}
+.pagetitle[class*="icon-48-faf-"]:before {
+  position: absolute;
+  left: 0;
+  color: #146295;
+  font-family: 'fieldsandfilters';
+  font-size: 48px;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 .cpanel-block {
   display: inline-block;
   width: 100%;
@@ -113,52 +161,24 @@
   position: relative;
   z-index: 10;
 }
-.icon-48-faf-fieldsandfilters:before {
-  content: "\e600";
+.com_fieldsandfilters.j25.nav-tabs {
+  padding-left: 18px;
+  padding-right: 18px;
+  margin-bottom: 18px;
+  list-style: none;
 }
-.icon-48-faf-fields:before {
-  content: "\e601";
+.com_fieldsandfilters.j25.nav-tabs > li {
+  margin-top: -1px;
 }
-.icon-48-faf-field:before {
-  content: "\e602";
+.com_fieldsandfilters.j25.nav-tabs > li:last-child {
+  margin-bottom: 0;
 }
-.icon-48-faf-field-values:before {
-  content: "\e603";
+.com_fieldsandfilters.j25.nav-tabs > li > a {
+  display: block;
+  padding: 8px 12px;
+  line-height: 18px;
+  border: 1px solid #ddd;
 }
-.icon-48-faf-field-value:before {
-  content: "\e604";
-}
-.icon-48-faf-contents:before {
-  content: "\e605";
-}
-.icon-48-faf-content:before {
-  content: "\e606";
-}
-.icon-48-faf-module-filters:before {
-  content: "\e607";
-}
-.icon-48-faf-plugin-extensions:before {
-  content: "\e608";
-}
-.icon-48-faf-plugin-types:before {
-  content: "\e609";
-}
-.icon-48-faf-plugin-system:before {
-  content: "\e60a";
-}
-.icon-48-faf-kextensions:before {
-  content: "\e60b";
-}
-.pagetitle[class*="icon-48-faf-"] {
-  position: relative;
-}
-.pagetitle[class*="icon-48-faf-"]:before {
-  position: absolute;
-  left: 0;
-  color: #146295;
-  font-family: 'fieldsandfilters';
-  font-size: 48px;
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.com_fieldsandfilters.j25.nav-tabs > li > a:hover {
+  background-color: #eee;
 }

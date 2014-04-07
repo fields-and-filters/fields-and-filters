@@ -1,5 +1,24 @@
 /* ---- @deprecated Joomla 2.5 && Joomla 3.1 ---- */
-/* [TODO] change this to new panel */
+.icon-48-faf {
+	.com_fieldsandfilters .icon-faf;
+}
+
+.pagetitle[class*="icon-48-faf-"] {
+	position: relative;
+
+	&:before {
+		position: absolute;
+		left: 0;
+		color: #146295;
+
+		font-family             : 'fieldsandfilters';
+		font-size: 48px;
+
+		/* Better Font Rendering =========== */
+		-webkit-font-smoothing  : antialiased;
+		-moz-osx-font-smoothing : grayscale;
+	}
+}
 .cpanel {
 	&-block {
 		display : inline-block;
@@ -51,28 +70,33 @@
 				z-index                           : 10;
 			}
 		}
-
-
 	}
 }
 
-.icon-48-faf {
-	.com_fieldsandfilters .icon-faf;
-}
+.com_fieldsandfilters.j25{
+	&.nav-tabs {
+		padding-left: 18px;
+		padding-right: 18px;
+		margin-bottom: 18px;
+		list-style: none;
 
-.pagetitle[class*="icon-48-faf-"] {
-	position: relative;
+		> li {
+			margin-top: -1px;
 
-	&:before {
-		position: absolute;
-		left: 0;
-		color: #146295;
+			&:last-child {
+				margin-bottom: 0;
+			}
 
-		font-family             : 'fieldsandfilters';
-		font-size: 48px;
+			> a {
+				display: block;
+				padding: 8px 12px;
+				line-height: 18px;
+				border: 1px solid #ddd;
 
-		/* Better Font Rendering =========== */
-		-webkit-font-smoothing  : antialiased;
-		-moz-osx-font-smoothing : grayscale;
+				&:hover {
+					background-color: #eee;
+				}
+			}
+		}
 	}
 }

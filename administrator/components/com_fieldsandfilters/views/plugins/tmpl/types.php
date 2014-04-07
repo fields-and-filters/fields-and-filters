@@ -19,21 +19,21 @@ $option = $app->input->get('option');
 JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', array(), true);
 ?>
 
-	<script type="text/javascript">
-		setType = function (type) {
-			<?php if ($tmpl) : ?>
-			window.parent.Joomla.submitbutton('field.setType', type);
-			window.parent.SqueezeBox.close();
-			<?php else : ?>
-			window.location = "index.php?option=com_fieldsandfilters&view=field&task=field.setType&layout=edit&type=" + ('field.setType', type);
-			<?php endif; ?>
-		}
-	</script>
+<script type="text/javascript">
+	setType = function (type) {
+		<?php if ($tmpl) : ?>
+		window.parent.Joomla.submitbutton('field.setType', type);
+		window.parent.SqueezeBox.close();
+		<?php else : ?>
+		window.location = "index.php?option=com_fieldsandfilters&view=field&task=field.setType&layout=edit&type=" + ('field.setType', type);
+		<?php endif; ?>
+	}
+</script>
 
-	<!-- Header -->
-	<header class="header <?php echo $option; ?>">
-		<?php echo(isset($app->JComponentTitle) ? $app->JComponentTitle : ''); ?>
-	</header>
+<!-- Header -->
+<header class="header <?php echo $option; ?>">
+	<?php echo(isset($app->JComponentTitle) ? $app->JComponentTitle : ''); ?>
+</header>
 
 <?php echo JHtml::_('bootstrap.startAccordion', 'pluginTypes', array('active' => 'collapse0')); ?>
 <?php foreach ($this->plugins->toObject() AS $nameGroup => $pluginTypes) : ?>

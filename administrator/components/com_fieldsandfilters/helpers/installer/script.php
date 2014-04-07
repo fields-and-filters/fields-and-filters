@@ -127,7 +127,8 @@ class FieldsandfiltersInstallerScript
 					$query->clear()
 						->insert($db->quoteName('#__content_types'))
 						->columns($db->quoteName(array_keys($contentType)))
-						->values(implode(', ', $db->quote(array_values($contentType), false)));
+						// ->values(implode(', ', $db->quote(array_values($contentType), false))) // Joomla! 3.x
+						->values(implode(', ', array_map(array($db, 'quote'), array_values($contentType), array_fill(0, count($contentType), false))));
 
 					$db->setQuery($query)->execute();
 				}
