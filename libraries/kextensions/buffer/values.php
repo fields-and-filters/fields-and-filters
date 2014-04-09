@@ -99,7 +99,8 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 						$this->_setDataValue($_value);
 					}
 				}
-			} catch (RuntimeException $e)
+			}
+			catch (RuntimeException $e)
 			{
 				JLog::add($e->getMessage(), JLog::ERROR, 'Kextensions');
 			}
@@ -110,8 +111,7 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 		{
 			while ($element = array_shift($this->_valuesElements))
 			{
-				$element = $this->buffer->{$this->getPrimaryName()};
-				unset($this->buffer->{$element});
+				unset($this->buffer->$element);
 			}
 		}
 	}
