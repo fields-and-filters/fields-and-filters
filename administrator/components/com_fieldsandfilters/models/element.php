@@ -184,7 +184,10 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			$data = new JRegistry($this->getItem());
 		}
 
-		$this->preprocessData('com_fieldsandfilters.element', $data);
+		if (FieldsandfiltersFactory::isVersion())
+		{
+			$this->preprocessData('com_fieldsandfilters.element', $data);
+		}
 
 		return $data;
 	}

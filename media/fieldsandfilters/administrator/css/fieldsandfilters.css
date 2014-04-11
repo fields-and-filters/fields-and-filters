@@ -99,12 +99,9 @@
 .icon-48-faf-kextensions:before {
   content: "\e60b";
 }
-.pagetitle[class*="icon-48-faf-"] {
-  position: relative;
-}
 .pagetitle[class*="icon-48-faf-"]:before {
-  position: absolute;
-  left: 0;
+  float: left;
+  margin-left: -60px;
   color: #146295;
   font-family: 'fieldsandfilters';
   font-size: 48px;

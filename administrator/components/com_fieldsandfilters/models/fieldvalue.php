@@ -95,7 +95,10 @@ class FieldsandfiltersModelFieldvalue extends JModelAdmin
 
 		}
 
-		$this->preprocessData('com_fieldsandfilters.fieldvalue', $data);
+		if (FieldsandfiltersFactory::isVersion())
+		{
+			$this->preprocessData('com_fieldsandfilters.fieldvalue', $data);
+		}
 
 		return $data;
 	}
