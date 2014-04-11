@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 $document = JFactory::getDocument();
 $field = $plugin->field;
 $data = $plugin->element->data;
-$url = $data->get($field->id);
+$image = $data->get($field->id);
 
 $isDescriptionTip = $isDescriptionBefore = $isDescriptionAfter = false;
 if ($field->params->get('base.site_enabled_description', 0) && !empty($field->description))

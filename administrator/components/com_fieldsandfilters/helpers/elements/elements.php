@@ -189,6 +189,7 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 					$this->config->def('getValues', self::VALUES_DATA);
 					break;
 				case self::VALUES_BOTH:
+					$this->config->def('unsetElementsWithoutValuesAfterQueue', false);
 					$this->config->def('getValues', array(self::VALUES_CONNECTIONS, self::VALUES_DATA));
 					break;
 			}
@@ -292,12 +293,9 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 		{
 			$query->where($this->_db->quoteName('id') . ' IN (' . implode(',', $this->elements) . ')');
 		}
-		else
+		elseif ($this->method == 'getElementsByItemID')
 		{
-			if ($this->method == 'getElementsByItemID')
-			{
-				$query->where($this->_db->quoteName('item_id') . ' IN (' . implode(',', $this->elements) . ')');
-			}
+			$query->where($this->_db->quoteName('item_id') . ' IN (' . implode(',', $this->elements) . ')');
 		}
 
 		// We no need same elements id
@@ -329,12 +327,9 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 			{
 				array_push($this->_elementsID, $key);
 			}
-			else
+			elseif ($byItem)
 			{
-				if ($byItem)
-				{
-					array_push($this->_itemsID, $_element->item_id);
-				}
+				array_push($this->_itemsID, $_element->item_id);
 			}
 		}
 		else
@@ -349,21 +344,15 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 	 */
 	protected function _afterQuery()
 	{
-		if (($byID = $this->method == 'getElementsByID') || ($byItem = $this->method == 'getElementsByItemID'))
+		if ((($byID = $this->method == 'getElementsByID') || ($byItem = $this->method == 'getElementsByItemID')) && $this->_testQueryVars())
 		{
-			if ($this->_testQueryVars())
+			if ($byID)
 			{
-				if ($byID)
-				{
-					$this->_setNot(array_diff($this->elements, $this->_elementsID), 'elements');
-				}
-				else
-				{
-					if ($byItem)
-					{
-						$this->_setNot(array_diff($this->elements, $this->_itemsID), 'items');
-					}
-				}
+				$this->_setNot(array_diff($this->elements, $this->_elementsID), 'elements');
+			}
+			elseif ($byItem)
+			{
+				$this->_setNot(array_diff($this->elements, $this->_itemsID), 'items');
 			}
 		}
 		else
@@ -387,12 +376,9 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 		{
 			$query->from($this->_db->quoteName('#__fieldsandfilters_data'));
 		}
-		else
+		elseif ($this->methodValues == self::VALUES_CONNECTIONS)
 		{
-			if ($this->methodValues == self::VALUES_CONNECTIONS)
-			{
-				$query->from($this->_db->quoteName('#__fieldsandfilters_connections'));
-			}
+			$query->from($this->_db->quoteName('#__fieldsandfilters_connections'));
 		}
 
 		$query->where($this->_db->quoteName('element_id') . ' IN (' . implode(',', $this->_valuesElements) . ')');
@@ -414,36 +400,24 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 			$element->$valuesName = new JObject();
 		}
 
-		if ($this->methodValues == self::VALUES_DATA)
+		if ($this->methodValues == self::VALUES_DATA && isset($_value->field_id) && isset($_value->data) && !isset($element->$valuesName->{$_value->field_id}))
 		{
-			if (isset($_value->field_id) && isset($_value->data))
-			{
-				if (!isset($element->$valuesName->{$_value->field_id}))
-				{
-					$element->$valuesName->set($_value->field_id, $_value->data);
-				}
-			}
+			$element->$valuesName->set($_value->field_id, $_value->data);
 		}
-		else
+		elseif ($this->methodValues == self::VALUES_CONNECTIONS && isset($_value->field_id) && isset($_value->field_value_id))
 		{
-			if ($this->methodValues == self::VALUES_CONNECTIONS)
+			if (!isset($element->$valuesName->{$_value->field_id}))
 			{
-				if (isset($_value->field_id) && isset($_value->field_value_id))
-				{
-					if (!isset($element->$valuesName->{$_value->field_id}))
-					{
-						$element->$valuesName->set($_value->field_id, array());
-					}
+				$element->$valuesName->set($_value->field_id, array());
+			}
 
-					if (is_array($_value->field_value_id))
-					{
-						$element->$valuesName->set($_value->field_id, array_merge($element->$valuesName->{$_value->field_id}, $_value->field_value_id));
-					}
-					else
-					{
-						array_push($element->$valuesName->{$_value->field_id}, $_value->field_value_id);
-					}
-				}
+			if (is_array($_value->field_value_id))
+			{
+				$element->$valuesName->set($_value->field_id, array_merge($element->$valuesName->{$_value->field_id}, $_value->field_value_id));
+			}
+			else
+			{
+				array_push($element->$valuesName->{$_value->field_id}, $_value->field_value_id);
 			}
 		}
 	}
@@ -466,13 +440,10 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 			{
 				$this->_elementsID = array();
 			}
-			else
+			elseif ($this->method == 'getElementsByItemID')
 			{
-				if ($this->method == 'getElementsByItemID')
-				{
-					$this->_itemsID         = array();
-					$this->_elementsItemsID = array();
-				}
+				$this->_itemsID         = array();
+				$this->_elementsItemsID = array();
 			}
 		}
 

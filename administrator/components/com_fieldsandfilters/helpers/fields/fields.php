@@ -383,14 +383,11 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 				->where($this->_db->quoteName('state') . ' = 1')
 				->order($this->_db->quoteName('ordering') . ' ASC');
 		}
-		else
+		elseif ($this->methodValues == self::VALUES_DATA)
 		{
-			if ($this->methodValues == self::VALUES_DATA)
-			{
-				$query->from($this->_db->quoteName('#__fieldsandfilters_data'))
-					->where($this->_db->quoteName('element_id') . ' = ' . 0)
-					->where($this->_db->quoteName('content_type_id') . ' IN(' . implode(',', $this->_types) . ')');
-			}
+			$query->from($this->_db->quoteName('#__fieldsandfilters_data'))
+				->where($this->_db->quoteName('element_id') . ' = ' . 0)
+				->where($this->_db->quoteName('content_type_id') . ' IN(' . implode(',', $this->_types) . ')');
 		}
 
 		return $query;
@@ -408,16 +405,13 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		{
 			$modes = $this->_valuesModes;
 		}
+		elseif ($this->methodValues == self::VALUES_DATA)
+		{
+			$modes = $this->_staticModes;
+		}
 		else
 		{
-			if ($this->methodValues == self::VALUES_DATA)
-			{
-				$modes = $this->_staticModes;
-			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 
 		// if element don't have filter_connection, add to arrry
@@ -432,12 +426,9 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			{
 				$_values = get_object_vars($element->{$this->getValuesName()});
 			}
-			else
+			elseif ($this->methodValues == self::VALUES_DATA)
 			{
-				if ($this->methodValues == self::VALUES_DATA)
-				{
-					$_values = $element->{$this->getValuesName()};
-				}
+				$_values = $element->{$this->getValuesName()};
 			}
 
 			if (empty($_values))
@@ -470,23 +461,17 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 		$element    = $this->buffer->get($_value->{$this->getForeignName()});
 		$valuesName = $this->getValuesName();
 
-		if ($this->methodValues == self::VALUES_VALUES)
+		if ($this->methodValues == self::VALUES_VALUES && isset($_value->id))
 		{
-			if (isset($_value->id))
-			{
-				unset($_value->field_id);
+			unset($_value->field_id);
 
-				$element->$valuesName->set($_value->id, $_value);
-			}
+			$element->$valuesName->set($_value->id, $_value);
 		}
 		elseif ($this->methodValues == self::VALUES_DATA)
 		{
-			if (isset($_value->field_id) && isset($_value->data))
+			if (isset($_value->field_id) && isset($_value->data) && !isset($element->$valuesName))
 			{
-				if (!isset($element->$valuesName))
-				{
-					$element->$valuesName = $_value->data;
-				}
+				$element->$valuesName = $_value->data;
 			}
 			elseif (!isset($element->$valuesName))
 			{
@@ -513,12 +498,9 @@ class FieldsandfiltersFields extends KextensionsBufferValues
 			{
 				$this->_fieldsID = array();
 			}
-			else
+			elseif ($this->method == 'getFieldsByModeID')
 			{
-				if ($this->method == 'getFieldsByModeID')
-				{
-					$this->_modes = array();
-				}
+				$this->_modes = array();
 			}
 		}
 
