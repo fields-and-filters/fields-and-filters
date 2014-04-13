@@ -17,17 +17,17 @@ $image    = $data->get($field->id);
 $createThumb = $field->params->get('type.create_thumb');
 
 $src = false;
-if ($field->params->get('type.scale') && ($src = $image->get('src')) && file_exists(JPath::clean(JPATH_ROOT . '/' . $src)))
+if ($field->params->get('type.scale') && ($src = $image->get('src')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
 {
 	$src = JPath::clean($src, '/');
 }
-elseif (($src = $image->get('image')) && file_exists(JPath::clean(JPATH_ROOT . '/' . $src)))
+elseif (($src = $image->get('image')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$src)))
 {
 	$src = JPath::clean($src, '/');
 }
 
 $src_thumb = false;
-if ($src && $createThumb && ($src_thumb = $image->get('src_thumb')) && file_exists(JPath::clean(JPATH_ROOT . '/' . $src_thumb)))
+if ($src && $createThumb && ($src_thumb = $image->get('src_thumb')) && file_exists(JPath::clean(JPATH_ROOT.'/'.$src_thumb)))
 {
 	$src_thumb = JPath::clean($src_thumb, '/');
 }
@@ -40,14 +40,14 @@ if ($src)
 {
 	$title   = htmlspecialchars($image->get('alt', $document->getTitle()));
 	$attribs = array(
-		'id'    => 'faf-field-' . $field->id,
-		'class' => 'faf-field faf-field-image faf-image' . htmlspecialchars($field->params->get('base.class', '')),
+		'id'    => 'faf-field-'.$field->id,
+		'class' => 'faf-field faf-field-image '.($src_thumb ? 'faf-modal ' : 'faf-image ').htmlspecialchars($field->params->get('base.class', '')),
 		'alt'   => $title
 	);
 
 	if ($caption = $image->get('caption'))
 	{
-		$attribs['class'] = $attribs['class'] . ' caption';
+		$attribs['class'] = $attribs['class'].' caption';
 		$attribs['title'] = htmlspecialchars($caption);
 	}
 
@@ -74,7 +74,7 @@ if ($src)
 			case 3:
 				// open in a modal window
 				JHtml::_('behavior.modal', 'a.faf-modal');
-				$attribs['class'] = $attribs['class'] . ' faf-modal';
+				$attribs['class'] = $attribs['class'].' faf-modal';
 				$attribs['rel']   = "{handler: 'iframe', size: {x:600, y:600}}";
 				break;
 			case 4:

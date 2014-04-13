@@ -34,10 +34,10 @@ $saveOrder = $listOrder == 'fv.ordering';
 		</div>
 
 		<div class='filter-select fltrt'>
-			<select name="filter_field_id" class="inputbox" onchange="this.form.submit()">
+			<select name="filter[field_id]" class="inputbox" onchange="this.form.submit()">
 				<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.fields'), 'value', 'text', $this->state->get('filter.field_id'), false); ?>
 			</select>
-			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
+			<select name="filter[state]" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED'); ?></option>
 				<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.states', array('adminonly' => false)), "value", "text", $this->state->get('filter.state'), true); ?>
 			</select>

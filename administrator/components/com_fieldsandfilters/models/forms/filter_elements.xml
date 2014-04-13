@@ -31,7 +31,7 @@
 				type="list"
 				label="COM_FIELDSANDFILTERS_FORM_LBL_ELEMENT_EMPTY"
 				description="COM_FIELDSANDFILTERS_FORM_DESC_ELEMENT_EMPTY"
-				default="1"
+				default="0"
 				onchange="this.form.submit();"
 				>
 			<option value="0">COM_FIELDSANDFILTERS_OPTION_SELECT_ELEMENT_NOT_EMPTY</option>

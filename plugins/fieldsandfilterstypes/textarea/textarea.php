@@ -109,7 +109,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 			}
 			else
 			{
-				if ($field->params->get('type.display_editor'))
+				if ($field->params->get('type.display_editor', 1))
 				{
 					$element->addAttribute('type', 'editor');
 					$element->addAttribute('hide', 'readmore,pagebreak');
@@ -166,7 +166,7 @@ class plgFieldsandfiltersTypesTextarea extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML(JObject $layoutFields, Jobject $fields, stdClass $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering')
+	public function getFieldsandfiltersFieldsHTML(JObject $layoutFields, Jobject $fields, stdClass $element = null, $context = 'fields', JRegistry $params = null, $ordering = 'ordering')
 	{
 		if (!($fields = $fields->get($this->_name)))
 		{

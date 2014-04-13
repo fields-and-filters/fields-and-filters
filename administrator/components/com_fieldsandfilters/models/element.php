@@ -208,7 +208,7 @@ class FieldsandfiltersModelElement extends JModelAdmin
 		{
 			$row = array(
 				'item_id'         => (int) $this->getState($this->getName() . '.item_id', 0),
-				'content_type_id' => (int) $this->getState($this->getName() . '.content_type_id', 0),
+				'content_type_id' => (int) $this->getState($this->getName() . '.content_type_id', 0)
 			);
 		}
 
@@ -242,7 +242,6 @@ class FieldsandfiltersModelElement extends JModelAdmin
 			{
 				$table->content_type_id = (int) $this->getState($this->getName() . '.content_type_id', 0);
 				$table->item_id         = (int) $this->getState($this->getName() . '.item_id', 0);
-
 			}
 
 			if ($table->content_type_id && ($extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID($table->content_type_id, true, true)->get($table->content_type_id)))
@@ -302,10 +301,10 @@ class FieldsandfiltersModelElement extends JModelAdmin
 		// Get the pk of the record from the request.
 		$jinput = JFactory::getApplication()->input;
 
-		$itemID = $jinput->getInt('itid');
+		$itemID = (int) $jinput->get('itid');
 		$this->setState($this->getName() . '.item_id', $itemID);
 
-		$contentTypeID = $jinput->getInt('ctid');
+		$contentTypeID = (int) $jinput->get('ctid');
 		$this->setState($this->getName() . '.content_type_id', $contentTypeID);
 
 		parent::populateState();
@@ -607,5 +606,4 @@ class FieldsandfiltersModelElement extends JModelAdmin
 
 		return true;
 	}
-
 }

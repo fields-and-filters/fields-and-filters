@@ -15,6 +15,6 @@ $data = $plugin->element->data->get($field->id);
 
 <?php if (!empty($data)) : ?>
 	<div id="faf-field-<?php echo $field->id; ?>" class="faf-field faf-field-textarea <?php echo htmlspecialchars($field->params->get('base.class', '')); ?>">
-		<?php echo($field->params->get('type.prepare_data', 0) ? $data : htmlspecialchars($data, ENT_QUOTES, 'UTF-8')); ?>
+		<?php echo ($field->params->get('type.display_editor', 1) || $field->params->get('type.prepare_data', 0) ? $data : htmlspecialchars($data, ENT_QUOTES, 'UTF-8')); ?>
 	</div>
 <?php endif; ?>

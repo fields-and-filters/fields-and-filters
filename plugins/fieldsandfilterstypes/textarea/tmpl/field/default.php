@@ -62,7 +62,7 @@ if ($field->params->get('base.site_enabled_description', 0) && !empty($field->de
 		<?php endif; ?>
 
 		<div class="faf-text">
-			<?php echo($field->params->get('type.prepare_data', 0) ? $data : htmlspecialchars($data, ENT_QUOTES, 'UTF-8')); ?>
+			<?php echo ($field->params->get('type.display_editor', 1) || $field->params->get('type.prepare_data', 0) ? $data : htmlspecialchars($data, ENT_QUOTES, 'UTF-8')); ?>
 		</div>
 
 		<?php if ($isDescriptionAfter) : ?>

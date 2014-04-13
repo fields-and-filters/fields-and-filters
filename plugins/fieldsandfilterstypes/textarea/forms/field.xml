@@ -54,7 +54,7 @@
 							class="btn-group btn-group-yesno"
 							label="PLG_FAF_TS_TA_FORM_DISPLAY_EDITOR_LBL"
 							description="PLG_FAF_TS_TA_FORM_DISPLAY_EDITOR_DESC"
-							default="0"
+							default="1"
 							filter="intval"
 							>
 						<option value="0">JNO</option>

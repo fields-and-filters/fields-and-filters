@@ -148,7 +148,8 @@ class FieldsandfiltersModelElements extends JModelList
 		$where = array(
 			$db->quoteName('e.content_type_id') . ' = ' . (int) $contentTypeID
 		);
-		if ($this->state->get('filter.empty', true))
+
+		if ($this->state->get('filter.empty', 0))
 		{
 			$where[] = $db->quoteName('e.content_type_id') . ' IS NULL';
 		}

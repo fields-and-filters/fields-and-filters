@@ -30,7 +30,7 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 
 <form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&eid=' . (int) $this->item->get('element_id')); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="element-form" class="form-validate form-horizontal">
 
-	<fieldset>
+	<fieldset class="panelform">
 		<legend>
 			<?php if ($extensionTitle = $this->state->get('element.extension_title')) : ?>
 				<?php echo JText::_($extensionTitle); ?>:
@@ -39,7 +39,7 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 			(<?php echo (int) $this->item->get('item_id'); ?>)
 		</legend>
 		<div class="row-fluid">
-			<?php foreach ($this->form->getFieldset('fields') AS $name => $field) : ?>
+			<?php foreach ($this->form->getFieldset('fieldsandfilters') AS $name => $field) : ?>
 				<?php if (strtolower($field->type) == 'hidden') : ?>
 					<?php echo $field->input; ?>
 				<?php else : ?>

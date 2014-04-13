@@ -32,25 +32,31 @@ $saveOrder = $listOrder == 'e.ordering';
 	<fieldset id="filter-bar">
 		<div class="filter-search fltlft">
 			<label class="filter-search-lbl" for="filter_search"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?></label>
-			<input type="text" name="filter_search" id="filter_search" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('Search'); ?>" />
+			<input type="text" name="filter[search]" id="filter_search" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('Search'); ?>" />
 			<button type="submit"><?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?></button>
 			<button type="button" onclick="document.id( 'filter_search' ).value='';this.form.submit( );"><?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
 		</div>
 
 		<div class='filter-select fltrt'>
-			<select name="filter_content_type_id" class="inputbox" onchange="this.form.submit()">
+			<select name="filter[content_type_id]" id="filter_content_type_id" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION'); ?></option>
 				<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.extensions', array('allextensions')), 'value', 'text', $this->state->get('filter.content_type_id')); ?>
 			</select>
-			<select name="filter_published" class="inputbox" onchange="this.form.submit()">
+			<select name="filter[state]" id="filter_state" class="inputbox" onchange="this.form.submit()">
 				<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED'); ?></option>
 				<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.states'), 'value', 'text', $this->state->get('filter.state'), true); ?>
+			</select>
+			<select name="filter[empty]" id="filter_empty" class="inputbox" onchange="this.form.submit()">
+				<?php echo JHtml::_('select.options', array(
+					JHtml::_('select.option', 0, 'COM_FIELDSANDFILTERS_OPTION_SELECT_ELEMENT_NOT_EMPTY'),
+					JHtml::_('select.option', 1, 'COM_FIELDSANDFILTERS_OPTION_SELECT_ELEMENT_EMPTY'),
+				), 'value', 'text', $this->state->get('filter.empty', 0), true); ?>
 			</select>
 
 			<?php if (is_array($filtersOptions = $this->state->get('filters.options'))) : ?>
 				<?php foreach ($filtersOptions AS $name => &$filter) : ?>
 					<?php $filter = !is_array($filter) ? (array) $filter : $filter; ?>
-					<select name="filter_<?php echo $name; ?>" class="inputbox" onchange="this.form.submit()">
+					<select name="filter[<?php echo $name; ?>]" name="filter_<?php echo $name; ?>" class="inputbox" onchange="this.form.submit()">
 						<option value=""><?php echo JArrayHelper::getValue($filter, 'label'); ?></option>
 						<?php echo JHtml::_('select.options', JArrayHelper::getValue($filter, 'options', array(), 'array'), 'value', 'text', $this->state->get('filter.' . $name), true); ?>
 					</select>
@@ -126,7 +132,7 @@ $saveOrder = $listOrder == 'e.ordering';
 									<?php echo $this->escape($item->item_name); ?>
 								</a>
 							<?php else: ?>
-								<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&task=element.edit&etid=' . (int) $this->state->get('filter.content_type_id') . '&itid=' . (int) $item->item_id); ?>">
+								<a href="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&task=element.edit&ctid=' . (int) $this->state->get('filter.content_type_id') . '&itid=' . (int) $item->item_id); ?>">
 									<?php echo $this->escape($item->item_name); ?>
 								</a>
 							<?php endif; ?>

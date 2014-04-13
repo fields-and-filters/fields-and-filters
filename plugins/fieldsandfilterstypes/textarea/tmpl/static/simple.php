@@ -15,6 +15,6 @@ $data = $field->data;
 
 <?php if (!empty($data)) : ?>
 	<div id="faf-field-<?php echo $field->id; ?>" class="faf-field faf-field-textarea <?php echo htmlspecialchars($field->params->get('base.class', '')); ?>">
-		<?php echo($field->params->get('type.prepare_data', 0) ? $field->data : htmlspecialchars($field->data, ENT_QUOTES, 'UTF-8')); ?>
+		<?php echo $field->data; ?>
 	</div>
 <?php endif; ?>

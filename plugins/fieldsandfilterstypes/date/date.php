@@ -156,7 +156,7 @@ class plgFieldsandfiltersTypesDate extends JPlugin
 	/**
 	 * @since       1.1.0
 	 */
-	public function getFieldsandfiltersFieldsHTML(JObject $layoutFields, Jobject $fields, stdClass $element, $context = 'fields', JRegistry $params = null, $ordering = 'ordering')
+	public function getFieldsandfiltersFieldsHTML(JObject $layoutFields, Jobject $fields, stdClass $element = null, $context = 'fields', JRegistry $params = null, $ordering = 'ordering')
 	{
 		if (!($fields = $fields->get($this->_name)))
 		{

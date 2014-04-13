@@ -95,33 +95,20 @@ $required = array(
 	</div>
 
 	<div class="filter-select fltrt">
-		<select name="filter_published" class="inputbox" onchange="this.form.submit()">
+		<select name="filter[state]" class="inputbox" onchange="this.form.submit()">
 			<option value=""><?php echo JText::_('JOPTION_SELECT_PUBLISHED'); ?></option>
-			<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.states'), 'value', 'text', $this->state->get('filter.published'), true); ?>
+			<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.states'), 'value', 'text', $this->state->get('filter.state'), true); ?>
 		</select>
 
-		<select name="filter_content_type_id" class="inputbox" onchange="this.form.submit()">
+		<select name="filter[content_type_id]" class="inputbox" onchange="this.form.submit()">
 			<option value=""><?php echo JText::_('COM_FIELDSANDFILTERS_OPTION_SELECT_EXTENSION'); ?></option>
 			<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.extensions'), 'value', 'text', $this->state->get('filter.content_type_id')); ?>
 		</select>
 
-		<select name="filter_type" class="inputbox" onchange="this.form.submit()">
+		<select name="filter[type]" class="inputbox" onchange="this.form.submit()">
 			<option value=""><?php echo JText::_('COM_FIELDSANDFILTERS_OPTION_SELECT_TYPE'); ?></option>
 			<?php echo JHtml::_('select.options', JHtml::_('FieldsandfiltersHtml.options.types'), 'value', 'text', $this->state->get('filter.type')); ?>
 		</select>
-
-		<?php /*
-			<select name="filter_access" class="inputbox" onchange="this.form.submit()">
-				<option value=""><?php echo JText::_('JOPTION_SELECT_ACCESS');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('access.assetgroups'), 'value', 'text', $this->state->get('filter.access'));?>
-			</select>
-
-			<select name="filter_language" class="inputbox" onchange="this.form.submit()">
-				<option value=""><?php echo JText::_('JOPTION_SELECT_LANGUAGE');?></option>
-				<?php echo JHtml::_('select.options', JHtml::_('contentlanguage.existing', true, true), 'value', 'text', $this->state->get('filter.language'));?>
-			</select>
-			*/
-		?>
 	</div>
 </fieldset>
 <div class="clr"></div>

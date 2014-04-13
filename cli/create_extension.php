@@ -172,7 +172,7 @@ class CreateExtensionCli extends JApplicationCli
 
 		$files = $this->_getFiles($extension);
 
-		if (!$this->input->getBool('not-archive'))
+		if (!(boolean) $this->input->get('not-archive'))
 		{
 			$adapter = $this->input->get('adapter', 'zip');
 			$xml = $extension->get('xml');
@@ -242,13 +242,13 @@ class CreateExtensionCli extends JApplicationCli
 				$files = array_merge($files, $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages));
 				break;
 			case 'library':
-				$path = JPATH_LIBRARIES.'/'.(string) $xml->libraryname;
+				$path = JPATH_LIBRARIES.'/'.$xml->libraryname;
 				$files = $this->getFiles($path, $xml->files);
 				$files = array_merge($files, $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages));
 				$extension->set('name', 'lib_'.$xml->libraryname);
 				break;
 			case 'package':
-				$path = JPATH_MANIFESTS.'/packages';
+				$path = JPATH_MANIFESTS.'/packages/'.$xml->packagename;
 				$files = $this->getLanguages(JPATH_ADMINISTRATOR.$language, $xml->languages);
 				$files = array_merge($files,$this->preparePackage($xml->files, $extension->get('info')));
 				$extension->set('name', 'pkg_'.$xml->packagename);
