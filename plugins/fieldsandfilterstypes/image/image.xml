@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="fieldsandfilterstypes" method="upgrade">
 	<name>plg_fieldsandfilterstypes_image</name>
-	<creationDate>2014-04-11</creationDate>
+	<creationDate>2014-04-13</creationDate>
 	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see License.txt</license>
 	<author>KES - Kulka Tomasz</author>
 	<authorEmail>kes@kextensions.com</authorEmail>
 	<authorUrl>http://www.kextensions.com</authorUrl>
-	<version>1.2.0.2</version>
+	<version>1.2.0.3</version>
 	<description>PLG_FIELDSANDFILTERSTYPES_IMAGE_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="image">image.php</filename>

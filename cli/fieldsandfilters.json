@@ -9,7 +9,7 @@
 
 	"xml": "administrator/manifests/packages/pkg_fieldsandfilters",
 	"info": {
-		"creationDate": "2014-04-11",
-		"version": "1.2.0.2"
+		"creationDate": "2014-04-13",
+		"version": "1.2.0.3"
 	}
 }
