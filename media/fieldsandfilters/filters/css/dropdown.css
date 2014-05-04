@@ -1,0 +1,17 @@
+.faf-filters-dropdown .faf-control-dropdown {
+    display: none;
+    list-style: none;
+    margin: 0;
+}
+
+.faf-filters-dropdown:hover .faf-control-dropdown {
+    display: block;
+}
+
+.faf-filters-dropdown .faf-selected label {
+    text-decoration: underline;
+}
+
+.faf-filters-dropdown .faf-filters-input {
+    display: none;
+}
