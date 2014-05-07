@@ -189,7 +189,6 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 					$this->config->def('getValues', self::VALUES_DATA);
 					break;
 				case self::VALUES_BOTH:
-					$this->config->def('unsetElementsWithoutValuesAfterQueue', false);
 					$this->config->def('getValues', array(self::VALUES_CONNECTIONS, self::VALUES_DATA));
 					break;
 			}
@@ -216,13 +215,17 @@ class FieldsandfiltersElements extends KextensionsBufferValues
 	 *
 	 * @since       1.1.0
 	 */
-	protected function _beforeSearchElements($data)
+	protected function _beforeSearchElements($data, $key = 'id')
 	{
 		if ($this->method == 'getElementsByItemID')
 		{
 			// Get elements id from elements where is items id
 			$this->_elementsItemsID = KextensionsArray::getColumn($data->get('elements', new stdClass), 'item_id', 'id');
+
+            $key = 'item_id';
 		}
+
+        return parent::_beforeSearchElements($data, $key);
 	}
 
 	/**

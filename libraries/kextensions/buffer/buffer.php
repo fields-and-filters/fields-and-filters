@@ -137,17 +137,18 @@ abstract class KextensionsBuffer extends KextensionsBufferCore implements Kexten
 		$_notElements = $data->get($this->_not[$notName], array());
 		$_notElements = KextensionsArray::fromArray($_notElements, $_states);
 
-		// before search elements
-		$this->_beforeSearchElements($data);
-
 		$_elementsID = array();
 
 		// [TODO] change this code
-		reset($this->elements);
-		while (($elementID = current($this->elements)) !== false)
+        $elements = array_diff($this->elements, $this->_beforeSearchElements($data));
+
+        if (empty($elements)) {
+            return;
+        }
+
+		foreach ($elements AS $elementID)
 		{
 			$this->_searchElements($data, $elementID, $_elementsID, $_notElements);
-			next($this->elements);
 		}
 
 		// We need only isn't exists elements id
@@ -167,8 +168,19 @@ abstract class KextensionsBuffer extends KextensionsBufferCore implements Kexten
 	 *
 	 * @since       1.0.0
 	 */
-	protected function _beforeSearchElements($data)
+	protected function _beforeSearchElements($data, $key = 'id')
 	{
+        $elements = array();
+
+        foreach ($this->_data AS $_data) {
+            if ($_data == $data) {
+                continue;
+            }
+
+            $elements = array_merge($elements, KextensionsArray::getColumn($_data->get('elements', new stdClass), 'item_id', 'id'));
+        }
+
+        return $elements;
 	}
 
 	/**

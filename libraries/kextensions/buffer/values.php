@@ -35,6 +35,13 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 	 */
 	protected $_valuesElementsAdd = array();
 
+    /**
+     * Temporarily elements without values
+     *
+     * @since       1.0.0
+     */
+    protected $_valuesElementsWithout = array();
+
 	/**
 	 * Method to get the Elements that reflect extensions type id and states
 	 *
@@ -54,11 +61,19 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 		{
 			if (is_array($getValues))
 			{
+                $elementsWitout = array();
 				while ($getValue = array_shift($getValues))
 				{
 					$this->methodValues = $getValue;
-					$this->_getBufferValues();
+                    $this->_getBufferValues();
+
+                    if (!$this->config->get('elemntsWithoutValues', true)) {
+                        $elementsWitout = empty($elementsWitout) ? $this->_valuesElementsWithout : array_intersect($elementsWitout, $this->_valuesElementsWithout);
+                        $this->_valuesElementsWithout = array();
+                    }
 				}
+
+                $this->_valuesElementsWithout = $elementsWitout;
 			}
 			else
 			{
@@ -66,10 +81,7 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 				$this->_getBufferValues();
 			}
 
-			if (!$this->config->get('unsetElementsWithoutValuesAfterQueue', true))
-			{
-				$this->_unsetElementsWithoutValues();
-			}
+			$this->_unsetElementsWithoutValues();
 
 			$this->methodValues = null;
 		}
@@ -112,10 +124,6 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 		}
 
 		$this->_valuesElements = array_diff($this->_valuesElements, $this->_valuesElementsAdd);
-		if ($this->config->get('unsetElementsWithoutValuesAfterQueue', true))
-		{
-			$this->_unsetElementsWithoutValues();
-		}
 	}
 
 	/**
@@ -172,7 +180,7 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 
 			if (empty($_values))
 			{
-				unset($this->buffer->{$element->$elementName});
+                array_push($this->_valuesElementsWithout, $element->$elementName);
 			}
 
 			unset($_values);
@@ -227,10 +235,17 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 	 */
 	protected function _unsetElementsWithoutValues()
 	{
-		if ($this->config->get('elemntsWithoutValues', true) || empty($this->_valuesElements))
+		if ($this->config->get('elemntsWithoutValues', true))
 		{
 			return;
 		}
+
+        $this->_valuesElements = array_merge($this->_valuesElementsWithout, $this->_valuesElements);
+
+        if (empty($this->_valuesElements))
+        {
+            return;
+        }
 
 		while ($element = array_shift($this->_valuesElements))
 		{
@@ -254,6 +269,7 @@ abstract class KextensionsBufferValues extends KextensionsBuffer implements Kext
 		{
 			$this->_valuesElements    = array();
 			$this->_valuesElementsAdd = array();
+            $this->_valuesElementsWithout = array();
 		}
 
 		return $reset;
