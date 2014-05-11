@@ -2,56 +2,58 @@
 <form>
 	<fieldset addfieldpath="/administrator/components/com_fieldsandfilters/models/fields">
 		<field
-			name="field_id"
-			type="fieldsandfiltersFields"
-			modes="filter"
-			size="1"
-			class="inputbox"
-			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD"
-			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD"
-			required="true"
-			filter="intval"
-		/>
+				name="value"
+				type="text"
+				label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD_VALUE"
+				description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD_VALUE"
+				required="true"
+				class="inputbox input-xxlarge input-large-text"
+				filter="safehtml"
+				size="30"
+				/>
 		<field
-			name="field_value"
-			type="text"
-			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD_VALUE"
-			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD_VALUE"
-			required="true"
-			class="inputbox"
-			filter="safehtml"
-			size="30"
-		/>
+				name="alias"
+				type="text"
+				label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD_VALUE_ALIAS"
+				description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD_VALUE_ALIAS"
+				class="inputbox input-xxlarge"
+				filter="safehtml"
+				size="40"
+				hint="COM_FIELDSANDFILTERS_FORM_FIELD_VALUE_ALIAS_PLACEHOLDER"
+				/>
 		<field
-			name="field_value_alias"
-			type="text"
-			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD_VALUE_ALIAS"
-			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD_VALUE_ALIAS"
-			class="inputbox"
-			filter="raw"
-			size="30"
-		/>
+				name="field_id"
+				type="fieldsandfiltersFields"
+				modes="filter"
+				states="-1,0,1"
+				size="1"
+				class="inputbox"
+				label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD"
+				description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD"
+				required="true"
+				filter="intval"
+				/>
 		<field
-			name="state"
-			type="radio"
-			label="JSTATUS"
-			description="JFIELD_PUBLISHED_DESC"
-			class="btn-group"
-			size="1"
-			default="1"
-		>
+				name="state"
+				type="radio"
+				label="JSTATUS"
+				description="JFIELD_PUBLISHED_DESC"
+				class="btn-group"
+				size="1"
+				default="1"
+				>
 			<option value="1">JPUBLISHED</option>
 			<option value="0">JUNPUBLISHED</option>
 		</field>
 		<field
-			name="field_value_id"
-			type="text"
-			default="0"
-			class="readonly"
-			label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD_VALUE_ID"
-			description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD_VALUE_ID"
-			readonly="true"
-			filter="intval"
-		/>
+				name="id"
+				type="text"
+				default="0"
+				class="readonly"
+				label="COM_FIELDSANDFILTERS_FORM_LBL_FIELDVALUE_FIELD_VALUE_ID"
+				description="COM_FIELDSANDFILTERS_FORM_DESC_FIELDVALUE_FIELD_VALUE_ID"
+				readonly="true"
+				filter="intval"
+				/>
 	</fieldset>
 </form>

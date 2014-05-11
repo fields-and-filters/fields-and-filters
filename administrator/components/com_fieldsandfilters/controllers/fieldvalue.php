@@ -1,62 +1,45 @@
 <?php
 /**
- * @version     1.1.1
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
- * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> - 
+ * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> -
  */
 
 // No direct access
 defined('_JEXEC') or die;
 
-if( !FieldsandfiltersFactory::isVersion() )
+if (!FieldsandfiltersFactory::isVersion())
 {
-	jimport( 'joomla.application.component.controllerform' );
+	jimport('joomla.application.component.controllerform');
 }
 
 /**
  * Fieldvalue controller class.
- * @since	1.0.0
+ *
+ * @since    1.0.0
  */
 class FieldsandfiltersControllerFieldvalue extends JControllerForm
 {
-
-        function __construct()
-        {
-                $this->view_list = 'fieldvalues';
-                parent::__construct();
-        }
-        
-        /**
-	 * Method to save a record.
+	/**
+	 * Gets the URL arguments to append to a list redirect.
 	 *
-	 * @param   string  $key     The name of the primary key of the URL variable.
-	 * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
+	 * @return  string  The arguments to append to the redirect URL.
 	 *
-	 * @return  boolean  True if successful, false otherwise.
-	 *
-	 * @since	1.0.0
+	 * @since   12.2
 	 */
-	public function save( $key = 'field_value_id', $urlVar = 'id' )
+	protected function getRedirectToListAppend()
 	{
-                parent::save( $key, $urlVar );       
-        }
-        
-        /**
-	 * Method to edit an existing record.
-	 *
-	 * @param   string  $key     The name of the primary key of the URL variable.
-	 * @param   string  $urlVar  The name of the URL variable if different from the primary key
-	 * (sometimes required to avoid router collisions).
-	 *
-	 * @return  boolean  True if access level check and checkout passes, false otherwise.
-	 *
-	 * @since	1.0.0
-	 */
-	public function edit( $key = 'field_value_id', $urlVar = 'id' )
-	{                   
-                parent::edit( $key, $urlVar ); 
-        }
+		$append = parent::getRedirectToListAppend();
 
+		$filter   = (array) JFactory::getApplication()->getUserState(sprintf('%s.%s.filter', $this->option, $this->view_list), array());
+		$field_id = (int) JArrayHelper::getValue($filter, 'field_id');
+
+		if ($field_id)
+		{
+			$append .= '&field_id=' . $field_id;
+		}
+
+		return $append;
+	}
 }

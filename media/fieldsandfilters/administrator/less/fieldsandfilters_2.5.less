@@ -1,0 +1,111 @@
+/* ---- @deprecated Joomla 2.5 ---- */
+.icon-48-faf {
+	.com_fieldsandfilters .icon-faf;
+}
+
+.pagetitle[class*="icon-48-faf-"]:before {
+	float: left;
+	margin-left: -60px;
+	color: #146295;
+
+	font-family             : "fieldsandfilters";
+	font-size: 48px;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing  : antialiased;
+	-moz-osx-font-smoothing : grayscale;
+}
+
+#toolbar-box {
+	.icon-32  (dashboard, notice);
+	.icon-32  (star, unpublish);
+	.icon-32  (star-empty, unblock);
+}
+
+#element-box .jgrid {
+	.icon-16 (onlyadmin, notice);
+	.icon-16 (required, unpublish);
+	.icon-16 (unrequired, unblock);
+}
+
+.cpanel {
+	&-block {
+		display : inline-block;
+		width   : 100%;
+	}
+
+	div.icon {
+		text-align    : center;
+		margin-right  : 15px;
+		margin-bottom : 15px;
+		float         : left;
+
+		a {
+			background-color            : #fff;
+			background-position         : -30px;
+			display                     : block;
+			float                       : left;
+			height                      : 97px;
+			width                       : 108px;
+			color                       : #565656;
+			font-size                   : 65px;
+			vertical-align              : middle;
+			text-decoration             : none;
+			border                      : 1px solid #CCC;
+			-webkit-border-radius       : 5px;
+			-moz-border-radius          : 5px;
+			border-radius               : 5px;
+			-webkit-transition-property : background-position, -webkit-border-bottom-left-radius, -webkit-box-shadow;
+			-moz-transition-property    : background-position, -moz-border-radius-bottomleft, -moz-box-shadow;
+			-webkit-transition-duration : 0.8s;
+			-moz-transition-duration    : 0.8s;
+
+			span {
+				font-size: 12px;
+				display    : block;
+				text-align : center;
+			}
+
+			&:hover, &:focus, &:active {
+				color                             : #146295;
+				background-position               : 0;
+				-webkit-border-bottom-left-radius : 50% 20px;
+				-moz-border-radius-bottomleft     : 50% 20px;
+				border-bottom-left-radius         : 50% 20px;
+				-webkit-box-shadow                : -5px 10px 15px rgba(0, 0, 0, 0.25);
+				-moz-box-shadow                   : -5px 10px 15px rgba(0, 0, 0, 0.25);
+				box-shadow                        : -5px 10px 15px rgba(0, 0, 0, 0.25);
+				position                          : relative;
+				z-index                           : 10;
+			}
+		}
+	}
+}
+
+.com_fieldsandfilters.j25{
+	&.nav-tabs {
+		padding-left: 18px;
+		padding-right: 18px;
+		margin-bottom: 18px;
+		list-style: none;
+
+		> li {
+			margin-top: -1px;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+
+			> a {
+				display: block;
+				padding: 8px 12px;
+				line-height: 18px;
+				border: 1px solid #ddd;
+
+				&:hover {
+					background-color: #eee;
+				}
+			}
+		}
+	}
+}

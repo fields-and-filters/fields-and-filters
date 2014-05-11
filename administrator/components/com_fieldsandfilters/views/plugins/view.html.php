@@ -1,14 +1,13 @@
 <?php
 /**
- * @version     1.1.1
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
- * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> - 
+ * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> -
  */
 
 // No direct access
-defined( '_JEXEC' ) or die;
+defined('_JEXEC') or die;
 
 /**
  * View class for a list of plugins types.
@@ -16,47 +15,47 @@ defined( '_JEXEC' ) or die;
 class FieldsandfiltersViewPlugins extends JViewLegacy
 {
 	// Array of plugin types or groups plugin types
-	protected $_plugins = null;
-	
+	protected $plugins = null;
+
 	/**
 	 * Display the view
-	 * 
-	 * @since	1.1.0
+	 *
+	 * @since    1.1.0
 	 */
-	public function display( $tpl = null )
+	public function display($tpl = null)
 	{
-		$tpl = is_null( $tpl ) && !FieldsandfiltersFactory::isVersion() ? '2.5' : $tpl;
-		
-		switch( $this->getLayout() )
+		$tpl = is_null($tpl) && !FieldsandfiltersFactory::isVersion() ? '2.5' : $tpl;
+
+		switch ($this->getLayout())
 		{
 			case 'types':
 				// Load PluginTypes Helper - getTypesGroup
-				$this->_plugins = FieldsandfiltersFactory::getPluginTypes()->getTypesGroup();
-			break;
+				$this->plugins = FieldsandfiltersFactory::getTypes()->getTypesGroup();
+				break;
 			case 'extensions':
 				// Load PluginExtensions Helper - 
-				$this->_plugins = FieldsandfiltersFactory::getPluginExtensions()->getExtensionsGroup();
-				
-			break;
+				$this->plugins = FieldsandfiltersFactory::getExtensions()->getExtensionsGroup();
+				break;
 		}
-		
-		if( is_null( $this->_plugins ) )
+
+		if (is_null($this->plugins))
 		{
-			echo JText::sprintf( 'COM_FIELDSANDFILTERS_ERROR_NOT_PLUGINS_TPL', $this->getLayout() );
+			echo JText::sprintf('COM_FIELDSANDFILTERS_ERROR_NOT_PLUGINS_TPL', $this->getLayout());
+
 			return false;
 		}
-		
+
 		$this->addToolbar();
-		parent::display( $tpl );
+		parent::display($tpl);
 	}
-	
+
 	/**
 	 * Add the page title and toolbar.
 	 *
-	 * @since	1.0.0
+	 * @since    1.0.0
 	 */
 	protected function addToolbar()
 	{
-		JToolBarHelper::title( JText::_( 'COM_FIELDSANDFILTERS_HEADER_PLUGIN_' . strtoupper( $this->getLayout() ) ) );
+		JToolBarHelper::title(JText::_('COM_FIELDSANDFILTERS_HEADER_PLUGIN_' . strtoupper($this->getLayout())), 'faf-plugin-' . strtolower($this->getLayout()));
 	}
 }

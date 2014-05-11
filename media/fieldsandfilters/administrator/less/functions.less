@@ -1,0 +1,19 @@
+.icon (@name, @sign) {
+	&-@{name}:before {
+		content : @sign;
+	}
+}
+
+/* ---- @deprecated Joomla 2.5 ---- */
+.icon-32 (@name, @icon) {
+	.icon-32-@{name} {
+		background-image: url("@{template_icons_dir}/toolbar/icon-32-@{icon}.png");
+	}
+}
+
+.icon-16 (@name, @icon) {
+	span.@{name} {
+		background-image: url("@{template_icons_dir}/toolbar/icon-32-@{icon}.png");
+		background-size: 16px;
+	}
+}

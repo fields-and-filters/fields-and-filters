@@ -1,0 +1,36 @@
+.faf-filters-loading {
+	background : #000;
+	position   : relative !important;
+
+	/* Fallback for web browsers that doesn't support RGBa */
+	background : rgb(0, 0, 0);
+	/* RGBa with 0.6 opacity */
+	background : rgba(0, 0, 0, 0.6);
+
+	/* IE hack append element :after */
+	*zoom      : expression(
+              this.runtimeStyle.zoom="1",
+              this.appendChild( document.createElement("small") ).className="faf-filters-ie-after"
+        );
+}
+
+.faf-filters-loading:after,
+.faf-filters-loading .faf-filters-ie-after {
+	background-repeat   : no-repeat;
+	background-position : center center;
+	background-color    : transparent;
+	background          : url("../images/ajax-loading.gif") no-repeat scroll center center transparent;
+	content             : "";
+	display             : block;
+	height              : 100%;
+	left                : 0;
+	position            : absolute;
+	top                 : 0;
+	width               : 100%;
+	z-index             : 99999;
+	visibility          : visible !important;
+}
+
+.faf-filters-loading > * {
+	visibility : hidden !important;
+}

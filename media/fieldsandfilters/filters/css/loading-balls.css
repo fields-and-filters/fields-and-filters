@@ -1,0 +1,5 @@
+.faf-filters-option-loading-balls,
+.faf-filters-loading:after,
+.faf-filters-loading .faf-filters-ie-after {
+	background-image : url("../images/loading-balls.gif");
+}

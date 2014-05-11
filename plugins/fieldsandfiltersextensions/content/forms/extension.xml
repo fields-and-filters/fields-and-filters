@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout
+			title="PLG_FAF_ES_CT_FORM_TITLE"
+			option="PLG_FAF_ES_CT_FORM_OPTION"
+			>
+		<message>
+			<![CDATA[PLG_FAF_ES_CT_FORM_DESC]]>
+		</message>
+	</layout>
+	<group type="contents"
+	       title="PLG_FIELDSANDFILTERS_FORM_GROUP_CONTENTS_TITLE">
+		<message>
+			<![CDATA[PLG_FIELDSANDFILTERS_FORM_GROUP_CONTENTS_DESC]]>
+		</message>
+	</group>
+
+	<form>
+		<!-- Add fields to the parameters object for the plugin extension. -->
+		<fields name="params">
+			<fields name="extension">
+				<fieldset name="extension">
+					<field
+							name="location"
+							type="list"
+							size="10"
+							class="inputbox"
+							default="onSyntax"
+							label="PLG_FAF_ES_CT_FORM_PARAMS_EXTENSIONS_LOCATION_LBL"
+							description="PLG_FAF_ES_CT_FORM_PARAMS_EXTENSIONS_LOCATION_DESC"
+							multiple="true"
+							>
+						<option value="onSyntax">
+							COM_FIELDSANDFILTERS_FORM_LBL_PARAMS_EXTENSIONS_TYPE_OPTION_ONLY_SYNTAX
+						</option>
+						<option value="onContentAfterTitleCategory">
+							PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_AFTER_TITLE_CATEGORY
+						</option>
+						<option value="onContentBeforeDisplayCategory">
+							PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_BEFORE_CONTENT_CATEGORY
+						</option>
+						<option value="onContentAfterDisplayCategory">
+							PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_AFTER_CONTENT_CATEGORY
+						</option>
+						<option value="onContentAfterTitleArticle">
+							PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_AFTER_TITLE_ARTICLE
+						</option>
+						<option value="onContentBeforeDisplayArticle">
+							PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_BEFORE_CONTENT_ARTICLE
+						</option>
+						<option value="onContentAfterDisplayArticle">
+							PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_AFTER_CONTENT_ARTICLE
+						</option>
+						<option value="onContentAfterTitleFeatured">
+							PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_AFTER_TITLE_FEATURED
+						</option>
+						<option value="onContentBeforeDisplayFeatured">
+							PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_BEFORE_CONTENT_FEATURED
+						</option>
+						<option value="onContentAfterDisplayFeatured">
+							PLG_FAF_ES_CT_FORM_PROPERTIES_DISPLAY_OPTION_AFTER_CONTENT_FEATURED
+						</option>
+					</field>
+				</fieldset>
+			</fields>
+		</fields>
+	</form>
+</metadata>

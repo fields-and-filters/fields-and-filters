@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout
+			title="PLG_FAF_TS_LT_FORM_TITLE"
+			option="PLG_FAF_TS_LT_FORM_OPTION"
+			>
+		<message>
+			<![CDATA[PLG_FAF_TS_LT_FORM_DESC]]>
+		</message>
+	</layout>
+
+	<group type="filters"
+	       title="PLG_FIELDSANDFILTERS_FORM_GROUP_FILTERS_TITLE">
+		<message>
+			<![CDATA[PLG_FIELDSANDFILTERS_FORM_GROUP_FILTERS_DESC]]>
+		</message>
+	</group>
+
+	<form>
+		<!-- Add fields to the properties variables for the plugin type. -->
+		<fields name="properties">
+			<field
+					name="mode"
+					type="hidden"
+					value="filter.multi"
+					/>
+		</fields>
+
+		<!-- Add fields to the parameters object for the plugin type. -->
+		<fields name="params">
+			<fields name="type">
+				<fieldset name="type"
+				          addfieldpath="/administrator/components/com_fieldsandfilters/models/fields">
+					<field
+							name="default"
+							type="fieldsandfiltersFieldValues"
+							label="PLG_FAF_TS_LT_FORM_DEFAULT_LBL"
+							description="PLG_FAF_TS_LT_FORM_DEFAULT_DESC"
+							default=""
+							field="field_id"
+							filter="int_array"
+							translate_options="false"
+							/>
+					<field
+							name="disabled"
+							type="radio"
+							class="btn-group btn-group-yesno"
+							label="PLG_FAF_TS_LT_FORM_DISABLED_LBL"
+							description="PLG_FAF_TS_LT_FORM_DISABLED_DESC"
+							default="0"
+							>
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+					</field>
+					<field
+							name="field_layout"
+							type="fieldsandfiltersPluginLayout"
+							layoutFolder="field"
+							label="PLG_FAF_TS_LT_FORM_FIELD_LAYOUT_LBL"
+							description="PLG_FAF_TS_LT_FORM_FIELD_LAYOUT_DESC"
+							/>
+					<field
+							name="filter_layout"
+							type="fieldsandfiltersPluginLayout"
+							layoutFolder="filter"
+							label="PLG_FAF_TS_LT_FORM_FILTER_LAYOUT_LBL"
+							description="PLG_FAF_TS_LT_FORM_FILTER_LAYOUT_DESC"
+							/>
+					<field
+							name="prepare_values"
+							type="list"
+							class="inputbox"
+							default="0"
+							filter="intval"
+							label="PLG_FAF_TS_LT_FORM_PREPARE_VALUES_LBL"
+							description="PLG_FAF_TS_LT_FORM_PREPARE_VALUES_DESC"
+							>
+						<option value="">JNO</option>
+						<option value="1">COM_FIELDSANDFILTERS_OPTION_PREPARE_CONTENT_FIELDS</option>
+						<option value="2">COM_FIELDSANDFILTERS_OPTION_PREPARE_CONTENT_SYSTEM</option>
+					</field>
+					<field
+							name="style"
+							type="list"
+							class="inputbox"
+							label="PLG_FAF_TS_LT_FORM_STYLE_LBL"
+							description="PLG_FAF_TS_LT_FORM_STYLE_DESC"
+							default="checkbox"
+							>
+						<option value="checkbox">PLG_FAF_TS_LT_OPTION_CHECKBOX</option>
+						<option value="select">PLG_FAF_TS_LT_OPTION_SELECT</option>
+						<option value="multiselect">PLG_FAF_TS_LT_OPTION_MULTISELECT</option>
+					</field>
+				</fieldset>
+			</fields>
+		</fields>
+	</form>
+</metadata>

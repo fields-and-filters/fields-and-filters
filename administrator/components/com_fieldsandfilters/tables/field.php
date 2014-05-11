@@ -1,6 +1,5 @@
 <?php
 /**
- * @version     1.1.1
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
@@ -12,19 +11,21 @@ defined('_JEXEC') or die;
 
 /**
  * field Table class
- * @since       1.1.0
+ *
+ * @since       1.0.0
  */
-class FieldsandfiltersTableField extends JTable {
-
+class FieldsandfiltersTableField extends JTable
+{
 	/**
 	 * Constructor
 	 *
 	 * @param JDatabase A database connector object
+	 *
 	 * @since       1.0.0
 	 */
-	public function __construct( &$db )
+	public function __construct(&$db)
 	{
-		parent::__construct( '#__fieldsandfilters_fields', 'field_id', $db );
+		parent::__construct('#__fieldsandfilters_fields', 'id', $db);
 	}
 
 	/**
@@ -32,48 +33,30 @@ class FieldsandfiltersTableField extends JTable {
 	 * method only binds properties that are publicly accessible and optionally
 	 * takes an array of properties to ignore when binding.
 	 *
-	 * @param   mixed  $array     An associative array or object to bind to the JTable instance.
-	 * @param   mixed  $ignore  An optional array or space separated list of properties to ignore while binding.
+	 * @param   mixed $array  An associative array or object to bind to the JTable instance.
+	 * @param   mixed $ignore An optional array or space separated list of properties to ignore while binding.
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @link    http://docs.joomla.org/JTable/bind
+	 * @link        http://docs.joomla.org/JTable/bind
 	 * @since       1.1.0
 	 */
-	public function bind( $array, $ignore = '' )
+	public function bind($array, $ignore = '')
 	{
-		if( isset( $array['params'] ) && is_array( $array['params'] ) )
+		if (isset($array['params']) && is_array($array['params']))
 		{
 			$registry = new JRegistry();
-			$registry->loadArray( $array['params'] );
+			$registry->loadArray($array['params']);
 			$array['params'] = (string) $registry;
 		}
-		
-		if( isset( $array['values'] ) && is_array( $array['values'] ) )
+
+		if (isset($array['values']) && is_array($array['values']))
 		{
-			$this->values = JArrayHelper::getValue( $array, 'values', array() );
-			unset( $array['values'] );
+			$this->values = JArrayHelper::getValue($array, 'values', array());
+			unset($array['values']);
 		}
-    
-		return parent::bind( $array, $ignore );
-	}
-    
-	/**
-	 * This function convert an array of JAccessRule objects into an rules array.
-	 * 
-	 * @param type $jaccessrules an arrao of JAccessRule objects.
-	 * @since	1.0.0
-	 */
-	private function JAccessRulestoArray($jaccessrules){
-		$rules = array();
-		foreach($jaccessrules as $action => $jaccess){
-			$actions = array();
-			foreach($jaccess->getData() as $group => $allow){
-				$actions[$group] = ((bool)$allow);
-			}
-			$rules[$action] = $actions;
-		}
-		return $rules;
+
+		return parent::bind($array, $ignore);
 	}
 
 	/**
@@ -84,105 +67,108 @@ class FieldsandfiltersTableField extends JTable {
 	 *
 	 * @return  boolean  True if the instance is sane and able to be stored in the database.
 	 *
-	 * @link    http://docs.joomla.org/JTable/check
-	 * @since	1.1.0
+	 * @link     http://docs.joomla.org/JTable/check
+	 * @since    1.1.0
 	 */
 	public function check()
 	{
-		$pluginTypesHelper = FieldsandfiltersFactory::getPluginTypes();
-		
 		//If there is an ordering column and this is a new row then get the next ordering value
-		if( $this->field_id == 0 )
+		if ($this->id == 0)
 		{
 			$this->ordering = self::getNextOrder();
 		}
-		
-		// Check for exist mode field
-		if( !in_array( $this->mode, (array) $pluginTypesHelper->getModes( null, array(), true ) ) )
+
+		try
 		{
-			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_MODE' ) );
+			// Check for exist mode field
+			if (!in_array($this->mode, (array) FieldsandfiltersModes::getModes(null, array(), true)))
+			{
+				throw new RuntimeException(JText::_('COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_MODE'));
+
+				return false;
+			}
+
+			// Check for a field name.
+			if (trim($this->name) == '')
+			{
+				throw new RuntimeException(JText::_('COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_NAME'));
+			}
+
+			// Check for a field type.
+			if (trim($this->type) == '')
+			{
+				throw new RuntimeException(JText::_('COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_TYPE'));
+			}
+			elseif (!FieldsandfiltersFactory::getTypes()->getTypes()->get($this->type))
+			{
+				throw new RuntimeException(JText::sprintf('COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_TYPE_NOT_EXISTS', $this->type));
+			}
+
+			// Check for a field extension type id.
+			if (!$this->content_type_id)
+			{
+				throw new RuntimeException(JText::_('COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_CONTENT_TYPE_ID'));
+			}
+			elseif (!FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID($this->content_type_id)->get($this->content_type_id))
+			{
+				throw new RuntimeException(JText::sprintf('COM_FIELDSANDFILTERS_DATABASE_ERROR_CONTENT_TYPE_ID_NOT_EXISTS', $this->content_type_id));
+			}
+		} catch (RuntimeException $e)
+		{
+			$this->setError($e->getMessage());
+
 			return false;
 		}
-		
-		// Check for a field name.
-		if( trim( $this->field_name ) == '' )
-		{
-			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_NAME' ) );
-			return false;
-		}
-		
-		// Check for a field type.
-		if( trim( $this->field_type ) == '' )
-		{
-			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_TYPE' ) );
-			return false;
-		}
-		elseif( !$pluginTypesHelper->getTypes()->get( $this->field_type ) )
-		{
-			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_TYPE_NOT_EXISTS', $this->field_type ) );
-			return false;
-		}
-		
-		// Check for a field extension type id.
-		if( !$this->extension_type_id )
-		{
-			$this->setError( JText::_( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_VALID_FIELD_EXTENSION_TYPE_ID' ) );
-			return false;
-		}
-		elseif( !FieldsandfiltersFactory::getPluginExtensions()->getExtensionsPivot( 'extension_type_id' )->get( $this->extension_type_id ) )
-		{
-			$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_EXTENSION_TYPE_ID_NOT_EXISTS', $this->extension_type_id ) );
-			return false;
-		}
-		
+
 		// Check mode field
-		if( in_array( $this->mode, (array) $pluginTypesHelper->getMode( 'filter' ) ) )
+		if (in_array($this->mode, (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER)))
 		{
 			// Check for a field alias
-			if( trim( $this->field_alias ) == '' )
+			if (trim($this->alias) == '')
 			{
-				$this->field_alias = $this->field_name;
+				$this->alias = $this->name;
 			}
-		       
-			$this->field_alias = JApplication::stringURLSafe( $this->field_alias );
-		       
-			if( trim( str_replace( '-', '', $this->field_alias ) ) == '' )
+
+			$this->alias = JApplication::stringURLSafe($this->alias);
+
+			if (trim(str_replace('-', '', $this->alias)) == '')
 			{
-				$this->field_alias = JFactory::getDate()->format( 'Y-m-d-H-i-s' );
+				$this->alias = JFactory::getDate()->format('Y-m-d-H-i-s');
 			}
 		}
-		elseif( trim( $this->field_alias ) != '' )
+		elseif (trim($this->alias) != '')
 		{
-			$this->field_alias = '';
+			$this->alias = '';
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Overrides JTable::store to set modified data and user id.
 	 *
-	 * @param   boolean  $updateNulls  True to update fields even if they are null.
+	 * @param   boolean $updateNulls True to update fields even if they are null.
 	 *
 	 * @return  boolean  True on success.
-	 * @since	1.1.0
+	 * @since    1.1.0
 	 */
-	public function store( $updateNulls = false )
+	public function store($updateNulls = false)
 	{
 		// Check mode field
-		if( in_array( $this->mode, (array) FieldsandfiltersFactory::getPluginTypes()->getMode( 'filter' ) ) )
+		if (in_array($this->mode, (array) FieldsandfiltersModes::getMode(FieldsandfiltersModes::MODE_FILTER)))
 		{
 			// Verify that the alias is unique
-			$table = JTable::getInstance( 'Field', 'FieldsandfiltersTable' );
-			
-			if( $table->load( array( 'field_alias' => $this->field_alias ) ) && ( $table->field_id != $this->field_id || $this->field_id == 0 ) )
+			$table = JTable::getInstance('Field', 'FieldsandfiltersTable');
+
+			if ($table->load(array('alias' => $this->alias)) && ($table->id != $this->id || $this->id == 0))
 			{
-				$this->setError( JText::sprintf( 'COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_ALIAS_EXISTS', $this->field_alias ) );
+				$this->setError(JText::sprintf('COM_FIELDSANDFILTERS_DATABASE_ERROR_FIELD_ALIAS_EXISTS', $this->alias));
+
 				return false;
 			}
 		}
-		
-		return parent::store( $updateNulls );
+
+		return parent::store($updateNulls);
 	}
 
 	/**
@@ -190,136 +176,138 @@ class FieldsandfiltersTableField extends JTable {
 	 * table. The method respects checked out rows by other users and will attempt
 	 * to checkin rows that it can after adjustments are made.
 	 *
-	 * @param   mixed    $pks     An optional array of primary key values to update.  If not set the instance property value is used.
-	 * @param   integer  $state   The publishing state. eg. [0 = unpublished, 1 = published, -1 = onlyadmin state]
-	 * @param   integer  $userId  The user id of the user performing the operation.
+	 * @param   mixed   $pks    An optional array of primary key values to update.  If not set the instance property value is used.
+	 * @param   integer $state  The publishing state. eg. [0 = unpublished, 1 = published, -1 = onlyadmin state]
+	 * @param   integer $userId The user id of the user performing the operation.
 	 *
 	 * @return  boolean  True on success.
-	 * @since	1.0.0
+	 * @since    1.0.0
 	 */
-	public function publish( $pks = null, $state = 1, $userId = 0 )
+	public function publish($pks = null, $state = 1, $userId = 0)
 	{
 		$k = $this->_tbl_key;
-		
+
 		// Sanitize input.
-		JArrayHelper::toInteger( $pks );
+		JArrayHelper::toInteger($pks);
 		$userId = (int) $userId;
-		$state = (int) $state;
-		
+		$state  = (int) $state;
+
 		// If there are no primary keys set check to see if the instance key is set.
-		if( empty( $pks ) )
+		if (empty($pks))
 		{
-			if( $this->$k )
+			if ($this->$k)
 			{
-				$pks = array( $this->$k );
+				$pks = array($this->$k);
 			}
 			// Nothing to set publishing state on, return false.
 			else
 			{
-				$this->setError( JText::_( 'JLIB_DATABASE_ERROR_NO_ROWS_SELECTED' ) );
+				$this->setError(JText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
+
 				return false;
 			}
 		}
-		
+
 		// Get the JDatabaseQuery object
-		$query = $this->_db->getQuery( true );
-		
+		$query = $this->_db->getQuery(true);
+
 		// Update the publishing state for rows with the given primary keys.
-		$query->update( $this->_db->quoteName( $this->_tbl ) );
-		$query->set( $this->_db->quoteName( 'state' ) . ' = ' . (int) $state );
-		
+		$query->update($this->_db->quoteName($this->_tbl));
+		$query->set($this->_db->quoteName('state') . ' = ' . (int) $state);
+
 		// Build the WHERE clause for the primary keys.
-		$query->where( $this->_db->quoteName( $k ) . ' IN (' . implode( ',', $pks ) . ')' );
-		
-		$this->_db->setQuery( $query );
-		
+		$query->where($this->_db->quoteName($k) . ' IN (' . implode(',', $pks) . ')');
+
+		$this->_db->setQuery($query);
+
 		try
 		{
 			$this->_db->execute();
-		}
-		catch( RuntimeException $e )
+		} catch (RuntimeException $e)
 		{
-			$this->setError( $e->getMessage() );
+			$this->setError($e->getMessage());
+
 			return false;
 		}
-		
+
 		// If the JTable instance value is in the list of primary keys that were set, set the instance.
-		if( in_array( $this->$k, $pks ) )
+		if (in_array($this->$k, $pks))
 		{
 			$this->state = $state;
 		}
-		
+
 		$this->setError('');
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Method to set the requiring state for a row or list of rows in the database
 	 * table. The method respects checked out rows by other users and will attempt
 	 * to checkin rows that it can after adjustments are made.
 	 *
-	 * @param   mixed    $pks     An optional array of primary key values to update.  If not set the instance property value is used.
-	 * @param   integer  $state   The requiring state. eg. [0 = unrequired, 1 = required]
-	 * @param   integer  $userId  The user id of the user performing the operation.
+	 * @param   mixed   $pks    An optional array of primary key values to update.  If not set the instance property value is used.
+	 * @param   integer $state  The requiring state. eg. [0 = unrequired, 1 = required]
+	 * @param   integer $userId The user id of the user performing the operation.
 	 *
 	 * @return  boolean  True on success.
-	 * @since	1.0.0
+	 * @since    1.0.0
 	 */
-	public function required( $pks = null, $state = 1, $userId = 0 )
+	public function required($pks = null, $state = 1, $userId = 0)
 	{
 		$k = $this->_tbl_key;
-		
+
 		// Sanitize input.
-		JArrayHelper::toInteger( $pks );
+		JArrayHelper::toInteger($pks);
 		$userId = (int) $userId;
-		$state = (int) $state;
-		
+		$state  = (int) $state;
+
 		// If there are no primary keys set check to see if the instance key is set.
-		if( empty( $pks ) )
+		if (empty($pks))
 		{
-			if( $this->$k )
+			if ($this->$k)
 			{
-				$pks = array( $this->$k );
+				$pks = array($this->$k);
 			}
 			// Nothing to set publishing state on, return false.
 			else
 			{
-				$this->setError( JText::_( 'JLIB_DATABASE_ERROR_NO_ROWS_SELECTED' ) );
+				$this->setError(JText::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED'));
+
 				return false;
 			}
 		}
-		
+
 		// Get the JDatabaseQuery object
-		$query = $this->_db->getQuery( true );
-		
+		$query = $this->_db->getQuery(true);
+
 		// Update the publishing state for rows with the given primary keys.
-		$query->update( $this->_db->quoteName( $this->_tbl ) );
-		$query->set( $this->_db->quoteName( 'required' ) . ' = ' . (int) $state );
-		
+		$query->update($this->_db->quoteName($this->_tbl));
+		$query->set($this->_db->quoteName('required') . ' = ' . (int) $state);
+
 		// Build the WHERE clause for the primary keys.
-		$query->where( $this->_db->quoteName( $k ) . ' IN (' . implode( ',', $pks ) . ')' );
-		
-		$this->_db->setQuery( $query );
-		
+		$query->where($this->_db->quoteName($k) . ' IN (' . implode(',', $pks) . ')');
+
+		$this->_db->setQuery($query);
+
 		try
 		{
 			$this->_db->execute();
-		}
-		catch( RuntimeException $e )
+		} catch (RuntimeException $e)
 		{
-			$this->setError( $e->getMessage() );
+			$this->setError($e->getMessage());
+
 			return false;
 		}
-		
+
 		// If the JTable instance value is in the list of primary keys that were set, set the instance.
-		if( in_array( $this->$k, $pks ) )
+		if (in_array($this->$k, $pks))
 		{
 			$this->state = $state;
 		}
-		
+
 		$this->setError('');
-		
+
 		return true;
 	}
 }

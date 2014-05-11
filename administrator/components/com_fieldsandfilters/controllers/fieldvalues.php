@@ -1,63 +1,65 @@
 <?php
 /**
- * @version     1.1.1
  * @package     com_fieldsandfilters
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
- * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> - 
+ * @author      KES - Kulka Tomasz <kulka.tomek@gmail.com> -
  */
 
 // No direct access.
 defined('_JEXEC') or die;
 
-if( !FieldsandfiltersFactory::isVersion() )
+if (!FieldsandfiltersFactory::isVersion())
 {
-	jimport( 'joomla.application.component.controlleradmin' );
+	jimport('joomla.application.component.controlleradmin');
 }
 
 /**
  * Fieldvalues list controller class.
- * @since	1.0.0
+ *
+ * @since    1.0.0
  */
 class FieldsandfiltersControllerFieldvalues extends JControllerAdmin
 {
 	/**
 	 * Proxy for getModel.
-	 * @since	1.0.0
+	 *
+	 * @since    1.0.0
 	 */
-	public function getModel( $name = 'fieldvalue', $prefix = 'FieldsandfiltersModel', $config = array() )
+	public function getModel($name = 'fieldvalue', $prefix = 'FieldsandfiltersModel', $config = array('ignore_request' => true))
 	{
-		$model = parent::getModel( $name, $prefix, array_merge( array( 'ignore_request' => true ), $config ) );
+		$model = parent::getModel($name, $prefix, $config);
+
 		return $model;
 	}
-	
+
 	/**
 	 * Method to save the submitted ordering values for records via AJAX.
 	 *
 	 * @return  void
 	 *
-	 * @since	1.0.0
+	 * @since    1.0.0
 	 */
 	public function saveOrderAjax()
 	{
-		$pks = $this->input->post->get( 'cid', array(), 'array' );
-		$order = $this->input->post->get( 'order', array(), 'array' );
-		
+		$pks   = $this->input->post->get('cid', array(), 'array');
+		$order = $this->input->post->get('order', array(), 'array');
+
 		// Sanitize the input
-		JArrayHelper::toInteger( $pks );
-		JArrayHelper::toInteger( $order );
-		
+		JArrayHelper::toInteger($pks);
+		JArrayHelper::toInteger($order);
+
 		// Get the model
 		$model = $this->getModel();
-		
+
 		// Save the ordering
-		$return = $model->saveorder( $pks, $order );
-		
-		if( $return )
+		$return = $model->saveorder($pks, $order);
+
+		if ($return)
 		{
 			echo "1";
 		}
-		
+
 		// Close the application
 		JFactory::getApplication()->close();
 	}

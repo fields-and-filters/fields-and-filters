@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout
+			title="PLG_FAF_TS_UL_FORM_TITLE"
+			option="PLG_FAF_TS_UL_FORM_OPTION"
+			>
+		<message>
+			<![CDATA[PLG_FAF_TS_UL_FORM_DESC]]>
+		</message>
+	</layout>
+
+	<group type="fields"
+	       title="PLG_FIELDSANDFILTERS_FORM_GROUP_FIELDS_TITLE">
+		<message>
+			<![CDATA[PLG_FIELDSANDFILTERS_FORM_GROUP_FIELDS_DESC]]>
+		</message>
+	</group>
+
+	<form>
+		<!-- Add fields to the properties variables for the plugin type. -->
+		<fields name="properties">
+			<field
+					name="mode"
+					type="hidden"
+					value="field.json"
+					/>
+		</fields>
+
+		<!-- Add fields to the parameters object for the plugin type. -->
+		<fields name="params">
+			<fields name="type">
+				<fieldset name="type">
+					<field
+							name="target"
+							type="list"
+							label="PLG_FAF_TS_UL_FORM_TARGET_LBL"
+							description="PLG_FAF_TS_UL_FORM_TARGET_DESC"
+							filter="safehtml"
+							default=""
+							>
+						<option value="1">PLG_FAF_TS_UL_FORM_TARGET_OPTION_BLANK</option>
+						<option value="2">PLG_FAF_TS_UL_FORM_TARGET_OPTION_POPUP</option>
+						<option value="3">PLG_FAF_TS_UL_FORM_TARGET_OPTION_MODAL</option>
+						<option value="4">PLG_FAF_TS_UL_FORM_TARGET_OPTION_PARENT</option>
+					</field>
+					<field
+							name="field_layout"
+							type="fieldsandfiltersPluginLayout"
+							layoutFolder="field"
+							label="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_LBL"
+							description="PLG_FAF_TS_TA_FORM_FIELD_LAYOUT_DESC"
+							/>
+				</fieldset>
+			</fields>
+		</fields>
+	</form>
+</metadata>
