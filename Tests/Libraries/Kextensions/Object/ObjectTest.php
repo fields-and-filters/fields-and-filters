@@ -67,6 +67,36 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $object->foo);
     }
 
+    public function testSetPropertyMultiple()
+    {
+        $object = new Object();
+
+        $this->assertFalse(isset($object->foo) || isset($object->bar) || isset($object->array));
+
+        $object->foo = 'bar';
+        $object->bar = 'foo';
+        $object->array = array(1,2,3);
+
+        $this->assertEquals('bar', $object->foo);
+        $this->assertEquals('foo', $object->bar);
+        $this->assertEquals(array(1,2,3), $object->array);
+    }
+
+    public function testSetMethodMultiple()
+    {
+        $object = new Object();
+
+        $this->assertFalse(isset($object->foo) || isset($object->bar) || isset($object->array));
+
+        $object->set('foo', 'bar');
+        $object->set('bar', 'foo');
+        $object->set('array', array(1,2,3));
+
+        $this->assertEquals('bar', $object->get('foo'));
+        $this->assertEquals('foo', $object->get('bar'));
+        $this->assertEquals(array(1,2,3), $object->get('array'));
+    }
+
     public function testSetMethodChaining()
     {
         $actual = new Object();
@@ -83,6 +113,23 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->assertEquals($actual, $expected);
+    }
+
+    public function testPropertyNotExistsAndReturNull()
+    {
+        $object = new Object();
+
+        $this->assertFalse(isset($object->foo));
+        $this->assertNull($object->foo);
+    }
+
+    public function testPropertyExistsButIsNull()
+    {
+        $object = new Object();
+        $object->foo = null;
+
+        $this->assertTrue(isset($object->foo));
+        $this->assertNull($object->foo);
     }
 
     /**

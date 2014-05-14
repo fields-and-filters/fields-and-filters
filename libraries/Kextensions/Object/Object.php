@@ -28,7 +28,7 @@ class Object
 
     public function __isset($property)
     {
-        return isset($this->data[$property]);
+        return array_key_exists($property, $this->data);
     }
 
     public function __set($property, $value)
