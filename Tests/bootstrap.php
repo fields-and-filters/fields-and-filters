@@ -27,14 +27,6 @@ require_once JPATH_BASE . '/includes/framework.php';
 JLoader::registerNamespace('Tests', JPATH_ROOT);
 JLoader::registerNamespace('Kextensions', JPATH_LIBRARIES);
 
-$object = new Kextensions\Object\Object();
-
-$object->set('test',array(1))->set('test2',array(1));
-
-echo '<pre>';
-print_r($object);
-echo '</pre>';
-
 // Mark afterLoad in the profiler.
 // JDEBUG ? $_PROFILER->mark('afterLoad') : null;
 

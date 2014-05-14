@@ -18,6 +18,14 @@ class Object
 {
     private $data = array();
 
+    public function __construct($properties = null)
+    {
+        if ($properties !== null)
+        {
+            $this->bind($properties);
+        }
+    }
+
     public function __isset($property)
     {
         return isset($this->data[$property]);
@@ -50,5 +58,26 @@ class Object
     public function get($property)
     {
         return isset($this->data[$property]) ? $this->data[$property] : null;
+    }
+
+    public function bind($properties)
+    {
+        if (!is_array($properties) && !is_object($properties))
+        {
+            throw new \InvalidArgumentException(sprintf('%s(%s)', __METHOD__, gettype($properties)));
+        }
+
+        if ($properties instanceof \Traversable)
+        {
+            $properties = iterator_to_array($properties);
+        }
+        elseif (is_object($properties))
+        {
+            $properties = (array) $properties;
+        }
+
+        $this->data = $this->data + $properties;
+
+        return $this;
     }
 } 
