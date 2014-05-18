@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @package     Kextensions
  * @since       2.0
  */
-class Object
+class Object implements \IteratorAggregate, \Countable
 {
     private $data = array();
 
@@ -48,6 +48,15 @@ class Object
     public function __unset($property)
     {
         unset($this->data[$property]);
+    }
+
+    public function getIterator() {
+        return new \ArrayIterator($this);
+    }
+
+    public function count()
+    {
+        return count($this->data);
     }
 
     public function set($property, $value)

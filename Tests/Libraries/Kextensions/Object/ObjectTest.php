@@ -222,4 +222,70 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($actual, $expected);
     }
+
+    public function testBindMethodArrayObject()
+    {
+        $properties = array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        );
+
+        $actual = new Object();
+        $actual->bind(new \ArrayObject($properties));
+
+        $expected = new Object($properties);
+
+        $this->assertEquals($actual, $expected);
+    }
+
+    public function testBindMethodObject()
+    {
+        $properties = array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        );
+
+        $actual = new Object();
+        $actual->bind((object) $properties);
+
+        $expected = new Object($properties);
+
+        $this->assertEquals($actual, $expected);
+    }
+
+    public function testBindException()
+    {
+        $actual = new Object();
+
+        try
+        {
+            $actual->bind('foobar');
+        }
+        catch (\Exception $e)
+        {
+            $this->assertInstanceOf('InvalidArgumentException', $e);
+        }
+
+    }
+
+    public function testCount()
+    {
+        $object = new Object();
+        $this->assertCount(0, $object);
+
+        $object->foo = 'bar';
+        $this->assertCount(1, $object);
+
+        $object->bar = 'foo';
+        $object->array = array(1,2,3);
+        $this->assertCount(3, $object);
+    }
+
+    public function testGetIterator()
+    {
+        $object = new Object();
+        $this->assertInstanceOf('ArrayIterator', $object->getIterator());
+    }
 }
