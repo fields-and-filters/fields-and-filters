@@ -100,17 +100,16 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     public function testSetMethodChaining()
     {
         $actual = new Object();
-
-        $expected = new Object();
-        $expected->set('foo', 'bar');
-        $expected->set('bar', 'foo');
-        $expected->set('array', array(1,2,3));
-
         $actual
             ->set('foo', 'bar')
             ->set('bar', 'foo')
             ->set('array', array(1,2,3))
         ;
+
+        $expected = new Object();
+        $expected->set('foo', 'bar');
+        $expected->set('bar', 'foo');
+        $expected->set('array', array(1,2,3));
 
         $this->assertEquals($actual, $expected);
     }
@@ -132,15 +131,95 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($object->foo);
     }
 
-    /**
-     * [TODO] Write test:
-     * testBindMethod
-     * testBindMethodWithSetMethod
-     * testBindMethodChaining
-     * testBindMethodWithSetMethodChaining
-     * testConstructor
-     * testConstructorWithBind
-     * testConstructorWithBindAndSetMethod
-     * testConstructorWithBindAndSetMethodChaining
-     */
+    public function testConstructorBindMethod()
+    {
+        $actual = new Object(array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        ));
+
+        $expected = new Object();
+        $expected->set('foo', 'bar');
+        $expected->set('bar', 'foo');
+        $expected->set('array', array(1,2,3));
+
+        $this->assertEquals($actual, $expected);
+    }
+
+    public function testBindMethodWithSetMethod()
+    {
+        $actual = new Object(array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        ));
+
+        $actual
+            ->set('object', new \stdClass())
+            ->set('integer', 123);
+
+        $expected = new Object(array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3),
+            'object' => new \stdClass(),
+            'integer' => 123
+        ));
+
+        $this->assertEquals($actual, $expected);
+    }
+
+    public function testBindMethodMultiple()
+    {
+        $actual = new Object(array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        ));
+
+        $actual->bind(array(
+            'foo' => 'bar2',
+            'object' => new \stdClass(),
+            'integer' => 123
+        ));
+
+        $expected = new Object(array(
+            'foo' => 'bar2',
+            'bar' => 'foo',
+            'array' => array(1,2,3),
+            'object' => new \stdClass(),
+            'integer' => 123
+        ));
+
+        $this->assertEquals($actual, $expected);
+    }
+
+    public function testBindMethodChaining()
+    {
+        $actual = new Object();
+
+        $actual
+            ->bind(array(
+                'foo' => 'bar',
+                'bar' => 'foo',
+                'array' => array(1,2,3)
+            ))
+            ->bind(array(
+                'foo' => 'bar2',
+                'object' => new \stdClass(),
+                'integer' => 123
+            ))
+        ;
+
+        $expected = new Object(array(
+            'foo' => 'bar2',
+            'bar' => 'foo',
+            'array' => array(1,2,3),
+            'object' => new \stdClass(),
+            'integer' => 123
+        ));
+
+        $this->assertEquals($actual, $expected);
+    }
 }

@@ -1,12 +1,14 @@
 <?php
 /**
- * @package     com_fieldsandfilters
+ * @package     Kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
  * @license     GNU General Public License version 3 or later; see License.txt
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
 namespace Kextensions\Object;
+
+defined('_JEXEC') or die;
 
 /**
  * Object
@@ -62,6 +64,18 @@ class Object
 
     public function bind($properties)
     {
+        $properties = self::beforeBind($properties);
+
+        foreach($properties AS $property => $value)
+        {
+            $this->set($property, $value);
+        }
+
+        return $this;
+    }
+
+    protected static function beforeBind($properties)
+    {
         if (!is_array($properties) && !is_object($properties))
         {
             throw new \InvalidArgumentException(sprintf('%s(%s)', __METHOD__, gettype($properties)));
@@ -76,8 +90,6 @@ class Object
             $properties = (array) $properties;
         }
 
-        $this->data = $this->data + $properties;
-
-        return $this;
+        return $properties;
     }
-} 
+}
