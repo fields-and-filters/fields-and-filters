@@ -6,7 +6,7 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Tests\Libraries\Kextensions\Object;
+namespace Kextensions\Tests\Object;
 
 use Kextensions\Object\Object;
 

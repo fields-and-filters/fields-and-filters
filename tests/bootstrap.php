@@ -23,8 +23,6 @@ if (!defined('_JDEFINES'))
 }
 
 require_once JPATH_BASE . '/includes/framework.php';
-
-JLoader::registerNamespace('Tests', JPATH_ROOT);
 JLoader::registerNamespace('Kextensions', JPATH_LIBRARIES);
 
 // Mark afterLoad in the profiler.

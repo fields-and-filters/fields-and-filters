@@ -1,0 +1,1 @@
+phpunit --bootstrap tests/bootstrap.php libraries/Kextensions/Tests/Object/ObjectTest
