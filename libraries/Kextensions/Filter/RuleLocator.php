@@ -17,7 +17,7 @@ defined('_KEXTENSIONS_') or die;
  * @package     Kextensions
  * @since       2.0
  */
-abstract class Locator
+abstract class RuleLocator
 {
     protected static $namespaces = array(
         'rule' => 'Kextensions\\Filter\\Rule'
