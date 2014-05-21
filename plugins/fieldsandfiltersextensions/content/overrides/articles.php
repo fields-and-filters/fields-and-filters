@@ -56,7 +56,8 @@ class plgFieldsandfiltersExtensionsContentModelArticles extends ContentModelArti
 	 * Get the master query for retrieving a list of articles subject to the model state.
 	 *
 	 * @return    JDatabaseQuery
-	 * @since       1.0.0
+     *
+	 * Change Access level from `protected` to `public` for Joomla! 2.5.x. In Joomla! 3.x must be `protected`
 	 */
 	public function getListQuery()
 	{

@@ -27,7 +27,7 @@ JHtml::_('stylesheet', 'fieldsandfilters/administrator/fieldsandfilters.css', ar
 	}
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->field_value_id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="fieldvalue-form" class="form-validate form-horizontal">
+<form action="<?php echo JRoute::_('index.php?option=com_fieldsandfilters&layout=edit&id=' . (int) $this->item->id); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="fieldvalue-form" class="form-validate form-horizontal">
 	<div class="width-60 fltlft">
 		<fieldset class="adminform">
 			<legend><?php echo JText::_('COM_FIELDSANDFILTERS_LEGEND_FIELDVALUE'); ?></legend>
