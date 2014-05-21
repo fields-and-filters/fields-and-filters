@@ -9,7 +9,7 @@
 
 namespace Kextensions\Filter;
 
-defined('_KEXTENSIONS_') or die;
+defined('_JEXEC') or die;
 
 /**
  * Filter
@@ -28,8 +28,6 @@ abstract class RuleLocator
     public static function setNamespace($name, $namespace)
     {
         self::$namespaces[$name] = $namespace;
-
-        return self;
     }
 
     public static function getNamespace($name)
@@ -44,6 +42,7 @@ abstract class RuleLocator
 
     public static function get($name)
     {
+        $name = (strpos($name, '.') === false) ? 'rule.'.$name : $name;
         $name = strtolower($name);
 
         if (!isset(self::$registry[$name]))

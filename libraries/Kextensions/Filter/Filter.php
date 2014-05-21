@@ -9,7 +9,7 @@
 
 namespace Kextensions\Filter;
 
-defined('_KEXTENSIONS_') or die;
+defined('_JEXEC') or die;
 
 /**
  * Filter

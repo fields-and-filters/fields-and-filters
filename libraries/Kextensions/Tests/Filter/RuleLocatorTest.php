@@ -19,16 +19,40 @@ use Kextensions\Filter\RuleLocator;
  */
 class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 {
+    public function testGetDefaultNamespace()
+    {
+        $namespace = RuleLocator::getNamespace('rule');
+        $this->assertEquals($namespace, 'Kextensions\\Filter\\Rule');
+    }
+
+    public function testSetGetNamespaceMethod()
+    {
+        RuleLocator::setNamespace('test', 'Kextensions\\Tests\\Filter\\Rule');
+
+        $namespace = RuleLocator::getNamespace('test');
+        $this->assertEquals($namespace, 'Kextensions\\Tests\\Filter\\Rule');
+    }
+
+    public function testGetNotExistsNamespaceException()
+    {
+        try
+        {
+            $foo = RuleLocator::getNamespace('notexists');
+        }
+        catch (\Exception $e)
+        {
+            $this->assertInstanceOf('InvalidArgumentException', $e);
+        }
+    }
+
+
+
     /**
      * [TODO]
-     * testGetDefaultNamespace
-     * testSetNamespaceMethod
-     * testGetnamespaceMethod
      * testGetMethod
      * testSetNamespaceAndGetClass
      * testGetSameClassMultiple
-     * testGetNoExistsClassException
+     * testGetNotExistsClassException
      * testGetClassWithWrongInstanceException
-     * testSetNamespaceMethodChaining
      **/
 }

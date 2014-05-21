@@ -8,7 +8,7 @@
 
 namespace Kextensions\Object;
 
-defined('_KEXTENSIONS_') or die;
+defined('_JEXEC') or die;
 
 /**
  * Object
