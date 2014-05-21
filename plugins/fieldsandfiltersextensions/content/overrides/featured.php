@@ -65,8 +65,10 @@ class plgFieldsandfiltersExtensionsContentModelFeatured extends ContentModelFeat
 
 	/**
 	 * @return  JDatabaseQuery
+     *
+     * Change Access level from `protected` to `public` for Joomla! 2.5.x. In Joomla! 3.x must be `protected`
 	 */
-	protected function getListQuery()
+	public function getListQuery()
 	{
 		// Create a new query object.
 		$query = parent::getListQuery();
