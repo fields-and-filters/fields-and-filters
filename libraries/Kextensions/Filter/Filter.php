@@ -19,6 +19,12 @@ defined('_JEXEC') or die;
  */
 class Filter extends \FilterIterator
 {
+    const IS = 'is';
+
+    const IS_NOT = 'isNot';
+
+    protected $rules = array();
+
     public function __construct(\Iterator $iterator , $filter)
     {
         parent::__construct($iterator);
@@ -27,10 +33,34 @@ class Filter extends \FilterIterator
 
     public function accept()
     {
-        $user = $this->getInnerIterator()->current();
-        if( strcasecmp($user['name'],$this->userFilter) == 0) {
-            return false;
+        $data = $this->getInnerIterator()->current();
+
+        foreach ($this->rules AS $info)
+        {
+            $rule = RuleLocator::get($info['name']);
+            $rule->prepare($data, $info['field']);
+
+            if (!call_user_func_array(array($info['name'], $info['method']), $info['params']))
+            {
+                return false;
+            }
         }
+
         return true;
+    }
+
+    public function addRule($name, $field, array $params = array(), $method = Filter::IS)
+    {
+        $this->rules[] = array(
+            'name' => $name,
+            'field' => $field,
+            'params' => $params,
+            'method' => $method
+        );
+    }
+
+    public function cleanRule()
+    {
+        $this->rules = array();
     }
 }

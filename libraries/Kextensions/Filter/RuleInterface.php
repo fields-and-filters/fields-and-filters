@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     Kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
@@ -6,23 +7,23 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Filter\Rule;
-
-use Kextensions\Filter\AbstractRule;
+namespace Kextensions\Filter;
 
 defined('_JEXEC') or die;
 
-
 /**
- * Equals Rule
+ * RuleInterface
  *
  * @package     Kextensions
  * @since       2.0
  */
-class Equals extends AbstractRule
+interface RuleInterface
 {
-    public function validate($value)
-    {
-        return $this->getValue() == $value;
-    }
+    public function prepare($data, $field);
+
+    public function getValue();
+
+    public function is();
+
+    public function isNot();
 }

@@ -25,6 +25,21 @@ abstract class RuleLocator
 
     protected static $registry = array();
 
+    public static function get($name)
+    {
+        $key = (strpos($name, '.') === false) ? 'rule.'.$name : $name;
+        $key = strtolower($name);
+
+        if (!isset(self::$registry[$key]))
+        {
+            $class = self::getClass($key);
+
+            self::$registry[$key] = new $class();
+        }
+
+        return self::$registry[$key];
+    }
+
     public static function setNamespace($name, $namespace)
     {
         self::$namespaces[$name] = $namespace;
@@ -40,30 +55,26 @@ abstract class RuleLocator
         return self::$namespaces[$name];
     }
 
-    public static function get($name)
+    protected static function getClass($name)
     {
-        $name = (strpos($name, '.') === false) ? 'rule.'.$name : $name;
-        $name = strtolower($name);
+        list($namespace, $class) = explode('.', $name);
 
-        if (!isset(self::$registry[$name]))
+        $namespace = self::getNamespace($namespace);
+        $class = $namespace.'\\'.ucfirst($name);
+
+        if (!class_exists($class))
         {
-            list($namespace, $class) = explode('.', $name);
-
-            $namespace = self::getNamespace($namespace);
-            $class = $namespace.'\\'.ucfirst($name);
-
-            if (!class_exists($class))
-            {
-                throw new \Exception(sprintf('Class "%s" not exists', $class));
-            }
-            else if (!$class instanceof AbstractRule)
-            {
-                throw new \InvalidArgumentException(sprintf('%s(%s)', __METHOD__, $class));
-            }
-
-            self::$registry[$name] = new $class();
+            throw new \Exception(sprintf('Class "%s" not exists', $class));
+        }
+        else if (!$class instanceof RuleInterface)
+        {
+            throw new \InvalidArgumentException(sprintf('%s(%s)', __METHOD__, $class));
+        }
+        else if(!is_callable(array($class, 'validate')))
+        {
+            throw new \InvalidArgumentException(sprintf('%s(%s)', __METHOD__, $class));
         }
 
-        return self::$registry[$name];
+        return $class;
     }
 }
