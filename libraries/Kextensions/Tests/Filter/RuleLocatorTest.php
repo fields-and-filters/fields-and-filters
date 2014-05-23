@@ -37,7 +37,7 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
     {
         try
         {
-            $foo = RuleLocator::getNamespace('notexists');
+            RuleLocator::getNamespace('notexists');
         }
         catch (\Exception $e)
         {
@@ -45,7 +45,13 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testGetMethod()
+    {
+        $actual = RuleLocator::get('equals');
+        $expected = new \Kextensions\Filter\Rule\Equals();
 
+        $this->assertEquals($actual, $expected);
+    }
 
     /**
      * [TODO]

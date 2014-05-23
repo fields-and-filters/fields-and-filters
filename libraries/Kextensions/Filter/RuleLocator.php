@@ -9,6 +9,8 @@
 
 namespace Kextensions\Filter;
 
+use Kextensions\Filter\RuleInterface;
+
 defined('_JEXEC') or die;
 
 /**
@@ -27,14 +29,12 @@ abstract class RuleLocator
 
     public static function get($name)
     {
-        $key = (strpos($name, '.') === false) ? 'rule.'.$name : $name;
+        $name = (strpos($name, '.') === false) ? 'rule.'.$name : $name;
         $key = strtolower($name);
 
         if (!isset(self::$registry[$key]))
         {
-            $class = self::getClass($key);
-
-            self::$registry[$key] = new $class();
+            self::$registry[$key] = self::getClass($name);
         }
 
         return self::$registry[$key];
@@ -60,19 +60,22 @@ abstract class RuleLocator
         list($namespace, $class) = explode('.', $name);
 
         $namespace = self::getNamespace($namespace);
-        $class = $namespace.'\\'.ucfirst($name);
+        $class = $namespace.'\\'.ucfirst($class);
 
         if (!class_exists($class))
         {
             throw new \Exception(sprintf('Class "%s" not exists', $class));
         }
-        else if (!$class instanceof RuleInterface)
+
+        $class = new $class();
+
+        if (!$class instanceof RuleInterface)
         {
-            throw new \InvalidArgumentException(sprintf('%s(%s)', __METHOD__, $class));
+            throw new \InvalidArgumentException(sprintf('Class "%s" not instance of "%s"', get_class($class), 'Kextensions\\Filter\\RuleInterface'));
         }
         else if(!is_callable(array($class, 'validate')))
         {
-            throw new \InvalidArgumentException(sprintf('%s(%s)', __METHOD__, $class));
+            throw new \InvalidArgumentException(sprintf('The method "%s::%s" is not callable', get_class($class), 'validate'));
         }
 
         return $class;

@@ -12,7 +12,6 @@ use Kextensions\Filter\AbstractRule;
 
 defined('_JEXEC') or die;
 
-
 /**
  * Equals Rule
  *

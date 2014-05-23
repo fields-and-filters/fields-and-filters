@@ -49,7 +49,7 @@ class Filter extends \FilterIterator
         return true;
     }
 
-    public function addRule($name, $field, array $params = array(), $method = Filter::IS)
+    public function addRule($name, $field, array $params = array(), $method = self::IS)
     {
         $this->rules[] = array(
             'name' => $name,
