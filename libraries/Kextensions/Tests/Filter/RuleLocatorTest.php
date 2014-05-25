@@ -53,12 +53,70 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($actual, $expected);
     }
 
-    /**
-     * [TODO]
-     * testGetMethod
-     * testSetNamespaceAndGetClass
-     * testGetSameClassMultiple
-     * testGetNotExistsClassException
-     * testGetClassWithWrongInstanceException
-     **/
+    public function testSetNamespaceAndGetClass()
+    {
+        RuleLocator::setNamespace('fixtures', 'Kextensions\\Tests\\Filter\\Fixtures\\Rule');
+
+        $actual = RuleLocator::get('fixtures.rule');
+        $expected = new \Kextensions\Tests\Filter\Fixtures\Rule\Rule();
+
+        $this->assertEquals($actual, $expected);
+    }
+
+    public function testGetSameClassMultiple()
+    {
+        $equals1 = RuleLocator::get('equals');
+        $equals1->prepare(array(
+            'foo' => 'bar'
+        ), 'foo');
+
+        $equals2 = RuleLocator::get('equals');
+
+        $this->assertEquals($equals1, $equals2);
+    }
+
+    public function testGetNotExistsClassException()
+    {
+        RuleLocator::setNamespace('fixtures', 'Kextensions\\Tests\\Filter\\Fixtures\\Rule');
+
+        try
+        {
+            RuleLocator::get('fixtures.notExistsClass');
+        }
+        catch (\Exception $e)
+        {
+            $this->assertStringMatchesFormat('Class "%s" not exists', $e->getMessage());
+            $this->assertInstanceOf('Exception', $e);
+        }
+    }
+
+    public function testGetClassWithWrongInstanceException()
+    {
+        RuleLocator::setNamespace('fixtures', 'Kextensions\\Tests\\Filter\\Fixtures\\Rule');
+
+        try
+        {
+            RuleLocator::get('fixtures.classWithWrnogInstance');
+        }
+        catch (\Exception $e)
+        {
+            $this->assertStringMatchesFormat('Class "%s" not instance of "%s"', $e->getMessage());
+            $this->assertInstanceOf('InvalidArgumentException', $e);
+        }
+    }
+
+    public function testGetClassWithoutValidateMethodException()
+    {
+        RuleLocator::setNamespace('fixtures', 'Kextensions\\Tests\\Filter\\Fixtures\\Rule');
+
+        try
+        {
+            RuleLocator::get('fixtures.classWithoutValidateMethod');
+        }
+        catch (\Exception $e)
+        {
+            $this->assertStringMatchesFormat('The method "%s::%s" is not callable', $e->getMessage());
+            $this->assertInstanceOf('InvalidArgumentException', $e);
+        }
+    }
 }
