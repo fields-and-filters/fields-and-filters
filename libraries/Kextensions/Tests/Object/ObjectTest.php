@@ -266,7 +266,10 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         catch (\Exception $e)
         {
             $this->assertInstanceOf('InvalidArgumentException', $e);
+            return;
         }
+
+        $this->fail(sprintf('An expected exception "%s" has not been raised.', 'InvalidArgumentException'));
 
     }
 

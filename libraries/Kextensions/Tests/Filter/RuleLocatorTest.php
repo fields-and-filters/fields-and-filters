@@ -19,6 +19,8 @@ use Kextensions\Filter\RuleLocator;
  */
 class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 {
+    protected $namespaceRule = '\\Kextensions\\Tests\\Filter\\Fixtures\\Rule';
+
     public function testGetDefaultNamespace()
     {
         $namespace = RuleLocator::getNamespace('rule');
@@ -27,10 +29,10 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testSetGetNamespaceMethod()
     {
-        RuleLocator::setNamespace('test', 'Kextensions\\Tests\\Filter\\Rule');
+        RuleLocator::setNamespace('test', $this->namespaceRule);
 
         $namespace = RuleLocator::getNamespace('test');
-        $this->assertEquals($namespace, 'Kextensions\\Tests\\Filter\\Rule');
+        $this->assertEquals($namespace, $this->namespaceRule);
     }
 
     public function testGetNotExistsNamespaceException()
@@ -42,7 +44,10 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
         catch (\Exception $e)
         {
             $this->assertInstanceOf('InvalidArgumentException', $e);
+            return;
         }
+
+        $this->fail(sprintf('An expected exception "%s" has not been raised.', 'InvalidArgumentException'));
     }
 
     public function testGetMethod()
@@ -55,7 +60,7 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testSetNamespaceAndGetClass()
     {
-        RuleLocator::setNamespace('fixtures', 'Kextensions\\Tests\\Filter\\Fixtures\\Rule');
+        RuleLocator::setNamespace('fixtures', $this->namespaceRule);
 
         $actual = RuleLocator::get('fixtures.rule');
         $expected = new \Kextensions\Tests\Filter\Fixtures\Rule\Rule();
@@ -77,7 +82,7 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetNotExistsClassException()
     {
-        RuleLocator::setNamespace('fixtures', 'Kextensions\\Tests\\Filter\\Fixtures\\Rule');
+        RuleLocator::setNamespace('fixtures', $this->namespaceRule);
 
         try
         {
@@ -87,12 +92,15 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
         {
             $this->assertStringMatchesFormat('Class "%s" not exists', $e->getMessage());
             $this->assertInstanceOf('Exception', $e);
+            return;
         }
+
+        $this->fail(sprintf('An expected exception "%s" has not been raised.', 'Exception'));
     }
 
     public function testGetClassWithWrongInstanceException()
     {
-        RuleLocator::setNamespace('fixtures', 'Kextensions\\Tests\\Filter\\Fixtures\\Rule');
+        RuleLocator::setNamespace('fixtures', $this->namespaceRule);
 
         try
         {
@@ -102,12 +110,15 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
         {
             $this->assertStringMatchesFormat('Class "%s" not instance of "%s"', $e->getMessage());
             $this->assertInstanceOf('InvalidArgumentException', $e);
+            return;
         }
+
+        $this->fail(sprintf('An expected exception "%s" has not been raised.', 'InvalidArgumentException'));
     }
 
     public function testGetClassWithoutValidateMethodException()
     {
-        RuleLocator::setNamespace('fixtures', 'Kextensions\\Tests\\Filter\\Fixtures\\Rule');
+        RuleLocator::setNamespace('fixtures', $this->namespaceRule);
 
         try
         {
@@ -117,6 +128,9 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
         {
             $this->assertStringMatchesFormat('The method "%s::%s" is not callable', $e->getMessage());
             $this->assertInstanceOf('InvalidArgumentException', $e);
+            return;
         }
+
+        $this->fail(sprintf('An expected exception "%s" has not been raised.', 'InvalidArgumentException'));
     }
 }

@@ -9,8 +9,6 @@
 
 namespace Kextensions\Tests\Filter;
 
-namespace Kextensions\Filter\AbstractRule;
-
 /**
  * AbstractRuleTest
  *
@@ -19,13 +17,15 @@ namespace Kextensions\Filter\AbstractRule;
  */
 class AbstractRuleTest extends \PHPUnit_Framework_TestCase
 {
+    protected $abstractClass = '\\Kextensions\\Filter\\AbstractRule';
+
     public function testPreapreMethod()
     {
         $data = new \stdClass();
         $data->foo = 'bar';
         $field = 'foo';
 
-        $rule = $this->getMockForAbstractClass('\\Kextensions\\Filter\\AbstractRule');
+        $rule = $this->getMockForAbstractClass($this->abstractClass);
         $rule->prepare($data, $field);
 
         $reflection = new \ReflectionClass($rule);
@@ -45,7 +45,7 @@ class AbstractRuleTest extends \PHPUnit_Framework_TestCase
         $data->foo = 'bar';
         $field = 'foo';
 
-        $rule = $this->getMockForAbstractClass('\\Kextensions\\Filter\\AbstractRule');
+        $rule = $this->getMockForAbstractClass($this->abstractClass);
         $rule->prepare($data, $field);
 
         $this->assertEquals($rule->getValue('foo'), $data->foo);
@@ -53,7 +53,7 @@ class AbstractRuleTest extends \PHPUnit_Framework_TestCase
 
     public function testIsMethod()
     {
-        $rule = $this->getMock('\\Kextensions\\Filter\\AbstractRule', array('validate'));
+        $rule = $this->getMock($this->abstractClass, array('validate'));
 
         $rule->expects($this->any())
             ->method('validate')
@@ -64,7 +64,7 @@ class AbstractRuleTest extends \PHPUnit_Framework_TestCase
 
     public function testFalseIsMethod()
     {
-        $rule = $this->getMock('\\Kextensions\\Filter\\AbstractRule', array('validate'));
+        $rule = $this->getMock($this->abstractClass, array('validate'));
 
         $rule->expects($this->any())
             ->method('validate')
@@ -75,7 +75,7 @@ class AbstractRuleTest extends \PHPUnit_Framework_TestCase
 
     public function testIsNotMethod()
     {
-        $rule = $this->getMock('\\Kextensions\\Filter\\AbstractRule', array('validate'));
+        $rule = $this->getMock($this->abstractClass, array('validate'));
 
         $rule->expects($this->any())
             ->method('validate')
@@ -86,7 +86,7 @@ class AbstractRuleTest extends \PHPUnit_Framework_TestCase
 
     public function testTrueIsNotMethod()
     {
-        $rule = $this->getMock('\\Kextensions\\Filter\\AbstractRule', array('validate'));
+        $rule = $this->getMock($this->abstractClass, array('validate'));
 
         $rule->expects($this->any())
             ->method('validate')
@@ -94,29 +94,4 @@ class AbstractRuleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($rule->isNot());
     }
-/*
-    public function prepare($data, $field)
-    {
-        $this->data = $data;
-        $this->field = $field;
-
-        return $this;
-    }
-
-    public function getValue()
-    {
-        $field = $this->field;
-        return isset($this->data->$field) ? $this->data->$field : null;
-    }
-
-    public function is()
-    {
-        return call_user_func_array(array($this, 'validate'), func_get_args());
-    }
-
-    public function isNot()
-    {
-        return !call_user_func_array(array($this, 'validate'), func_get_args());
-    }
-*/
 }
