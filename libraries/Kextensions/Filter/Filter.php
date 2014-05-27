@@ -25,12 +25,6 @@ class Filter extends \FilterIterator
 
     protected $rules = array();
 
-    public function __construct(\Iterator $iterator , $filter)
-    {
-        parent::__construct($iterator);
-        $this->userFilter = $filter;
-    }
-
     public function accept()
     {
         $data = $this->getInnerIterator()->current();
@@ -40,7 +34,7 @@ class Filter extends \FilterIterator
             $rule = RuleLocator::get($info['name']);
             $rule->prepare($data, $info['field']);
 
-            if (!call_user_func_array(array($info['name'], $info['method']), $info['params']))
+            if (!call_user_func_array(array($rule, $info['method']), $info['params']))
             {
                 return false;
             }
@@ -49,7 +43,7 @@ class Filter extends \FilterIterator
         return true;
     }
 
-    public function addRule($name, $field, array $params = array(), $method = self::IS)
+    public function addRule($name, $field, array $params = array(), $method = Filter::IS)
     {
         $this->rules[] = array(
             'name' => $name,
@@ -57,10 +51,14 @@ class Filter extends \FilterIterator
             'params' => $params,
             'method' => $method
         );
+
+        return $this;
     }
 
-    public function cleanRule()
+    public function clearRule()
     {
         $this->rules = array();
+
+        return $this;
     }
 }
