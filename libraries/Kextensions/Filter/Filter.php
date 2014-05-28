@@ -27,7 +27,7 @@ class Filter extends \FilterIterator
 
     public function accept()
     {
-        $data = $this->getInnerIterator()->current();
+        $data = $this->current();
 
         foreach ($this->rules AS $info)
         {
@@ -41,6 +41,23 @@ class Filter extends \FilterIterator
         }
 
         return true;
+    }
+
+    public function filter($class = '\\stdClass')
+    {
+        if (!class_exists($class))
+        {
+            throw new \Exception(sprintf('Class "%s" not exists', $class));
+        }
+
+        $object = new $class();
+
+        foreach ($this AS $key => $value)
+        {
+            $object->$key = $value;
+        }
+
+        return $object;
     }
 
     public function addRule($name, $field, array $params = array(), $method = Filter::IS)
