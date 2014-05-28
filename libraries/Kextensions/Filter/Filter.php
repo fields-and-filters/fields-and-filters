@@ -43,29 +43,17 @@ class Filter extends \FilterIterator
         return true;
     }
 
-    public function filter($class = '\\stdClass')
+    public function filter()
     {
-        if (!class_exists($class))
-        {
-            throw new \Exception(sprintf('Class "%s" not exists', $class));
-        }
-
-        $object = new $class();
-
-        foreach ($this AS $key => $value)
-        {
-            $object->$key = $value;
-        }
-
-        return $object;
+        return iterator_to_array($this);
     }
 
-    public function addRule($name, $field, array $params = array(), $method = Filter::IS)
+    public function addRule($name, $field, $method = Filter::IS)
     {
         $this->rules[] = array(
             'name' => $name,
             'field' => $field,
-            'params' => $params,
+            'params' => array_slice(func_get_args(), 3),
             'method' => $method
         );
 

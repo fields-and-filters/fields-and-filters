@@ -152,37 +152,36 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $data = $this->getData();
         $filter = new Filter(new \ArrayIterator($data));
-        $filter->addRule('equals', 'foo', array('foo'));
+        $filter->addRule('equals', 'foo', Filter::IS, 'foo');
 
         unset($data[2], $data[3]);
 
-        $this->assertEquals($filter->filter(), (object) $data);
+        $this->assertEquals($filter->filter(), $data);
 
         $data = $this->getData();
         unset($data[1], $data[4]);
 
-        $this->assertNotEquals($filter->filter(), (object) $data);
+        $this->assertNotEquals($filter->filter(), $data);
     }
 
     public function testFilterMethodMultieRules()
     {
-
         $data = $this->getData();
         $filter = new Filter(new \ArrayIterator($data));
 
         $filter
-            ->addRule('equals', 'foo', array('foo'))
-            ->addRule('equals', 'array', array(array(3,4)))
+            ->addRule('equals', 'foo', Filter::IS, 'foo')
+            ->addRule('equals', 'array', Filter::IS, array(3,4))
         ;
 
         unset($data[1], $data[2], $data[3]);
 
-        $this->assertEquals($filter->filter(), (object) $data);
+        $this->assertEquals($filter->filter(), $data);
 
         $data = $this->getData();
         unset($data[4]);
 
-        $this->assertNotEquals($filter->filter(), (object) $data);
+        $this->assertNotEquals($filter->filter(), $data);
     }
 
     public function testFilterMethodMultiple()
@@ -190,20 +189,20 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $data = $this->getData();
         $filter = new Filter(new \ArrayIterator($data));
 
-        $filter->addRule('equals', 'foo', array('foobar'));
+        $filter->addRule('equals', 'foo', Filter::IS, 'foobar');
 
         unset($data[1], $data[4]);
 
-        $this->assertEquals($filter->filter(), (object) $data);
+        $this->assertEquals($filter->filter(), $data);
 
-        $filter->addRule('equals', 'bar', array('barfoo'));
+        $filter->addRule('equals', 'bar', Filter::IS, 'barfoo');
 
         unset($data[3]);
 
-        $this->assertEquals($filter->filter(), (object) $data);
+        $this->assertEquals($filter->filter(), $data);
 
         $data = $this->getData();
-        $this->assertNotEquals($filter->filter(), (object) $data);
+        $this->assertNotEquals($filter->filter(), $data);
     }
 
     public function testFilterForeach()
@@ -211,7 +210,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $data = $this->getData();
         $filter = new Filter(new \ArrayIterator($data));
 
-        $filter->addRule('equals', 'array', array(array(1,2)));
+        $filter->addRule('equals', 'array', Filter::IS, array(1,2));
 
         $actual = array();
         foreach($filter AS $key => $value)
@@ -224,48 +223,12 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($actual, $data);
     }
 
-    public function testFilterMethodReturnNotExistsClassException()
-    {
-        $data = $this->getData();
-        $filter = new Filter(new \ArrayIterator($data));
-
-        $filter->addRule('equals', 'array', array(array(3,4)));
-
-        try
-        {
-            $object = $filter->filter('NotExistsClass');
-        }
-        catch (\Exception $e)
-        {
-            $this->assertStringMatchesFormat('Class "%s" not exists', $e->getMessage());
-            $this->assertInstanceOf('Exception', $e);
-            return;
-        }
-
-        $this->fail(sprintf('An expected exception "%s" has not been raised.', 'Exception'));
-    }
-
-    public function testFilterMethodReturnObjectClass()
-    {
-        $data = $this->getData();
-        $filter = new Filter(new \ArrayIterator($data));
-
-        $filter->addRule('equals', 'array', array(array(3,4)));
-
-        $object = $filter->filter('\\Kextensions\\Object\\Object');
-
-        unset($data[1], $data[3]);
-
-        $this->assertInstanceOf('\\Kextensions\\Object\\Object', $object);
-        $this->assertEquals($object, new \Kextensions\Object\Object($data));
-    }
-
     public function testFilterReturnObjectClass()
     {
         $data = $this->getData();
         $filter = new Filter(new \ArrayIterator($data));
 
-        $filter->addRule('equals', 'foo', array('foobar'));
+        $filter->addRule('equals', 'foo', Filter::IS, 'foobar');
 
         $object = new \Kextensions\Object\Object($filter);
 
