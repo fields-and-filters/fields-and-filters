@@ -55,6 +55,16 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->rule->is($data->array2));
     }
 
+    public function testAcceptMethodArrayDifferentOrder()
+    {
+        $data = $this->getData();
+        $this->rule->prepare($data, 'array1');
+
+        $this->assertTrue($this->rule->is(array_reverse($data->array1)));
+
+        $this->assertFalse($this->rule->is(array_reverse($data->array2)));
+    }
+
     public function testAcceptMethodObject()
     {
         $data = $this->getData();

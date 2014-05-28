@@ -21,6 +21,14 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 {
     protected $namespaceRule = '\\Kextensions\\Tests\\Filter\\Fixtures\\Rule';
 
+    public static function setUpBeforeClass()
+    {
+        $reflection = new \ReflectionClass('\\Kextensions\\Filter\\RuleLocator');
+        $property = $reflection->getProperty('registry');
+        $property->setAccessible(true);
+        $property->setValue(array());
+    }
+
     public function testGetDefaultNamespace()
     {
         $namespace = RuleLocator::getNamespace('rule');
