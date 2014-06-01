@@ -9,7 +9,10 @@
 
 namespace Kextensions\Buffer;
 
-defined('_KEXTENSIONS_') or die;
+use Kextensions\Object\Object;
+use Kextensions\Filter\Filter;
+
+defined('_JEXEC') or die;
 
 /**
  * Buffer
@@ -17,7 +20,23 @@ defined('_KEXTENSIONS_') or die;
  * @package     Kextensions
  * @since       2.0
  */
-class Buffer
+abstract class Buffer extends Object
 {
+    protected $rules = array();
+
+    abstract protected function load();
+
+    public function addFilter($field, $value)
+    {
+        $filter[] = array(
+            'field' => $field,
+            'value' => $value
+        );
+
+        return $this;
+    }
+
+
+
 
 }

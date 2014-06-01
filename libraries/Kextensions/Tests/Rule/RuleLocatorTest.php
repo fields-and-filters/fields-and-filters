@@ -7,9 +7,9 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Tests\Filter;
+namespace Kextensions\Tests\Rule;
 
-use Kextensions\Filter\RuleLocator;
+use Kextensions\Rule\RuleLocator;
 
 /**
  * RuleLocatorTest
@@ -19,11 +19,11 @@ use Kextensions\Filter\RuleLocator;
  */
 class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 {
-    protected $namespaceRule = '\\Kextensions\\Tests\\Filter\\Fixtures\\Rule';
+    protected $namespaceRule = '\\Kextensions\\Tests\\Rule\\Fixtures\\Rule';
 
     public static function setUpBeforeClass()
     {
-        $reflection = new \ReflectionClass('\\Kextensions\\Filter\\RuleLocator');
+        $reflection = new \ReflectionClass('\\Kextensions\\Rule\\RuleLocator');
         $property = $reflection->getProperty('registry');
         $property->setAccessible(true);
         $property->setValue(array());
@@ -32,7 +32,7 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
     public function testGetDefaultNamespace()
     {
         $namespace = RuleLocator::getNamespace('rule');
-        $this->assertEquals($namespace, 'Kextensions\\Filter\\Rule');
+        $this->assertEquals($namespace, 'Kextensions\\Rule\\Rule');
     }
 
     public function testSetGetNamespaceMethod()
@@ -61,7 +61,7 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
     public function testGetMethod()
     {
         $actual = RuleLocator::get('equals');
-        $expected = new \Kextensions\Filter\Rule\Equals();
+        $expected = new \Kextensions\Rule\Rule\Equals();
 
         $this->assertEquals($actual, $expected);
     }
@@ -71,7 +71,7 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
         RuleLocator::setNamespace('fixtures', $this->namespaceRule);
 
         $actual = RuleLocator::get('fixtures.rule');
-        $expected = new \Kextensions\Tests\Filter\Fixtures\Rule\Rule();
+        $expected = new \Kextensions\Tests\Rule\Fixtures\Rule\Rule();
 
         $this->assertEquals($actual, $expected);
     }

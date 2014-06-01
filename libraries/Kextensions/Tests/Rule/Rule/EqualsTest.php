@@ -6,9 +6,9 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Tests\Filter\Rule;
+namespace Kextensions\Tests\Rule\Rule;
 
-use Kextensions\Filter\Rule\Equals;
+use Kextensions\Rule\Rule\Equals;
 
 /**
  * EqualsTest

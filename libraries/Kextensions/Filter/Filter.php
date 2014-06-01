@@ -9,6 +9,8 @@
 
 namespace Kextensions\Filter;
 
+use Kextensions\Rule\RuleLocator;
+
 defined('_JEXEC') or die;
 
 /**

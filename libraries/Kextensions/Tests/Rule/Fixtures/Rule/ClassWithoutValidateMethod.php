@@ -6,22 +6,16 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Filter\Rule;
+namespace Kextensions\Tests\Rule\Fixtures\Rule;
 
-use Kextensions\Filter\AbstractRule;
-
-defined('_JEXEC') or die;
+use Kextensions\Rule\AbstractRule;
 
 /**
- * Equals Rule
+ * ClassWithoutValidateMethod
  *
  * @package     Kextensions
  * @since       2.0
  */
-class Equals extends AbstractRule
+class ClassWithoutValidateMethod extends AbstractRule
 {
-    public function validate($value)
-    {
-        return $this->getValue() == $value;
-    }
 }

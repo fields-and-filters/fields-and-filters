@@ -7,7 +7,7 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Filter;
+namespace Kextensions\Rule;
 
 defined('_JEXEC') or die;
 

@@ -7,9 +7,7 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Filter;
-
-use Kextensions\Filter\RuleInterface;
+namespace Kextensions\Rule;
 
 defined('_JEXEC') or die;
 
@@ -22,7 +20,7 @@ defined('_JEXEC') or die;
 abstract class RuleLocator
 {
     protected static $namespaces = array(
-        'rule' => 'Kextensions\\Filter\\Rule'
+        'rule' => 'Kextensions\\Rule\\Rule'
     );
 
     protected static $registry = array();

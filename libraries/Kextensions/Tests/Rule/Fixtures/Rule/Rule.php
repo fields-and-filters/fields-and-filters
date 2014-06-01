@@ -6,16 +6,19 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Tests\Filter\Fixtures\Rule;
+namespace Kextensions\Tests\Rule\Fixtures\Rule;
 
-defined('_JEXEC') or die;
+use Kextensions\Rule\AbstractRule;
 
 /**
- * Equals Rule
+ * Rule
  *
  * @package     Kextensions
  * @since       2.0
  */
-class ClassWithWrnogInstance
+class Rule extends AbstractRule
 {
+    public function validate($value)
+    {
+    }
 }

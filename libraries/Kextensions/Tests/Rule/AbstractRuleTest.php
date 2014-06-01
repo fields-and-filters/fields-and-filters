@@ -7,7 +7,7 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Tests\Filter;
+namespace Kextensions\Tests\Rule;
 
 /**
  * AbstractRuleTest
@@ -17,7 +17,7 @@ namespace Kextensions\Tests\Filter;
  */
 class AbstractRuleTest extends \PHPUnit_Framework_TestCase
 {
-    protected $abstractClass = '\\Kextensions\\Filter\\AbstractRule';
+    protected $abstractClass = '\\Kextensions\\Rule\\AbstractRule';
 
     public function testPreapreMethod()
     {

@@ -6,9 +6,9 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Tests\Filter\Fixtures\Rule;
+namespace Kextensions\Rule\Rule;
 
-use Kextensions\Filter\AbstractRule;
+use Kextensions\Rule\AbstractRule;
 
 defined('_JEXEC') or die;
 
@@ -18,9 +18,10 @@ defined('_JEXEC') or die;
  * @package     Kextensions
  * @since       2.0
  */
-class Rule extends AbstractRule
+class Equals extends AbstractRule
 {
     public function validate($value)
     {
+        return $this->getValue() == $value;
     }
 }

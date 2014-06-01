@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     Kextensions
  * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
@@ -7,23 +6,14 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Filter;
-
-defined('_JEXEC') or die;
+namespace Kextensions\Tests\Rule\Fixtures\Rule;
 
 /**
- * RuleInterface
+ * ClassWithWrnogInstance
  *
  * @package     Kextensions
  * @since       2.0
  */
-interface RuleInterface
+class ClassWithWrnogInstance
 {
-    public function prepare($data, $field);
-
-    public function getValue();
-
-    public function is();
-
-    public function isNot();
 }
