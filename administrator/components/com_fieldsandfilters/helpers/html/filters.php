@@ -64,7 +64,7 @@ class FieldsandfiltersHtmlFilters
 		{
 			JHtml::_('jquery.framework', (boolean) $params->get('load_noconflict_javascript', 1));
 		}
-		else
+        elseif ($params->get('load_jquery_javascript', 1))
 		{
 			JHtml::_('FieldsandfiltersHtml.joomla.jquery', (boolean) $params->get('load_noconflict_javascript', 1));
 		}
