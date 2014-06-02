@@ -25,7 +25,7 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
         $this->rule = new Equals();
     }
 
-    public function testAcceptMethodString()
+    public function testValidateMethodString()
     {
         $data = $this->getData();
         $this->rule->prepare($data, 'foo');
@@ -35,7 +35,7 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->rule->is($data->bar));
     }
 
-    public function testAcceptMethodInteger()
+    public function testValidateMethodInteger()
     {
         $data = $this->getData();
         $this->rule->prepare($data, '1');
@@ -45,7 +45,7 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->rule->is($data->{2}));
     }
 
-    public function testAcceptMethodArray()
+    public function testValidateMethodArray()
     {
         $data = $this->getData();
         $this->rule->prepare($data, 'array1');
@@ -55,7 +55,7 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->rule->is($data->array2));
     }
 
-    public function testAcceptMethodArrayDifferentOrder()
+    public function testValidateMethodArrayDifferentOrder()
     {
         $data = $this->getData();
         $this->rule->prepare($data, 'array1');
@@ -65,7 +65,7 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->rule->is(array_reverse($data->array2)));
     }
 
-    public function testAcceptMethodObject()
+    public function testValidateMethodObject()
     {
         $data = $this->getData();
         $this->rule->prepare($data, 'object1');
@@ -73,6 +73,46 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->rule->is($data->object1));
 
         $this->assertFalse($this->rule->is($data->object2));
+    }
+
+    public function testConditionIsMethodString()
+    {
+        $data = $this->getData();
+
+        $actual = $this->rule->queryIs($data->foo);
+        $expected = sprintf(' = %s ', $data->foo);
+
+        $this->assertEquals($actual, $expected);
+    }
+
+    public function testConditionIsMethodArray()
+    {
+        $data = $this->getData();
+
+        $actual = $this->rule->queryIs($data->array1);
+        $expected = sprintf(' IN(%s) ', implode(',', $data->array1));
+
+        $this->assertEquals($actual, $expected);
+    }
+
+    public function testConditionNotMethodString()
+    {
+        $data = $this->getData();
+
+        $actual = $this->rule->queryNot($data->foo);
+        $expected = sprintf(' != %s ', $data->foo);
+
+        $this->assertEquals($actual, $expected);
+    }
+
+    public function testConditionNotMethodArray()
+    {
+        $data = $this->getData();
+
+        $actual = $this->rule->queryNot($data->array1);
+        $expected = sprintf(' NOT IN(%s) ', implode(',', $data->array1));
+
+        $this->assertEquals($actual, $expected);
     }
 
     protected function getData()

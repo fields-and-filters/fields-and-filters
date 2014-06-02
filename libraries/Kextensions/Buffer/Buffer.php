@@ -9,8 +9,7 @@
 
 namespace Kextensions\Buffer;
 
-use Kextensions\Object\Object;
-use Kextensions\Filter\Filter;
+use Kextensions\Rule\RuleLocator;
 
 defined('_JEXEC') or die;
 
@@ -20,23 +19,55 @@ defined('_JEXEC') or die;
  * @package     Kextensions
  * @since       2.0
  */
-abstract class Buffer extends Object
+abstract class Buffer
 {
+    const IS = 'queryIs';
+
+    const IS_NOT = 'queryNot';
+
     protected $rules = array();
 
-    abstract protected function load();
-
-    public function addFilter($field, $value)
+    public function get()
     {
-        $filter[] = array(
+        $this->prepare();
+
+        if ($this->needLoad())
+        {
+            $data = $this->load();
+            $this->bind($data);
+        }
+    }
+
+    public function addRule($name, $field, $method = Buffer::IS)
+    {
+        $this->rules[] = array(
+            'name' => $name,
             'field' => $field,
-            'value' => $value
+            'params' => array_slice(func_get_args(), 3),
+            'method' => $method
         );
 
         return $this;
     }
 
+    public function clearRule()
+    {
+        $this->rules = array();
 
+        return $this;
+    }
 
+    protected function call(array $info)
+    {
+        $rule = RuleLocator::get($info['name']);
+        return call_user_func_array(array($rule, $info['method']), $info['params']);
+    }
 
+    abstract protected function prepare();
+
+    abstract protected function load();
+
+    abstract protected function needLoad();
+
+    abstract protected function bind($data);
 }

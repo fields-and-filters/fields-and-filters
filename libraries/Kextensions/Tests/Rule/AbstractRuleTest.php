@@ -94,4 +94,28 @@ class AbstractRuleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($rule->isNot());
     }
+
+    public function testQueryIsMethod()
+    {
+        $rule = $this->getMock($this->abstractClass, array('conditionIs'));
+
+        $rule->expects($this->any())
+            ->method('conditionIs')
+            ->will($this->returnValue(''));
+
+        $this->assertEquals($rule->conditionIs(), '');
+        $this->assertTrue(is_string($rule->conditionIs()));
+    }
+
+    public function testQueryNotMethod()
+    {
+        $rule = $this->getMock($this->abstractClass, array('conditionNot'));
+
+        $rule->expects($this->any())
+            ->method('conditionNot')
+            ->will($this->returnValue(''));
+
+        $this->assertEquals($rule->conditionNot(), '');
+        $this->assertTrue(is_string($rule->conditionNot()));
+    }
 }

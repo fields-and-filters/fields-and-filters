@@ -24,4 +24,25 @@ class Equals extends AbstractRule
     {
         return $this->getValue() == $value;
     }
+
+    public function conditionIs($value)
+    {
+        if (is_array($value))
+        {
+            return sprintf(' IN(%s) ', implode(',', $value));
+        }
+
+        return sprintf(' = %s ', $value);
+    }
+
+    public function conditionNot($value)
+    {
+        if (is_array($value))
+        {
+            return sprintf(' NOT IN(%s) ', implode(',', $value));
+        }
+
+        return sprintf(' != %s ', $value);
+    }
+
 }

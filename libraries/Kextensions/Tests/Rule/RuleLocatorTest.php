@@ -123,22 +123,4 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 
         $this->fail(sprintf('An expected exception "%s" has not been raised.', 'InvalidArgumentException'));
     }
-
-    public function testGetClassWithoutValidateMethodException()
-    {
-        RuleLocator::setNamespace('fixtures', $this->namespaceRule);
-
-        try
-        {
-            RuleLocator::get('fixtures.classWithoutValidateMethod');
-        }
-        catch (\Exception $e)
-        {
-            $this->assertStringMatchesFormat('The method "%s::%s" is not callable', $e->getMessage());
-            $this->assertInstanceOf('InvalidArgumentException', $e);
-            return;
-        }
-
-        $this->fail(sprintf('An expected exception "%s" has not been raised.', 'InvalidArgumentException'));
-    }
 }

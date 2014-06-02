@@ -26,4 +26,8 @@ interface RuleInterface
     public function is();
 
     public function isNot();
+
+    public function queryIs();
+
+    public function queryNot();
 }

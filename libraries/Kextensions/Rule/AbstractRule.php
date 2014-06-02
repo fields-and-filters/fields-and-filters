@@ -46,4 +46,14 @@ abstract class AbstractRule implements RuleInterface
     {
         return !call_user_func_array(array($this, 'validate'), func_get_args());
     }
+
+    public function queryIs()
+    {
+        return call_user_func_array(array($this, 'conditionIs'), func_get_args());
+    }
+
+    public function queryNot()
+    {
+        return call_user_func_array(array($this, 'conditionNot'), func_get_args());
+    }
 }

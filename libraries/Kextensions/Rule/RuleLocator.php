@@ -71,10 +71,6 @@ abstract class RuleLocator
         {
             throw new \InvalidArgumentException(sprintf('Class "%s" not instance of "%s"', get_class($class), 'Kextensions\\Filter\\RuleInterface'));
         }
-        else if(!is_callable(array($class, 'validate')))
-        {
-            throw new \InvalidArgumentException(sprintf('The method "%s::%s" is not callable', get_class($class), 'validate'));
-        }
 
         return $class;
     }
