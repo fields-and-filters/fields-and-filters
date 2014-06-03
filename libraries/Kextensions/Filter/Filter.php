@@ -9,6 +9,7 @@
 
 namespace Kextensions\Filter;
 
+use Kextensions\Rule\ManagerRuleInterface;
 use Kextensions\Rule\RuleLocator;
 
 defined('_JEXEC') or die;
@@ -19,14 +20,18 @@ defined('_JEXEC') or die;
  * @package     Kextensions
  * @since       2.0
  */
-class Filter extends \FilterIterator
+class Filter extends \FilterIterator implements FilterInterface, ManagerRuleInterface
 {
-    const IS = 'is';
-
-    const IS_NOT = 'isNot';
-
+    /**
+     * The rules to be applied to a data object.
+     *
+     * @var array
+     */
     protected $rules = array();
 
+    /**
+     * {@inheritdoc}
+     */
     public function accept()
     {
         $data = $this->current();
@@ -45,23 +50,36 @@ class Filter extends \FilterIterator
         return true;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function filter()
     {
         return iterator_to_array($this);
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return $this
+     */
     public function addRule($name, $field, $method = Filter::IS)
     {
         $this->rules[] = array(
             'name' => $name,
             'field' => $field,
-            'params' => array_slice(func_get_args(), 3),
-            'method' => $method
+            'method' => $method,
+            'params' => array_slice(func_get_args(), 3)
         );
 
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return $this
+     */
     public function clearRule()
     {
         $this->rules = array();

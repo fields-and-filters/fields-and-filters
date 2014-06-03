@@ -9,6 +9,7 @@
 
 namespace Kextensions\Buffer;
 
+use Kextensions\Rule\ManagerRuleInterface;
 use Kextensions\Rule\RuleLocator;
 
 defined('_JEXEC') or die;
@@ -19,12 +20,8 @@ defined('_JEXEC') or die;
  * @package     Kextensions
  * @since       2.0
  */
-abstract class Buffer
+abstract class Buffer implements BufferInterface, ManagerRuleInterface
 {
-    const IS = 'queryIs';
-
-    const IS_NOT = 'queryNot';
-
     protected $rules = array();
 
     public function get()
@@ -38,6 +35,11 @@ abstract class Buffer
         }
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return $this
+     */
     public function addRule($name, $field, $method = Buffer::IS)
     {
         $this->rules[] = array(
@@ -50,6 +52,11 @@ abstract class Buffer
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return $this
+     */
     public function clearRule()
     {
         $this->rules = array();
