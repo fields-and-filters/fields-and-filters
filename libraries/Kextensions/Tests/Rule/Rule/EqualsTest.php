@@ -11,7 +11,7 @@ namespace Kextensions\Tests\Rule\Rule;
 use Kextensions\Rule\Rule\Equals;
 
 /**
- * EqualsTest
+ * Equals Test
  *
  * @package     Kextensions
  * @since       2.0
@@ -79,7 +79,7 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
     {
         $data = $this->getData();
 
-        $actual = $this->rule->queryIs($data->foo);
+        $actual = $this->rule->condition($data->foo);
         $expected = sprintf(' = %s ', $data->foo);
 
         $this->assertEquals($actual, $expected);
@@ -89,7 +89,7 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
     {
         $data = $this->getData();
 
-        $actual = $this->rule->queryIs($data->array1);
+        $actual = $this->rule->condition($data->array1);
         $expected = sprintf(' IN(%s) ', implode(',', $data->array1));
 
         $this->assertEquals($actual, $expected);
@@ -99,8 +99,8 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
     {
         $data = $this->getData();
 
-        $actual = $this->rule->queryNot($data->foo);
-        $expected = sprintf(' != %s ', $data->foo);
+        $actual = $this->rule->conditionNot($data->foo);
+        $expected = sprintf(' <> %s ', $data->foo);
 
         $this->assertEquals($actual, $expected);
     }
@@ -109,7 +109,7 @@ class EqualsTest extends \PHPUnit_Framework_TestCase
     {
         $data = $this->getData();
 
-        $actual = $this->rule->queryNot($data->array1);
+        $actual = $this->rule->conditionNot($data->array1);
         $expected = sprintf(' NOT IN(%s) ', implode(',', $data->array1));
 
         $this->assertEquals($actual, $expected);

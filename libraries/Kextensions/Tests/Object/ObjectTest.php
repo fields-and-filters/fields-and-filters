@@ -11,7 +11,7 @@ namespace Kextensions\Tests\Object;
 use Kextensions\Object\Object;
 
 /**
- * ObjectTest
+ * Object Test
  *
  * @package     Kextensions
  * @since       2.0

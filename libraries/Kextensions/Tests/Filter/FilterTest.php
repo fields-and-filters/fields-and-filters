@@ -12,7 +12,7 @@ namespace Kextensions\Tests\Filter;
 use Kextensions\Filter\Filter;
 
 /**
- * FilterTest
+ * Filter Test
  *
  * @package     Kextensions
  * @since       2.0

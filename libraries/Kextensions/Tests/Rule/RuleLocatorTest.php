@@ -9,21 +9,21 @@
 
 namespace Kextensions\Tests\Rule;
 
-use Kextensions\Rule\RuleLocator;
+use Kextensions\Rule\Locator;
 
 /**
- * RuleLocatorTest
+ * Locator Test
  *
  * @package     Kextensions
  * @since       2.0
  */
-class RuleLocatorTest extends \PHPUnit_Framework_TestCase
+class LocatorTest extends \PHPUnit_Framework_TestCase
 {
     protected $namespaceRule = '\\Kextensions\\Tests\\Rule\\Fixtures\\Rule';
 
     public static function setUpBeforeClass()
     {
-        $reflection = new \ReflectionClass('\\Kextensions\\Rule\\RuleLocator');
+        $reflection = new \ReflectionClass('\\Kextensions\\Rule\\Locator');
         $property = $reflection->getProperty('registry');
         $property->setAccessible(true);
         $property->setValue(array());
@@ -31,15 +31,15 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDefaultNamespace()
     {
-        $namespace = RuleLocator::getNamespace('rule');
+        $namespace = Locator::getNamespace('_default_');
         $this->assertEquals($namespace, 'Kextensions\\Rule\\Rule');
     }
 
     public function testSetGetNamespaceMethod()
     {
-        RuleLocator::setNamespace('test', $this->namespaceRule);
+        Locator::setNamespace('test', $this->namespaceRule);
 
-        $namespace = RuleLocator::getNamespace('test');
+        $namespace = Locator::getNamespace('test');
         $this->assertEquals($namespace, $this->namespaceRule);
     }
 
@@ -47,7 +47,7 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
     {
         try
         {
-            RuleLocator::getNamespace('notexists');
+            Locator::getNamespace('notexists');
         }
         catch (\Exception $e)
         {
@@ -60,7 +60,7 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMethod()
     {
-        $actual = RuleLocator::get('equals');
+        $actual = Locator::get('equals');
         $expected = new \Kextensions\Rule\Rule\Equals();
 
         $this->assertEquals($actual, $expected);
@@ -68,9 +68,9 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testSetNamespaceAndGetClass()
     {
-        RuleLocator::setNamespace('fixtures', $this->namespaceRule);
+        Locator::setNamespace('fixtures', $this->namespaceRule);
 
-        $actual = RuleLocator::get('fixtures.rule');
+        $actual = Locator::get('fixtures.rule');
         $expected = new \Kextensions\Tests\Rule\Fixtures\Rule\Rule();
 
         $this->assertEquals($actual, $expected);
@@ -78,23 +78,23 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSameClassMultiple()
     {
-        $equals1 = RuleLocator::get('equals');
+        $equals1 = Locator::get('equals');
         $equals1->prepare(array(
             'foo' => 'bar'
         ), 'foo');
 
-        $equals2 = RuleLocator::get('equals');
+        $equals2 = Locator::get('equals');
 
         $this->assertEquals($equals1, $equals2);
     }
 
     public function testGetNotExistsClassException()
     {
-        RuleLocator::setNamespace('fixtures', $this->namespaceRule);
+        Locator::setNamespace('fixtures', $this->namespaceRule);
 
         try
         {
-            RuleLocator::get('fixtures.notExistsClass');
+            Locator::get('fixtures.notExistsClass');
         }
         catch (\Exception $e)
         {
@@ -108,11 +108,11 @@ class RuleLocatorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetClassWithWrongInstanceException()
     {
-        RuleLocator::setNamespace('fixtures', $this->namespaceRule);
+        Locator::setNamespace('fixtures', $this->namespaceRule);
 
         try
         {
-            RuleLocator::get('fixtures.classWithWrnogInstance');
+            Locator::get('fixtures.classWithWrnogInstance');
         }
         catch (\Exception $e)
         {

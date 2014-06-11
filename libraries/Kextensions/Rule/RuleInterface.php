@@ -12,22 +12,55 @@ namespace Kextensions\Rule;
 defined('_JEXEC') or die;
 
 /**
- * RuleInterface
+ * Rule Interface
  *
  * @package     Kextensions
  * @since       2.0
  */
 interface RuleInterface
 {
+    /**
+     * Prepare the rule for reuse.
+     *
+     * @param object $data The full set of data to be filtered.
+     * @param string $field The field to be filtered within the data.
+     *
+     * @return RuleInterface Current instance.
+     */
     public function prepare($data, $field);
 
+    /**
+     * Get the value of the field being filtered, or null if the field is not set in the data.
+     *
+     * @return mixed
+     */
     public function getValue();
 
+    /**
+     * Is the value valid?
+     *
+     * @return bool True if valid, false if not valid.
+     */
     public function is();
 
+    /**
+     * Is the value *not* valid?
+     *
+     * @return bool True if not valid, false if valid.
+     */
     public function isNot();
 
-    public function queryIs();
+    /**
+     * Prepare query condition.
+     *
+     * @return string
+     */
+    public function condition();
 
-    public function queryNot();
+    /**
+     * Prepare query *not* condition.
+     *
+     * @return string
+     */
+    public function conditionNot();
 }

@@ -20,12 +20,28 @@ defined('_JEXEC') or die;
  */
 class Equals extends AbstractRule
 {
+    /**
+     * Validates that the value is equals.
+     *
+     * @param mixed $value The value for comparison.
+     *
+     * @return bool True if valid, false if not.
+     */
     public function validate($value)
     {
         return $this->getValue() == $value;
     }
 
-    public function conditionIs($value)
+    /**
+     * Prepare formula for query.
+     * If value is number/string then formula use *=* equals
+     * If value is array then formula use *IN()*
+     *
+     * @param mixed $value The value insert into the formula.
+     *
+     * @return string
+     */
+    public function formula($value)
     {
         if (is_array($value))
         {
@@ -35,14 +51,23 @@ class Equals extends AbstractRule
         return sprintf(' = %s ', $value);
     }
 
-    public function conditionNot($value)
+    /**
+     * Prepare *not* formula for query.
+     * If value is number/string then formula use *<>* equals
+     * If value is array then formula use *NOT IN()*
+     *
+     * @param mixed $value The value insert into the formula.
+     *
+     * @return string
+     */
+    public function formulaNot($value)
     {
         if (is_array($value))
         {
             return sprintf(' NOT IN(%s) ', implode(',', $value));
         }
 
-        return sprintf(' != %s ', $value);
+        return sprintf(' <> %s ', $value);
     }
 
 }

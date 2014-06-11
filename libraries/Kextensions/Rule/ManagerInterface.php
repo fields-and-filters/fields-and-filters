@@ -12,12 +12,12 @@ namespace Kextensions\Rule;
 defined('_JEXEC') or die;
 
 /**
- * ManagerRuleInterface
+ * Manager Interface
  *
  * @package     Kextensions
  * @since       2.0
  */
-interface ManagerRuleInterface
+interface ManagerInterface
 {
     /**
      * Add a rule.

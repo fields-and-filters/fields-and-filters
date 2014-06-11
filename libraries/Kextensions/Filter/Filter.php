@@ -9,8 +9,8 @@
 
 namespace Kextensions\Filter;
 
-use Kextensions\Rule\ManagerRuleInterface;
-use Kextensions\Rule\RuleLocator;
+use Kextensions\Rule\ManagerInterface;
+use Kextensions\Rule\Locator;
 
 defined('_JEXEC') or die;
 
@@ -20,7 +20,7 @@ defined('_JEXEC') or die;
  * @package     Kextensions
  * @since       2.0
  */
-class Filter extends \FilterIterator implements FilterInterface, ManagerRuleInterface
+class Filter extends \FilterIterator implements FilterInterface, ManagerInterface
 {
     /**
      * The rules to be applied to a data object.
@@ -40,7 +40,7 @@ class Filter extends \FilterIterator implements FilterInterface, ManagerRuleInte
 
         foreach ($this->rules AS $info)
         {
-            $rule = RuleLocator::get($info['name']);
+            $rule = Locator::get($info['name']);
             $rule->prepare($data, $info['field']);
 
             if (!call_user_func_array(array($rule, $info['method']), $info['params']))
@@ -54,8 +54,6 @@ class Filter extends \FilterIterator implements FilterInterface, ManagerRuleInte
 
     /**
      * {@inheritdoc}
-     *
-     * @return array An array containing the elements of the iterator.
      */
     public function filter()
     {
@@ -65,7 +63,7 @@ class Filter extends \FilterIterator implements FilterInterface, ManagerRuleInte
     /**
      * {@inheritdoc}
      *
-     * @return Filter Returns itself to allow chaining.
+     * @return Filter Current instance.
      */
     public function addRule($name, $field, $method = Filter::IS)
     {
@@ -82,7 +80,7 @@ class Filter extends \FilterIterator implements FilterInterface, ManagerRuleInte
     /**
      * {@inheritdoc}
      *
-     * @return Filter Returns itself to allow chaining.
+     * @return Filter Current instance.
      */
     public function clearRule()
     {

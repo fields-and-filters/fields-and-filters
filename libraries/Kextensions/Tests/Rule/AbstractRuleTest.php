@@ -10,7 +10,7 @@
 namespace Kextensions\Tests\Rule;
 
 /**
- * AbstractRuleTest
+ * Abstract Rule Test
  *
  * @package     Kextensions
  * @since       2.0

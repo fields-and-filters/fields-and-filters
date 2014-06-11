@@ -12,7 +12,7 @@ namespace Kextensions\Filter;
 defined('_JEXEC') or die;
 
 /**
- * FilterInterface
+ * Filter Interface
  *
  * @package     Kextensions
  * @since       2.0

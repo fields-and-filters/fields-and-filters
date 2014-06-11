@@ -93,7 +93,8 @@ class Object implements \IteratorAggregate, \Countable
      *
      * @return \ArrayIterator This object represented as an ArrayIterator.
      */
-    public function getIterator() {
+    public function getIterator()
+    {
         return new \ArrayIterator($this);
     }
 
@@ -113,7 +114,7 @@ class Object implements \IteratorAggregate, \Countable
      * @param $property The name of the data property.
      * @param $value The value to give the data property.
      *
-     * @return Object Returns itself to allow chaining.
+     * @return Object Current instance.
      */
     public function set($property, $value)
     {
@@ -139,7 +140,7 @@ class Object implements \IteratorAggregate, \Countable
      *
      * @param $properties An associative array of properties or an object.
      *
-     * @return Object Returns itself to allow chaining.
+     * @return Object Current instance.
      */
     public function bind($properties)
     {

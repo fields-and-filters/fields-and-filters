@@ -12,16 +12,24 @@ namespace Kextensions\Buffer;
 defined('_JEXEC') or die;
 
 /**
- * Buffer
+ * Buffer Interface
  *
  * @package     Kextensions
  * @since       2.0
+ *
+ * [TODO] add PHPDock Blocks
  */
 interface BufferInterface
 {
-    const IS = 'queryIs';
+    /**
+     * Apply a rule to prepare query condition.
+     */
+    const IS = 'condition';
 
-    const IS_NOT = 'queryNot';
+    /**
+     * Apply a rule to prepare query *not* condition.
+     */
+    const IS_NOT = 'conditionNot';
 
     public function get();
 }

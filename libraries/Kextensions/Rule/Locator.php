@@ -12,22 +12,39 @@ namespace Kextensions\Rule;
 defined('_JEXEC') or die;
 
 /**
- * Filter
+ * Locator
  *
  * @package     Kextensions
  * @since       2.0
  */
-abstract class RuleLocator
+abstract class Locator
 {
+    /**
+     * List of namespaces handled by the rules.
+     *
+     * @var array
+     */
     protected static $namespaces = array(
-        'rule' => 'Kextensions\\Rule\\Rule'
+        '_default_' => 'Kextensions\\Rule\\Rule'
     );
 
+    /**
+     * A registry to retain rule objects.
+     *
+     * @var array
+     */
     protected static $registry = array();
 
+    /**
+     * Gets a rule from the registry by name.
+     *
+     * @param string $name The rule to retrieve. Look like namspace.class (Default: _defult_.class).
+     *
+     * @return RuleInterface A rule object.
+     */
     public static function get($name)
     {
-        $name = (strpos($name, '.') === false) ? 'rule.'.$name : $name;
+        $name = (strpos($name, '.') === false) ? '_default_.'.$name : $name;
         $key = strtolower($name);
 
         if (!isset(self::$registry[$key]))
@@ -38,11 +55,28 @@ abstract class RuleLocator
         return self::$registry[$key];
     }
 
+    /**
+     * Set namspace path.
+     *
+     * @param $name The name of namspace. Use this later to get namspace path.
+     * @param $namespace The namspace path.
+     *
+     * @return void
+     */
     public static function setNamespace($name, $namespace)
     {
         self::$namespaces[$name] = $namespace;
     }
 
+    /**
+     * Get namspace path.
+     *
+     * @param $name The name of namspace.
+     *
+     * @return string Namspace path.
+     *
+     * @throws \InvalidArgumentException Namspace not exists.
+     */
     public static function getNamespace($name)
     {
         if (!isset(self::$namespaces[$name]))
@@ -53,6 +87,16 @@ abstract class RuleLocator
         return self::$namespaces[$name];
     }
 
+    /**
+     * Get class instance.
+     *
+     * @param string $name The rule to retrieve.
+     *
+     * @return RuleInterface A rule object.
+     *
+     * @throws \Exception Class not exists.
+     * @throws \InvalidArgumentException Class not instance of RuleInterface.
+     */
     protected static function getClass($name)
     {
         list($namespace, $class) = explode('.', $name);

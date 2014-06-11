@@ -9,8 +9,8 @@
 
 namespace Kextensions\Buffer;
 
-use Kextensions\Rule\ManagerRuleInterface;
-use Kextensions\Rule\RuleLocator;
+use Kextensions\Rule\ManagerInterface;
+use Kextensions\Rule\Locator;
 
 defined('_JEXEC') or die;
 
@@ -19,9 +19,17 @@ defined('_JEXEC') or die;
  *
  * @package     Kextensions
  * @since       2.0
+ *
+ * [TODO] add PHPDock Blocks
+ * [TODO] add Tests
  */
-abstract class Buffer implements BufferInterface, ManagerRuleInterface
+abstract class Buffer implements BufferInterface, ManagerInterface
 {
+    /**
+     * The rules to be applied to a data object.
+     *
+     * @var array
+     */
     protected $rules = array();
 
     public function get()
@@ -38,7 +46,7 @@ abstract class Buffer implements BufferInterface, ManagerRuleInterface
     /**
      * {@inheritdoc}
      *
-     * @return $this
+     * @return Buffer Current instance.
      */
     public function addRule($name, $field, $method = Buffer::IS)
     {
@@ -55,7 +63,7 @@ abstract class Buffer implements BufferInterface, ManagerRuleInterface
     /**
      * {@inheritdoc}
      *
-     * @return $this
+     * @return Buffer Current instance.
      */
     public function clearRule()
     {
@@ -66,7 +74,8 @@ abstract class Buffer implements BufferInterface, ManagerRuleInterface
 
     protected function call(array $info)
     {
-        $rule = RuleLocator::get($info['name']);
+        $rule = Locator::get($info['name']);
+
         return call_user_func_array(array($rule, $info['method']), $info['params']);
     }
 

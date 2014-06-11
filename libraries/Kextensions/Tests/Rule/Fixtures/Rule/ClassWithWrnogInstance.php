@@ -9,7 +9,7 @@
 namespace Kextensions\Tests\Rule\Fixtures\Rule;
 
 /**
- * ClassWithWrnogInstance
+ * Class With Wrnog Instance
  *
  * @package     Kextensions
  * @since       2.0
