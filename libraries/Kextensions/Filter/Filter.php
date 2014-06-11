@@ -30,7 +30,9 @@ class Filter extends \FilterIterator implements FilterInterface, ManagerRuleInte
     protected $rules = array();
 
     /**
-     * {@inheritdoc}
+     * Check whether the current element of the iterator is acceptable.
+     *
+     * @return bool true if the current element is acceptable, otherwise false.
      */
     public function accept()
     {
@@ -52,6 +54,8 @@ class Filter extends \FilterIterator implements FilterInterface, ManagerRuleInte
 
     /**
      * {@inheritdoc}
+     *
+     * @return array An array containing the elements of the iterator.
      */
     public function filter()
     {
@@ -61,7 +65,7 @@ class Filter extends \FilterIterator implements FilterInterface, ManagerRuleInte
     /**
      * {@inheritdoc}
      *
-     * @return $this
+     * @return Filter Returns itself to allow chaining.
      */
     public function addRule($name, $field, $method = Filter::IS)
     {
@@ -78,7 +82,7 @@ class Filter extends \FilterIterator implements FilterInterface, ManagerRuleInte
     /**
      * {@inheritdoc}
      *
-     * @return $this
+     * @return Filter Returns itself to allow chaining.
      */
     public function clearRule()
     {

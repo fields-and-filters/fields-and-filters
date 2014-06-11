@@ -18,8 +18,20 @@ defined('_JEXEC') or die;
  */
 class Object implements \IteratorAggregate, \Countable
 {
+    /**
+     * The data.
+     *
+     * @var array
+     */
     private $data = array();
 
+    /**
+     * The class constructor.
+     *
+     * @param mixed $properties Either an associative array or another object by which to set the initial data of the new object.
+     *
+     * @throws \InvalidArgumentException
+     */
     public function __construct($properties = null)
     {
         if ($properties !== null)
@@ -28,37 +40,81 @@ class Object implements \IteratorAggregate, \Countable
         }
     }
 
+    /**
+     * The magic isset method is used to check the state of an object property.
+     *
+     * @param string $property The name of the data property.
+     *
+     * @return bool True if set, otherwise false is returned.
+     */
     public function __isset($property)
     {
         return array_key_exists($property, $this->data);
     }
 
+    /**
+     * The magic set method is used to set a data property.
+     *
+     * @param $property The name of the data property.
+     * @param $value The value to give the data property.
+     *
+     * @return void
+     */
     public function __set($property, $value)
     {
         $this->set($property, $value);
-
-        return $this->get($property);
     }
 
+    /**
+     * The magic get method is used to get a data property.
+     *
+     * @param $property The name of the data property.
+     * @return mixed The value of the data property, or null if the data propterty does not exists.
+     */
     public function __get($property)
     {
         return $this->get($property);
     }
 
+    /**
+     * The magic unset method is used to unset a data property.
+     *
+     * @param $property The name of the data property.
+     *
+     * @return void
+     */
     public function __unset($property)
     {
         unset($this->data[$property]);
     }
 
+    /**
+     * Gets this object represented as an ArrayIterator.
+     *
+     * @return \ArrayIterator This object represented as an ArrayIterator.
+     */
     public function getIterator() {
         return new \ArrayIterator($this);
     }
 
+    /**
+     * Count elements of an object.
+     *
+     * @return int The number of data properties.
+     */
     public function count()
     {
         return count($this->data);
     }
 
+    /**
+     * Set a data propterty.
+     *
+     * @param $property The name of the data property.
+     * @param $value The value to give the data property.
+     *
+     * @return Object Returns itself to allow chaining.
+     */
     public function set($property, $value)
     {
         $this->data[$property] = $value;
@@ -66,11 +122,25 @@ class Object implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * Get a data property
+     *
+     * @param $property The name of the data property.
+     *
+     * @return mixed The value of the data property, or null if the data propterty does not exists.
+     */
     public function get($property)
     {
         return isset($this->data[$property]) ? $this->data[$property] : null;
     }
 
+    /**
+     * Binds an array or object to this object.
+     *
+     * @param $properties An associative array of properties or an object.
+     *
+     * @return Object Returns itself to allow chaining.
+     */
     public function bind($properties)
     {
         $properties = self::beforeBind($properties);
@@ -83,6 +153,15 @@ class Object implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * Prepare properties before addition into the data.
+     *
+     * @param $properties An associative array of properties or an object.
+     *
+     * @return array Prepared properties
+     *
+     * @throws \InvalidArgumentException
+     */
     protected static function beforeBind($properties)
     {
         if (!is_array($properties) && !is_object($properties))
