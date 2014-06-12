@@ -8,7 +8,7 @@
 
 namespace Fieldandfilters\Field;
 
-use Kextensions\Object\Object;
+use Kextensions\Object\ObjectList;
 
 defined('_JEXEC') or die;
 
@@ -20,7 +20,7 @@ defined('_JEXEC') or die;
  *
  * [TODO] Extends Object for create list class (ObjectList)
  */
-class FieldList extends Object
+class FieldList extends ObjectList
 {
     public function set($property, AbstractField $value)
     {

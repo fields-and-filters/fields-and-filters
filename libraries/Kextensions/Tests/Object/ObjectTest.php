@@ -265,6 +265,7 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         }
         catch (\Exception $e)
         {
+            $this->assertStringMatchesFormat('Type "%s" not supported. Use type of array or object.', $e->getMessage());
             $this->assertInstanceOf('InvalidArgumentException', $e);
             return;
         }

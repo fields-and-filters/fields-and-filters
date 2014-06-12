@@ -18,6 +18,8 @@ defined('_JEXEC') or die;
  */
 class Object implements \IteratorAggregate, \Countable
 {
+    const NAME = __CLASS__;
+
     /**
      * The data.
      *
@@ -55,8 +57,8 @@ class Object implements \IteratorAggregate, \Countable
     /**
      * The magic set method is used to set a data property.
      *
-     * @param $property The name of the data property.
-     * @param $value The value to give the data property.
+     * @param string $property The name of the data property.
+     * @param mixed $value The value to give the data property.
      *
      * @return void
      */
@@ -68,7 +70,8 @@ class Object implements \IteratorAggregate, \Countable
     /**
      * The magic get method is used to get a data property.
      *
-     * @param $property The name of the data property.
+     * @param string $property The name of the data property.
+     *
      * @return mixed The value of the data property, or null if the data propterty does not exists.
      */
     public function __get($property)
@@ -79,7 +82,7 @@ class Object implements \IteratorAggregate, \Countable
     /**
      * The magic unset method is used to unset a data property.
      *
-     * @param $property The name of the data property.
+     * @param string $property The name of the data property.
      *
      * @return void
      */
@@ -111,8 +114,8 @@ class Object implements \IteratorAggregate, \Countable
     /**
      * Set a data propterty.
      *
-     * @param $property The name of the data property.
-     * @param $value The value to give the data property.
+     * @param string $property The name of the data property.
+     * @param mixed $value The value to give the data property.
      *
      * @return Object Current instance.
      */
@@ -126,7 +129,7 @@ class Object implements \IteratorAggregate, \Countable
     /**
      * Get a data property
      *
-     * @param $property The name of the data property.
+     * @param string $property The name of the data property.
      *
      * @return mixed The value of the data property, or null if the data propterty does not exists.
      */
@@ -138,7 +141,7 @@ class Object implements \IteratorAggregate, \Countable
     /**
      * Binds an array or object to this object.
      *
-     * @param $properties An associative array of properties or an object.
+     * @param mixed $properties An associative array of properties or an object.
      *
      * @return Object Current instance.
      */
@@ -157,7 +160,7 @@ class Object implements \IteratorAggregate, \Countable
     /**
      * Prepare properties before addition into the data.
      *
-     * @param $properties An associative array of properties or an object.
+     * @param mixed $properties An associative array of properties or an object.
      *
      * @return array Prepared properties
      *
@@ -167,7 +170,7 @@ class Object implements \IteratorAggregate, \Countable
     {
         if (!is_array($properties) && !is_object($properties))
         {
-            throw new \InvalidArgumentException(sprintf('%s(%s)', __METHOD__, gettype($properties)));
+            throw new \InvalidArgumentException(sprintf('Type "%s" not supported. Use type of array or object.', gettype($properties)));
         }
 
         if ($properties instanceof \Traversable)
