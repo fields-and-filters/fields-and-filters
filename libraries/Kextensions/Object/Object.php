@@ -23,7 +23,7 @@ class Object implements \IteratorAggregate, \Countable
      *
      * @var array
      */
-    private $data = array();
+    protected $data = array();
 
     /**
      * The class constructor.
