@@ -21,7 +21,7 @@ class ObjectList extends Object
     /**
      * @var string Instance name of class which is required for set.
      */
-    protected static $setInstance = Object::NAME;
+    protected static $setInstance = Object::_CLASS_;
 
     /**
      * Set a data propterty.

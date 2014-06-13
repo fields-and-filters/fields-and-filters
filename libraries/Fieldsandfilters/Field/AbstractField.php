@@ -6,7 +6,7 @@
 * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
 */
 
-namespace Fieldandfilters\Field;
+namespace Fieldsandfilters\Field;
 
 use Kextensions\Object\Object;
 
@@ -20,7 +20,7 @@ defined('_JEXEC') or die;
  */
 abstract class AbstractField extends Object
 {
-
+    const _CLASS_ = __CLASS__;
 
     public function render()
     {

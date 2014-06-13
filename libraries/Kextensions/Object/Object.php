@@ -18,7 +18,7 @@ defined('_JEXEC') or die;
  */
 class Object implements \IteratorAggregate, \Countable
 {
-    const NAME = __CLASS__;
+    const _CLASS_ = __CLASS__;
 
     /**
      * The data.

@@ -25,6 +25,8 @@ if (!defined('_JDEFINES'))
 require_once JPATH_BASE . '/includes/framework.php';
 JLoader::registerNamespace('Kextensions', JPATH_LIBRARIES);
 
+JLoader::registerNamespace('Fieldsandfilters', JPATH_LIBRARIES);
+
 // Mark afterLoad in the profiler.
 // JDEBUG ? $_PROFILER->mark('afterLoad') : null;
 

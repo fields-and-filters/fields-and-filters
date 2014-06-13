@@ -6,8 +6,6 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace Kextensions\Object;
-
 namespace Kextensions\Tests\Object;
 
 use Kextensions\Object\Object;
@@ -18,6 +16,8 @@ use Kextensions\Object\ObjectList;
  *
  * @package     Kextensions
  * @since       2.0
+ *
+ * [TODO] Add test for test the setInstane return valid class name
  */
 class ObjectListTest extends \PHPUnit_Framework_TestCase
 {

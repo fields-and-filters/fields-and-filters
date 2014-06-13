@@ -6,7 +6,7 @@
 * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
 */
 
-namespace Fieldandfilters\Field;
+namespace Fieldsandfilters\Field;
 
 use Kextensions\Object\ObjectList;
 
@@ -17,13 +17,11 @@ defined('_JEXEC') or die;
  *
  * @package     Fieldsandfilters
  * @since       2.0
- *
- * [TODO] Extends Object for create list class (ObjectList)
  */
 class FieldList extends ObjectList
 {
-    public function set($property, AbstractField $value)
-    {
-        return $this->set($property, $value);
-    }
+    /**
+     * {@inheritdoc}
+     */
+    protected static $setInstance = AbstractField::NAME;
 }
