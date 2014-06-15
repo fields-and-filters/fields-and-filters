@@ -35,6 +35,8 @@ class ObjectList extends Object
      * @param Object $value The object with instance of Object.
      *
      * @return ObjectList Current instance.
+     *
+     * @throws InvalidArgumentException
      */
     public function set($property, $value)
     {

@@ -29,4 +29,14 @@ class FieldList extends ObjectList
      * {@inheritdoc}
      */
     protected static $setInstance = AbstractField::_CLASS_;
+
+    public function render()
+    {
+        return implode("\n", $this->data);
+    }
+
+    function __toString()
+    {
+        return $this->render();
+    }
 }
