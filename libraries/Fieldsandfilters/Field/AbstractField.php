@@ -20,6 +20,9 @@ defined('_JEXEC') or die;
  */
 abstract class AbstractField extends Object
 {
+    /**
+     * {@inheritdoc}
+     */
     const _CLASS_ = __CLASS__;
 
     public function render()

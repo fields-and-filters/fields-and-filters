@@ -16,11 +16,20 @@ use Kextensions\Object\ObjectList;
  *
  * @package     Kextensions
  * @since       2.0
- *
- * [TODO] Add test for test the setInstane return valid class name
  */
 class ObjectListTest extends \PHPUnit_Framework_TestCase
 {
+    public function testSetInstance()
+    {
+        $objectList = new ObjectList();
+
+        $reflection = new \ReflectionClass($objectList);
+        $property = $reflection->getProperty('setInstance');
+        $property->setAccessible(true);
+
+        $this->assertEquals($property->getValue($objectList), Object::_CLASS_);
+    }
+
     public function testSetMethod()
     {
         $expected = new Object(array(

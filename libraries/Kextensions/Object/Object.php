@@ -18,6 +18,11 @@ defined('_JEXEC') or die;
  */
 class Object implements \IteratorAggregate, \Countable
 {
+    /**
+     * Containing the fully qualified name of the ClassName.
+     *
+     * @var string
+     */
     const _CLASS_ = __CLASS__;
 
     /**

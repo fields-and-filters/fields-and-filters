@@ -19,9 +19,14 @@ use Fieldsandfilters\Field\AbstractField;
  */
 class FieldListTests extends \PHPUnit_Framework_TestCase
 {
-    public function test()
+    public function testSetInstance()
     {
-        $list = new FieldList();
-        print_r(AbstractField::_CLASS_);
+        $objectList = new FieldList();
+
+        $reflection = new \ReflectionClass($objectList);
+        $property = $reflection->getProperty('setInstance');
+        $property->setAccessible(true);
+
+        $this->assertEquals($property->getValue($objectList), AbstractField::_CLASS_);
     }
 }

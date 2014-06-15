@@ -23,5 +23,10 @@ class FieldList extends ObjectList
     /**
      * {@inheritdoc}
      */
-    protected static $setInstance = AbstractField::NAME;
+    const _CLASS_ = __CLASS__;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected static $setInstance = AbstractField::_CLASS_;
 }

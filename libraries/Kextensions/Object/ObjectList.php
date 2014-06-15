@@ -19,6 +19,11 @@ defined('_JEXEC') or die;
 class ObjectList extends Object
 {
     /**
+     * {@inheritdoc}
+     */
+    const _CLASS_ = __CLASS__;
+
+    /**
      * @var string Instance name of class which is required for set.
      */
     protected static $setInstance = Object::_CLASS_;
