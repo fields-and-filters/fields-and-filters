@@ -8,35 +8,31 @@
 
 namespace Fieldsandfilters\Field;
 
-use Kextensions\Object\ObjectList;
+use Fieldsandfilters\Content\AbstractContentType;
 
 defined('_JEXEC') or die;
 
 /**
- * Field List
+ * Base Interface
  *
  * @package     Fieldsandfilters
  * @since       2.0
  */
-class FieldList extends ObjectList
+interface BaseInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     const _CLASS_ = __CLASS__;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected static $setInstance = BaseInterface::_CLASS_;
+    public function isField();
 
-    public function render()
-    {
-        return implode("\n", $this->data);
-    }
+    public function isFilter();
 
-    function __toString()
-    {
-        return $this->render();
-    }
+    public function isStatic();
+
+    public function setContentType(AbstractContentType $contentType);
+
+    public function getContentType();
+
+    public function render();
+
+    public function __toString();
 }

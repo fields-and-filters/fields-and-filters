@@ -8,7 +8,7 @@
 
 namespace Fieldsandfilters\Field;
 
-use Kextensions\Object\Object;
+use Fieldsandfilters\Content\AbstractContent;
 
 defined('_JEXEC') or die;
 
@@ -18,20 +18,56 @@ defined('_JEXEC') or die;
  * @package     Fieldsandfilters
  * @since       2.0
  */
-abstract class AbstractField extends Object
+abstract class AbstractObject extends AbstractBase implements FieldInterface
 {
     /**
      * {@inheritdoc}
      */
     const _CLASS_ = __CLASS__;
 
-    public function render()
+    /**
+     * {@inheritdoc}
+     */
+    protected $isField = true;
+
+    protected $content;
+
+    /**
+     * @param AbstractContent $content
+     */
+    public function setContent(AbstractContent $content)
     {
-        return '';
+        $this->content = $content;
     }
 
-    function __toString()
+    /**
+     * @return AbstractContent
+     */
+    public function getContent()
     {
-        return $this->render();
+        return $this->content;
+    }
+
+    public function getData()
+    {
+        if (!$this->content instanceof AbstractContent::_CLASS_)
+        {
+            throw new \InvalidArgumentException(sprintf('Content property is not instance of "%s".', AbstractContent::_CLASS_));
+        }
+
+        return $this->content->getData($this->id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function render(AbstractContent $content = null)
+    {
+        if ($content !== null)
+        {
+            $this->setContent($content);
+        }
+
+        return '';
     }
 }

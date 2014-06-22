@@ -8,17 +8,15 @@
 
 namespace Fieldsandfilters\Field;
 
-use Kextensions\Object\ObjectList;
-
 defined('_JEXEC') or die;
 
 /**
- * Field List
+ * Abstract Static
  *
  * @package     Fieldsandfilters
  * @since       2.0
  */
-class FieldList extends ObjectList
+abstract class AbstractStatic extends AbstractBase implements StaticInterface
 {
     /**
      * {@inheritdoc}
@@ -28,15 +26,31 @@ class FieldList extends ObjectList
     /**
      * {@inheritdoc}
      */
-    protected static $setInstance = BaseInterface::_CLASS_;
+    protected $isStatic = true;
 
-    public function render()
+    protected $data;
+
+    /**
+     * @param mixed $data
+     */
+    public function setData($data)
     {
-        return implode("\n", $this->data);
+        $this->data = $data;
     }
 
-    function __toString()
+    /**
+     * @return mixed
+     */
+    public function getData()
     {
-        return $this->render();
+        return $this->data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function render()
+    {
+        return '';
     }
 }
