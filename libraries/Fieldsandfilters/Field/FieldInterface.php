@@ -20,8 +20,6 @@ defined('_JEXEC') or die;
  */
 interface FieldInterface extends BaseInterface
 {
-    const _CLASS_ = __CLASS__;
-
     public function setContent(AbstractContent $content);
 
     public function getContent();

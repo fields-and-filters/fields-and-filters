@@ -9,15 +9,15 @@
 namespace Fieldsandfilters\Tests\Field;
 
 use Fieldsandfilters\Field\FieldList;
-use Fieldsandfilters\Field\AbstractField;
+use Fieldsandfilters\Field\AbstractBase;
 
 /**
- * Field List Tests
+ * Field List Test
  *
  * @package     Fieldsandfilters
  * @since       2.0
  */
-class FieldListTests extends \PHPUnit_Framework_TestCase
+class FieldListTest extends \PHPUnit_Framework_TestCase
 {
     public function testSetInstance()
     {
@@ -27,6 +27,6 @@ class FieldListTests extends \PHPUnit_Framework_TestCase
         $property = $reflection->getProperty('setInstance');
         $property->setAccessible(true);
 
-        $this->assertEquals($property->getValue($objectList), AbstractField::_CLASS_);
+        $this->assertEquals($property->getValue($objectList), AbstractBase::_CLASS_);
     }
 }

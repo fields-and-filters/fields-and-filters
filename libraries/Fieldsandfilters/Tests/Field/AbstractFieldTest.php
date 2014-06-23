@@ -6,21 +6,17 @@
 * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
 */
 
-namespace Fieldsandfilters\Field;
+namespace Fieldsandfilters\Tests\Field;
 
-use Fieldsandfilters\Content\AbstractContent;
-
-defined('_JEXEC') or die;
+use Fieldsandfilters\Field\AbstractField;
 
 /**
- * Static Interface
+ * Abstract Field Test
  *
  * @package     Fieldsandfilters
  * @since       2.0
  */
-interface StaticInterface extends BaseInterface
+class AbstractFieldTest extends \PHPUnit_Framework_TestCase
 {
-    public function setData($data);
 
-    public function getData();
 }

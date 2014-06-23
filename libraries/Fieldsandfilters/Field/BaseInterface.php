@@ -20,8 +20,6 @@ defined('_JEXEC') or die;
  */
 interface BaseInterface
 {
-    const _CLASS_ = __CLASS__;
-
     public function isField();
 
     public function isFilter();

@@ -28,7 +28,7 @@ class FieldList extends ObjectList
     /**
      * {@inheritdoc}
      */
-    protected static $setInstance = BaseInterface::_CLASS_;
+    protected static $setInstance = AbstractBase::_CLASS_;
 
     public function render()
     {

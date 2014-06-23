@@ -26,37 +26,13 @@ abstract class AbstractBase extends Object implements BaseInterface
      */
     const _CLASS_ = __CLASS__;
 
+    const isField = false;
+
+    const isFilter = false;
+
+    const isStatic = false;
+
     protected $contentType;
-
-    protected $isField = false;
-
-    protected $isFilter = false;
-
-    protected $isStatic = false;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isField()
-    {
-        return $this->isField;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isFilter()
-    {
-        return $this->isFilter;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isStatic()
-    {
-        return $this->isStatic;
-    }
 
     /**
      * {@inheritdoc}
@@ -64,6 +40,8 @@ abstract class AbstractBase extends Object implements BaseInterface
     public function setContentType(AbstractContentType $contentType)
     {
         $this->contentType = $contentType;
+
+        return $this;
     }
 
     /**
