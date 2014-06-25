@@ -18,7 +18,7 @@ defined('_JEXEC') or die;
  * @package     Fieldsandfilters
  * @since       2.0
  */
-abstract class AbstractObject extends AbstractBase implements FieldInterface
+abstract class AbstractField extends AbstractBase implements FieldInterface
 {
     /**
      * {@inheritdoc}
@@ -28,7 +28,7 @@ abstract class AbstractObject extends AbstractBase implements FieldInterface
     /**
      * {@inheritdoc}
      */
-    protected $isField = true;
+    const isField = true;
 
     protected $content;
 

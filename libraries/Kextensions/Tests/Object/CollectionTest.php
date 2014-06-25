@@ -9,27 +9,16 @@
 namespace Kextensions\Tests\Object;
 
 use Kextensions\Object\Object;
-use Kextensions\Object\ObjectList;
+use Kextensions\Object\Collection;
 
 /**
- * Object List Test
+ * Collection Test
  *
  * @package     Kextensions
  * @since       2.0
  */
-class ObjectListTest extends \PHPUnit_Framework_TestCase
+class CollectionTests extends \PHPUnit_Framework_TestCase
 {
-    public function testSetInstance()
-    {
-        $objectList = new ObjectList();
-
-        $reflection = new \ReflectionClass($objectList);
-        $property = $reflection->getProperty('setInstance');
-        $property->setAccessible(true);
-
-        $this->assertEquals($property->getValue($objectList), Object::_CLASS_);
-    }
-
     public function testSetMethod()
     {
         $expected = new Object(array(
@@ -37,7 +26,7 @@ class ObjectListTest extends \PHPUnit_Framework_TestCase
             'bar' => 'bar'
         ));
 
-        $objectList = new ObjectList();
+        $objectList = new Collection();
         $objectList->set('expected', $expected);
 
         $this->assertEquals($expected, $objectList->get('expected'));
@@ -46,7 +35,7 @@ class ObjectListTest extends \PHPUnit_Framework_TestCase
 
     public function testSetStringException()
     {
-        $objectList = new ObjectList();
+        $objectList = new Collection();
 
         try
         {
@@ -64,7 +53,7 @@ class ObjectListTest extends \PHPUnit_Framework_TestCase
 
     public function testSetClassWithWrongInstanceException()
     {
-        $objectList = new ObjectList();
+        $objectList = new Collection();
 
         try
         {

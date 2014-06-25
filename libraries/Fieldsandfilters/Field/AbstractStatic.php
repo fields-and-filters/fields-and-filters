@@ -26,7 +26,7 @@ abstract class AbstractStatic extends AbstractBase implements StaticInterface
     /**
      * {@inheritdoc}
      */
-    protected $isStatic = true;
+    const isStatic = true;
 
     protected $data;
 
