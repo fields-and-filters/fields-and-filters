@@ -72,9 +72,44 @@ interface ObjectInterface extends IteratorAggregate, Countable
      *
      * @param string $property The name of the data property.
      *
-     * @return mixed The value of the data property, or null if the data propterty does not exists.
+     * @return mixed The value of the data property, or null if the data property does not exists.
      */
     public function get($property);
+
+    /**
+     * Gets all keys/indices of the data.
+     *
+     * @return array The keys/indices of the data, in the order of the corresponding elements in the data.
+     */
+    function getKeys();
+
+    /**
+     * Gets all values of the collection.
+     *
+     * @return array The values of all elements in the data, in the order they appear in the data.
+     */
+    public function getValues();
+
+    /**
+     * Gets a native PHP array representation of the data.
+     *
+     * @return array
+     */
+    public function toArray();
+
+    /**
+     * Clears the collection, removing all elements.
+     *
+     * @return Object Current instance.
+     */
+    public function clear();
+
+    /**
+     * Checks whether the data is empty (contains no elements).
+     *
+     * @return boolean TRUE if the data is empty, FALSE otherwise.
+     */
+    public function isEmpty();
 
     /**
      * Binds an array or object to this object.

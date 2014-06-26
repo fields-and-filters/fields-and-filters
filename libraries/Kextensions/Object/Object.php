@@ -8,7 +8,7 @@
 
 namespace Kextensions\Object;
 
-use Traversable, InvalidArgumentException;
+use Traversable, ArrayIterator, InvalidArgumentException;
 
 defined('_JEXEC') or die;
 
@@ -79,7 +79,7 @@ class Object implements ObjectInterface
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this);
+        return new ArrayIterator($this->data);
     }
 
     /**
@@ -106,6 +106,48 @@ class Object implements ObjectInterface
     public function get($property)
     {
         return isset($this->data[$property]) ? $this->data[$property] : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKeys()
+    {
+        return array_keys($this->data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValues()
+    {
+        return array_values($this->data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toArray()
+    {
+        return $this->data;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clear()
+    {
+        $this->data = array();
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isEmpty()
+    {
+        return !$this->data;
     }
 
     /**

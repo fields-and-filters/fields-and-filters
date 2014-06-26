@@ -44,7 +44,7 @@ class Collection extends Object implements CollectionInterface
      */
     public function first()
     {
-        return reset($this->_elements);
+        return reset($this->data);
     }
 
     /**
@@ -52,7 +52,7 @@ class Collection extends Object implements CollectionInterface
      */
     public function last()
     {
-        return end($this->_elements);
+        return end($this->data);
     }
 
     /**
@@ -60,7 +60,7 @@ class Collection extends Object implements CollectionInterface
      */
     public function map(Closure $callback)
     {
-        return new static(array_map($callback, $this->data));
+        return new Object(array_map($callback, $this->data));
     }
 
     /**
@@ -69,13 +69,5 @@ class Collection extends Object implements CollectionInterface
     public function filter(Closure $callback)
     {
         return new static(array_filter($this->data, $callback));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function clear()
-    {
-        $this->_elements = array();
     }
 }

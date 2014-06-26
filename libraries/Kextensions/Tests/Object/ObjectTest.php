@@ -289,7 +289,103 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
 
     public function testGetIterator()
     {
+        $expected = array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        );
+
+        $object = new Object($expected);
+        $actual = $object->getIterator();
+
+        $this->assertInstanceOf('ArrayIterator', $actual);
+        $this->assertEquals($expected, (array) $actual);
+    }
+
+    public function testGetKeysMethod()
+    {
+        $properties = array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        );
+
+        $expected = array_keys($properties);
+
+        $object = new Object($properties);
+        $actual = $object->getKeys();
+
+        $this->assertTrue(is_array($actual));
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testGetValuesMethod()
+    {
+        $properties = array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        );
+
+        $expected = array_values($properties);
+
+        $object = new Object($expected);
+        $actual = $object->getValues();
+
+        $this->assertTrue(is_array($actual));
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testToArrayMethod()
+    {
+        $expected = array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        );
+
+        $object = new Object($expected);
+        $actual = $object->toArray();
+
+        $this->assertTrue(is_array($actual));
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testClearMethod()
+    {
+        $expected = array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        );
+
+        $object = new Object($expected);
+        $actual = $object->toArray();
+
+        $this->assertEquals($expected, $actual);
+
+        $object->clear();
+        $actual = $object->toArray();
+
+        $this->assertEquals(array(), $actual);
+    }
+
+    public function testIsEmptyMethod()
+    {
+        $propteries = array(
+            'foo' => 'bar',
+            'bar' => 'foo',
+            'array' => array(1,2,3)
+        );
+
         $object = new Object();
-        $this->assertInstanceOf('ArrayIterator', $object->getIterator());
+
+        $this->assertTrue($object->isEmpty());
+        $this->assertFalse(!$object->isEmpty());
+
+        $object->bind($propteries);
+
+        $this->assertFalse($object->isEmpty());
+        $this->assertTrue(!$object->isEmpty());
     }
 }
