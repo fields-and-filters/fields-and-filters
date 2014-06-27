@@ -350,42 +350,4 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($actual));
         $this->assertEquals($expected, $actual);
     }
-
-    public function testClearMethod()
-    {
-        $expected = array(
-            'foo' => 'bar',
-            'bar' => 'foo',
-            'array' => array(1,2,3)
-        );
-
-        $object = new Object($expected);
-        $actual = $object->toArray();
-
-        $this->assertEquals($expected, $actual);
-
-        $object->clear();
-        $actual = $object->toArray();
-
-        $this->assertEquals(array(), $actual);
-    }
-
-    public function testIsEmptyMethod()
-    {
-        $propteries = array(
-            'foo' => 'bar',
-            'bar' => 'foo',
-            'array' => array(1,2,3)
-        );
-
-        $object = new Object();
-
-        $this->assertTrue($object->isEmpty());
-        $this->assertFalse(!$object->isEmpty());
-
-        $object->bind($propteries);
-
-        $this->assertFalse($object->isEmpty());
-        $this->assertTrue(!$object->isEmpty());
-    }
 }

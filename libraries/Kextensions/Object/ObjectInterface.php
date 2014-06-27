@@ -98,20 +98,6 @@ interface ObjectInterface extends IteratorAggregate, Countable
     public function toArray();
 
     /**
-     * Clears the collection, removing all elements.
-     *
-     * @return Object Current instance.
-     */
-    public function clear();
-
-    /**
-     * Checks whether the data is empty (contains no elements).
-     *
-     * @return boolean TRUE if the data is empty, FALSE otherwise.
-     */
-    public function isEmpty();
-
-    /**
      * Binds an array or object to this object.
      *
      * @param mixed $properties An associative array of properties or an object.

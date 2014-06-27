@@ -21,6 +21,20 @@ defined('_JEXEC') or die;
 interface CollectionInterface extends ObjectInterface
 {
     /**
+     * Clears the collection, removing all elements.
+     *
+     * @return Object Current instance.
+     */
+    public function clear();
+
+    /**
+     * Checks whether the data is empty (contains no elements).
+     *
+     * @return boolean TRUE if the data is empty, FALSE otherwise.
+     */
+    public function isEmpty();
+
+    /**
      * Sets the internal iterator to the first element in the collection and returns this element.
      *
      * @return mixed

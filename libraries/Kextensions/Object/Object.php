@@ -135,24 +135,6 @@ class Object implements ObjectInterface
     /**
      * {@inheritDoc}
      */
-    public function clear()
-    {
-        $this->data = array();
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isEmpty()
-    {
-        return !$this->data;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function bind($properties)
     {
         $properties = self::beforeBind($properties);

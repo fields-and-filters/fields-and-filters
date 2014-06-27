@@ -69,6 +69,29 @@ class CollectionTests extends \PHPUnit_Framework_TestCase
         $this->fail(sprintf('An expected exception "%s" has not been raised.', 'InvalidArgumentException'));
     }
 
+    public function testClearMethod()
+    {
+        $collection = $this->getCollection();
+
+        $collection->clear();
+        $actual = $collection->toArray();
+
+        $this->assertEquals(array(), $actual);
+    }
+
+    public function testIsEmptyMethod()
+    {
+        $acutal = new Collection();
+
+        $this->assertTrue($acutal->isEmpty());
+        $this->assertFalse(!$acutal->isEmpty());
+
+        $acutal->bind($this->getCollection()->toArray());
+
+        $this->assertFalse($acutal->isEmpty());
+        $this->assertTrue(!$acutal->isEmpty());
+    }
+
     public function testFirstMethod()
     {
         $collection = $this->getCollection();
@@ -87,19 +110,24 @@ class CollectionTests extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals($collection->get(1), $actual);
     }
 
-    public function testMapReturnedObjectInstance()
+    public function testMapMethod()
     {
         $collection = $this->getCollection();
-        $expected = new Object();
+        $expected = new Collection();
 
-        $actual = $collection->map(function($object) {
-            return $object->name;
+        foreach ($collection AS $key => $object)
+        {
+            $expected->set($key, new Object(array('name' => $object->name)));
+        }
+
+        $actual = $collection->map(function(Object $object) {
+            return new Object(array('name' => $object->name));
         });
 
-        $this->assertInstanceOf(get_class($expected), $actual);
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testMapMethod()
+    public function testMapWithOtherInstance()
     {
         $collection = $this->getCollection();
         $expected = new Object();
@@ -111,9 +139,21 @@ class CollectionTests extends \PHPUnit_Framework_TestCase
 
         $actual = $collection->map(function(Object $object) {
             return $object->name;
-        });
+        }, get_class($expected));
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testMapReturnedOtherInstance()
+    {
+        $collection = $this->getCollection();
+        $expected = new Object();
+
+        $actual = $collection->map(function($object) {
+            return $object->name;
+        }, get_class($expected));
+
+        $this->assertInstanceOf(get_class($expected), $actual);
     }
 
     public function testFilterMethod()

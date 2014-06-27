@@ -42,6 +42,24 @@ class Collection extends Object implements CollectionInterface
     /**
      * {@inheritDoc}
      */
+    public function clear()
+    {
+        $this->data = array();
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isEmpty()
+    {
+        return !$this->data;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function first()
     {
         return reset($this->data);
@@ -55,12 +73,17 @@ class Collection extends Object implements CollectionInterface
         return end($this->data);
     }
 
+
     /**
      * {@inheritDoc}
+     *
+     * @param string $class Class name.
      */
-    public function map(Closure $callback)
+    public function map(Closure $callback, $class = null)
     {
-        return new Object(array_map($callback, $this->data));
+        $array = array_map($callback, $this->data);
+
+        return ($class ? new $class($array) : new static($array));
     }
 
     /**
