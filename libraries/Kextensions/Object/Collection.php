@@ -88,9 +88,20 @@ class Collection extends Object implements CollectionInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @param bool $newInstance Create new instance of the class or set filtered value into data property.
      */
-    public function filter(Closure $callback)
+    public function filter(Closure $callback, $newInstance = true)
     {
-        return new static(array_filter($this->data, $callback));
+        $array = array_filter($this->data, $callback);
+
+        if ($newInstance)
+        {
+            return new static($array);
+        }
+
+        $this->data = $array;
+
+        return $this;
     }
 }

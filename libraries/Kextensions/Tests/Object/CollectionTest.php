@@ -127,7 +127,7 @@ class CollectionTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testMapWithOtherInstance()
+    public function testMapReturnedOtherInstance()
     {
         $collection = $this->getCollection();
         $expected = new Object();
@@ -142,19 +142,9 @@ class CollectionTests extends \PHPUnit_Framework_TestCase
         }, get_class($expected));
 
         $this->assertEquals($expected, $actual);
-    }
-
-    public function testMapReturnedOtherInstance()
-    {
-        $collection = $this->getCollection();
-        $expected = new Object();
-
-        $actual = $collection->map(function($object) {
-            return $object->name;
-        }, get_class($expected));
-
         $this->assertInstanceOf(get_class($expected), $actual);
     }
+
 
     public function testFilterMethod()
     {
@@ -194,6 +184,20 @@ class CollectionTests extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(get_class($expected), $actual);
         $this->assertEquals($expected, $actual);
         $this->assertTrue($actual->isEmpty());
+    }
+
+    public function testFilterWithSameInstance()
+    {
+        $collection = $this->getCollection();
+        $cloned = clone $collection;
+
+        $expected = $collection;
+        $actual = $collection->filter(function(Object $object) {
+            return $object->name == 'foo' || $object->name == 'foobar';
+        }, false);
+
+        $this->assertEquals($expected, $actual);
+        $this->assertNotEquals($cloned, $actual);
     }
 
     protected function getCollection()
