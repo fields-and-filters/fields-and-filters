@@ -77,7 +77,7 @@ class Collection extends Object implements CollectionInterface
     /**
      * {@inheritDoc}
      *
-     * @param string $class Class name.
+     * @param string $class Class name. Instance have after mapped.
      */
     public function map(Closure $callback, $class = null)
     {
