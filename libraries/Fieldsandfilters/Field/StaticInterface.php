@@ -8,8 +8,6 @@
 
 namespace Fieldsandfilters\Field;
 
-use Fieldsandfilters\Content\AbstractContent;
-
 defined('_JEXEC') or die;
 
 /**

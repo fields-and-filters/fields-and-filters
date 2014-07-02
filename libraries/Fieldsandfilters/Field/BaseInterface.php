@@ -8,6 +8,7 @@
 
 namespace Fieldsandfilters\Field;
 
+use Kextensions\Object\ObjectInterface;
 use Fieldsandfilters\Content\AbstractContentType;
 
 defined('_JEXEC') or die;
@@ -18,7 +19,7 @@ defined('_JEXEC') or die;
  * @package     Fieldsandfilters
  * @since       2.0
  */
-interface BaseInterface
+interface BaseInterface extends ObjectInterface
 {
     public function isField();
 

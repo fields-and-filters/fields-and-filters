@@ -76,8 +76,6 @@ class Collection extends Object implements CollectionInterface
 
     /**
      * {@inheritDoc}
-     *
-     * @param string $class Class name. Instance have after mapped.
      */
     public function map(Closure $callback, $class = null)
     {
@@ -88,8 +86,6 @@ class Collection extends Object implements CollectionInterface
 
     /**
      * {@inheritDoc}
-     *
-     * @param bool $newInstance Create new instance of the class or set filtered value into data property.
      */
     public function filter(Closure $callback, $newInstance = true)
     {

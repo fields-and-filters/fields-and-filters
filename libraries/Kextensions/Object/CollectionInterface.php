@@ -52,20 +52,22 @@ interface CollectionInterface extends ObjectInterface
      * Applies the given function to each element in the collection and returns a new collection with the elements returned by the function.
      *
      * @param Closure $callback
+     * @param string $class Class name. Instance have after mapped.
      *
-     * @return Object
+     * @return self Current instance
      */
-    public function map(Closure $callback);
+    public function map(Closure $callback, $class = null);
 
     /**
      * Returns all the elements of this collection that satisfy the predicate callback.
      * The order of the elements is preserved.
      *
      * @param Closure $callback The predicate used for filtering.
+     * @param bool $newInstance Create new instance of the class or set filtered value into data property.
      *
      * @return Collection A collection with the results of the filter operation.
      */
-    public function filter(Closure $callback);
+    public function filter(Closure $callback, $newInstance = true);
 
 //    public function find();
 }
