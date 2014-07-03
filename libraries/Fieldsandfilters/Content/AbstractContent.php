@@ -20,5 +20,8 @@ defined('_JEXEC') or die;
  */
 abstract class AbstractContent extends Object
 {
-    const _CLASS_ = __CLASS__;
+    public function getData()
+    {
+
+    }
 }

@@ -23,11 +23,6 @@ abstract class AbstractField extends AbstractBase implements FieldInterface
     /**
      * {@inheritdoc}
      */
-    const _CLASS_ = __CLASS__;
-
-    /**
-     * {@inheritdoc}
-     */
     const isField = true;
 
     protected $content;
@@ -50,9 +45,9 @@ abstract class AbstractField extends AbstractBase implements FieldInterface
 
     public function getData()
     {
-        if (!$this->content instanceof AbstractContent::_CLASS_)
+        if (!$this->content instanceof AbstractContent)
         {
-            throw new \InvalidArgumentException(sprintf('Content property is not instance of "%s".', AbstractContent::_CLASS_));
+            throw new \InvalidArgumentException(sprintf('Content property is not instance of "%s".', 'Fieldsandfilters\Content\AbstractContent'));
         }
 
         return $this->content->getData($this->id);
@@ -61,11 +56,11 @@ abstract class AbstractField extends AbstractBase implements FieldInterface
     /**
      * {@inheritdoc}
      */
-    public function render(AbstractContent $content = null)
+    public function render()
     {
-        if ($content !== null)
+        if (!$this->content instanceof AbstractContent)
         {
-            $this->setContent($content);
+            throw new \InvalidArgumentException(sprintf('Content property is not instance of "%s".', 'Fieldsandfilters\Content\AbstractContent'));
         }
 
         return '';

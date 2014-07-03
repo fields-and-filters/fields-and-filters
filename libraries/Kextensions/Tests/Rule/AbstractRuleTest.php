@@ -17,7 +17,7 @@ namespace Kextensions\Tests\Rule;
  */
 class AbstractRuleTest extends \PHPUnit_Framework_TestCase
 {
-    protected $abstractClass = '\\Kextensions\\Rule\\AbstractRule';
+    protected $abstractClass = 'Kextensions\\Rule\\AbstractRule';
 
     public function testPreapreMethod()
     {

@@ -21,11 +21,6 @@ defined('_JEXEC') or die;
  */
 abstract class AbstractBase extends Object implements BaseInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    const _CLASS_ = __CLASS__;
-
     const isField = false;
 
     const isFilter = false;

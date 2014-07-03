@@ -19,11 +19,11 @@ use Kextensions\Rule\Locator;
  */
 class LocatorTest extends \PHPUnit_Framework_TestCase
 {
-    protected $namespaceRule = '\\Kextensions\\Tests\\Rule\\Fixtures\\Rule';
+    protected $namespaceRule = 'Kextensions\\Tests\\Rule\\Fixtures\\Rule';
 
     public static function setUpBeforeClass()
     {
-        $reflection = new \ReflectionClass('\\Kextensions\\Rule\\Locator');
+        $reflection = new \ReflectionClass('Kextensions\\Rule\\Locator');
         $property = $reflection->getProperty('registry');
         $property->setAccessible(true);
         $property->setValue(array());

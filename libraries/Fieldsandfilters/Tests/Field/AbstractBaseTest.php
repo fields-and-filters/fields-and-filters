@@ -1,15 +1,12 @@
 <?php
 /**
-* @package     Fieldsandfilters
-* @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
-* @license     GNU General Public License version 3 or later; see License.txt
-* @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
-*/
+ * @package     Fieldsandfilters
+ * @copyright   Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.
+ * @license     GNU General Public License version 3 or later; see License.txt
+ * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
+ */
 
 namespace Fieldsandfilters\Tests\Field;
-
-use Fieldsandfilters\Field\AbstractBase;
-use Fieldsandfilters\Content\AbstractContentType;
 
 /**
  * Abstract Base Test
@@ -19,9 +16,12 @@ use Fieldsandfilters\Content\AbstractContentType;
  */
 class AbstractBaseTest extends \PHPUnit_Framework_TestCase
 {
+    protected static $fieldAbstractClass = 'Fieldsandfilters\\Field\\AbstractBase';
+    protected static $contentTypeAbstractClass = 'Fieldsandfilters\\Content\\AbstractContentType';
+
     public function testIsConstants()
     {
-        $base = $this->getMockForAbstractClass(AbstractBase::_CLASS_);
+        $base = $this->getMockForAbstractClass(self::$fieldAbstractClass);
 
         $this->assertFalse($base::isField);
         $this->assertFalse($base::isFilter);
@@ -30,19 +30,19 @@ class AbstractBaseTest extends \PHPUnit_Framework_TestCase
 
     public function testSetGetContentType()
     {
-        $contentType = $this->getMockForAbstractClass(AbstractContentType::_CLASS_);
-        $actual = $this->getMockForAbstractClass(AbstractBase::_CLASS_);
+        $contentType = $this->getMockForAbstractClass(self::$contentTypeAbstractClass);
+        $actual = $this->getMockForAbstractClass(self::$fieldAbstractClass);
 
         $this->assertNull($actual->getContentType());
 
         $actual->setContentType($contentType);
 
-        $this->assertInstanceOf(AbstractContentType::_CLASS_, $actual->getContentType());
+        $this->assertInstanceOf(self::$contentTypeAbstractClass, $actual->getContentType());
     }
 
     public function testSetContentTypeException()
     {
-        $actual = $this->getMockForAbstractClass(AbstractBase::_CLASS_);
+        $actual = $this->getMockForAbstractClass(self::$fieldAbstractClass);
 
         try
         {
@@ -60,7 +60,7 @@ class AbstractBaseTest extends \PHPUnit_Framework_TestCase
 
     public function testToStringMethod()
     {
-        $actual = $this->getMockForAbstractClass(AbstractBase::_CLASS_);
+        $actual = $this->getMockForAbstractClass(self::$fieldAbstractClass);
 
         $expected = '<span>rendered</span>';
 
