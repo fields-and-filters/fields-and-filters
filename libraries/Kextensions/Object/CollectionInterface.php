@@ -21,6 +21,17 @@ defined('_JEXEC') or die;
 interface CollectionInterface extends ObjectInterface
 {
     /**
+     * {@inheritDoc}
+     *
+     * @param ObjectInterface $value The object with instance of Object.
+     *
+     * @return Collection Current instance.
+     *
+     * @throws InvalidArgumentException
+     */
+    public function set($property, $value);
+
+    /**
      * Clears the collection, removing all elements.
      *
      * @return Object Current instance.

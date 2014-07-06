@@ -8,35 +8,18 @@
 
 namespace Fieldsandfilters\Field;
 
-use Kextensions\Object\ObjectList;
-
 defined('_JEXEC') or die;
 
 /**
- * Field List
+ * Abstract Filter
  *
  * @package     Fieldsandfilters
  * @since       2.0
  */
-class FieldList extends ObjectList
+abstract class AbstractFilter extends AbstractField implements FilterInterface
 {
     /**
      * {@inheritdoc}
      */
-    const _CLASS_ = __CLASS__;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected static $setInstance = AbstractBase::_CLASS_;
-
-    public function render()
-    {
-        return implode("\n", $this->data);
-    }
-
-    function __toString()
-    {
-        return $this->render();
-    }
+    const isFilter = true;
 }

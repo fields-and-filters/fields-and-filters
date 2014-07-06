@@ -22,12 +22,6 @@ class Collection extends Object implements CollectionInterface
 {
     /**
      * {@inheritDoc}
-     *
-     * @param ObjectInterface $value The object with instance of Object.
-     *
-     * @return Collection Current instance.
-     *
-     * @throws InvalidArgumentException
      */
     public function set($property, $value)
     {

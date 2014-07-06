@@ -8,24 +8,14 @@
 
 namespace Fieldsandfilters\Field;
 
-use Kextensions\Object\ObjectInterface;
-use Fieldsandfilters\Content\AbstractContentType;
-
 defined('_JEXEC') or die;
 
 /**
- * Base Interface
+ * Filter Interface
  *
  * @package     Fieldsandfilters
  * @since       2.0
  */
-interface BaseInterface extends ObjectInterface
+interface FilterInterface extends FieldInterface
 {
-    public function setContentType(AbstractContentType $contentType);
-
-    public function getContentType();
-
-    public function render();
-
-    public function __toString();
 }

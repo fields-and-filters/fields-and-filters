@@ -17,7 +17,7 @@ use Fieldsandfilters\Field\AbstractBase;
  * @package     Fieldsandfilters
  * @since       2.0
  */
-class FieldListTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends \PHPUnit_Framework_TestCase
 {
     public function testSetInstance()
     {
