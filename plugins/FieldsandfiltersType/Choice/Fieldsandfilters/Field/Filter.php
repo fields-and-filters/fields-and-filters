@@ -6,7 +6,7 @@
  * @author      KES - Kulka Tomasz <kes@kextensions.com> - http://www.kextensions.com
  */
 
-namespace FieldsandfiltersType\TODO\Fieldsandfilters\Field;
+namespace FieldsandfiltersType\Choice\Fieldsandfilters\Field;
 
 use Fieldsandfilters\Field\AbstractFilter;
 

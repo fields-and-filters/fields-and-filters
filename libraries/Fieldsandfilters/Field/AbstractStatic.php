@@ -8,6 +8,8 @@
 
 namespace Fieldsandfilters\Field;
 
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die;
 
 /**
@@ -21,25 +23,20 @@ abstract class AbstractStatic extends AbstractBase implements StaticInterface
     /**
      * {@inheritdoc}
      */
-    const _CLASS_ = __CLASS__;
-
-    /**
-     * {@inheritdoc}
-     */
     const isStatic = true;
 
     protected $data;
 
     /**
-     * @param mixed $data
+     * {@inheritdoc}
      */
-    public function setData($data)
+    public function setData(Registry $data)
     {
         $this->data = $data;
     }
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getData()
     {

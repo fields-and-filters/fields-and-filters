@@ -8,6 +8,8 @@
 
 namespace Fieldsandfilters\Field;
 
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die;
 
 /**
@@ -18,7 +20,14 @@ defined('_JEXEC') or die;
  */
 interface StaticInterface extends BaseInterface
 {
-    public function setData($data);
+    /**
+     * @param Registry $data
+     * @return AbstractStatic Instance
+     */
+    public function setData(Registry $data);
 
+    /**
+     * @return Registry
+     */
     public function getData();
 }
