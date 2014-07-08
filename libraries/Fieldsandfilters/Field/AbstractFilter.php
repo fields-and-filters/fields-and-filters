@@ -22,4 +22,14 @@ abstract class AbstractFilter extends AbstractField implements FilterInterface
      * {@inheritdoc}
      */
     const isFilter = true;
+
+    public function getData()
+    {
+        if (!$this->content instanceof AbstractContent)
+        {
+            throw new \InvalidArgumentException(sprintf('Content property is not instance of "%s".', 'Fieldsandfilters\Content\AbstractContent'));
+        }
+
+        return $this->content->getConnection($this->id);
+    }
 }

@@ -8,8 +8,6 @@
 
 namespace Fieldsandfilters\Field;
 
-use Joomla\Registry\Registry;
-
 defined('_JEXEC') or die;
 
 /**
@@ -30,7 +28,7 @@ abstract class AbstractStatic extends AbstractBase implements StaticInterface
     /**
      * {@inheritdoc}
      */
-    public function setData(Registry $data)
+    public function setData($data)
     {
         $this->data = $data;
     }
