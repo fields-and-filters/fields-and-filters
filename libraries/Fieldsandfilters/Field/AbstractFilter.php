@@ -21,7 +21,9 @@ abstract class AbstractFilter extends AbstractField implements FilterInterface
     /**
      * {@inheritdoc}
      */
-    const isFilter = true;
+    const IS_FILTER = true;
+
+    const RENDER_FILTER_LAYOUT_TYPE = 'filter';
 
     public function getData()
     {
@@ -32,4 +34,27 @@ abstract class AbstractFilter extends AbstractField implements FilterInterface
 
         return $this->content->getConnection($this->id);
     }
+
+    public function setData($data)
+    {
+        if (!$this->content instanceof AbstractContent)
+        {
+            throw new \InvalidArgumentException(sprintf('Content property is not instance of "%s".', 'Fieldsandfilters\Content\AbstractContent'));
+        }
+
+        return $this->content->setConnection($this->id, $data);
+    }
+
+    public function renderFilter()
+    {
+        if (!$this->content instanceof AbstractContent)
+        {
+            throw new \InvalidArgumentException(sprintf('Content property is not instance of "%s".', 'Fieldsandfilters\Content\AbstractContent'));
+        }
+
+        return $this->prepareRender(self::RENDER_LAYOUT_TYPE);
+    }
+
+    // getConnection()
+    // setConnection()
 }

@@ -23,7 +23,9 @@ abstract class AbstractField extends AbstractBase implements FieldInterface
     /**
      * {@inheritdoc}
      */
-    const isField = true;
+    const IS_FIELD = true;
+
+    const RENDER_LAYOUT_TYPE = 'field';
 
     protected $content;
 
@@ -53,6 +55,16 @@ abstract class AbstractField extends AbstractBase implements FieldInterface
         return $this->content->getData($this->id);
     }
 
+    public function setData($data)
+    {
+        if (!$this->content instanceof AbstractContent)
+        {
+            throw new \InvalidArgumentException(sprintf('Content property is not instance of "%s".', 'Fieldsandfilters\Content\AbstractContent'));
+        }
+
+        return $this->content->setData($this->id, $data);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -63,6 +75,6 @@ abstract class AbstractField extends AbstractBase implements FieldInterface
             throw new \InvalidArgumentException(sprintf('Content property is not instance of "%s".', 'Fieldsandfilters\Content\AbstractContent'));
         }
 
-        return '';
+        return parent::render();
     }
 }

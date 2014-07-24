@@ -20,7 +20,22 @@ defined('_JEXEC') or die;
  */
 abstract class AbstractContent extends Object
 {
-    public function getData()
+    public function getData($key)
+    {
+
+    }
+
+    public function setData($key, $data)
+    {
+
+    }
+
+    public function getConnection($key)
+    {
+
+    }
+
+    public function setConnection($key, $data)
     {
 
     }

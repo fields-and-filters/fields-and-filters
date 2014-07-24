@@ -25,4 +25,6 @@ interface FieldInterface extends BaseInterface
     public function getContent();
 
     public function getData();
+
+    public function setData();
 }

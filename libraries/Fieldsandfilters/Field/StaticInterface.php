@@ -19,13 +19,13 @@ defined('_JEXEC') or die;
 interface StaticInterface extends BaseInterface
 {
     /**
-     * @param Registry $data
+     * @param  $data
      * @return AbstractStatic Instance
      */
     public function setData($data);
 
     /**
-     * @return Registry
+     * @return
      */
     public function getData();
 }

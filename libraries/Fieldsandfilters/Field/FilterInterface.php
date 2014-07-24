@@ -18,4 +18,5 @@ defined('_JEXEC') or die;
  */
 interface FilterInterface extends FieldInterface
 {
+    public function renderFilter();
 }

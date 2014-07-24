@@ -23,9 +23,9 @@ class AbstractBaseTest extends \PHPUnit_Framework_TestCase
     {
         $base = $this->getMockForAbstractClass(self::$fieldAbstractClass);
 
-        $this->assertFalse($base::isField);
-        $this->assertFalse($base::isFilter);
-        $this->assertFalse($base::isStatic);
+        $this->assertFalse($base::IS_FIELD);
+        $this->assertFalse($base::IS_FILTER);
+        $this->assertFalse($base::IS_STATIC);
     }
 
     public function testSetGetContentType()

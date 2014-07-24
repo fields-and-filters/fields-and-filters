@@ -21,11 +21,15 @@ defined('_JEXEC') or die;
  */
 abstract class AbstractBase extends Object implements BaseInterface
 {
-    const isField = false;
+    const IS_FIELD = false;
 
-    const isFilter = false;
+    const IS_FILTER = false;
 
-    const isStatic = false;
+    const IS_STATIC = false;
+
+    const PLUGIN_TYPE = 'FieldsandfiltersType';
+
+    const RENDER_LAYOUT_TYPE = 'base';
 
     protected $contentType;
 
@@ -47,11 +51,43 @@ abstract class AbstractBase extends Object implements BaseInterface
         return $this->contentType;
     }
 
+    public function getLayout($layoutType)
+    {
+        return \JPluginHelper::getLayoutPath(static::PLUGIN_TYPE, $this->type,
+            sprintf('%s/%s',
+                $layoutType,
+                $this->params->get(sprintf('type.%slayout', $layoutType), 'default')
+            )
+        );
+    }
+
+    public function render()
+    {
+        return $this->prepareRender(self::RENDER_LAYOUT_TYPE);
+    }
+
     /**
      * {@inheritdoc}
      */
-    function __toString()
+    public function __toString()
     {
         return $this->render();
+    }
+
+    protected function prepareRender($layoutType)
+    {
+        // Start capturing output into a buffer
+        ob_start();
+
+        // Include the requested template filename in the local scope
+        // (this will execute the view logic).
+        include $this->getLayout(self::RENDER_LAYOUT_TYPE);
+
+        // Done with the requested template; get the buffer and
+        // clear it.
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        return $output;
     }
 }

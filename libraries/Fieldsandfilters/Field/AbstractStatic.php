@@ -21,7 +21,9 @@ abstract class AbstractStatic extends AbstractBase implements StaticInterface
     /**
      * {@inheritdoc}
      */
-    const isStatic = true;
+    const IS_STATIC = true;
+
+    const RENDER_LAYOUT_TYPE = 'static';
 
     protected $data;
 
@@ -39,13 +41,5 @@ abstract class AbstractStatic extends AbstractBase implements StaticInterface
     public function getData()
     {
         return $this->data;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function render()
-    {
-        return '';
     }
 }

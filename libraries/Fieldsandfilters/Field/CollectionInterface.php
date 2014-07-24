@@ -9,6 +9,7 @@
 namespace Fieldsandfilters\Field;
 
 use Kextensions\Object\CollectionInterface AS BaseCollectionInterface;
+use Fieldsandfilters\Content\AbstractContent;
 
 defined('_JEXEC') or die;
 
@@ -24,6 +25,18 @@ interface CollectionInterface extends BaseCollectionInterface
      * {@inheritDoc}
      *
      * @param BaseInterface $value The object with instance of Object.
+     *
+     * @return Collection Current instance.
+     *
+     * @throws InvalidArgumentException
      */
     public function set($property, $value);
+
+    public function setContent(AbstractContent $content);
+
+    public function render();
+
+    public function renderFilter();
+
+    public function __toString();
 }

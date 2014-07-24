@@ -27,5 +27,7 @@ interface BaseInterface extends ObjectInterface
 
     public function render();
 
+    public function getLayout();
+
     public function __toString();
 }

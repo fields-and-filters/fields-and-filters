@@ -24,12 +24,6 @@ class Collection extends BaseCollection implements CollectionInterface
 {
     /**
      * {@inheritDoc}
-     *
-     * @param BaseInterface $value The object with instance of Object.
-     *
-     * @return Collection Current instance.
-     *
-     * @throws InvalidArgumentException
      */
     public function set($property, $value)
     {
@@ -43,9 +37,9 @@ class Collection extends BaseCollection implements CollectionInterface
 
     public function setContent(AbstractContent $content)
     {
-        foreach ($this->data AS $field)
+        foreach ($this->data AS BaseInterface $field)
         {
-            if ($field::isField && $field::isFilter)
+            if ($field::IS_FIELD && $field::IS_FILTER)
             {
                 $field->setContent();
             }
@@ -54,12 +48,19 @@ class Collection extends BaseCollection implements CollectionInterface
         return $this;
     }
 
-    public function render()
+    public function render(AbstractContent $content)
     {
         return implode("\n", $this->data);
     }
 
-    function __toString()
+    public function renderFilter()
+    {
+        return implode("\n", array_map($this->data, function(BaseInterface $field) {
+            return $field::IS_FILTER ? $field->renderFilter() : false;
+        }));
+    }
+
+    public function __toString()
     {
         return $this->render();
     }
