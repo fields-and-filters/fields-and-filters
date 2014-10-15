@@ -598,24 +598,24 @@
 				$form = $form.add(this.selector('other'), this.selector('body'));
 			}
 
-			$form.serializeArray().each(function (el) {
-				if ($.inArray(el.name, excluded) != -1) {
-					return false;
-				}
+            $.each($form.serializeArray(), function (k, el) {
+                if ($.inArray(el.name, excluded) != -1) {
+                    return;
+                }
 
-				if (( prop = $fn.get(obj, el.name) )) {
-					if (!$.isArray(prop)) {
-						prop = $fn.set(obj, el.name, [ prop ]);
-					}
+                if (( prop = $fn.get(obj, el.name) )) {
+                    if (!$.isArray(prop)) {
+                        prop = $fn.set(obj, el.name, [ prop ]);
+                    }
 
-					if (el.value) {
-						prop.push(el.value);
-					}
-				}
-				else if (el.value) {
-					$fn.set(obj, el.name, el.value);
-				}
-			});
+                    if (el.value) {
+                        prop.push(el.value);
+                    }
+                }
+                else if (el.value) {
+                    $fn.set(obj, el.name, el.value);
+                }
+            });
 
 			return obj;
 		},

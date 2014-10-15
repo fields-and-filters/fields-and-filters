@@ -26,7 +26,7 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		$fieldID         = $app->input->get('fid', 0, 'int');
 		$extensionTypeID = $app->input->get('etid', 0, 'int');
 
-		if (($app->input->get('format') == 'raw') && $extensionID && $fieldID)
+        if (($app->input->get('format') == 'raw') && $extensionTypeID && $fieldID)
 		{
 			// Load PluginExtensions Helper
 			if (!($extension = FieldsandfiltersFactory::getExtensions()->getExtensionsByTypeID($extensionTypeID)->get($extensionTypeID)))
