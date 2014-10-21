@@ -785,10 +785,10 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 
 		$selectors = $filters->get('selectors');
 
-		if ($context == $this->_contexts['category'] && ($selector = trim($this->params->get('selector_other_category', ''))))
-		{
-			$selectors['other'] = $selector;
-		}
+        if ($context == $this->_contexts['category'] && ($selector = trim($this->params->get('selector_other_category', '#adminForm'))))
+        {
+            $selectors['other'] = $selector;
+        }
 		elseif ($context == $this->_contexts['archive'] && ($selector = trim($this->params->get('selector_other_archive', '#adminForm'))))
 		{
 			$selectors['other'] = $selector;

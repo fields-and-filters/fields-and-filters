@@ -7,7 +7,7 @@
 	<author>KES - Kulka Tomasz</author>
 	<authorEmail>kes@kextensions.com</authorEmail>
 	<authorUrl>http://www.kextensions.com</authorUrl>
-	<version>1.2.2</version>
+	<version>1.2.3</version>
 	<description>PLG_FIELDSANDFILTERSTYPES_URL_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="url">url.php</filename>

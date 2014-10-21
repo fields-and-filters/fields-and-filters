@@ -7,7 +7,7 @@
 	<author>KES - Kulka Tomasz</author>
 	<authorEmail>kes@kextensions.com</authorEmail>
 	<authorUrl>http://www.kextensions.com</authorUrl>
-	<version>1.2.2</version>
+	<version>1.2.3</version>
 	<description>MOD_FIELDSANDFILTERS_FILTERS_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_fieldsandfilters_filters">mod_fieldsandfilters_filters.php</filename>
@@ -31,6 +31,10 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
+                <field name="show_random" type="radio" class="btn-group" label="MOD_FIELDSANDFILTERS_FILTERS_SHOW_RANDOM_LBL" description="MOD_FIELDSANDFILTERS_FILTERS_SHOW_RANDOM_DESC" default="0" filter="int">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
 			</fieldset>
 			<fieldset name="display">
 				<!--

@@ -40,6 +40,12 @@
 			case 'submit':
 				$($fn.selector('form') + ':eq(0)').trigger('submit');
 				break;
+            case 'random':
+                // [TODO] move this to separate files in [types].js
+                $this.on('click', function () {
+                    $($fn.selector('form') + ':eq(0)').trigger('random');
+                });
+                break;
 			case 'filters' :
 			default:
 				options = $.extend(true, {
@@ -81,39 +87,47 @@
 				// $fn.setCounts( $this );
 
 				// add event submint form
-				$this.on({
-					"submit": function (e) {
-						/* stop form from submitting normally */
-						e.preventDefault();
+                $this.on({
+                    submit: function (e) {
+                        /* stop form from submitting normally */
+                        e.preventDefault();
 
-						$fn.pagination('reset');
+                        $fn.pagination('reset');
 
-						$fn.ajax($(this));
-					},
-					"clear" : function (e, not) {
-						e.preventDefault();
+                        $fn.ajax($(this));
+                    },
+                    clear : function (e, not) {
+                        e.preventDefault();
 
-						not = !(not === false || not === undefined);
+                        not = !(not === false || not === undefined);
 
-						if ($.isEmptyObject($fn.get('$data', {}))) {
-							return;
-						}
+                        if ($.isEmptyObject($fn.get('$data', {}))) {
+                            return;
+                        }
 
-						$fn.reset($(this));
+                        $fn.reset($(this));
 
-						if (!not) {
-							$($fn.selector('form')).not($(this)).triggerHandler('reset', not);
+                        if (!not) {
+                            $($fn.selector('form')).not($(this)).triggerHandler('reset', not);
 
-							if ($fn.selector('other')) {
-								$fn.reset($($fn.selector('other'), $fn.selector('body')));
-							}
+                            if ($fn.selector('other')) {
+                                $fn.reset($($fn.selector('other'), $fn.selector('body')));
+                            }
 
-							$(this).triggerHandler('submit');
-						}
+                            $(this).triggerHandler('submit');
+                        }
+                    },
+                    random: function (e) {
+                        // [TODO] move this to separate files in [types].js
+                        e.preventDefault();
 
-						return false;
-					}
-				})
+                        $($fn.selector('input')).each(function() {
+                            var val = Math.floor(Math.random() * 10) % 2;
+
+                            $(this).prop($(this).is('input') ? 'checked' : 'selected', val);
+                        });
+                    }
+                })
 					.removeClass($fn.selector('loadingClass'))
 					.find([$fn.selector('reset'), $fn.selector('empty')].join()).on('click', function (e) {
 						e.preventDefault();
@@ -427,6 +441,14 @@
 
 					// add scripts and scripts declaration
 					$.when($fn.scripts($fn.get(data, 'head.scripts'), $fn.get(data, 'head.script'))).done(function () {
+                        if ($fn.selector('other')) {
+                            $($fn.selector('body')).find($fn.selector('other')).each(function(){
+                                this.submit = function() {
+                                    $(this).trigger('submit');
+                                }
+                            });
+                        }
+
 						// end loading data
 						$fn.loading('stop');
 						$fn.fn('done', [ $form, data, status, response ]);

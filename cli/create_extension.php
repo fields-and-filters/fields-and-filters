@@ -376,7 +376,7 @@ class CreateExtensionCli extends JApplicationCli
 		$name = is_string($name) ? $name : trim(str_replace($base, '', $file), '/');
 
 		return array(
-			'name' => JPath::clean(($folder ?: '').'/'.$name),
+			'name' => JPath::clean(($folder ? '/' : '').$name),
 			'data' => file_get_contents(JPath::clean($file))
 		);
 	}
