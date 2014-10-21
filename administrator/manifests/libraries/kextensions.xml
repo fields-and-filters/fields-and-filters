@@ -2,7 +2,7 @@
 <extension type="library" version="2.5" method="upgrade">
 	<name>Kextensions Library</name>
 	<libraryname>kextensions</libraryname>
-	<creationDate>2014-06-01</creationDate>
+	<creationDate>2014-10-22</creationDate>
 	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see License.txt</license>
 	<author>KES - Kulka Tomasz</author>
