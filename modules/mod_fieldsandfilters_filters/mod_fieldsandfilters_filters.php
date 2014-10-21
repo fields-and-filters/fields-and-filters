@@ -103,7 +103,8 @@ if ($fieldsID = $params->get('fields_id'))
 
 		$script[] = 'jQuery(document).ready(function($) {';
 		$script[] = '     $( "#faf-form-' . $module->id . '" ).fieldsandfilters(' . $options . ');';
-		$script[] = '});';
+        $script[] = '     $( "#faf-form-random-' . $module->id . '" ).fieldsandfilters("random");';
+        $script[] = '});';
 
 		JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
 
