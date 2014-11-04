@@ -19,6 +19,7 @@
 .com_fieldsandfilters [class^="icon-faf-"]:before,
 .com_fieldsandfilters [class*=" icon-faf-"]:before {
   font-family: "fieldsandfilters";
+  font-style: normal;
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -161,6 +162,10 @@
   -moz-transition-property: background-position, -moz-border-radius-bottomleft, -moz-box-shadow;
   -webkit-transition-duration: 0.8s;
   -moz-transition-duration: 0.8s;
+}
+.cpanel div.icon a i {
+  padding: 7px;
+  display: block;
 }
 .cpanel div.icon a span {
   font-size: 12px;
