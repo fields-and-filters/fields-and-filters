@@ -694,7 +694,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$prefix = get_class($this);
 		list($option, $class) = explode('.', $context);
 
-		JModelLegacy::addIncludePath((JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides'), ($prefix . 'Model'));
+        JModelLegacy::addIncludePath(sprintf('%s/%s/%s/overrides/models', JPATH_PLUGINS, $this->_type, $this->_name), ($prefix . 'Model'));
 
 		if (!($model = JModelLegacy::getInstance($class, ($prefix . 'Model'), array('ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $option . '/tables'))))
 		{
@@ -785,10 +785,10 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 
 		$selectors = $filters->get('selectors');
 
-		if ($context == $this->_contexts['category'] && ($selector = trim($this->params->get('selector_other_category', ''))))
-		{
-			$selectors['other'] = $selector;
-		}
+        if ($context == $this->_contexts['category'] && ($selector = trim($this->params->get('selector_other_category', '#adminForm'))))
+        {
+            $selectors['other'] = $selector;
+        }
 		elseif ($context == $this->_contexts['archive'] && ($selector = trim($this->params->get('selector_other_archive', '#adminForm'))))
 		{
 			$selectors['other'] = $selector;
@@ -816,7 +816,9 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$app      = JFactory::getApplication();
 		$jinput   = $app->input;
 		$document = JFactory::getDocument();
-		$basePath = JPATH_SITE . '/components/com_content';
+
+        $basePath = sprintf('%s/%s/%s/overrides', JPATH_PLUGINS, $this->_type, $this->_name);
+        $contentPath = JPATH_SITE . '/components/com_content';
 		$id       = $jinput->get('id', 0, 'int');
 		$context  = $jinput->get('context');
 
@@ -845,7 +847,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		JLoader::import('com_content.helpers.query', JPATH_SITE . '/components');
 
 		// Get controller Instance
-		if (!($controller = KextensionsController::getInstance(null, 'contentController', array('base_path' => $basePath, 'view_path' => ($basePath . '/views')))))
+        if (!($controller = KextensionsController::getInstance(null, 'contentController', array('base_path' => $contentPath, 'view_path' => ($basePath . '/views')))))
 		{
 			return false;
 		}
@@ -853,7 +855,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		// add model path
 		$prefix = get_class($this);
 
-		$controller->addModelPath((JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/overrides'), ($prefix . 'Model'));
+        $controller->addModelPath($basePath.'/models', ($prefix . 'Model'));
 
 		if (!($model = $controller->getModel($class, ($prefix . 'Model'), array('ignore_request' => false, 'table_path' => JPATH_ADMINISTRATOR . '/components/' . $option . '/tables'))))
 		{
@@ -886,7 +888,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 
 		// load view
-		if (!($view = $controller->getView($class, 'html', '', array('base_path' => $basePath, 'layout' => $jinput->get('layout', 'default')))))
+        if (!($view = $controller->getView($class, 'html', ($prefix . 'View'), array('base_path' => $contentPath, 'layout' => $jinput->get('layout', 'default')))))
 		{
 			return false;
 		}

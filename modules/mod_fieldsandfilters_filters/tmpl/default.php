@@ -29,5 +29,9 @@ $isReset = $params->get('show_reset', 0);
 		<?php if ($isReset) : ?>
 			<input type="reset" id="faf-form-reset-<?php echo $module->id; ?>" name="faf-form-reset-<?php echo $module->id; ?>" class="btn btn-info faf-form-reset" value="<?php echo JText::_('MOD_FILEDSANDFILTERS_FILTERS_FORM_RESET'); ?>" />
 		<?php endif; ?>
+
+        <?php if ($params->get('show_random', 0)) : ?>
+            <button id="faf-form-random-<?php echo $module->id; ?>" name="faf-form-random-<?php echo $module->id; ?>" class="btn btn-inverse faf-form-random"><?php echo JText::_('MOD_FILEDSANDFILTERS_FILTERS_FORM_RANDOM'); ?></button>
+        <?php endif; ?>
 	</form>
 </div>

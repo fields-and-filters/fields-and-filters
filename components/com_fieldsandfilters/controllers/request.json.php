@@ -39,6 +39,10 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 		$extensionTypeID = $app->input->get('extensionID', 0, 'int');
 		$requestID       = $app->input->get('requestID', 0, 'alnum');
 
+        $menu = $app->getMenu();
+        $actualMenuId = $menu->getActive()->id;
+        $menu->setActive($app->input->get('Itemid'));
+
 		try
 		{
 			// Check if exist requestID and extention type id
@@ -68,6 +72,8 @@ class FieldsandfiltersControllerRequest extends JControllerLegacy
 
 			$data = new JObject();
 			$app->triggerEvent('onFieldsandfiltersRequestJSON', array($context, $data));
+
+            $menu->setActive($actualMenuId);
 
 			// Send the response.
 			$this->sendResponse($data);
