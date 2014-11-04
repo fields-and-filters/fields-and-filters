@@ -42,7 +42,11 @@
 				break;
             case 'random':
                 // [TODO] move this to separate files in [types].js
-                $this.on('click', function () {
+                $this.on('click', function (e) {
+                    e.preventDefault();
+
+                    $fn.set('$task', type);
+
                     $($fn.selector('form') + ':eq(0)').trigger('random');
                 });
                 break;
@@ -125,7 +129,13 @@
                             var val = Math.floor(Math.random() * 10) % 2;
 
                             $(this).prop($(this).is('input') ? 'checked' : 'selected', val);
+
+                            if (val && $(this).is(':disabled')) {
+                                $(this).prop('disabled', false);
+                            }
                         });
+
+                        $(this).triggerHandler('submit');
                     }
                 })
 					.removeClass($fn.selector('loadingClass'))
@@ -367,7 +377,7 @@
 	$.extend($fn, {
 		requestID: function (createNew) {
 			var newID = (+new Date()).toString(32).toUpperCase();
-			;
+
 			return ( createNew ? this.set('$request.requestID', newID) : this.def('$request.requestID', newID) );
 		},
 
@@ -418,6 +428,11 @@
 						return false;
 					}
 
+                    if ($fn.get(data, 'empty', false) && $fn.get('$task') == 'random') {
+                        $($fn.selector('form') + ':eq(0)').trigger('random');
+                        return;
+                    }
+
 					if ($form) {
 						// set new coutns
 						$fn.set('$counts', $fn.get(data, 'counts', []));
@@ -453,6 +468,9 @@
 						$fn.loading('stop');
 						$fn.fn('done', [ $form, data, status, response ]);
 					});
+
+                    // clear task
+                    $fn.del('$task');
 				})
 				.fail(function (data, status, response) {
 					// end loading data
@@ -468,7 +486,8 @@
 							break;
 						case 'error':
 						default:
-							token = $fn.get($.parseJSON(data.responseText), 'token');
+                            // [TODO] jquery returned data.responseJSON
+                            token = $fn.get($.parseJSON(data.responseText), 'token');
 							break;
 					}
 					// add new token
@@ -703,18 +722,19 @@
 							return;
 						}
 
-						$(this).parents(group).hide();
+                        $(this).parents(group).addClass('faf-hide').hide();
 					}
 					else {
 						$(this).attr('disabled', false);
 						if ($(this).is('option') && !$fn.isSelectEnabled(this)) {
 							return;
 						}
-						$(this).parents(group).show();
+
+                        $(this).parents(group).removeClass('faf-hide').show();
 					}
 				}).parents($fn.selector('fieldset')).each(function () {
-					var counts = $(this).find($fn.selector('input') + ':enabled:not([data-default])').size();
-					visible = $(this).is(':visible');
+					var counts = $(this).find($fn.selector('input') + ':enabled:not([data-default])').size(),
+					    visible = $(this).is(':visible');
 
 					if (!visible && counts) {
 						$(this).show();
