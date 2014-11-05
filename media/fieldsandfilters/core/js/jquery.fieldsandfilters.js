@@ -9,7 +9,10 @@
 ;
 (function ($, faf) {
 
-	var $fn = $[faf] = { $name: faf };
+	var $fn = $[faf] = {
+        $name: faf,
+        task: null
+    };
 
 	$.fn[faf] = function (type, options) {
 		var $this = this;
@@ -45,7 +48,7 @@
                 $this.on('click', function (e) {
                     e.preventDefault();
 
-                    $fn.set('$task', type);
+                    $fn.task = type;
 
                     $($fn.selector('form') + ':eq(0)').trigger('random');
                 });
@@ -233,9 +236,11 @@
 					break;
 				case 'get':
 				default:
-					var url;
-					keys = this.get(options, 'pagination', []);
+					var url,
+					    keys = this.get(options, 'pagination', []);
+
 					keys = $.isArray(keys) ? keys : [keys];
+
 					$pagination.on('click', this.get(options, 'selector', 'a'), function (event) {
 						event.preventDefault();
 						url = $(this).prop('search');
@@ -428,7 +433,7 @@
 						return false;
 					}
 
-                    if ($fn.get(data, 'empty', false) && $fn.get('$task') == 'random') {
+                    if ($fn.get(data, 'empty', false) && $fn.task == 'random') {
                         $($fn.selector('form') + ':eq(0)').trigger('random');
                         return;
                     }
@@ -470,7 +475,7 @@
 					});
 
                     // clear task
-                    $fn.del('$task');
+                    $fn.task = null;
 				})
 				.fail(function (data, status, response) {
 					// end loading data
