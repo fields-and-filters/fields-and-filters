@@ -95,7 +95,12 @@ class plgFieldsandfiltersExtensionsContentModelArticles extends ContentModelArti
 		$query->clear('select');
 		$query->clear('order');
 		$query->clear('group');
-        $query->clear('limit');
+
+        // Only for Joomla 3.x
+        if (FieldsandfiltersFactory::isVersion())
+        {
+            $query->clear('limit');
+        }
 
 		$query->select('DISTINCT ' . $this->_db->quoteName('a.id'));
 		$this->_db->setQuery($query);

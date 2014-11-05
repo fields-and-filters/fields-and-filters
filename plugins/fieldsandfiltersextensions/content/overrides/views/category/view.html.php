@@ -103,8 +103,12 @@ class plgFieldsandfiltersExtensionsContentViewCategory extends ContentViewCatego
             $this->setLayout($active->query['layout']);
         }
 
-        $this->category->tags = new JHelperTags;
-        $this->category->tags->getItemTags($this->extension . '.category', $this->category->id);
+        // Only for Joomla 3.x
+        if (FieldsandfiltersFactory::isVersion())
+        {
+            $this->category->tags = new JHelperTags;
+            $this->category->tags->getItemTags($this->extension . '.category', $this->category->id);
+        }
     }
 
     /**
@@ -142,7 +146,8 @@ class plgFieldsandfiltersExtensionsContentViewCategory extends ContentViewCatego
             $item->catslug = $item->category_alias ? ($item->catid.':'.$item->category_alias) : $item->catid;
             $item->event   = new stdClass;
 
-            $dispatcher = JEventDispatcher::getInstance();
+            // Only Joomla 3.x can use JEventDispatcher
+            $dispatcher = FieldsandfiltersFactory::isVersion() ? JEventDispatcher::getInstance() : JDispatcher::getInstance();
 
             // Old plugins: Ensure that text property is available
             if (!isset($item->text))
@@ -306,6 +311,7 @@ class plgFieldsandfiltersExtensionsContentViewCategory extends ContentViewCatego
         }
 
         // [TODO] FaF need more elastic solution
-        return JViewCategory::display($tpl);
+        // Only Joomla 3.x can use JViewCategory
+        return FieldsandfiltersFactory::isVersion() ? JViewCategory::display($tpl) : JViewLegacy::display($tpl);
     }
 }
