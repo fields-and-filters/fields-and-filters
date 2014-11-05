@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="system" method="upgrade">
 	<name>plg_system_fieldsandfilters</name>
-	<creationDate>2014-11-06</creationDate>
+	<creationDate>2014-11-05</creationDate>
 	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see License.txt</license>
 	<author>KES - Kulka Tomasz</author>
