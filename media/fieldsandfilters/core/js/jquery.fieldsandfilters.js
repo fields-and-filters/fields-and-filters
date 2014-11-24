@@ -11,7 +11,8 @@
 
 	var $fn = $[faf] = {
         $name: faf,
-        task: null
+        task: null,
+        lastToken: null,
     };
 
 	$.fn[faf] = function (type, options) {
@@ -71,6 +72,7 @@
 						fieldset    : '.faf-filters',
 						empty       : '.faf-form-empty',
 						submit      : '.faf-form-submit',
+						random      : '.faf-form-random',
 						other       : '',
 						loadingClass: 'faf-filters-loading'
 					},
@@ -113,7 +115,7 @@
 
                         not = !(not === false || not === undefined);
 
-                        if ($.isEmptyObject($fn.get('$data', {}))) {
+                        if ($.isEmptyObject($fn.get('$data', {})) && $fn.lastToken != 'random:selected') {
                             return;
                         }
 
@@ -149,6 +151,7 @@
                     },
                     'random:selected': function (e) {
                         $fn.task = e.type;
+                        $fn.set('$data', {});
 
                         $(this).triggerHandler('submit');
                     }
@@ -434,7 +437,7 @@
 				var options = this.options($form),
 					serialize = this.serialize();
 
-				if ($.param(this.get('$data', {})) == $.param(serialize)) {
+				if ($.param(this.get('$data', {})) == $.param(serialize) && $fn.lastToken != 'random:selected') {
 					return false;
 				}
 
@@ -467,7 +470,9 @@
 						return false;
 					}
 
-                    if ($fn.get(data, 'empty', false) && $fn.task == 'random:all') {
+                    var isEmpty = $fn.get(data, 'empty', false);
+
+                    if (isEmpty && $fn.task == 'random:all') {
                         $($fn.selector('form') + ':eq(0)').trigger('random:all');
                         return;
                     }
@@ -476,13 +481,15 @@
 						// set new coutns
 						$fn.set('$counts', $fn.get(data, 'counts', []));
 						$fn.inputs($form, true);
-						if ($fn.get(data, 'empty', false)) {
+						if (isEmpty) {
 							$form.find($fn.selector('empty') + ':hidden').show().end()
-								.find($fn.selector('submit') + ':visible').hide();
+								.find($fn.selector('submit') + ':visible').hide().end()
+                                .find($fn.selector('random') + ':visible').hide();
 						}
 						else {
 							$form.find($fn.selector('empty') + ':visible').hide().end()
-								.find($fn.selector('submit') + ':hidden').show();
+								.find($fn.selector('submit') + ':hidden').show().end()
+                                .find($fn.selector('random') + ':hidden').show();
 						}
 
 					}
@@ -490,8 +497,8 @@
 					// set body
 					$fn.body($fn.get(data, 'body', null)),
 
-						// add styles and styles declaration
-						$fn.styles($fn.get(data, 'head.styleSheets'), $fn.get(data, 'head.style'));
+                    // add styles and styles declaration
+                    $fn.styles($fn.get(data, 'head.styleSheets'), $fn.get(data, 'head.style'));
 
 					// add scripts and scripts declaration
 					$.when($fn.scripts($fn.get(data, 'head.scripts'), $fn.get(data, 'head.script'))).done(function () {
@@ -508,9 +515,12 @@
 						$fn.fn('done', [ $form, data, status, response ]);
 					});
 
-                    if ($fn.task == 'random:selected')
-                    {
-                        $fn.set('$data', {});
+                    if (!isEmpty && $fn.task == 'random:selected') {
+                            $fn.set('$data', {});
+                    }
+
+                    if ($fn.task != $fn.lastToken) {
+                        $fn.lastToken = $fn.task;
                     }
 
                     // clear task
