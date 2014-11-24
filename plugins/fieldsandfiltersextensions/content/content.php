@@ -913,6 +913,11 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		$model->setState('fieldsandfilters.itemsID', (array) $itemsID->get('itemsID'));
 		$model->setState('fieldsandfilters.emptyItemsID', $emptyItemsID);
 
+        if ($jinput->get('random', false) && KextensionsModule::getParams($jinput->get('module'))->get('show_random', 0) && JComponentHelper::getParams('com_fieldsandfilters')->get('random_type_filters') == 'selected') {
+            $model->setState('fieldsandfilters.random.selected', true);
+            $model->setState('fieldsandfilters.random.limit', JComponentHelper::getParams('com_fieldsandfilters')->get('random_items_limit_filters', 0));
+        }
+
 		if (!$emptyItemsID)
 		{
 			ob_start();

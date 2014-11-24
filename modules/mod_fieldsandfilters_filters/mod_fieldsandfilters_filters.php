@@ -103,7 +103,10 @@ if ($fieldsID = $params->get('fields_id'))
 
 		$script[] = 'jQuery(document).ready(function($) {';
 		$script[] = '     $( "#faf-form-' . $module->id . '" ).fieldsandfilters(' . $options . ');';
-        $script[] = '     $( "#faf-form-random-' . $module->id . '" ).fieldsandfilters("random");';
+        if ($params->get('show_random', 0))
+        {
+            $script[] = sprintf('     $( "#faf-form-random-' . $module->id . '" ).fieldsandfilters("random:%s");', JComponentHelper::getParams('com_fieldsandfilters')->get('random_type_filters', 'all'));
+        }
         $script[] = '});';
 
 		JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));

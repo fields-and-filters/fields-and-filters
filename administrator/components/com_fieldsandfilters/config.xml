@@ -101,6 +101,24 @@
 			<option value="OR">COM_FIELDSANDFILTERS_OR</option>
 			<option value="AND">COM_FIELDSANDFILTERS_AND</option>
 		</field>
+        <field
+                name="random_type_filters"
+                type="list"
+                label="COM_FIELDSANDFILTERS_RANDOM_TYPE_FILTERS_LBL"
+                description="COM_FIELDSANDFILTERS_RANDOM_TYPE_FILTERS_DESC"
+                default="all"
+                >
+            <option value="all">COM_FIELDSANDFILTERS_FILTERS_RANDOM_TYPE_ALL</option>
+            <option value="selected">COM_FIELDSANDFILTERS_FILTERS_RANDOM_SELECTED</option>
+        </field>
+        <field
+                name="random_items_limit_filters"
+                type="text"
+                label="COM_FIELDSANDFILTERS_RANDOM_ITEMS_LIMIT_FILTERS_LBL"
+                description="COM_FIELDSANDFILTERS_RANDOM_ITEMS_LIMIT_FILTERS_DESC"
+                default="0"
+                filter="int"
+                />
 		<field
 				name="loading_background_filters"
 				type="filelist"

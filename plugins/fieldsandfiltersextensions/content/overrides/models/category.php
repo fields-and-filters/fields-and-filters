@@ -221,6 +221,8 @@ class plgFieldsandfiltersExtensionsContentModelCategory extends ContentModelCate
 
 			$model->setState('fieldsandfilters.itemsID', $this->getState('fieldsandfilters.itemsID'));
 			$model->setState('fieldsandfilters.emptyItemsID', $this->getState('fieldsandfilters.emptyItemsID', false));
+            $model->setState('fieldsandfilters.random.selected', $this->getState('fieldsandfilters.random.selected', false));
+            $model->setState('fieldsandfilters.random.limit', $this->getState('fieldsandfilters.random.limit', 0));
 
 			$this->_model_articles = $model;
 		}

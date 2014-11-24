@@ -43,14 +43,19 @@
 			case 'submit':
 				$($fn.selector('form') + ':eq(0)').trigger('submit');
 				break;
-            case 'random':
+            case 'random:all':
                 // [TODO] move this to separate files in [types].js
                 $this.on('click', function (e) {
                     e.preventDefault();
 
-                    $fn.task = type;
+                    $($fn.selector('form') + ':eq(0)').trigger(type);
+                });
+                break;
+            case 'random:selected':
+                $this.on('click', function (e) {
+                    e.preventDefault();
 
-                    $($fn.selector('form') + ':eq(0)').trigger('random');
+                    $($fn.selector('form') + ':eq(0)').trigger('random:selected');
                 });
                 break;
 			case 'filters' :
@@ -124,7 +129,7 @@
                             $(this).triggerHandler('submit');
                         }
                     },
-                    random: function (e) {
+                    'random:all': function (e) {
                         // [TODO] move this to separate files in [types].js
                         e.preventDefault();
 
@@ -137,6 +142,13 @@
                                 $(this).prop('disabled', false);
                             }
                         });
+
+                        $fn.task = e.type;
+
+                        $(this).triggerHandler('submit');
+                    },
+                    'random:selected': function (e) {
+                        $fn.task = e.type;
 
                         $(this).triggerHandler('submit');
                     }
@@ -375,7 +387,16 @@
 			}
 
 			return false;
-		}
+		},
+        grep: function (data, callback, context) {
+            for (var key in data) {
+                if (callback.call(context || this, key, data[key])) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 	});
 
 // request && options
@@ -425,6 +446,19 @@
 			$.extend(true, data, this.get('$data', {}), this.get('$request', {}));
 			this.set(data, $fn.token(), 1);
 
+            if ($fn.task == 'random:selected')
+            {
+                var result = $fn.grep(data, function(name) {
+                    return /^fieldsandfilters[\d+]*/.test(name);
+                });
+
+                if (!result) {
+                    return false
+                }
+
+                this.set(data, 'random', 1);
+            }
+
 			// start loading data
 			this.loading();
 			$.getJSON(this.get('$url', '#'), data)
@@ -433,8 +467,8 @@
 						return false;
 					}
 
-                    if ($fn.get(data, 'empty', false) && $fn.task == 'random') {
-                        $($fn.selector('form') + ':eq(0)').trigger('random');
+                    if ($fn.get(data, 'empty', false) && $fn.task == 'random:all') {
+                        $($fn.selector('form') + ':eq(0)').trigger('random:all');
                         return;
                     }
 
@@ -473,6 +507,11 @@
 						$fn.loading('stop');
 						$fn.fn('done', [ $form, data, status, response ]);
 					});
+
+                    if ($fn.task == 'random:selected')
+                    {
+                        $fn.set('$data', {});
+                    }
 
                     // clear task
                     $fn.task = null;
