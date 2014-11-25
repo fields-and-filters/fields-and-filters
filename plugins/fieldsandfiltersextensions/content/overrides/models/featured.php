@@ -83,8 +83,32 @@ class plgFieldsandfiltersExtensionsContentModelFeatured extends ContentModelFeat
 			$query->where($this->getDbo()->quoteName('a.id') . ' IN( ' . implode(',', $itemsID) . ')');
 		}
 
-		return $query;
-	}
+        if ($this->getState('fieldsandfilters.random.selected', false))
+        {
+            $query->clear('order');
+            $query->order('RAND() ASC');
+
+            if ($this->getState('fieldsandfilters.random.limit'))
+            {
+                $this->setState('list.limit', $this->getState('fieldsandfilters.random.limit', 0));
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * @since       1.2.5
+     */
+    public function getTotal()
+    {
+        if ($this->getState('fieldsandfilters.random.selected', false))
+        {
+            return $this->getState('list.limit');
+        }
+
+        return parent::getTotal();
+    }
 
 	/**
 	 * @since       1.2.0

@@ -11,7 +11,8 @@
 
 	var $fn = $[faf] = {
         $name: faf,
-        task: null
+        task: null,
+        lastToken: null,
     };
 
 	$.fn[faf] = function (type, options) {
@@ -43,14 +44,19 @@
 			case 'submit':
 				$($fn.selector('form') + ':eq(0)').trigger('submit');
 				break;
-            case 'random':
+            case 'random:all':
                 // [TODO] move this to separate files in [types].js
                 $this.on('click', function (e) {
                     e.preventDefault();
 
-                    $fn.task = type;
+                    $($fn.selector('form') + ':eq(0)').trigger(type);
+                });
+                break;
+            case 'random:selected':
+                $this.on('click', function (e) {
+                    e.preventDefault();
 
-                    $($fn.selector('form') + ':eq(0)').trigger('random');
+                    $($fn.selector('form') + ':eq(0)').trigger('random:selected');
                 });
                 break;
 			case 'filters' :
@@ -66,6 +72,7 @@
 						fieldset    : '.faf-filters',
 						empty       : '.faf-form-empty',
 						submit      : '.faf-form-submit',
+						random      : '.faf-form-random',
 						other       : '',
 						loadingClass: 'faf-filters-loading'
 					},
@@ -108,7 +115,7 @@
 
                         not = !(not === false || not === undefined);
 
-                        if ($.isEmptyObject($fn.get('$data', {}))) {
+                        if ($.isEmptyObject($fn.get('$data', {})) && $fn.lastToken != 'random:selected') {
                             return;
                         }
 
@@ -124,7 +131,7 @@
                             $(this).triggerHandler('submit');
                         }
                     },
-                    random: function (e) {
+                    'random:all': function (e) {
                         // [TODO] move this to separate files in [types].js
                         e.preventDefault();
 
@@ -137,6 +144,14 @@
                                 $(this).prop('disabled', false);
                             }
                         });
+
+                        $fn.task = e.type;
+
+                        $(this).triggerHandler('submit');
+                    },
+                    'random:selected': function (e) {
+                        $fn.task = e.type;
+                        $fn.set('$data', {});
 
                         $(this).triggerHandler('submit');
                     }
@@ -375,7 +390,16 @@
 			}
 
 			return false;
-		}
+		},
+        grep: function (data, callback, context) {
+            for (var key in data) {
+                if (callback.call(context || this, key, data[key])) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 	});
 
 // request && options
@@ -413,7 +437,7 @@
 				var options = this.options($form),
 					serialize = this.serialize();
 
-				if ($.param(this.get('$data', {})) == $.param(serialize)) {
+				if ($.param(this.get('$data', {})) == $.param(serialize) && $fn.lastToken != 'random:selected') {
 					return false;
 				}
 
@@ -425,6 +449,19 @@
 			$.extend(true, data, this.get('$data', {}), this.get('$request', {}));
 			this.set(data, $fn.token(), 1);
 
+            if ($fn.task == 'random:selected')
+            {
+                var result = $fn.grep(data, function(name) {
+                    return /^fieldsandfilters[\d+]*/.test(name);
+                });
+
+                if (!result) {
+                    return false
+                }
+
+                this.set(data, 'random', 1);
+            }
+
 			// start loading data
 			this.loading();
 			$.getJSON(this.get('$url', '#'), data)
@@ -433,8 +470,10 @@
 						return false;
 					}
 
-                    if ($fn.get(data, 'empty', false) && $fn.task == 'random') {
-                        $($fn.selector('form') + ':eq(0)').trigger('random');
+                    var isEmpty = $fn.get(data, 'empty', false);
+
+                    if (isEmpty && $fn.task == 'random:all') {
+                        $($fn.selector('form') + ':eq(0)').trigger('random:all');
                         return;
                     }
 
@@ -442,13 +481,15 @@
 						// set new coutns
 						$fn.set('$counts', $fn.get(data, 'counts', []));
 						$fn.inputs($form, true);
-						if ($fn.get(data, 'empty', false)) {
+						if (isEmpty) {
 							$form.find($fn.selector('empty') + ':hidden').show().end()
-								.find($fn.selector('submit') + ':visible').hide();
+								.find($fn.selector('submit') + ':visible').hide().end()
+                                .find($fn.selector('random') + ':visible').hide();
 						}
 						else {
 							$form.find($fn.selector('empty') + ':visible').hide().end()
-								.find($fn.selector('submit') + ':hidden').show();
+								.find($fn.selector('submit') + ':hidden').show().end()
+                                .find($fn.selector('random') + ':hidden').show();
 						}
 
 					}
@@ -456,8 +497,8 @@
 					// set body
 					$fn.body($fn.get(data, 'body', null)),
 
-						// add styles and styles declaration
-						$fn.styles($fn.get(data, 'head.styleSheets'), $fn.get(data, 'head.style'));
+                    // add styles and styles declaration
+                    $fn.styles($fn.get(data, 'head.styleSheets'), $fn.get(data, 'head.style'));
 
 					// add scripts and scripts declaration
 					$.when($fn.scripts($fn.get(data, 'head.scripts'), $fn.get(data, 'head.script'))).done(function () {
@@ -473,6 +514,14 @@
 						$fn.loading('stop');
 						$fn.fn('done', [ $form, data, status, response ]);
 					});
+
+                    if (!isEmpty && $fn.task == 'random:selected') {
+                            $fn.set('$data', {});
+                    }
+
+                    if ($fn.task != $fn.lastToken) {
+                        $fn.lastToken = $fn.task;
+                    }
 
                     // clear task
                     $fn.task = null;

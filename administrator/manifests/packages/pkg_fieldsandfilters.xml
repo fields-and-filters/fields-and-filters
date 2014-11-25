@@ -2,13 +2,13 @@
 <extension type="package" version="2.5">
 	<name>Fields and Filters</name>
 	<packagename>fieldsandfilters</packagename>
-	<creationDate>2014-11-05</creationDate>
+	<creationDate>2014-11-25</creationDate>
 	<copyright>Copyright (C) 2012 KES - Kulka Tomasz . All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see License.txt</license>
 	<author>KES - Kulka Tomasz</author>
 	<authorEmail>kes@kextensions.com</authorEmail>
 	<authorUrl>http://www.kextensions.com</authorUrl>
-	<version>1.2.4</version>
+	<version>1.2.5</version>
 	<description/>
 	<packager>KES - Kulka Tomasz</packager>
 	<packagerurl>http://www.kextensions.com</packagerurl>
