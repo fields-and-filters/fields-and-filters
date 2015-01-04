@@ -1,0 +1,14 @@
+{
+    "name": "kextensions/fieldsandfilters",
+    "type": "package",
+    "description": "Fields and Filters",
+    "license": "GPL-2.0+",
+    "require": {
+        "php": ">=5.3.10",
+        "joomla/joomla-cms": "@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*"
+    },
+    "minimum-stability": "dev"
+}
