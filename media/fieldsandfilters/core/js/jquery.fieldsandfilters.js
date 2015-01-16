@@ -12,7 +12,7 @@
 	var $fn = $[faf] = {
         $name: faf,
         task: null,
-        lastToken: null,
+        lastToken: null
     };
 
 	$.fn[faf] = function (type, options) {
@@ -78,7 +78,11 @@
 					},
 					excluded : ['view'],
 					setCount : true,
-					hideCount: true
+					hideCount: true,
+					hashNavigation: {
+						enabled: true,
+						prefix: '#!',
+					}
 				}, options);
 
 				// initialization
@@ -232,6 +236,37 @@
 					}),
 						this.get(options, 'excluded', [])
 					));
+
+				// on change hash for hash navigation
+				this.hashNavigation = options.hashNavigation;
+				if (options.hashNavigation.enabled) {
+					$(window).on('hashchange', function () {
+						var hash = window.location.hash,
+							match;
+
+						if (!(match = hash.match(options.regexpNavigation))) {
+							return;
+						}
+
+
+
+						// /#!(\/\w+:[:\w]+)+/g.test('#!/field1:value:2/field2:value1:value2')
+
+						// '#!/field1:value:2/field2:value1:value2'.split(/\/|#!/)
+
+						/*jQuery.each('#!/field1:value:2/field2:value1:value2'.split(/\/|#!/), function(key, str) {
+							if (!str) return;
+							var match = str.split(/:/);
+							var field = match.shift();
+							var obj = {};
+							obj[field] = match;
+
+							console.log(obj);
+						})*/
+
+						console.log('hashchange', arguments);
+					});
+				}
 
 				// is init
 				this.set('$init', true);
@@ -446,6 +481,10 @@
 				this.set(data, 'module', $fn.get(options, 'module', null));
 			}
 
+			window.location.hash = $fn.encodeHash();
+
+			console.log($fn.encodeHash());
+
 			$.extend(true, data, this.get('$data', {}), this.get('$request', {}));
 			this.set(data, $fn.token(), 1);
 
@@ -549,6 +588,71 @@
 
 					$fn.fn('always', [ $form, data, status, response ]);
 				});
+		}
+	});
+
+// hash navigation
+	$.extend($fn, {
+		decodeHash: function(str, options) {
+			options || (options = this.hashNavigation);
+			// /#!(\/\w+:[\w:_]+)+/g
+			var regexp = new RegExp(options.prefix + '(\\/\\w+:[\\w:_]+)+', 'g'),
+				obj = {};
+
+			if (!regexp.test(str)) return false;
+
+			// /#!|\//
+			regexp = new RegExp(options.prefix + '|\\/');
+
+			$.each(str.split(regexp), function(key, str) {
+				if (!str) return;
+				var match = str.split(':');
+
+				obj[match.shift()] = match;
+			});
+
+			return $.isEmptyObject(obj) ? false : obj;
+		},
+		encodeHash: function(options) {
+			options || (options = this.hashNavigation);
+
+			var self = this,
+				$form = $(this.selector('form')),
+				serialize = this.serialize($form),
+				encode = [];
+
+			$.each(serialize, function(name, values) {
+				var $values = $form.find('[name="%s"]'.replace('%s', name)),
+					aliasField, data;
+
+				if (!$values.length) {
+					data  = [name, values];
+				} else {
+					if (!$.isArray(values)) {
+						values = [values];
+					}
+
+					aliasField = $values
+						.parents(self.selector('fieldset'))
+						.data('alias');
+
+					if (!aliasField) return;
+
+					data = $.map(values, function (value) {
+						var $value = $values.filter('[value="%s"]'.replace('%s', value));
+
+						return $value.length ? $value.data('alias') : null;
+					});
+
+					if ($.isEmptyObject(data)) return;
+
+					data.unshift(aliasField);
+				}
+				encode.push(data.join(':'));
+			});
+
+			// [TODO] poprawic
+			return $.isEmptyObject(encode) ? false : options.prefix + '/' + encode.join('/');
 		}
 	});
 
