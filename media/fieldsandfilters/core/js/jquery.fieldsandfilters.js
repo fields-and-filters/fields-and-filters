@@ -651,7 +651,6 @@
 				encode.push(data.join(':'));
 			});
 
-			// [TODO] poprawic
 			return $.isEmptyObject(encode) ? false : options.prefix + '/' + encode.join('/');
 		}
 	});
