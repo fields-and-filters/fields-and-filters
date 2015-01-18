@@ -106,13 +106,13 @@
 
 				// add event submint form
                 $this.on({
-                    submit: function (e) {
+                    submit: function (e, options) {
                         /* stop form from submitting normally */
                         e.preventDefault();
 
                         $fn.pagination('reset');
 
-                        $fn.ajax($(this));
+                        $fn.ajax($(this), options);
                     },
                     clear : function (e, not) {
                         e.preventDefault();
@@ -238,33 +238,70 @@
 					));
 
 				// on change hash for hash navigation
-				this.hashNavigation = options.hashNavigation;
+				var navigation = this.hashNavigation = options.hashNavigation;
 				if (options.hashNavigation.enabled) {
+					navigation.silent = false;
+					navigation.detected = false;
 					$(window).on('hashchange', function () {
-						var hash = window.location.hash,
-							match;
+						console.log('hashchange', navigation.silent);
 
-						if (!(match = hash.match(options.regexpNavigation))) {
+						if (navigation.silent) {
+							navigation.detected = true;
+							navigation.deferred.resolve();
 							return;
 						}
 
+						var obj = $fn.decodeHash();
 
+						console.log('test', !obj && !navigation.detected);
+						if (!obj && !navigation.detected) return;
 
-						// /#!(\/\w+:[:\w]+)+/g.test('#!/field1:value:2/field2:value1:value2')
+						var $form = $($fn.selector('form')),
+							$other = $($fn.selector('other'));
 
-						// '#!/field1:value:2/field2:value1:value2'.split(/\/|#!/)
+						$($form.add($other)).trigger('reset');
 
-						/*jQuery.each('#!/field1:value:2/field2:value1:value2'.split(/\/|#!/), function(key, str) {
-							if (!str) return;
-							var match = str.split(/:/);
-							var field = match.shift();
-							var obj = {};
-							obj[field] = match;
+						if (obj) {
+							navigation.detected = true;
 
-							console.log(obj);
-						})*/
+							$.each(obj, function (field, values) {
+								var $els = $(),
+									$field = $form.find('[data-alias=%s]'.replace('%s', field)),
+									useValue = false;
 
-						console.log('hashchange', arguments);
+								if ($field.length) {
+									$.each(values, function (k, alias) {
+										$els = $els.add($field.find('[data-alias=%s]'.replace('%s', alias)));
+									});
+								} else {
+									$els = $other.find('[name=%s]'.replace('%s', field));
+									useValue = true;
+								}
+
+								if (!$els.length) return;
+
+								$els.each(function () {
+									var $el = $(this);
+
+									// [TODO] faf dorobić select i select multioraz sprawdzi radio
+									if ($el.is(':checkbox') || $el.is(':radio')) {
+										$el.prop('checked', true);
+									} else if (useValue) {
+										$el.val(values);
+									}
+								});
+							});
+
+						} else {
+							navigation.detected = false;
+						}
+
+						console.log('submit', navigation.detected);
+
+						$form.eq(0).triggerHandler('submit', {
+							disableHashNavigation: true
+						});
+
 					});
 				}
 
@@ -279,6 +316,8 @@
 				$pagination = type;
 				type = 'get';
 			}
+
+			// [TODO] faf dodać paginację do hashNavigation
 
 			switch (type) {
 				case 'reset':
@@ -463,7 +502,9 @@
 			return $.trim(this.get(('$selectors.' + name), def || ''));
 		},
 
-		ajax: function ($form) {
+		ajax: function ($form, ops) {
+			ops || (ops = {});
+
 			// new requerstID
 			this.requestID(true);
 			var data = {};
@@ -481,10 +522,6 @@
 				this.set(data, 'module', $fn.get(options, 'module', null));
 			}
 
-			window.location.hash = $fn.encodeHash();
-
-			console.log($fn.encodeHash());
-
 			$.extend(true, data, this.get('$data', {}), this.get('$request', {}));
 			this.set(data, $fn.token(), 1);
 
@@ -500,6 +537,10 @@
 
                 this.set(data, 'random', 1);
             }
+
+			if ($fn.hashNavigation.enabled && !ops.disableHashNavigation) {
+				this.setNewHash(this.encodeHash(), {silent: true});
+			}
 
 			// start loading data
 			this.loading();
@@ -595,8 +636,10 @@
 	$.extend($fn, {
 		decodeHash: function(str, options) {
 			options || (options = this.hashNavigation);
-			// /#!(\/\w+:[\w:_]+)+/g
-			var regexp = new RegExp(options.prefix + '(\\/\\w+:[\\w:_]+)+', 'g'),
+			str || (str = window.location.hash);
+
+			// /#!(\/\w+:[\w:_-]+)+/g
+			var regexp = new RegExp(options.prefix + '(\\/\\w+:[\\w:_-]+)+', 'g'),
 				obj = {};
 
 			if (!regexp.test(str)) return false;
@@ -652,6 +695,22 @@
 			});
 
 			return $.isEmptyObject(encode) ? false : options.prefix + '/' + encode.join('/');
+		},
+		setNewHash: function(hash, options) {
+			options || (options = {});
+
+			var navigation = this.hashNavigation;
+
+			if (options.silent === true) {
+				navigation.deferred = new $.Deferred();
+				navigation.silent = true;
+			}
+
+			window.location.hash = hash;
+
+			$.when(navigation.deferred).done(function() {
+				navigation.silent = false;
+			});
 		}
 	});
 
