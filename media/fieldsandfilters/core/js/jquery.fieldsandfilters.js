@@ -283,7 +283,7 @@
 				default:
 					var keys = Object.keys(this.get('$pagination', {})),
 						pagination = this.get('$pagination', {}),
-						url, value;
+						url;
 
 					$pagination.on('click', this.get(options, 'selector', 'a'), function (event) {
 						event.preventDefault();
@@ -304,11 +304,14 @@
 		setPaginationParam: function(name, value) {
 			var pagination = this.get('$pagination', {});
 
-			$fn.set(( '$request.' + name ), value);
+			this.set(( '$request.' + name ), value);
 
-			if (value === null || value === undefined || (pagination[name] && pagination[name] == value)) return;
+			if (value === null || value === undefined || (pagination[name] && pagination[name] == value)) {
+				delete this.paginationCache[name];
+				return;
+			}
 
-			$fn.paginationCache[name] = value;
+			this.paginationCache[name] = value;
 		},
 
 		/**
