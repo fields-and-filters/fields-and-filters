@@ -28,10 +28,12 @@
 		}
 
 		switch (type) {
+			// [TODO] faf poprawić paginację
+			// działa poprawnie, lecz jak się wybierze filtry i ustawi paginacje i wciśnie się wstecz na tych
+			// smaych filtarch to nie dziala ajax ;/
 			case 'pagination' :
 				options = $.extend(true, {
-					selector  : 'a',
-					pagination: 'limitstart'
+					selector  : 'a'
 				}, options);
 
 				$fn.pagination($this, options);
@@ -81,7 +83,7 @@
 					hideCount: true,
 					hashNavigation: {
 						enabled: true,
-						prefix: '#!',
+						prefix: '#!'
 					}
 				}, options);
 
@@ -207,6 +209,7 @@
 				});
 				// request && pagination
 				this.set('$request', this.get(options, 'request', {}));
+				this.paginationCache = {};
 				this.set('$pagination', this.get(options, 'pagination', {}));
 				this.set('$request', $.extend(this.get('$request', {}), this.get('$pagination', {})));
 
@@ -243,65 +246,16 @@
 					navigation.silent = false;
 					navigation.detected = false;
 					$(window).on('hashchange', function () {
-						console.log('hashchange', navigation.silent);
-
 						if (navigation.silent) {
 							navigation.detected = true;
 							navigation.deferred.resolve();
 							return;
 						}
 
-						var obj = $fn.decodeHash();
-
-						console.log('test', !obj && !navigation.detected);
-						if (!obj && !navigation.detected) return;
-
-						var $form = $($fn.selector('form')),
-							$other = $($fn.selector('other'));
-
-						$($form.add($other)).trigger('reset');
-
-						if (obj) {
-							navigation.detected = true;
-
-							$.each(obj, function (field, values) {
-								var $els = $(),
-									$field = $form.find('[data-alias=%s]'.replace('%s', field)),
-									useValue = false;
-
-								if ($field.length) {
-									$.each(values, function (k, alias) {
-										$els = $els.add($field.find('[data-alias=%s]'.replace('%s', alias)));
-									});
-								} else {
-									$els = $other.find('[name=%s]'.replace('%s', field));
-									useValue = true;
-								}
-
-								if (!$els.length) return;
-
-								$els.each(function () {
-									var $el = $(this);
-
-									// [TODO] faf dorobić select i select multioraz sprawdzi radio
-									if ($el.is(':checkbox') || $el.is(':radio')) {
-										$el.prop('checked', true);
-									} else if (useValue) {
-										$el.val(values);
-									}
-								});
-							});
-
-						} else {
-							navigation.detected = false;
-						}
-
-						console.log('submit', navigation.detected);
-
-						$form.eq(0).triggerHandler('submit', {
-							disableHashNavigation: true
-						});
-
+						$fn.navigation();
+					});
+					$(document).ready(function() {
+						$fn.navigation();
 					});
 				}
 
@@ -321,20 +275,21 @@
 
 			switch (type) {
 				case 'reset':
+					this.paginationCache = {};
 					this.set('$request', $.extend(this.get('$request', {}), this.get('$pagination', {})));
+
 					break;
 				case 'get':
 				default:
-					var url,
-					    keys = this.get(options, 'pagination', []);
-
-					keys = $.isArray(keys) ? keys : [keys];
+					var keys = Object.keys(this.get('$pagination', {})),
+						pagination = this.get('$pagination', {}),
+						url, value;
 
 					$pagination.on('click', this.get(options, 'selector', 'a'), function (event) {
 						event.preventDefault();
 						url = $(this).prop('search');
 						$.map(keys, function (key) {
-							$fn.set(( '$request.' + key ), $fn.getURLParameter(url, key, 0));
+							$fn.setPaginationParam(key, $fn.getURLParameter(url, key, 0));
 						});
 
 						$fn.ajax();
@@ -344,6 +299,16 @@
 					break;
 			}
 
+		},
+
+		setPaginationParam: function(name, value) {
+			var pagination = this.get('$pagination', {});
+
+			$fn.set(( '$request.' + name ), value);
+
+			if (value === null || value === undefined || (pagination[name] && pagination[name] == value)) return;
+
+			$fn.paginationCache[name] = value;
 		},
 
 		/**
@@ -634,12 +599,88 @@
 
 // hash navigation
 	$.extend($fn, {
+		navigation: function() {
+			var obj = $fn.decodeHash(),
+				navigation = this.hashNavigation;
+
+			if (!obj && !navigation.detected) return;
+
+			var $form = $(this.selector('form')),
+				$other = $(this.selector('other')),
+				hasPaginationCache = !$.isEmptyObject(this.paginationCache),
+				enabledPagination = false;
+
+			$($form.add($other)).trigger('reset');
+
+			if (obj) {
+				var paginationKeys = Object.keys(this.get('$pagination', {}));
+				navigation.detected = true;
+
+				$.each(obj, function (field, values) {
+					if ($.inArray(field, paginationKeys) != -1) {
+						$fn.setPaginationParam(field, values);
+						enabledPagination = true;
+						return;
+					}
+
+					var $els = $(),
+						$field = $form.find('[data-alias=%s]'.replace('%s', field)),
+						useValue = false;
+
+					if ($field.length) {
+						values = $.isArray(values) ? values : [values];
+						$.each(values, function (k, alias) {
+							$els = $els.add($field.find('[data-alias=%s]'.replace('%s', alias)));
+						});
+					} else {
+						$els = $other.find('[name=%s]'.replace('%s', field));
+						useValue = true;
+					}
+
+					if (!$els.length) return;
+
+					$els.each(function () {
+						var $el = $(this);
+
+						// [TODO] faf dorobić select i select multioraz sprawdzi radio
+						if ($el.is(':checkbox') || $el.is(':radio')) {
+							$el.prop('checked', true);
+						} else if (useValue) {
+							$el.val(values);
+						}
+					});
+				});
+
+			} else {
+				navigation.detected = false;
+			}
+
+			var isSameParams = $.param(this.get('$data', {})) == $.param(this.serialize());
+			if (isSameParams && (enabledPagination || hasPaginationCache)) {
+				if (hasPaginationCache) {
+					this.pagination('reset');
+				}
+
+				this.ajax(null, {
+					disableHashNavigation: true
+				});
+			} else if (enabledPagination) {
+				this.ajax($form.eq(0), {
+					disableHashNavigation: true
+				});
+			} else {
+				$form.eq(0).triggerHandler('submit', {
+					disableHashNavigation: true
+				});
+			}
+		},
+
 		decodeHash: function(str, options) {
 			options || (options = this.hashNavigation);
 			str || (str = window.location.hash);
 
-			// /#!(\/\w+:[\w:_-]+)+/g
-			var regexp = new RegExp(options.prefix + '(\\/\\w+:[\\w:_-]+)+', 'g'),
+			// /#!(\/[\w-]+:[\w:-]+)+/g
+			var regexp = new RegExp(options.prefix + '(\\/[\\w-]+:[\\w:-]+)+', 'g'),
 				obj = {};
 
 			if (!regexp.test(str)) return false;
@@ -651,7 +692,7 @@
 				if (!str) return;
 				var match = str.split(':');
 
-				obj[match.shift()] = match;
+				obj[match.shift()] = (match.length === 1) ? match[0] : match;
 			});
 
 			return $.isEmptyObject(obj) ? false : obj;
@@ -676,7 +717,7 @@
 					}
 
 					aliasField = $values
-						.parents(self.selector('fieldset'))
+						.parents('[data-alias]')
 						.data('alias');
 
 					if (!aliasField) return;
@@ -693,6 +734,12 @@
 				}
 				encode.push(data.join(':'));
 			});
+
+			if (!$.isEmptyObject(this.paginationCache)) {
+				$.each(this.paginationCache, function(key, value) {
+					encode.push([key, value].join(':'));
+				});
+			}
 
 			return $.isEmptyObject(encode) ? false : options.prefix + '/' + encode.join('/');
 		},
