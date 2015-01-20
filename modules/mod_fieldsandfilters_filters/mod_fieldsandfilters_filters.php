@@ -44,6 +44,8 @@ if ($fieldsID = $params->get('fields_id'))
 
 	if (isset($filtersRequest['extensionID']) && $filtersRequest['extensionID'] && !empty($counts))
 	{
+		$componentParams = JComponentHelper::getParams('com_fieldsandfilters');
+		
 		$request = array(
 			'option'  => 'com_fieldsandfilters',
 			'task'    => 'request.filters',
@@ -84,6 +86,14 @@ if ($fieldsID = $params->get('fields_id'))
 			$fn['done'] = '\\' . $functionDone;
 		}
 
+		// hash navigation
+		if ($componentParams->get('hash_navigation_enabled')) {
+			$options['hashNavigation'] = array(
+				'enabled' => true,
+				'prefix' => $componentParams->get('hash_navigation_prefix', '#!')
+			);
+		}
+
 		if (!empty($fn) && is_array($fn))
 		{
 			$options['fn'] = $fn;
@@ -105,7 +115,7 @@ if ($fieldsID = $params->get('fields_id'))
 		$script[] = '     $( "#faf-form-' . $module->id . '" ).fieldsandfilters(' . $options . ');';
         if ($params->get('show_random', 0))
         {
-            $script[] = sprintf('     $( "#faf-form-random-' . $module->id . '" ).fieldsandfilters("random:%s");', JComponentHelper::getParams('com_fieldsandfilters')->get('random_type_filters', 'all'));
+            $script[] = sprintf('     $( "#faf-form-random-' . $module->id . '" ).fieldsandfilters("random:%s");', $componentParams->get('random_type_filters', 'all'));
         }
         $script[] = '});';
 

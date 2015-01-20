@@ -81,7 +81,7 @@
 					setCount : true,
 					hideCount: true,
 					hashNavigation: {
-						enabled: true,
+						enabled: false,
 						prefix: '#!'
 					}
 				}, options);
