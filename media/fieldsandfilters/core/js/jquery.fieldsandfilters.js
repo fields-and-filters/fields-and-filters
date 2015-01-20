@@ -28,7 +28,6 @@
 		}
 
 		switch (type) {
-			// [TODO] faf poprawić paginację
 			// działa poprawnie, lecz jak się wybierze filtry i ustawi paginacje i wciśnie się wstecz na tych
 			// smaych filtarch to nie dziala ajax ;/
 			case 'pagination' :
@@ -282,7 +281,6 @@
 				case 'get':
 				default:
 					var keys = Object.keys(this.get('$pagination', {})),
-						pagination = this.get('$pagination', {}),
 						url;
 
 					$pagination.on('click', this.get(options, 'selector', 'a'), function (event) {
@@ -645,9 +643,25 @@
 					$els.each(function () {
 						var $el = $(this);
 
-						// [TODO] faf dorobić select i select multioraz sprawdzi radio
 						if ($el.is(':checkbox') || $el.is(':radio')) {
 							$el.prop('checked', true);
+						} else if ($el.is('option')) {
+							var $select = $el.parents('select'),
+								val = $select.val();
+
+							if ($.isArray(val)) {
+								var emptyVal = val.indexOf('');
+
+								if (emptyVal != -1) {
+									val = val.slice(emptyVal + 1);
+								}
+
+								val.push($el.val());
+							} else {
+								val = $el.val();
+							}
+
+							$select.val(val);
 						} else if (useValue) {
 							$el.val(values);
 						}
@@ -703,13 +717,13 @@
 		encodeHash: function(options) {
 			options || (options = this.hashNavigation);
 
-			var self = this,
-				$form = $(this.selector('form')),
+			var $form = $(this.selector('form')),
 				serialize = this.serialize($form),
 				encode = [];
 
 			$.each(serialize, function(name, values) {
 				var $values = $form.find('[name="%s"]'.replace('%s', name)),
+					isSelect = $values.is('select'),
 					aliasField, data;
 
 				if (!$values.length) {
@@ -726,7 +740,7 @@
 					if (!aliasField) return;
 
 					data = $.map(values, function (value) {
-						var $value = $values.filter('[value="%s"]'.replace('%s', value));
+						var $value = $values[isSelect ? 'find' : 'filter']('[value="%s"]'.replace('%s', value));
 
 						return $value.length ? $value.data('alias') : null;
 					});
