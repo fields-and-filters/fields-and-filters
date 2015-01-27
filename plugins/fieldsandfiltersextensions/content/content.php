@@ -484,7 +484,7 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		}
 
 		// Load Elements Helper
-		$elementsID = FieldsandfiltersFactory::getElements()->getElementsByIDColumn('id', $extensionContent->content_type_id, $pks, $this->_states, false);
+		$elementsID = FieldsandfiltersFactory::getElements()->getElementsByItemIDColumn('id', $extensionContent->content_type_id, $pks, $this->_states, false);
 
 		if (empty($elementsID))
 		{
