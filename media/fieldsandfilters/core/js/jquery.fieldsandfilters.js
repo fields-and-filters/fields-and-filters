@@ -12,7 +12,7 @@
 	var $fn = $[faf] = {
         $name: faf,
         task: null,
-        lastToken: null,
+        lastToken: null
     };
 
 	$.fn[faf] = function (type, options) {
@@ -30,8 +30,7 @@
 		switch (type) {
 			case 'pagination' :
 				options = $.extend(true, {
-					selector  : 'a',
-					pagination: 'limitstart'
+					selector  : 'a'
 				}, options);
 
 				$fn.pagination($this, options);
@@ -78,7 +77,11 @@
 					},
 					excluded : ['view'],
 					setCount : true,
-					hideCount: true
+					hideCount: true,
+					hashNavigation: {
+						enabled: false,
+						prefix: '#!'
+					}
 				}, options);
 
 				// initialization
@@ -102,13 +105,13 @@
 
 				// add event submint form
                 $this.on({
-                    submit: function (e) {
+                    submit: function (e, options) {
                         /* stop form from submitting normally */
                         e.preventDefault();
 
                         $fn.pagination('reset');
 
-                        $fn.ajax($(this));
+                        $fn.ajax($(this), options);
                     },
                     clear : function (e, not) {
                         e.preventDefault();
@@ -203,6 +206,7 @@
 				});
 				// request && pagination
 				this.set('$request', this.get(options, 'request', {}));
+				this.paginationCache = {};
 				this.set('$pagination', this.get(options, 'pagination', {}));
 				this.set('$request', $.extend(this.get('$request', {}), this.get('$pagination', {})));
 
@@ -233,6 +237,25 @@
 						this.get(options, 'excluded', [])
 					));
 
+				// on change hash for hash navigation
+				var navigation = this.hashNavigation = options.hashNavigation;
+				if (options.hashNavigation.enabled) {
+					navigation.silent = false;
+					navigation.detected = false;
+					$(window).on('hashchange', function () {
+						if (navigation.silent) {
+							navigation.detected = true;
+							navigation.deferred.resolve();
+							return;
+						}
+
+						$fn.navigation();
+					});
+					$(document).ready(function() {
+						$fn.navigation();
+					});
+				}
+
 				// is init
 				this.set('$init', true);
 			}
@@ -247,20 +270,20 @@
 
 			switch (type) {
 				case 'reset':
+					this.paginationCache = {};
 					this.set('$request', $.extend(this.get('$request', {}), this.get('$pagination', {})));
+
 					break;
 				case 'get':
 				default:
-					var url,
-					    keys = this.get(options, 'pagination', []);
-
-					keys = $.isArray(keys) ? keys : [keys];
+					var keys = Object.keys(this.get('$pagination', {})),
+						url;
 
 					$pagination.on('click', this.get(options, 'selector', 'a'), function (event) {
 						event.preventDefault();
 						url = $(this).prop('search');
 						$.map(keys, function (key) {
-							$fn.set(( '$request.' + key ), $fn.getURLParameter(url, key, 0));
+							$fn.setPaginationParam(key, $fn.getURLParameter(url, key, 0));
 						});
 
 						$fn.ajax();
@@ -270,6 +293,19 @@
 					break;
 			}
 
+		},
+
+		setPaginationParam: function(name, value) {
+			var pagination = this.get('$pagination', {});
+
+			this.set(( '$request.' + name ), value);
+
+			if (value === null || value === undefined || (pagination[name] && pagination[name] == value)) {
+				delete this.paginationCache[name];
+				return;
+			}
+
+			this.paginationCache[name] = value;
 		},
 
 		/**
@@ -428,7 +464,9 @@
 			return $.trim(this.get(('$selectors.' + name), def || ''));
 		},
 
-		ajax: function ($form) {
+		ajax: function ($form, ops) {
+			ops || (ops = {});
+
 			// new requerstID
 			this.requestID(true);
 			var data = {};
@@ -461,6 +499,10 @@
 
                 this.set(data, 'random', 1);
             }
+
+			if ($fn.hashNavigation.enabled && !ops.disableHashNavigation) {
+				this.setNewHash(this.encodeHash(), {silent: true});
+			}
 
 			// start loading data
 			this.loading();
@@ -549,6 +591,186 @@
 
 					$fn.fn('always', [ $form, data, status, response ]);
 				});
+		}
+	});
+
+// hash navigation
+	$.extend($fn, {
+		navigation: function() {
+			var obj = $fn.decodeHash(),
+				navigation = this.hashNavigation;
+
+			if (!obj && !navigation.detected) return;
+
+			var $form = $(this.selector('form')),
+				$other = $(this.selector('other')),
+				hasPaginationCache = !$.isEmptyObject(this.paginationCache),
+				enabledPagination = false;
+
+			$($form.add($other)).trigger('reset');
+
+			if (obj) {
+				var paginationKeys = Object.keys(this.get('$pagination', {}));
+				navigation.detected = true;
+
+				$.each(obj, function (field, values) {
+					if ($.inArray(field, paginationKeys) != -1) {
+						$fn.setPaginationParam(field, values);
+						enabledPagination = true;
+						return;
+					}
+
+					var $els = $(),
+						$field = $form.find('[data-alias=%s]'.replace('%s', field)),
+						useValue = false;
+
+					if ($field.length) {
+						values = $.isArray(values) ? values : [values];
+						$.each(values, function (k, alias) {
+							$els = $els.add($field.find('[data-alias=%s]'.replace('%s', alias)));
+						});
+					} else {
+						$els = $other.find('[name=%s]'.replace('%s', field));
+						useValue = true;
+					}
+
+					if (!$els.length) return;
+
+					$els.each(function () {
+						var $el = $(this);
+
+						if ($el.is(':checkbox') || $el.is(':radio')) {
+							$el.prop('checked', true);
+						} else if ($el.is('option')) {
+							var $select = $el.parents('select'),
+								val = $select.val();
+
+							if ($.isArray(val)) {
+								var emptyVal = val.indexOf('');
+
+								if (emptyVal != -1) {
+									val = val.slice(emptyVal + 1);
+								}
+
+								val.push($el.val());
+							} else {
+								val = $el.val();
+							}
+
+							$select.val(val);
+						} else if (useValue) {
+							$el.val(values);
+						}
+					});
+				});
+
+			} else {
+				navigation.detected = false;
+			}
+
+			var isSameParams = $.param(this.get('$data', {})) == $.param(this.serialize());
+			if (isSameParams && (enabledPagination || hasPaginationCache)) {
+				if (hasPaginationCache) {
+					this.pagination('reset');
+				}
+
+				this.ajax(null, {
+					disableHashNavigation: true
+				});
+			} else if (enabledPagination) {
+				this.ajax($form.eq(0), {
+					disableHashNavigation: true
+				});
+			} else {
+				$form.eq(0).triggerHandler('submit', {
+					disableHashNavigation: true
+				});
+			}
+		},
+
+		decodeHash: function(str, options) {
+			options || (options = this.hashNavigation);
+			str || (str = window.location.hash);
+
+			// /#!(\/[\w-]+:[\w:-]+)+/g
+			var regexp = new RegExp(options.prefix + '(\\/[\\w-]+:[\\w:-]+)+', 'g'),
+				obj = {};
+
+			if (!regexp.test(str)) return false;
+
+			// /#!|\//
+			regexp = new RegExp(options.prefix + '|\\/');
+
+			$.each(str.split(regexp), function(key, str) {
+				if (!str) return;
+				var match = str.split(':');
+
+				obj[match.shift()] = (match.length === 1) ? match[0] : match;
+			});
+
+			return $.isEmptyObject(obj) ? false : obj;
+		},
+		encodeHash: function(options) {
+			options || (options = this.hashNavigation);
+
+			var $form = $(this.selector('form')),
+				serialize = this.serialize($form),
+				encode = [];
+
+			$.each(serialize, function(name, values) {
+				var $values = $form.find('[name="%s"]'.replace('%s', name)),
+					isSelect = $values.is('select'),
+					aliasField, data;
+
+				if (!$values.length) {
+					data  = [name, values];
+				} else {
+					if (!$.isArray(values)) {
+						values = [values];
+					}
+
+					aliasField = $values
+						.parents('[data-alias]')
+						.data('alias');
+
+					if (!aliasField) return;
+
+					data = $.map(values, function (value) {
+						var $value = $values[isSelect ? 'find' : 'filter']('[value="%s"]'.replace('%s', value));
+
+						return $value.length ? $value.data('alias') : null;
+					});
+
+					if ($.isEmptyObject(data)) return;
+
+					data.unshift(aliasField);
+				}
+				encode.push(data.join(':'));
+			});
+
+			if (!$.isEmptyObject(this.paginationCache)) {
+				$.each(this.paginationCache, function(key, value) {
+					encode.push([key, value].join(':'));
+				});
+			}
+
+			return $.isEmptyObject(encode) ? false : options.prefix + '/' + encode.join('/');
+		},
+		setNewHash: function(hash, options) {
+			options || (options = {});
+
+			var navigation = this.hashNavigation;
+
+			if (options.silent === true) {
+				navigation.deferred = new $.Deferred();
+				navigation.silent = true;
+			}
+
+			window.location.hash = hash;
+
+			$.when(navigation.deferred).done(function() {
+				navigation.silent = false;
+			});
 		}
 	});
 

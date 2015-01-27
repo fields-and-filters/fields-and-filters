@@ -37,7 +37,7 @@ if ($field->params->get('base.site_enabled_description', 0) && !empty($field->de
 $id = 'faf-filters-' . $field->id;
 ?>
 
-<fieldset id="<?php echo $id; ?>" class="faf-filters faf-filters-list <?php echo htmlspecialchars($field->params->get('base.class', '')); ?>">
+<fieldset id="<?php echo $id; ?>" data-alias="<?php echo $field->alias; ?>" class="faf-filters faf-filters-list <?php echo htmlspecialchars($field->params->get('base.class', '')); ?>">
 	<?php if ($field->params->get('base.show_name', 1)) :
 
 		$attribsDiv = array('class' => 'faf-name');

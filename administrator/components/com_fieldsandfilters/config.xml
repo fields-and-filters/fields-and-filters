@@ -133,6 +133,30 @@
 				size="10"
 				>
 		</field>
+		<field
+				name="site_filters_spacer_hash_navigation"
+				type="spacer"
+				label="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_HASH_NAVIGATION_LBL"
+				description="COM_FIELDSANDFILTERS_SITE_FILTERS_SPACER_HASH_NAVIGATION_DESC"
+				/>
+		<field
+				name="hash_navigation_enabled"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				label="COM_FIELDSANDFILTERS_HASH_NAVIGATION_ENABLE_LBL"
+				description="COM_FIELDSANDFILTERS_HASH_NAVIGATION_ENABLE_DESC"
+				default="0"
+				>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field
+				name="hash_navigation_prefix"
+				type="text"
+				default="#!"
+				label="COM_FIELDSANDFILTERS_HASH_NAVIGATION_PREFIX_LBL"
+				description="COM_FIELDSANDFILTERS_HASH_NAVIGATION_PREFIX_DESC"
+				/>
 	</fieldset>
 	<fieldset name="other">
 		<field
