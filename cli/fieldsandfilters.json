@@ -1,15 +1,7 @@
 {
-//	"xml": [
-//		"administrator/modules/mod_login/mod_login",
-//		"administrator/components/com_fieldsandfilters/fieldsandfilters",
-//		"modules/mod_fieldsandfilters_filters/mod_fieldsandfilters_filters",
-//		"plugins/fieldsandfiltersextensions/content/content",
-//		"administrator/manifests/libraries/kextensions"
-//	]
-
 	"xml": "administrator/manifests/packages/pkg_fieldsandfilters",
 	"info": {
-		"creationDate": "2014-11-25",
-		"version": "1.2.5"
+		"creationDate": "2015-01-27",
+		"version": "1.3.0"
 	}
 }
