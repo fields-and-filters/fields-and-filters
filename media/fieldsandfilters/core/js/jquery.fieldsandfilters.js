@@ -28,8 +28,6 @@
 		}
 
 		switch (type) {
-			// działa poprawnie, lecz jak się wybierze filtry i ustawi paginacje i wciśnie się wstecz na tych
-			// smaych filtarch to nie dziala ajax ;/
 			case 'pagination' :
 				options = $.extend(true, {
 					selector  : 'a'
@@ -269,8 +267,6 @@
 				$pagination = type;
 				type = 'get';
 			}
-
-			// [TODO] faf dodać paginację do hashNavigation
 
 			switch (type) {
 				case 'reset':
