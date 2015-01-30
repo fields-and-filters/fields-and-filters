@@ -82,7 +82,7 @@ class FieldsandfiltersImage
 					{
 						// Generate cropping resize image
 						case $jimage::CROP_RESIZE:
-							$jimage->crop($width, $height, null, null, false);
+							$jimage->cropResize($width, $height, false);
 							break;
 						// Generate cropping image
 						case $jimage::CROP:
