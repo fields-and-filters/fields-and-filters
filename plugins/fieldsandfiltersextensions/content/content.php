@@ -774,7 +774,8 @@ class plgFieldsandfiltersExtensionsContent extends JPlugin
 		));
 		$filters->set('counts', (array) $counts);
 
-		if ($app->get('sef', 0))
+		$router = JFactory::getApplication()->getRouter();
+		if ($router->getMode() == JROUTER_MODE_SEF)
 		{
 			$filters->set('pagination', array('start' => 0));
 		}
