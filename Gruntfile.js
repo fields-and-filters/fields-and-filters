@@ -3,14 +3,14 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         clean: {
             build: {
-                src: ["dest"]
+                src: ['dest', 'packages']
             }
         },
         joomla_packager: {
             options: {
                 config: {
                     version: ['<%= pkg.version %>'],
-                    creationDate: ['2015-01-30'] // <%= grunt.template.today("yyyy-mm-dd") %>
+                    creationDate: ['<%= grunt.template.today("yyyy-mm-dd") %>']
                 }
             },
             pkg_fieldsandfilters: {
