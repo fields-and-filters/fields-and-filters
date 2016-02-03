@@ -1,0 +1,24 @@
+{
+  "name": "fields-and-filters",
+  "version": "1.3.1",
+  "description": "Fields and Filters is a manager to manage the additional fields as well as the ability to filter them. Package for Joomla.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fields-and-filters/fields-and-filters.git"
+  },
+  "author": "Tomasz Kulka",
+  "keywords": [
+    "joomla"
+  ],
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/fields-and-filters/fields-and-filters/issues"
+  },
+  "homepage": "https://github.com/fields-and-filters/fields-and-filters#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.7.0",
+    "grunt-joomla-packager": "file:../grunt-joomla-packager"
+  },
+  "dependencies": {}
+}
