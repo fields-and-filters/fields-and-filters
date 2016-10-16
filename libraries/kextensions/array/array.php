@@ -212,7 +212,7 @@ class KextensionsArray
 		$result  = array();
 		$counter = array();
 
-		foreach ($source as $index => $value)
+		foreach ($source as $index => &$value)
 		{
 			// Determine the name of the pivot key, and its value.
 			if (is_array($value))
@@ -224,7 +224,7 @@ class KextensionsArray
 				}
 
 				$resultKey   = $value[$key];
-				$resultValue = & $source[$index];
+				$resultValue = &$value;
 			}
 			elseif (is_object($value))
 			{
@@ -235,7 +235,7 @@ class KextensionsArray
 				}
 
 				$resultKey   = $value->$key;
-				$resultValue = & $source[$index];
+				$resultValue = $value;
 			}
 			else
 			{
